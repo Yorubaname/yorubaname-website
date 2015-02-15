@@ -25,7 +25,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<start-class>DictionaryApplication</start-class>
+		<start-class>org.yorubaname.dictionary.DictionaryApplication</start-class>
 		<java.version>1.8</java.version>
 	</properties>
 
@@ -102,9 +102,6 @@
 		</dependencies>
 
 	</dependencyManagement>
-
-
-
 	<build>
 		<plugins>
 			<plugin>
@@ -113,5 +110,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
