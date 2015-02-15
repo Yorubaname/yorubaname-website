@@ -7,7 +7,7 @@
     </layout>
   </appender>
   
-  <logger name="org.yorubaname" level="TRACE"/>
+  <logger name="org.yorubaname" level="INFO"/>
 
   <root level="debug">
     <appender-ref ref="STDOUT" />
