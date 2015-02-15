@@ -1,0 +1,136 @@
+<html>
+<head>
+    <script src="jquery-2.1.3.min.js"></script>
+
+</head>
+
+
+<body>
+
+<form id="entryForm">
+
+    <div id="flashcard" style="text-transform: capitalize;"></div>
+
+    Name:<br/>
+    <input type="text" name="name"><br/><br/>
+    Tone Mark:<br/>
+    <input type="text" name="tonalMark"><br/><br/>
+    Meaning:<br/>
+    <textarea name="meaning"></textarea><br/><br/>
+    Area of origin:<br/>
+    <select name="geoLocation">
+        <option value="awori">Awori</option>
+        <option value="egba">Egba</option>
+        <option value="ijesha">Ijesha</option>
+    </select>
+
+    <br/><br/>
+    <input type="button" id="submit" value="Submit Entry" />
+
+</form>
+
+
+</body>
+
+<script type="text/javascript">
+    $(function() {
+        $("#submit").click(function() {
+            $("#flashcard").html("");
+            $.ajax({
+                type: 'POST',
+                url: "/v1/name",
+                data: $("#entryForm").serialize(),
+                success: function (a,b,c) {
+                    $("#entryForm")[0].reset();
+                },
+                error: function (response) {
+                    $("#flashcard").html("<span style='color:red'>"+response.responseText+"</span>");
+                    $("#entryForm")[0].reset();
+                }
+             });
+
+
+        });
+
+
+    });
+</script>
+
+<!--<script type="text/javascript">-->
+
+    <!--$(function () {-->
+
+
+        <!--$('#get-data-string').click(function () {-->
+            <!--console.log("GET: Data in String");-->
+            <!--$.ajax({-->
+                       <!--type: 'GET',-->
+                       <!--url: 'http://localhost:8081/v1/name?name=dadepo',-->
+                       <!--success: function (data) {-->
+                           <!--console.log(data);-->
+                       <!--},-->
+                       <!--error: function (er) {-->
+                           <!--console.log(er);-->
+                       <!--}-->
+                   <!--});-->
+
+        <!--});-->
+
+
+        <!--$('#get-data-json').click(function () {-->
+            <!--console.log("GET: Data as Json");-->
+            <!--$.ajax({-->
+                       <!--type: 'GET',-->
+                       <!--url: 'http://localhost:8081/v1/name',-->
+                       <!--data: "{name:'dadepo'}",-->
+                       <!--success: function (data) {-->
+                           <!--console.log(data);-->
+                       <!--},-->
+                       <!--error: function (er) {-->
+                           <!--console.log(er);-->
+                       <!--}-->
+                   <!--});-->
+
+        <!--});-->
+
+
+        <!--$('#post-data-string').click(function () {-->
+            <!--console.log("POST: Data as String");-->
+            <!--$.ajax({-->
+                       <!--type: 'POST',-->
+                       <!--url: 'http://localhost:8081/v1/name',-->
+                       <!--data: "name=dadepo",-->
+                       <!--success: function (data) {-->
+                           <!--console.log(data);-->
+                       <!--},-->
+                       <!--error: function (er) {-->
+                           <!--console.log(er);-->
+                       <!--}-->
+                   <!--});-->
+
+        <!--});-->
+
+
+        <!--$('#post-data-json').click(function () {-->
+            <!--console.log("POST: Data as Json");-->
+            <!--$.ajax({-->
+                       <!--type: 'POST',-->
+                       <!--url: 'http://localhost:8081/v1/name',-->
+                       <!--data: JSON.stringify({name: "dadepo"}),-->
+                       <!--dataType: "json",-->
+                       <!--contentType: "application/json; charset=utf-8",-->
+                       <!--success: function (data) {-->
+                           <!--console.log(data);-->
+                       <!--},-->
+                       <!--error: function (er) {-->
+                           <!--console.log(er);-->
+                       <!--}-->
+                   <!--});-->
+
+        <!--});-->
+
+
+
+    <!--});-->
+<!--</script>-->
+</html>

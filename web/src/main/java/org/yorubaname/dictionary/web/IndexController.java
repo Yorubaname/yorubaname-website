@@ -3,7 +3,6 @@ package org.yorubaname.dictionary.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.yorubaname.dictionary.model.NameEntry;
 import org.yorubaname.dictionary.model.NameEntryRepository;
 
 /**
@@ -17,9 +16,7 @@ public class IndexController {
 
     @RequestMapping("/")
     public String indexPage() {
-        NameEntry entity = new NameEntry();
-        entity.setName("Lagbaja");
-        repository.save(entity);
         return "index";
     }
+
 }

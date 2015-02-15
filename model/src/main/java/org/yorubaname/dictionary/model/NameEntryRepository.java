@@ -9,4 +9,11 @@ import javax.transaction.Transactional;
  */
 @Transactional
 public interface NameEntryRepository extends CrudRepository<NameEntry, Long> {
+
+    /**
+     * For finding a {@link org.yorubaname.dictionary.model.NameEntry} given the name
+     * @param name the name
+     * @return {@link org.yorubaname.dictionary.model.NameEntry}
+     */
+    NameEntry findByName(String name);
 }
