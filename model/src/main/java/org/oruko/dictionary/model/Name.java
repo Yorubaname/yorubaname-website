@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.model;
+package org.oruko.dictionary.model;
 
 /**
  * Representation of a name Entry in dictionary
@@ -46,7 +46,7 @@ public class Name {
     }
 
     /**
-     * Get the {@link org.yorubaname.dictionary.model.Tone} that represents
+     * Get the {@link org.oruko.dictionary.model.Tone} that represents
      * the tone mark
      * @return
      */
@@ -55,7 +55,7 @@ public class Name {
     }
 
     /**
-     * Set the {@link org.yorubaname.dictionary.model.Tone}
+     * Set the {@link org.oruko.dictionary.model.Tone}
      * @param tone the tone
      */
     public void setTone(Tone tone) {

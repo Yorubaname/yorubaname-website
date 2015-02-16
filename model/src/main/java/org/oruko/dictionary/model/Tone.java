@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.model;
+package org.oruko.dictionary.model;
 
 import java.util.stream.Stream;
 
@@ -11,7 +11,7 @@ public class Tone {
     private Audio audio;
 
     /**
-     * Public constructor for {@link org.yorubaname.dictionary.model.Tone}
+     * Public constructor for {@link org.oruko.dictionary.model.Tone}
      * @param toneMark
      */
     public Tone(char[] toneMark) {
@@ -20,7 +20,7 @@ public class Tone {
     }
 
     /**
-     * Get the {@link org.yorubaname.dictionary.model.Audio} representation of the tone
+     * Get the {@link org.oruko.dictionary.model.Audio} representation of the tone
      * @return the audio representation of the audio
      */
     public Audio getAudio() {

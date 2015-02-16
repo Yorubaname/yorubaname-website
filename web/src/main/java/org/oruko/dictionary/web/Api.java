@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.web;
+package org.oruko.dictionary.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.yorubaname.dictionary.model.Name;
-import org.yorubaname.dictionary.model.NameEntry;
-import org.yorubaname.dictionary.model.NameEntryRepository;
+import org.oruko.dictionary.model.Name;
+import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.NameEntryRepository;
 
 import java.util.ArrayList;
 import java.util.List;

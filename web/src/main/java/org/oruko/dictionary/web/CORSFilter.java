@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.web;
+package org.oruko.dictionary.web;
 
 import java.io.IOException;
 import javax.servlet.Filter;

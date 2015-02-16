@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary;
+package org.oruko.dictionary;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

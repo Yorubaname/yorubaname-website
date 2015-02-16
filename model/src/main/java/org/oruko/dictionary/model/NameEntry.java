@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.model;
+package org.oruko.dictionary.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -104,8 +104,8 @@ public class NameEntry {
     }
 
     /**
-     * Get's the name entry represented as {@link org.yorubaname.dictionary.model.Name}
-     * @return the {@link org.yorubaname.dictionary.model.Name}
+     * Get's the name entry represented as {@link org.oruko.dictionary.model.Name}
+     * @return the {@link org.oruko.dictionary.model.Name}
      */
     @Transient
     public Name toName() {

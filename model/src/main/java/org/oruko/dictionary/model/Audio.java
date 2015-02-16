@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.model;
+package org.oruko.dictionary.model;
 
 import java.io.IOException;
 import java.io.InputStream;

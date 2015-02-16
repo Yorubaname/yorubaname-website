@@ -1,4 +1,4 @@
-package org.yorubaname.dictionary.model;
+package org.oruko.dictionary.model;
 
 /**
  * Interface for storing and retrieving Audio contents
@@ -9,7 +9,7 @@ public interface AudioRepository {
     /**
      * Loads the Audio content
      * @param audioId the id of the audio file
-     * @return the {@link org.yorubaname.dictionary.model.Audio}
+     * @return the {@link org.oruko.dictionary.model.Audio}
      */
     public Audio loadAudio(String audioId);
 
