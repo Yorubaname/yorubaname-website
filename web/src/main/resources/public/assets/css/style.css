@@ -1,0 +1,288 @@
+body {	
+	border-top: 5px solid #C3A96E;
+    background: #F2F2F2;
+    text-align: left;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    color: #555;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+strong { font-weight: 700; }
+.brown { color: #C3A96E; }
+a:hover { text-decoration: none; }
+
+.header {
+    margin: 0 auto;
+    padding-bottom: 5px;
+	background-color: #075265;
+	margin-bottom: 15px;
+	border-radius: 0px 0px 8px 8px;
+}
+.h-form-entry{
+	
+}
+.h-names {
+	
+	border-right: 1px dotted #ccc;
+	border-left: 1px dotted #ccc;
+	border-radius: 0 0 8px 8px;
+}
+.h-names h6 {
+	background-color:#ccc;
+	color:#075265;
+	text-transform:uppercase;
+}
+.search {
+	top:15px;
+	position: relative;
+}
+.search input {
+	height: 40px;
+	width: 100%;
+	text-indent: 10px;
+	font-size:22px;
+	border-radius: 8px;
+}
+.search .fa-search { 
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 25px;
+  color: #ccc;
+}
+.social {
+	position:relative;
+	top: 2px;
+	color: #ccc;
+	font-size: 22px;
+}
+
+.adspace {
+	border-radius: 8px;
+	background-color: #f9f9f9;
+	min-height: 400px;
+}
+
+.footer {
+	font-size:12px;
+}
+
+.logo h1 {
+    padding-left: 50px;
+    font-family: 'Oleo Script', cursive;
+    font-size: 36px;
+    font-weight: 400;
+}
+
+.logo h1 a { color: #555; }
+
+.links {
+    text-align: right;
+}
+
+.links a {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 15px 0 0 20px;
+}
+
+.countspace{
+	margin-top:100px;
+}
+
+.videoWrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+}
+.videoWrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.numbers {
+    width: 55px;
+    text-align: center; 
+    font-family: Arial; 
+    font-size: 28px;
+    font-weight: bold;    /* options are normal, bold, bolder, lighter */
+    font-style: normal;   /* options are normal or italic */
+    color: #B55217;       /* change color using the hexadecimal color codes for HTML */
+}
+.title {		/* the styles below will affect the title under the numbers, i.e., "Days", "Hours", etc. */
+    width: 55px;
+    text-align: center; 
+    font-family: Arial; 
+    font-size: 10px;
+    font-weight: bold;    /* options are normal, bold, bolder, lighter */
+    color: #dddddd;       /* change color using the hexadecimal color codes for HTML */
+}
+#table {
+    width: 400px;
+    height: 48px;
+    border-style: none;
+    background-color: transparent;
+    margin: 0px auto;
+    position: relative;   /* leave as "relative" to keep timer centered on your page, or change to "absolute" then change the values of the "top" and "left" properties to position the timer */
+    top: 0px;             /* change to position the timer */
+    left: 0px;            /* change to position the timer; delete this property and it's value to keep timer centered on page */
+}
+
+.write-left {
+    text-align: center;
+}
+
+.register-container {
+    margin-top: 50px;
+}
+
+/* ----- iPhone ----- */
+
+.iphone {
+    text-align: right;
+}
+
+.iphone img { margin-right: 10px; }
+
+/* ----- Registration Form ----- */
+
+
+.register form h2 {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px dotted #bbb;
+    font-size: 30px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.register form input {
+    width: 30%;
+    height: 30px;
+    background: #fcfcfc;
+    border: 1px solid #ddd;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    color: #888;
+    font-size: 16px;
+}
+
+.register form input:focus {
+    border: 1px solid #ccc;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.register form label {
+    margin: 7px 0 10px 5px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.register form label span {
+    font-style: italic;
+}
+
+.register form input:-moz-placeholder { color: #aaa; }
+.register form input:-ms-input-placeholder { color: #aaa; }
+.register form input::-webkit-input-placeholder { color: #aaa; }
+
+form button {
+    cursor: pointer;
+    width: 20%;
+    height: 30px;
+    margin-top: 0px;
+    padding: 0;
+    background: #B55217;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 0;
+    -moz-box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;
+    -webkit-box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;
+    box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.1);
+    -o-transition: all .2s;
+    -moz-transition: all .2s;
+    -webkit-transition: all .2s;
+    -ms-transition: all .2s;
+}
+
+form button:hover {
+    -moz-box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;
+    -webkit-box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;
+    box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;
+}
+
+form button:active {
+    -moz-box-shadow:
+        0 -15px 30px 0 rgba(255,255,255,.05) inset,       
+        0 5px 8px 0 rgba(0,0,0,.1) inset;
+    -webkit-box-shadow:
+        0 -15px 30px 0 rgba(255,255,255,.05) inset,       
+        0 5px 8px 0 rgba(0,0,0,.1) inset;
+    box-shadow:
+        0 -15px 30px 0 rgba(255,255,255,.05) inset,       
+        0 5px 8px 0 rgba(0,0,0,.1) inset;
+}
+
+
+/* ----- Media queries ----- */
+
+@media (max-width: 1200px) {
+
+    .register form h2 { background: url(../img/pencil.png) 20px 6px no-repeat; }
+
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+
+    .register form h2 { background: none; }
+
+}
+
+@media (max-width: 767px) {
+
+    body { padding-left: 0; padding-right: 0; }
+
+    .logo, .links { text-align: center; }
+
+    .links { padding-bottom: 5px; }
+
+    .logo h1 { padding-left: 0; }
+
+    .links a.home { margin-left: 0; }
+
+    .links a.blog { margin-right: 0; }
+
+    .register-container { padding-left: 20px; padding-right: 20px; }
+
+    .register form h2 { background: none; }
+
+    .iphone img { display: none; }
+
+}
+
+@media (max-width: 480px) {
+
+    .register form button { width: 97%; }
+
+}
+
+
