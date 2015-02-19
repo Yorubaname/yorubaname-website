@@ -31,6 +31,14 @@ public class NameEntry {
     @Column
     private String geoLocation;
 
+
+    public NameEntry() {
+    }
+
+    public NameEntry(String name) {
+        this.name = name;
+    }
+
     /**
      * Returns the identifier, in this case the database primary key
      * @return the identifier
