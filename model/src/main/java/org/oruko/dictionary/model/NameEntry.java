@@ -1,5 +1,6 @@
 package org.oruko.dictionary.model;
 
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
@@ -26,7 +27,7 @@ public class NameEntry {
 
     @Column
     private char[] tonalMark;
-    @Column
+    @Column(length = 1000)
     private String meaning;
     @Column
     private String geoLocation;

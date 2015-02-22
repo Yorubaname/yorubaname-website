@@ -1,51 +1,61 @@
-package org.oruko.dictionary;
+package org.oruko.dictionary.importer;
 
+import com.google.common.collect.BiMap;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Importer for importing names from an excel sheet into
  * {@link org.oruko.dictionary.model.NameEntry}
+ *
  * @author Dadepo Aderemi.
  */
 @Component
 public class ExcelImporter implements ImporterInterface {
 
+    private Logger logger = LoggerFactory.getLogger(ExcelImporter.class);
+
     @Autowired
     private NameEntryRepository nameEntryRepository;
 
-    private Map<String, Integer> columnIndex; {
-        columnIndex = new LinkedHashMap<>();
-        columnIndex.put("name", 0);
-        columnIndex.put("tone", 1);
-        columnIndex.put("meaning", 2);
-        columnIndex.put("location", 3);
-    };
+    //@Autowired
+    private ImporterValidator validator = new ImporterValidator();
+
+
+    BiMap columnOrder = ColumnOrder.getColumnOrder();
 
     @Override
-    public ImportStatus doImport(File fileSource) throws IOException, InvalidFormatException {
-        XSSFWorkbook wb = new XSSFWorkbook(fileSource);
-        XSSFSheet sheet = wb.getSheetAt(0);
+    public ImportStatus doImport(File fileSource) {
+        ImportStatus status = new ImportStatus();
 
+        XSSFSheet sheet = null;
+        try {
+            sheet = getSheet(fileSource, 0);
+        } catch (IOException e) {
+            logger.error("Failed to import file {} with error {}", fileSource.getAbsoluteFile(), e.getMessage());
+            status.setErrorMessages(e.getMessage());
+            return status;
+        } catch (InvalidFormatException e) {
+            logger.error("Failed to import file {} with error {}", fileSource.getAbsoluteFile(), e.getMessage());
+            status.setErrorMessages(e.getMessage());
+            return status;
+        }
 
-        if (isColumnNameInOrder(sheet)) {
+        if (validator.isColumnNameInOrder(sheet)) {
             Iterator<Row> rowIterator = sheet.rowIterator();
-
 
             while (rowIterator.hasNext()) {
                 String name = "";
@@ -58,23 +68,22 @@ public class ExcelImporter implements ImporterInterface {
                     continue;
                 }
 
-                Cell nameCell = row.getCell(columnIndex.get("name"));
+                Cell nameCell = row.getCell((Integer) columnOrder.inverse().get("name"));
                 if (nameCell != null) {
                     name = nameCell.toString();
                 }
-                Cell toneCell = row.getCell(columnIndex.get("tone"));
+                Cell toneCell = row.getCell((Integer) columnOrder.inverse().get("tone"));
                 if (toneCell != null) {
-                    tone  = toneCell.toString();
+                    tone = toneCell.toString();
                 }
-                Cell meaningCell = row.getCell(columnIndex.get("meaning"));
+                Cell meaningCell = row.getCell((Integer) columnOrder.inverse().get("meaning"));
                 if (meaningCell != null) {
                     meaning = meaningCell.toString();
                 }
-                Cell locationCell = row.getCell(columnIndex.get("location"));
+                Cell locationCell = row.getCell((Integer) columnOrder.inverse().get("location"));
                 if (locationCell != null) {
                     location = locationCell.toString();
                 }
-
 
                 if (name.isEmpty() && tone.isEmpty() && meaning.isEmpty() && location.isEmpty()) {
                     continue;
@@ -85,45 +94,20 @@ public class ExcelImporter implements ImporterInterface {
                 nameEntry.setTonalMark(tone.toCharArray());
                 nameEntry.setMeaning(meaning);
                 nameEntry.setGeoLocation(location);
-
                 nameEntryRepository.save(nameEntry);
+                status.incrementNumberOfNames();
             }
+        } else {
+            status.setErrorMessages("Column not according to order");
         }
 
-        return null;
+        return status;
     }
-
 
     // ==================================================== Helpers ====================================================
 
-
-    private boolean isColumnNameInOrder(XSSFSheet sheet) {
-        boolean result = false;
-        int counter = 0;
-        ArrayList<String> order = getColumnOrder();
-        XSSFRow row = sheet.getRow(0);
-
-        Iterator<Cell> cellIterator = row.cellIterator();
-        while (cellIterator.hasNext()) {
-            Cell cell = cellIterator.next();
-            if (cell.toString().isEmpty()) {
-                break;
-            }
-            result = cell.toString().equalsIgnoreCase(order.get(counter));
-            if (!result) break;
-            counter++;
-        }
-        return result;
-    }
-
-    // TODO externalize where the order of column is specified put in properties file
-    private ArrayList<String> getColumnOrder() {
-        ArrayList<String> columnNames = new ArrayList<String>();
-        columnNames.add("name");
-        columnNames.add("tone");
-        columnNames.add("meaning");
-        columnNames.add("location");
-        return columnNames;
-
+    private XSSFSheet getSheet(File file, int sheetIndex) throws IOException, InvalidFormatException {
+        XSSFWorkbook wb = new XSSFWorkbook(file);
+        return wb.getSheetAt(sheetIndex);
     }
 }
