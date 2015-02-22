@@ -72,6 +72,10 @@
 
 <body style="margin-top:0px">
 <div style="background-color:#333; font-size:24px; color: #fff; padding: 10px;">Dashboard</div>
+<h2>Entered Names </h2>
+<a href="/v1/names">View all names</a> | <input type="button" id="clearButton" value="Clear Names" />
+
+<hr/>
 
 <h2>Individual Entry stub </h2>
 <hr/>
@@ -106,7 +110,7 @@
 Upload Excel file
 <input type="file" name="nameFiles" id="uploadFile" />
 <input type="button" id="uploadButton" value="Upload Names" />
-<input type="button" id="clearButton" value="Clear Names" />
+
 </form>
 
 <h2>Form Entry</h2>
