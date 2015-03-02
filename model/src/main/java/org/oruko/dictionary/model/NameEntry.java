@@ -5,9 +5,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -16,25 +13,11 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "name_entry")
-public class NameEntry {
-
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class NameEntry extends AbstractNameEntry {
 
     @Column(unique=true)
     @NotEmpty
     private String name;
-
-    @Column
-    private char[] tonalMark;
-    @Column(length = 1000)
-    private String meaning;
-    @Column
-    private String geoLocation;
-
-    @Column(length = 1000)
-    private String morphology;
-
 
     public NameEntry() {
     }
