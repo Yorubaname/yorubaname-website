@@ -83,8 +83,14 @@ public class Api {
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
     public String getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
                           @PathVariable String name) throws JsonProcessingException {
-        NameEntry nameEntry = nameEntryRepository.findByName(name);
         ObjectMapper mapper = new ObjectMapper();
+        NameEntry nameEntry = nameEntryRepository.findByName(name);
+        if (nameEntry == null) {
+            HashMap<String, String> error = new HashMap<String, String>();
+            error.put("errorMessage", "#NAME not found in the database".replace("#NAME", name));
+            return mapper.writeValueAsString(error);
+        }
+
         if (withDuplicates) {
             List<DuplicateNameEntry> duplicates = duplicateEntryRepository.findByName(name);
             HashMap<String, Object> duplicateEntries = new HashMap<String, Object>();
