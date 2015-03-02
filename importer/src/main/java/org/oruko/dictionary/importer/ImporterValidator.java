@@ -1,9 +1,9 @@
 package org.oruko.dictionary.importer;
 
-import com.google.common.collect.BiMap;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -16,7 +16,8 @@ import java.util.Iterator;
 @Component
 public class ImporterValidator {
 
-    BiMap columnOrder = ColumnOrder.getColumnOrder();
+    @Autowired
+    ColumnOrder columnOrder;
 
     public boolean isColumnNameInOrder(XSSFSheet sheet) {
         boolean result = false;
@@ -28,7 +29,7 @@ public class ImporterValidator {
             if (cell.toString().isEmpty()) {
                 break;
             }
-            result = cell.toString().equalsIgnoreCase((String) columnOrder.get(counter));
+            result = cell.toString().equalsIgnoreCase(columnOrder.getColumnOrder().get(counter));
             if (!result) {
                 break;
             }

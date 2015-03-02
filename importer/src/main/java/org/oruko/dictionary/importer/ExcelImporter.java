@@ -1,14 +1,13 @@
 package org.oruko.dictionary.importer;
 
-import com.google.common.collect.BiMap;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.oruko.dictionary.model.DuplicateNameEntry;
-import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,8 @@ public class ExcelImporter implements ImporterInterface {
     @Autowired
     private ImporterValidator validator;
 
-
-    BiMap columnOrder = ColumnOrder.getColumnOrder();
+    @Autowired
+    ColumnOrder columnOrder;
 
     @Override
     public ImportStatus doImport(File fileSource) {
@@ -73,19 +72,19 @@ public class ExcelImporter implements ImporterInterface {
                     continue;
                 }
 
-                Cell nameCell = row.getCell((Integer) columnOrder.inverse().get("name"));
+                Cell nameCell = row.getCell(columnOrder.getColumnOrder().inverse().get("name"));
                 if (nameCell != null) {
                     name = nameCell.toString();
                 }
-                Cell toneCell = row.getCell((Integer) columnOrder.inverse().get("tone"));
+                Cell toneCell = row.getCell(columnOrder.getColumnOrder().inverse().get("tone"));
                 if (toneCell != null) {
                     tone = toneCell.toString();
                 }
-                Cell meaningCell = row.getCell((Integer) columnOrder.inverse().get("meaning"));
+                Cell meaningCell = row.getCell(columnOrder.getColumnOrder().inverse().get("meaning"));
                 if (meaningCell != null) {
                     meaning = meaningCell.toString();
                 }
-                Cell locationCell = row.getCell((Integer) columnOrder.inverse().get("location"));
+                Cell locationCell = row.getCell(columnOrder.getColumnOrder().inverse().get("location"));
                 if (locationCell != null) {
                     location = locationCell.toString();
                 }
@@ -109,7 +108,8 @@ public class ExcelImporter implements ImporterInterface {
                 status.incrementNumberOfNames();
             }
         } else {
-            status.setErrorMessages("Column not according to order");
+            status.setErrorMessages("Columns not it order. Should be in the following order {ORDER}"
+                                            .replace("{ORDER}", columnOrder.getColumnOrderAsString()));
         }
 
         return status;

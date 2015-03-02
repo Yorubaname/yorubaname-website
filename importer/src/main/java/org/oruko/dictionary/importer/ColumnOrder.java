@@ -29,8 +29,12 @@ public class ColumnOrder {
         columnOrder = ImmutableBiMap.copyOf(Collections.unmodifiableMap(tempColumnOrder));
     };
 
-    public static BiMap<Integer, String> getColumnOrder() {
+    public BiMap<Integer, String> getColumnOrder() {
         return columnOrder;
+    }
+
+    public String getColumnOrderAsString() {
+        return columnOrder.inverse().keySet().toString();
     }
 
 }

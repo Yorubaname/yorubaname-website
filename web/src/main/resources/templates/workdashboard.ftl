@@ -41,7 +41,7 @@
                     $("#uploadForm")[0].reset();
                   },
                   error: function (response) {
-                      $("#formflashcard").html("Error uploading");
+                      $("#formflashcard").html("Error uploading. Error msg:" + response.responseJSON.errorMessages[0]);
                   }
                 });
 

@@ -105,10 +105,12 @@ public class Api {
 
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ImportStatus upload(@RequestParam("nameFiles") MultipartFile multipartFile) {
+    public ResponseEntity<ImportStatus> upload(@RequestParam("nameFiles") MultipartFile multipartFile)
+            throws JsonProcessingException {
         //TODO Remove
         nameEntryRepository.deleteAll();
         Assert.state(!multipartFile.isEmpty(), "You can't upload an empty content package");
+
         ImportStatus status = new ImportStatus();
         File file = null;
         try {
@@ -121,7 +123,11 @@ public class Api {
         } finally {
             file.delete();
         }
-        return status;
+
+        if (status.hasErrors()) {
+            return new ResponseEntity<ImportStatus>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<ImportStatus>(status, HttpStatus.CREATED);
     }
 
     // TODO add method authorization for methods like this
