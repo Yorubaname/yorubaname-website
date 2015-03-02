@@ -14,14 +14,14 @@ import javax.persistence.Transient;
 /**
  * Created by dadepo on 2/4/15.
  */
+//TODO move to abstract to main and duplicate entity can inherit similar fields
 @Entity
-@Table(name = "name_entry")
-public class NameEntry {
+@Table(name = "duplicate_entry")
+public class DuplicateNameEntry {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique=true)
     @NotEmpty
     private String name;
 
@@ -31,16 +31,17 @@ public class NameEntry {
     private String meaning;
     @Column
     private String geoLocation;
-
     @Column(length = 1000)
     private String morphology;
 
-
-    public NameEntry() {
+    public DuplicateNameEntry() {
     }
 
-    public NameEntry(String name) {
-        this.name = name;
+    public DuplicateNameEntry(NameEntry entry) {
+        this.name = entry.getName();
+        this.geoLocation= entry.getGeoLocation();
+        this.meaning = entry.getMeaning();
+        this.tonalMark = entry.getTonalMark();
     }
 
     /**
@@ -124,12 +125,9 @@ public class NameEntry {
     }
 
     /**
-     * Get's the name entry represented as {@link org.oruko.dictionary.model.Name}
-     * @return the {@link org.oruko.dictionary.model.Name}
+     * Get's the name entry represented as {@link Name}
+     * @return the {@link Name}
      */
-
-
-
     @Transient
     public Name toName() {
         return new Name(name, meaning, geoLocation, new Tone(tonalMark));

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
+import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.Name;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryRepository;
+import org.oruko.dictionary.model.repository.NameEntryRepository;
+import org.oruko.dictionary.model.NameEntryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -45,13 +49,19 @@ public class Api {
     NameEntryRepository nameEntryRepository;
 
     @Autowired
+    DuplicateNameEntryRepository duplicateEntryRepository;
+
+    @Autowired
     ImporterInterface importerInterface;
+
+    @Autowired
+    NameEntryService entryService;
 
     @RequestMapping(value = "/v1/name", method = RequestMethod.POST)
     public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
-            nameEntryRepository.save(entry);
+            entryService.insertTakingCareOfDuplicates(entry);
             return new ResponseEntity<String>("success", HttpStatus.CREATED);
         }
         return new ResponseEntity<String>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,9 +81,19 @@ public class Api {
     }
 
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
-    public String getName(@PathVariable String name) throws JsonProcessingException {
+    public String getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
+                          @PathVariable String name) throws JsonProcessingException {
         NameEntry nameEntry = nameEntryRepository.findByName(name);
         ObjectMapper mapper = new ObjectMapper();
+        if (withDuplicates) {
+            List<DuplicateNameEntry> duplicates = duplicateEntryRepository.findByName(name);
+            HashMap<String, Object> duplicateEntries = new HashMap<String, Object>();
+
+            duplicateEntries.put("mainEntry", nameEntry.toName());
+            duplicateEntries.put("duplicates", duplicates);
+
+            return mapper.writeValueAsString(duplicateEntries);
+        }
         return mapper.writeValueAsString(nameEntry.toName());
     }
 

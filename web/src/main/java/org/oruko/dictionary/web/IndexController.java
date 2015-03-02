@@ -1,6 +1,6 @@
 package org.oruko.dictionary.web;
 
-import org.oruko.dictionary.model.NameEntryRepository;
+import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ public class IndexController {
 
     @RequestMapping("/dashboard")
     public String showDashBoard() {
-        return "dashboard";
+        return "workdashboard";
     }
 
     @RequestMapping("/template")

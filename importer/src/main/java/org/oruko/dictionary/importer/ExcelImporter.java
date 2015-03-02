@@ -6,8 +6,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryRepository;
+import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,11 @@ public class ExcelImporter implements ImporterInterface {
     @Autowired
     private NameEntryRepository nameEntryRepository;
 
-    //@Autowired
-    private ImporterValidator validator = new ImporterValidator();
+    @Autowired
+    private DuplicateNameEntryRepository duplicateEntryRepository;
+
+    @Autowired
+    private ImporterValidator validator;
 
 
     BiMap columnOrder = ColumnOrder.getColumnOrder();
@@ -94,7 +99,13 @@ public class ExcelImporter implements ImporterInterface {
                 nameEntry.setTonalMark(tone.toCharArray());
                 nameEntry.setMeaning(meaning);
                 nameEntry.setGeoLocation(location);
-                nameEntryRepository.save(nameEntry);
+
+                if (alreadyExists(name)) {
+                    duplicateEntryRepository.save(new DuplicateNameEntry(nameEntry));
+                } else {
+                    nameEntryRepository.save(nameEntry);
+                }
+
                 status.incrementNumberOfNames();
             }
         } else {
@@ -109,5 +120,13 @@ public class ExcelImporter implements ImporterInterface {
     private XSSFSheet getSheet(File file, int sheetIndex) throws IOException, InvalidFormatException {
         XSSFWorkbook wb = new XSSFWorkbook(file);
         return wb.getSheetAt(sheetIndex);
+    }
+
+    private boolean alreadyExists(String name) {
+        NameEntry entry = nameEntryRepository.findByName(name);
+        if (entry == null) {
+            return false;
+        }
+        return true;
     }
 }

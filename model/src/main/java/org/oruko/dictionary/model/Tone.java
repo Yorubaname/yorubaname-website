@@ -1,5 +1,7 @@
 package org.oruko.dictionary.model;
 
+import org.oruko.dictionary.model.repository.Audio;
+
 import java.util.stream.Stream;
 
 /**

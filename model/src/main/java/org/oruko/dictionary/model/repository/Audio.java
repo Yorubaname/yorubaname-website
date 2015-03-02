@@ -1,4 +1,4 @@
-package org.oruko.dictionary.model;
+package org.oruko.dictionary.model.repository;
 
 import java.io.IOException;
 import java.io.InputStream;

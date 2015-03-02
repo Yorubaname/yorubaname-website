@@ -24,7 +24,8 @@ public class ColumnOrder {
         tempColumnOrder.put(0, "name");
         tempColumnOrder.put(1, "tone");
         tempColumnOrder.put(2, "meaning");
-        tempColumnOrder.put(3, "location");
+        tempColumnOrder.put(3, "morphology");
+        tempColumnOrder.put(4, "location");
         columnOrder = ImmutableBiMap.copyOf(Collections.unmodifiableMap(tempColumnOrder));
     };
 

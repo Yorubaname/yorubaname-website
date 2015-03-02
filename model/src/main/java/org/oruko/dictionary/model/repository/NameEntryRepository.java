@@ -1,5 +1,6 @@
-package org.oruko.dictionary.model;
+package org.oruko.dictionary.model.repository;
 
+import org.oruko.dictionary.model.NameEntry;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;

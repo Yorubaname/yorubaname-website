@@ -47,6 +47,15 @@
 
         });
 
+        $("#submitlookup").click(function(){
+            var name = $("#namelookup").val();
+            var ischecked = $("#showDuplicates").is(':checked');
+            if (ischecked) {
+                window.location = "/v1/names/"+name+"?duplicates=true";
+            } else {
+                window.location = "/v1/names/"+name;
+            }
+        });
 
 
         $("#clearButton").click(function() {
@@ -72,6 +81,10 @@
 
 <body style="margin-top:0px">
 <div style="background-color:#333; font-size:24px; color: #fff; padding: 10px;">Dashboard</div>
+<h2>Name Lookup</h2>
+<em>This is not the search functionality. It would soon be. This right now should be used to retirve a particular name from the database to view</em><br/>
+<input type="text" id="namelookup"/><input type="checkbox" value="true" id="showDuplicates"> show duplicate entries
+<br/><input id="submitlookup" type="button" value="Look Up"/>
 <h2>Entered Names </h2>
 <a href="/v1/names">View all names</a> | <input type="button" id="clearButton" value="Clear Names" />
 
@@ -89,6 +102,8 @@
     <input type="text" name="tonalMark"><br><br>
     Meaning:<br>
     <textarea name="meaning"></textarea><br><br>
+    Morphology:<br>
+    <textarea name="morphology"></textarea><br><br>
     Area of origin:<br>
     <select name="geoLocation">
         <option value="awori">Awori</option>
