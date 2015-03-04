@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
+ * Enity for persisting Name entries
  * Created by dadepo on 2/4/15.
  */
 @Entity

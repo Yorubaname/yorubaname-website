@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * Parent abstract class shared by {@link org.oruko.dictionary.model.DuplicateNameEntry} and
+ * {@link org.oruko.dictionary.model.AbstractNameEntry}
  * @author Dadepo Aderemi.
  */
 @MappedSuperclass

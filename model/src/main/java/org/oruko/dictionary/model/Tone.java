@@ -5,6 +5,7 @@ import org.oruko.dictionary.model.repository.Audio;
 import java.util.stream.Stream;
 
 /**
+ * Represents a tone on a {@link org.oruko.dictionary.model.NameEntry}
  * Created by dadepo on 2/11/15.
  */
 public class Tone {

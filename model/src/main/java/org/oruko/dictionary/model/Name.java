@@ -1,7 +1,7 @@
 package org.oruko.dictionary.model;
 
 /**
- * Representation of a name Entry in dictionary
+ * Value object Representation of a name Entry in dictionary
  * Created by dadepo on 2/11/15.
  */
 public class Name {

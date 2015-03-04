@@ -8,9 +8,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
+ * Entity for persisting duplicated entries
+ *
  * Created by dadepo on 2/4/15.
  */
-//TODO move to abstract to main and duplicate entity can inherit similar fields
 @Entity
 @Table(name = "duplicate_entry")
 public class DuplicateNameEntry extends AbstractNameEntry {
