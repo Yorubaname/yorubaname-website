@@ -1,6 +1,3 @@
-// bower:scss
-// endbower
-
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -22,16 +19,14 @@ body {
 
 /* Custom page header */
 .header {
-  border-bottom: 1px solid #e5e5e5;
   margin-bottom: 10px;
-
-  /* Make the masthead heading the same height as the navigation */
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
-  }
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
 }
 
 /* Custom page footer */
@@ -49,26 +44,27 @@ body {
 .jumbotron {
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
-
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-  }
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
 }
 
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;
-
-  p + h4 {
-    margin-top: 28px;
-  }
+}
+.marketing p + h4 {
+  margin-top: 28px;
 }
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
-    max-width: 730px;
+    max-width: 100%;
+    margin-right: 5px;
+    margin-left: 5px;
+    min-height: 600px;
   }
 
   /* Remove the padding we set earlier */
@@ -86,4 +82,10 @@ body {
   .jumbotron {
     border-bottom: 0;
   }
+}
+
+
+/** Bootstrap override **/
+.navbar-default {
+  border-bottom: none;
 }
