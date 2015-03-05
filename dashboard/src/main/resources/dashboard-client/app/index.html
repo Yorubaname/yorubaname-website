@@ -32,7 +32,7 @@
               <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="#/">dashboardapp</a>
+            <a class="navbar-brand" href="#/">Name Dictionary</a>
           </div>
 
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
@@ -46,13 +46,20 @@
     </div>
 
     <div class="container">
-    <div ng-view=""></div>
+      <div id="sidebar">
+        <ul>
+          <li>View all names</li>
+          <li><a href="/#entry">Name Entry</a></li>
+          <li>Setting</li>
+        </ul>
+      </div>
+      <div id="content">
+        <div ui-view></div>
+      </div>
     </div>
 
     <div class="footer">
-      <div class="container">
         <p><span class="glyphicon glyphicon-heart"></span> Yoruba Dictionary</p>
-      </div>
     </div>
 
 
@@ -78,6 +85,7 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -85,6 +93,8 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
+        <script src="scripts/components/homecomponent/controllers/homeController.js"></script>
+        <script src="scripts/components/entrycomponent/controllers/entryController.js"></script>
         <!-- endbuild -->
 </body>
 </html>
