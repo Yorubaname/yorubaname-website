@@ -1,5 +1,7 @@
 package org.oruko.dictionary.web;
 
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * The CORS filter for adding additional header to support cross origin requests
  * @author Dadepo Aderemi.
  */
-
+@Component
 public class CORSFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {

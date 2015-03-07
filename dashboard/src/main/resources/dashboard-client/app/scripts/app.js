@@ -1,22 +1,14 @@
 'use strict';
 
-var dashboardappApp = angular.module('dashboardappApp', ['ui.router']).config(function ($stateProvider,
-                                                                                        $urlRouterProvider) {
+var dashboardappApp = angular.module('dashboardappApp', ['ui.router'])
+  .config(function ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/home');
 
-  //$stateProvider.state('home', {
-  //  url: '/home',
-  //  controller: 'homeController',
-  //  templateUrl: 'scripts/components/homecomponent/views/home.html'
-  //})
-  //  .state('home.single', {
-  //   url: '/single',
-  //   templateUrl: 'scripts/components/homecomponent/views/single.html'
-  //  })
-  //  .state('home.upload', {
-  //   url: '/upload',
-  //   template: 'it works'
-  //  });
+  $stateProvider.state('home', {
+    url: '/home',
+    controller: 'homeController',
+    templateUrl: 'scripts/components/homecomponent/views/home.html'
+  });
 
   $stateProvider.state('entry', {
     url: '/entry',
@@ -24,9 +16,14 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router']).config(fu
     templateUrl:  'views/entry.html'
   }).state('entry.single', {
     url: '/single',
-    templateUrl: 'views/single.html'
+    templateUrl: 'views/entry.single.html'
   }).state('entry.upload', {
     url: '/upload',
-    templateUrl: 'views/upload.html'
+    templateUrl: 'views/entry.upload.html'
   });
   });
+
+dashboardappApp.run(function($rootScope) {
+  $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";
+  $rootScope.appEndpoint = "http://localhost:8081";
+});

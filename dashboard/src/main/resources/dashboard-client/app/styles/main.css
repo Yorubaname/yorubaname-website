@@ -11,7 +11,7 @@ body {
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
-.marketing,
+.page-content,
 .footer {
   padding-left: 15px;
   padding-right: 15px;
@@ -40,22 +40,27 @@ body {
   margin: 30px 0;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
+
+/** page view **/
+.page-content {
+  margin: 15px 0;
 }
 
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-.marketing p + h4 {
+.page-content p + h4 {
   margin-top: 28px;
+}
+
+#msg-container {
+height: 35px;
+}
+
+#msg-container.msg-success {
+  color: #00A000;
+  font-weight: bold;
+}
+#msg-container.msg-error {
+  color: #b92c28;
+  font-weight: bold;
 }
 
 /* Responsive: Portrait tablets and up */
@@ -69,17 +74,12 @@ body {
 
   /* Remove the padding we set earlier */
   .header,
-  .marketing,
+  .page-content,
   .footer {
     padding-left: 0;
     padding-right: 0;
   }
 
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
-}
 
 
 /** Bootstrap override **/
@@ -111,6 +111,8 @@ body {
 
 .page-title {
   font-weight: bold;
+  margin: 0px;
+  border-bottom: 1px solid #eee;
 }
 
 /** components **/
@@ -127,8 +129,12 @@ body {
   padding-bottom: 5px;
 }
 
-
 /** content **/
 #content {
   margin-left: 1%;
+}}
+
+/** navvar **/
+.viewnav {
+  margin-top:10px;
 }

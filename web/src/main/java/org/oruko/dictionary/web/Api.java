@@ -57,7 +57,7 @@ public class Api {
     @Autowired
     NameEntryService entryService;
 
-    @RequestMapping(value = "/v1/name", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/name", method = RequestMethod.POST, produces = "text/plain")
     public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
