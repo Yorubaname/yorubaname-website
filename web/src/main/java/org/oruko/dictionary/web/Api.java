@@ -109,7 +109,7 @@ public class Api {
             throws JsonProcessingException {
         //TODO Remove
         nameEntryRepository.deleteAll();
-        Assert.state(!multipartFile.isEmpty(), "You can't upload an empty content package");
+        Assert.state(!multipartFile.isEmpty(), "You can't upload an empty file");
 
         ImportStatus status = new ImportStatus();
         File file = null;

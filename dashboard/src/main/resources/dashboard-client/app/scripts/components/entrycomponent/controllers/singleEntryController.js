@@ -5,7 +5,6 @@ var singleEntryController = function ($scope, $http, $element, $animate) {
   $scope.msg = {};
 
   $scope.create = function () {
-    console.log(1,$scope.formEntry);
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     $http({
             method: 'POST',
@@ -14,6 +13,7 @@ var singleEntryController = function ($scope, $http, $element, $animate) {
           })
       .success(function (data) {
        if (data === "success") {
+         $element[0].reset();
          $scope.msg.text = "Successfully added name";
          $scope.msg.type = "msg-success";
          setTimeout(function() {
@@ -21,7 +21,7 @@ var singleEntryController = function ($scope, $http, $element, $animate) {
              $scope.msg.text = "";
              $scope.msg.type = "";
            });
-         }, 3000);
+         }, 5000);
        }
     }).error(function (data, status, headers, config) {
                    $scope.msg.text = "Error in adding name:" + data;
@@ -31,7 +31,7 @@ var singleEntryController = function ($scope, $http, $element, $animate) {
                        $scope.msg.text = "";
                        $scope.msg.type = "";
                      });
-     }, 3000);
+     }, 5000);
     });
 
 

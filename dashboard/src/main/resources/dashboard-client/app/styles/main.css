@@ -62,6 +62,10 @@ height: 35px;
   color: #b92c28;
   font-weight: bold;
 }
+#msg-container.msg-info {
+  color: #eb9316;
+  font-weight: bold;
+}
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {

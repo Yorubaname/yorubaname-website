@@ -108,7 +108,7 @@ public class ExcelImporter implements ImporterInterface {
                 status.incrementNumberOfNames();
             }
         } else {
-            status.setErrorMessages("Columns not it order. Should be in the following order {ORDER}"
+            status.setErrorMessages("Columns not in order. Should be in the following order {ORDER}"
                                             .replace("{ORDER}", columnOrder.getColumnOrderAsString()));
         }
 
