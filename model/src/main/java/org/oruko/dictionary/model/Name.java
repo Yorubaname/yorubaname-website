@@ -10,6 +10,7 @@ public class Name {
     private Tone tone;
     private String meaning;
     private String geoLocation;
+    private String morphology;
 
 
     /**
@@ -21,9 +22,10 @@ public class Name {
         this.name = name;
     }
 
-    public Name(String name, String meaning, String geoLocation, Tone tone) {
+    public Name(String name, String meaning, String morphology, String geoLocation, Tone tone) {
         this.name = name;
         this.meaning = meaning;
+        this.morphology = morphology;
         this.geoLocation = geoLocation;
         this.tone = tone;
     }
@@ -95,4 +97,19 @@ public class Name {
         this.geoLocation = geoLocation;
     }
 
+    /**
+     * Get the morphology
+     * @return the morphology
+     */
+    public String getMorphology() {
+        return morphology;
+    }
+
+    /**
+     * Sets the morphology
+     * @param morphology the morphology
+     */
+    public void setMorphology(String morphology) {
+        this.morphology = morphology;
+    }
 }

@@ -7,7 +7,7 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router'])
   $stateProvider.state('home', {
     url: '/home',
     controller: 'homeController',
-    templateUrl: 'scripts/components/homecomponent/views/home.html'
+    templateUrl: 'views/home.html'
   });
 
   $stateProvider.state('entry', {
@@ -21,7 +21,30 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router'])
     url: '/upload',
     templateUrl: 'views/entry.upload.html'
   });
+
+   $stateProvider.state('list', {
+     url: '/list',
+     controller: 'listController',
+     templateUrl: 'views/list.html'
+   }).state('list.all', {
+     url: '/all',
+     controller: 'listAllController',
+     templateUrl: 'views/list.all.html'
+   }).state('list.edit', {
+     url: '/edit',
+     controller: 'editNameController',
+     templateUrl: 'views/list.edit.html'
+   });
+
+
   });
+
+
+angular.module('dashboardappApp').controller("search", function($scope, $location){
+  $scope.search = function () {
+    window.location.href = "#/list/edit?name="+$scope.searchTerm;
+};
+});
 
 dashboardappApp.run(function($rootScope) {
   $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";

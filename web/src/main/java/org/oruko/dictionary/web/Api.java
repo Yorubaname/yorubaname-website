@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
-import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.Name;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.oruko.dictionary.model.NameEntryService;
+import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
+import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
 
@@ -38,25 +39,33 @@ import javax.validation.Valid;
  * End point for inserting and retrieving Name Entries
  * This would be the end point the clients would interact with to get names in and out of the dictionary
  * TODO Consider moving this as a stand alone service
+ * TODO look into returnining objects and haveing message converters take care of converting to string
  * Created by dadepo on 2/12/15.
  */
 @RestController
 public class Api {
 
-    Logger logger = LoggerFactory.getLogger(Api.class);
+    private Logger logger = LoggerFactory.getLogger(Api.class);
 
     @Autowired
-    NameEntryRepository nameEntryRepository;
+    private NameEntryRepository nameEntryRepository;
 
     @Autowired
-    DuplicateNameEntryRepository duplicateEntryRepository;
+    private DuplicateNameEntryRepository duplicateEntryRepository;
 
     @Autowired
-    ImporterInterface importerInterface;
+    private ImporterInterface importerInterface;
 
     @Autowired
-    NameEntryService entryService;
+    private NameEntryService entryService;
 
+    /**
+     * End point that is used to add a {@link org.oruko.dictionary.model.NameEntry}.
+     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
     @RequestMapping(value = "/v1/name", method = RequestMethod.POST, produces = "text/plain")
     public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
@@ -67,10 +76,38 @@ public class Api {
         return new ResponseEntity<String>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+    /**
+     * End point that is used to update a {@link org.oruko.dictionary.model.NameEntry}.
+     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
+    @RequestMapping(value = "/v1/name", method = RequestMethod.PUT, produces = "text/plain")
+    public ResponseEntity<String> updateName(@Valid NameEntry entry, BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+            entry.setName(entry.getName().toLowerCase());
+            entryService.update(entry);
+            return new ResponseEntity<String>("success", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<String>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Get names that has been persisted. Supports ability to specify the count of names to return and the offset
+     * @param pageParam a {@link java.lang.Integer} representing the page (offset) to start the
+     *                  result set from. 0 if none is given
+     * @param countParam a {@link java.lang.Integer} the number of names to return. 50 is none is given
+     * @return the names serialized to jason string
+     * @throws JsonProcessingException
+     */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
-    public String getAllNames() throws JsonProcessingException {
+    public String getAllNames(@RequestParam("page") Optional<Integer> pageParam,
+                              @RequestParam("count") Optional<Integer> countParam) throws JsonProcessingException {
+
         List<Name> names = new ArrayList<>();
-        Iterable<NameEntry> allNameEntries = nameEntryRepository.findAll();
+        Iterable<NameEntry> allNameEntries = entryService.findAll(pageParam, countParam);;
 
         allNameEntries.forEach(nameEntry -> {
             names.add(nameEntry.toName());
@@ -80,6 +117,13 @@ public class Api {
         return mapper.writeValueAsString(names);
     }
 
+    /**
+     * Get the details of a name
+     * @param withDuplicates flag whether to return duplicate entries for the name being retrieved
+     * @param name the name whose details needs to be retrieved
+     * @return a name serialized to a jason string
+     * @throws JsonProcessingException json processing expectopm
+     */
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
     public String getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
                           @PathVariable String name) throws JsonProcessingException {
@@ -107,8 +151,6 @@ public class Api {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImportStatus> upload(@RequestParam("nameFiles") MultipartFile multipartFile)
             throws JsonProcessingException {
-        //TODO Remove
-        nameEntryRepository.deleteAll();
         Assert.state(!multipartFile.isEmpty(), "You can't upload an empty file");
 
         ImportStatus status = new ImportStatus();

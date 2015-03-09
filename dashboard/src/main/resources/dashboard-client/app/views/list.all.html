@@ -1,0 +1,34 @@
+<div id="child-page-title">
+  .::{{ childTitle }}::.
+</div>
+
+<div class="row page-content">
+  <div class="btn-group" role="group">
+    <button class="btn-default" ng-click="previous()">Previous</button>
+    <button class="btn-default" ng-click="next()">Next</button>
+  </div>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Meaning</th>
+      <th>Tonal Mark</th>
+      <th>Morphology</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="entry in names">
+      <th scope="row">{{ ($index + 1 + count * (page - 1) ) }}</th>
+      <td>{{ entry.name }}</td>
+      <td>{{ entry.meaning }}</td>
+      <td>{{ entry.tone.toneMark }}</td>
+      <td>{{ entry.morphology }}</td>
+      <td>
+        <a href="#/list/edit?name={{ entry.name }}" class="btn btn-primary btn-xs">Edit</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

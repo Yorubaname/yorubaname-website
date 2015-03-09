@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var uploadEntryController = function ($scope, $element, fileUploader) {
   $scope.namesfile = {};

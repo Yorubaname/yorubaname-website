@@ -1,5 +1,28 @@
 <h4 class="page-title">{{ title }}</h4>
 <div class="row page-content">
 
+  <div class="row profile-row">
+    <div class="col-md-8"></div>
+    <div class="col-md-4">
+      <div id="profileBox">
+        <div id="pix">
+          <!--<img src="../images/stub-profile-pix.png" />-->
+          {{ profilePix }}
+        </div>
+        <div id="info">
+          {{ profile.email }} <br/>
+          {{ profile.role }} <br/>
+          {{ profile.contributions }} <br/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row stats">
+    <div class="col-md-6 left">Stuff goes here</div>
+    <div class="col-md-6 right">Stuff goes here</div>
+  </div>
+
+
 
 </div>

@@ -1,37 +1,34 @@
-<form class="form-horizontal" role="form" ng-controller="singleEntryController">
+<div>
+<form class="form-horizontal" role="form">
 
   <div id="msg-container" class="{{msg.type}}">
-        {{msg.text}}
+    {{msg.text}}
   </div>
 
   <div class="form-group">
     <label for="nameEntry" class="col-sm-2 control-label">Name</label>
     <div class="col-sm-4">
-      <input class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name">
+      <input readonly class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name">
     </div>
   </div>
-
   <div class="form-group">
     <label for="tonalMarkEntry" class="col-sm-2 control-label">Tonal Mark</label>
     <div class="col-sm-4">
-      <input class="form-control" id="tonalMarkEntry" placeholder="Tonal mark" name="tonalMark" ng-model="formEntry.tonalMark">
+      <input class="form-control" id="tonalMarkEntry" placeholder="Tonal mark" name="tonalMark" ng-model="formEntry.toneMark">
     </div>
   </div>
-
   <div class="form-group">
     <label for="meaningEntry" class="col-sm-2 control-label">Meaning</label>
     <div class="col-sm-4">
       <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
     </div>
   </div>
-
   <div class="form-group">
     <label for="morphologyEntry" class="col-sm-2 control-label">Morphology</label>
     <div class="col-sm-4">
       <textarea class="form-control" id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology"></textarea>
     </div>
   </div>
-
   <div class="form-group">
     <label for="geoLocationEntry" class="col-sm-2 control-label">Geolocation</label>
     <div class="col-sm-4">
@@ -44,8 +41,29 @@
   </div>
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button ng-click="create()" class="btn btn-success">Create entry</button>
+      <button ng-click="create()" class="btn btn-success">{{ buttonAction }}</button>
     </div>
   </div>
 </form>
+<hr/>
+<h3>Duplicate entries (Copy and modify main entry if useful. If not remove)</h3>
+<ul id="duplicateList">
+  <li ng-repeat="entry in duplicates">
+    {{ entry.name }} - {{ entry. meaning | limitTo: 80}} ... <a class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#collapseEntry{{$index}}">more</a>
+  <br/>
+    <div class="collapse" id="collapseEntry{{$index}}">
+      <div class="duplicateDetails">
+        <strong>Name:</strong> {{ entry.name }} <br/>
+        <strong>Tone Mark:</strong> {{ entry.tonalMark }} <br/>
+        <strong>Meaning:</strong> {{ entry.meaning }} <br/>
+        <strong>Morphology:</strong> {{ entry.morphology }} <br/>
+        <strong>Geolocation:</strong> {{ entry.geoLocation }} <br/>
+      </div>
+    </div>
+  </li>
 
+</ul>
+
+
+
+</div>
