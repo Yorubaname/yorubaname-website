@@ -39,7 +39,7 @@ import javax.validation.Valid;
  * End point for inserting and retrieving Name Entries
  * This would be the end point the clients would interact with to get names in and out of the dictionary
  * TODO Consider moving this as a stand alone service
- * TODO look into returnining objects and haveing message converters take care of converting to string
+ * TODO have an error controller that returns the error object
  * Created by dadepo on 2/12/15.
  */
 @RestController
@@ -96,15 +96,15 @@ public class Api {
 
     /**
      * Get names that has been persisted. Supports ability to specify the count of names to return and the offset
-     * @param pageParam a {@link java.lang.Integer} representing the page (offset) to start the
+     * @param pageParam a {@link Integer} representing the page (offset) to start the
      *                  result set from. 0 if none is given
-     * @param countParam a {@link java.lang.Integer} the number of names to return. 50 is none is given
-     * @return the names serialized to jason string
+     * @param countParam a {@link Integer} the number of names to return. 50 is none is given
+     * @return the list of {@link org.oruko.dictionary.model.Name}
      * @throws JsonProcessingException
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
-    public String getAllNames(@RequestParam("page") Optional<Integer> pageParam,
-                              @RequestParam("count") Optional<Integer> countParam) throws JsonProcessingException {
+    public List<Name> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
+                                  @RequestParam("count") Optional<Integer> countParam) throws JsonProcessingException {
 
         List<Name> names = new ArrayList<>();
         Iterable<NameEntry> allNameEntries = entryService.findAll(pageParam, countParam);;
@@ -113,8 +113,7 @@ public class Api {
             names.add(nameEntry.toName());
         });
 
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(names);
+        return names;
     }
 
     /**
