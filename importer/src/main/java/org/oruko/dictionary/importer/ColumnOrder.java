@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO look into moving this into property files so the order can be customized outside of the app
+ * TODO look into externalizing this in such a way that it can easily be customized/modified
  *
  * Class that holds the order in which the columns in an excel sheet being imported needs to be arranged
  *

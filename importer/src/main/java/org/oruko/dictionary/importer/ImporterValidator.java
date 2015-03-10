@@ -19,6 +19,11 @@ public class ImporterValidator {
     @Autowired
     ColumnOrder columnOrder;
 
+    /**
+     * Used to check if the column order is in the required order.
+     * @param sheet a {@link org.apache.poi.xssf.usermodel.XSSFSheet} representing the spreadsheet uploaded
+     * @return true or false if column is in order
+     */
     public boolean isColumnNameInOrder(XSSFSheet sheet) {
         boolean result = false;
         int counter = 0;

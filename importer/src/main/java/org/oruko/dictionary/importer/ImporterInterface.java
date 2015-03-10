@@ -9,7 +9,7 @@ public interface ImporterInterface {
 
     /**
      * Carry out the importation task.
-     * @return
+     * @return {@link org.oruko.dictionary.importer.ImportStatus}
      */
     ImportStatus doImport(File source);
 }
