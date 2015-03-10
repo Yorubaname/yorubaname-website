@@ -1,6 +1,6 @@
 'use strict';
 
-// TODO a nameEntryDirective is not available. Use that instead
+// TODO a nameEntryDirective is now available. Use that instead
 var singleEntryController = function ($scope, $http, $element, $animate) {
   $scope.formEntry = {};
   $scope.msg = {};
