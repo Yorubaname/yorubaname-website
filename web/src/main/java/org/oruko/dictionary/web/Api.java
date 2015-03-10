@@ -1,7 +1,6 @@
 package org.oruko.dictionary.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
@@ -10,6 +9,7 @@ import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
+import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,6 @@ import javax.validation.Valid;
  * End point for inserting and retrieving Name Entries
  * This would be the end point the clients would interact with to get names in and out of the dictionary
  * TODO Consider moving this as a stand alone service
- * TODO have an error controller that returns the error object
  * Created by dadepo on 2/12/15.
  */
 @RestController
@@ -66,14 +65,14 @@ public class Api {
      * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
      * "success" is returned if no error
      */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.POST, produces = "text/plain")
+    @RequestMapping(value = "/v1/name", method = RequestMethod.POST)
     public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
-            return new ResponseEntity<String>("success", HttpStatus.CREATED);
+            return new ResponseEntity<>("success", HttpStatus.CREATED);
         }
-        return new ResponseEntity<String>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new GenericApiCallException(formatErrorMessage(bindingResult));
     }
 
 
@@ -89,9 +88,9 @@ public class Api {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
             entryService.update(entry);
-            return new ResponseEntity<String>("success", HttpStatus.CREATED);
+            return new ResponseEntity<>("success", HttpStatus.CREATED);
         }
-        return new ResponseEntity<String>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -124,14 +123,12 @@ public class Api {
      * @throws JsonProcessingException json processing expectopm
      */
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
-    public String getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
+    public Object getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
                           @PathVariable String name) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
         NameEntry nameEntry = nameEntryRepository.findByName(name);
         if (nameEntry == null) {
-            HashMap<String, String> error = new HashMap<String, String>();
-            error.put("errorMessage", "#NAME not found in the database".replace("#NAME", name));
-            return mapper.writeValueAsString(error);
+            String errorMsg = "#NAME not found in the database".replace("#NAME", name);
+            throw new GenericApiCallException(errorMsg);
         }
 
         if (withDuplicates) {
@@ -141,9 +138,9 @@ public class Api {
             duplicateEntries.put("mainEntry", nameEntry.toName());
             duplicateEntries.put("duplicates", duplicates);
 
-            return mapper.writeValueAsString(duplicateEntries);
+            return duplicateEntries;
         }
-        return mapper.writeValueAsString(nameEntry.toName());
+        return nameEntry.toName();
     }
 
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,

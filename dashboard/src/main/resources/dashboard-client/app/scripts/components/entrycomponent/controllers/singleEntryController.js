@@ -25,7 +25,7 @@ var singleEntryController = function ($scope, $http, $element, $animate) {
          }, 5000);
        }
     }).error(function (data, status, headers, config) {
-                   $scope.msg.text = "Error in adding name:" + data;
+                   $scope.msg.text = "Error in adding name:" + data.errorMessage;
                    $scope.msg.type = "msg-error";
                    setTimeout(function() {
                      $scope.$apply(function () {
