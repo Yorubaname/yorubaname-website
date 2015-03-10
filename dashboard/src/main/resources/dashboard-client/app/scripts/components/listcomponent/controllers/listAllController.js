@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * Controller for the view that lists all names
+ * @param $scope angular scope
+ * @param $location angular's location service
+ * @param nameEntryService service for getting names from end point
+ */
 var listAllController = function($scope, $location, nameEntryService) {
   $scope.title = "All Names";
   $scope.childTitle = "All entries in database";

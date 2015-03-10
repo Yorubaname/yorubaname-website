@@ -1,7 +1,13 @@
 'use strict';
 
+/**
+ * Controller for the single entry view
+ * @param $scope angular scope
+ * @param $http angular http service
+ * @param $element angular element
+ */
 // TODO a nameEntryDirective is now available. Use that instead
-var singleEntryController = function ($scope, $http, $element, $animate) {
+var singleEntryController = function ($scope, $http, $element) {
   $scope.formEntry = {};
   $scope.msg = {};
 

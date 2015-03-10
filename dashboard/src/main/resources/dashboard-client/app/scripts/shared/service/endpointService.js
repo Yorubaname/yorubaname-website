@@ -3,7 +3,8 @@
 /**
  * Service for performing GET, POST, PUT operations with the end point
  *
- * @param $http
+ * @param $http angulars http service
+ * @param $rootScope angulars root scope
  */
 var endpointService = function ($http, $rootScope) {
 

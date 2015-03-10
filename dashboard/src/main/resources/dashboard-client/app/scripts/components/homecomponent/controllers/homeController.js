@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Controller for the home/dashboard view
+ * @param $scope angular scope
+ * @param profileService the service use to fetch profile information
+ */
 var homeController = function($scope, profileService) {
 
   $scope.title = "Dictionary Dashboard";
@@ -11,10 +16,6 @@ var homeController = function($scope, profileService) {
   $scope.profile.role = profileInfo.role;
   $scope.profile.contributions = profileInfo.contributions;
 
-
-  $scope.search = function() {
-    console.log("Doing search");
-  };
 };
 
 angular.module('dashboardappApp').controller("homeController", homeController);

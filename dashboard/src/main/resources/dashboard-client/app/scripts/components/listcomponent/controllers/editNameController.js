@@ -1,6 +1,10 @@
 'use strict';
 
-var editNameController = function($scope, $location, nameEntryService) {
+/**
+ * Controller for the editing of a name entry view
+ * @param $scope angular scope
+ */
+var editNameController = function($scope) {
   $scope.title = "Edit Name";
   $scope.childTitle = "Edit the entry";
 

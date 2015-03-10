@@ -1,5 +1,10 @@
 'use strict';
-
+/**
+ * Controller for the upload view
+ * @param $scope angular scope
+ * @param $element angular element
+ * @param fileUploader service for uploading file to a url
+ */
 var uploadEntryController = function ($scope, $element, fileUploader) {
   $scope.namesfile = {};
   $scope.msg = {};
