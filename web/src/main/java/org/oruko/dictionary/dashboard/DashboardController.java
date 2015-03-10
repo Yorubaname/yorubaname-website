@@ -5,18 +5,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller that handles all data request by the dashboard client app
+ * Controller that handles dashboard specific data request by the dashboard client app
  * @author Dadepo Aderemi.
  */
 @RestController
-@RequestMapping("/dsh")
+@RequestMapping("/dApi")
 public class DashboardController {
 
-    @RequestMapping(value = "/entry/columns", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public String getNameEntryColumns() {
         //TODO Implement
         return "";
     }
-
-
 }
