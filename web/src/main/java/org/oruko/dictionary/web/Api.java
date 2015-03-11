@@ -65,7 +65,7 @@ public class Api {
      * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
      * "success" is returned if no error
      */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/name", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
