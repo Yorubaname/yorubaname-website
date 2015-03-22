@@ -61,7 +61,7 @@ angular.module('dashboardappApp').controller("search", function($scope){
 
 angular.module('dashboardappApp').controller("indexLogin", function($scope, $cookies){
 
-  $scope.logout = function() {
+  $scope.logoutUser = function() {
     $cookies.isAuthenticated = false;
     $cookies.isAdmin = false;
     $scope.isAuthenticated = false;
