@@ -14,6 +14,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "name_entry")
+//TODO move getters and setters to AbstractNameEntry
 public class NameEntry extends AbstractNameEntry {
 
     @Column(unique=true)
@@ -111,11 +112,8 @@ public class NameEntry extends AbstractNameEntry {
      * Get's the name entry represented as {@link org.oruko.dictionary.model.Name}
      * @return the {@link org.oruko.dictionary.model.Name}
      */
-
-
-
     @Transient
     public Name toName() {
-        return new Name(name, meaning, morphology, geoLocation, new Tone(tonalMark));
+        return new Name(name, meaning, morphology, geoLocation, new Tone(tonalMark), submittedBy);
     }
 }

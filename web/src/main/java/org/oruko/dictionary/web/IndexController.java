@@ -21,7 +21,7 @@ public class IndexController {
 
     @RequestMapping("/dashboard")
     public String showDashBoard() {
-        return "workdashboard";
+        return "redirect:http://localhost:9000/dashboardapp";
     }
 
     @RequestMapping("/template")

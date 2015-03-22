@@ -115,6 +115,6 @@ public class DuplicateNameEntry extends AbstractNameEntry {
      */
     @Transient
     public Name toName() {
-        return new Name(name, meaning, morphology, geoLocation, new Tone(tonalMark));
+        return new Name(name, meaning, morphology, geoLocation, new Tone(tonalMark), submittedBy);
     }
 }

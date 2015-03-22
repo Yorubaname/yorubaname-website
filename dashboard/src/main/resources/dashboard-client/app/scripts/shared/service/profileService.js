@@ -4,7 +4,7 @@
  * Service that gets profile information
  */
 
-var profileService = function($http, $rootScope) {
+var profileService = function() {
 
   this.getProfileInfo = function () {
     //Stubbing this for now

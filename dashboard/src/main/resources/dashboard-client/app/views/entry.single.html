@@ -42,6 +42,13 @@
       </select>
     </div>
   </div>
+
+  <div class="form-group">
+    <div class="col-sm-4">
+      <input type="hidden" value="{{ formEntry.submittedBy }}" class="form-control" id="submittedBy" name="submittedBy" ng-model="formEntry.submittedBy" />
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button ng-click="create()" class="btn btn-success">Create entry</button>

@@ -1,0 +1,43 @@
+<div>
+  <form class="form-horizontal" role="form">
+
+    <div id="msg-container" class="{{msg.type}}">
+      {{msg.text}}
+    </div>
+
+    <div class="form-group">
+      <label for="username" class="col-sm-2 control-label">Username</label>
+      <div class="col-sm-4">
+        <input class="form-control" id="username" type="username" placeholder="username" name="username" ng-model="createUserForm.userName">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email" class="col-sm-2 control-label">Email</label>
+      <div class="col-sm-4">
+        <input class="form-control" id="email" type="email" placeholder="email" name="email" ng-model="createUserForm.email">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="role" class="col-sm-2 control-label">Assign Role</label>
+      <div class="col-sm-4">
+        <select id="role" ng-model="createUserForm.role">
+          <option name="admin">Admin</option>
+          <option name="lexicographer" ng-selected="true">Lexicographer</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password" class="col-sm-2 control-label">Password</label>
+      <div class="col-sm-4">
+        <input type="password" class="form-control" id="password" placeholder="password" name="password" ng-model="createUserForm.password">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button ng-click="createUser()" class="btn btn-success">{{ buttonAction }}</button>
+      </div>
+    </div>
+  </form>
+
+</div>

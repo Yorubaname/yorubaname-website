@@ -9,21 +9,33 @@
 var endpointService = function ($http, $rootScope) {
 
   this.post = function(endpoint, data) {
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     var request = $http({
           method: 'POST',
           url: $rootScope.appEndpoint + endpoint,
-          data: data,
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          data: $.param(data)
     });
 
     return request;
   };
 
-  this.get = function(endpoint, params) {
+  this.postJson = function(endpoint, data) {
+    var request = $http({
+          method: 'POST',
+          url: $rootScope.appEndpoint + endpoint,
+          data: data
+    });
+
+    return request;
+  };
+
+  this.get = function(endpoint, params, headers) {
+
     var request = $http({
           method: 'GET',
           url: $rootScope.appEndpoint + endpoint,
-          params: params
+          params: params ? params : '',
+          headers: headers? headers : ''
      });
 
     return request;

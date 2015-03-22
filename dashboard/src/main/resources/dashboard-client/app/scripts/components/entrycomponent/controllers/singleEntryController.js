@@ -7,12 +7,14 @@
  * @param $element angular element
  */
 // TODO a nameEntryDirective is now available. Use that instead
-var singleEntryController = function ($scope, $http, $element) {
+var singleEntryController = function ($scope, $http, $element, $cookies) {
   $scope.formEntry = {};
   $scope.msg = {};
+  $scope.formEntry.submittedBy = $cookies.userName;
 
   $scope.create = function () {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
     $http({
             method: 'POST',
             url: $scope.appEndpoint+'/v1/name',

@@ -11,6 +11,7 @@ public class Name {
     private String meaning;
     private String geoLocation;
     private String morphology;
+    private String submittedBy;
 
 
     /**
@@ -22,12 +23,13 @@ public class Name {
         this.name = name;
     }
 
-    public Name(String name, String meaning, String morphology, String geoLocation, Tone tone) {
+    public Name(String name, String meaning, String morphology, String geoLocation, Tone tone, String submittedBy) {
         this.name = name;
         this.meaning = meaning;
         this.morphology = morphology;
         this.geoLocation = geoLocation;
         this.tone = tone;
+        this.submittedBy = submittedBy;
     }
 
 
@@ -111,5 +113,13 @@ public class Name {
      */
     public void setMorphology(String morphology) {
         this.morphology = morphology;
+    }
+
+    public String getSubmittedBy() {
+        return submittedBy;
+    }
+
+    public void setSubmittedBy(String submittedBy) {
+        this.submittedBy = submittedBy;
     }
 }

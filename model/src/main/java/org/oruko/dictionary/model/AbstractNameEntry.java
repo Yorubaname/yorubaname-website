@@ -24,5 +24,14 @@ public abstract class AbstractNameEntry {
     protected String geoLocation;
     @Column(length = 1000)
     protected String morphology;
+    @Column(length = 1000)
+    protected String submittedBy = "Not Available";
 
+    public String getSubmittedBy() {
+        return submittedBy;
+    }
+
+    public void setSubmittedBy(String submittedBy) {
+        this.submittedBy = submittedBy;
+    }
 }

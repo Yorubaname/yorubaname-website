@@ -1,6 +1,6 @@
 'use strict';
 
-var dashboardappApp = angular.module('dashboardappApp', ['ui.router'])
+var dashboardappApp = angular.module('dashboardappApp', ['ui.router','ngCookies'])
   .config(function ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/home');
 
@@ -36,15 +36,48 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router'])
      templateUrl: 'views/list.edit.html'
    });
 
+   $stateProvider.state('admin', {
+     url: '/admin',
+     controller: 'adminController',
+     templateUrl: 'views/admin.html'
+   }).state('admin.createuser', {
+     url: '/createuser',
+     controller: 'adminCreateUserController',
+     templateUrl: 'views/admin.createuser.html'
+   }).state('admin.allusers', {
+     url: '/allusers',
+     controller: 'adminAllUsersController',
+     templateUrl: 'views/admin.allusers.html'
+   });
 
   });
 
 
-angular.module('dashboardappApp').controller("search", function($scope, $location){
+angular.module('dashboardappApp').controller("search", function($scope){
   $scope.search = function () {
     window.location.href = "#/list/edit?name="+$scope.searchTerm;
 };
 });
+
+angular.module('dashboardappApp').controller("indexLogin", function($scope, $cookies){
+
+  $scope.logout = function() {
+    $cookies.isAuthenticated = false;
+    $cookies.isAdmin = false;
+    $scope.isAuthenticated = false;
+    $scope.isAdmin = false;
+  };
+
+  if ($cookies.isAuthenticated && $cookies.isAuthenticated === "true") {
+      $scope.isAuthenticated = true;
+  }
+
+  if ($cookies.isAdmin && $cookies.isAdmin === "true") {
+      $scope.isAdmin = true;
+  }
+
+});
+
 
 dashboardappApp.run(function($rootScope) {
   $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";

@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 </head>
-<body ng-app="dashboardappApp">
+<body ng-app="dashboardappApp" ng-controller="indexLogin">
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
   your browser</a> to improve your experience.</p>
@@ -43,28 +43,32 @@
         <!--<li><a ng-href="#/about">About</a></li>-->
       </ul>
 
-      <div class="input-group search-box" ng-controller="search">
-        <input type="text" class="form-control" ng-model="searchTerm" placeholder="Search for...">
+      <div class="input-group search-box" ng-controller="search" ng-show="isAuthenticated">
+        <input type="text" class="form-control" ng-model="searchTerm" placeholder="Currently just a name look up.">
         <span class="input-group-btn">
           <button ng-click="search()" class="btn btn-default" type="button">Go!</button>
         </span>
       </div>
-      <span style="display: inline-block; margin-top: 12px;margin-left: 5px">Currently just a name look up. Not a search engine</span>
+
 
     </div>
   </div>
 </div>
 
 <div class="container">
-  <div id="sidebar">
+  <div id="sidebar" ng-show="isAuthenticated"> <!-- Show sidebar only if logged in -->
     <ul>
       <li><a href="#/list/all">All Names</a></li>
       <li><a href="#/entry/single">Entry Form</a></li>
+      <li ng-show="isAdmin"><a href="#/admin">Admin</a></li>
+      <br/>
+      <li><a href ng-click="logout()">Logout</a></li>
       <!--<li>Setting</li>-->
     </ul>
   </div>
   <div id="content">
-    <div ui-view></div>
+    <div ui-view ng-show="isAuthenticated"></div>
+    <login-form ng-show="!isAuthenticated" class="login-form"></login-form>
   </div>
 </div>
 
@@ -113,13 +117,20 @@
 <script src="scripts/components/listcomponent/controllers/listAllController.js"></script>
 <script src="scripts/components/listcomponent/controllers/editNameController.js"></script>
 
+<script src="scripts/components/admincomponent/controllers/adminController.js"></script>
+<script src="scripts/components/admincomponent/controllers/adminCreateUserController.js"></script>
+<script src="scripts/components/admincomponent/controllers/adminAllUsersController.js"></script>
+
 <script src="scripts/shared/directive/fileModelDirective.js"></script>
 <script src="scripts/shared/directive/nameEntryDirective.js"></script>
+<script src="scripts/shared/directive/loginFormDirective.js"></script>
+<script src="scripts/shared/directive/createUserFormDirective.js"></script>
 
 <script src="scripts/shared/service/fileUploader.js"></script>
 <script src="scripts/shared/service/nameEntryService.js"></script>
 <script src="scripts/shared/service/endpointService.js"></script>
 <script src="scripts/shared/service/profileService.js"></script>
+<script src="scripts/shared/service/authService.js"></script>
 <!-- endbuild -->
 </body>
 </html>
