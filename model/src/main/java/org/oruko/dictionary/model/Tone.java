@@ -1,7 +1,5 @@
 package org.oruko.dictionary.model;
 
-import org.oruko.dictionary.model.repository.Audio;
-
 import java.util.stream.Stream;
 
 /**
@@ -11,7 +9,6 @@ import java.util.stream.Stream;
 public class Tone {
 
     private char[] toneMark;
-    private Audio audio;
 
     /**
      * Public constructor for {@link Tone}
@@ -20,14 +17,6 @@ public class Tone {
     public Tone(char[] toneMark) {
         this.toneMark = toneMark;
         // generates or retrieve the associated media file
-    }
-
-    /**
-     * Get the {@link Audio} representation of the tone
-     * @return the audio representation of the audio
-     */
-    public Audio getAudio() {
-        return audio;
     }
 
     /**

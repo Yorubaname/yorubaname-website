@@ -46,13 +46,8 @@ public class NameEntryService {
     }
 
     public void update(NameEntry newEntry) {
-        //TODO create a method on NameEntry that takes another NameEntry object and updates its properties
         NameEntry oldEntry = nameEntryRepository.findByName(newEntry.getName());
-        oldEntry.setName(newEntry.getName());
-        oldEntry.setTonalMark(newEntry.getTonalMark());
-        oldEntry.setGeoLocation(newEntry.getGeoLocation());
-        oldEntry.setMeaning(newEntry.getMeaning());
-        oldEntry.setMorphology(newEntry.getMorphology());
+        oldEntry.update(newEntry);
         nameEntryRepository.save(oldEntry);
     }
 

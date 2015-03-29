@@ -85,8 +85,8 @@ public class Api {
      */
     @RequestMapping(value = "/v1/name", method = RequestMethod.PUT, produces = "text/plain")
     public ResponseEntity<String> updateName(@Valid NameEntry entry, BindingResult bindingResult) {
+        //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
-            entry.setName(entry.getName().toLowerCase());
             entryService.update(entry);
             return new ResponseEntity<>("success", HttpStatus.CREATED);
         }

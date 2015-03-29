@@ -34,4 +34,61 @@ public abstract class AbstractNameEntry {
     public void setSubmittedBy(String submittedBy) {
         this.submittedBy = submittedBy;
     }
+
+    /**
+     * get the tonal mark
+     * @return the tonal mark
+     */
+    public char[] getTonalMark() {
+        return tonalMark;
+    }
+
+    /**
+     * Set the tonal mark
+     * @param tonalMark the total mark
+     */
+    public void setTonalMark(char[] tonalMark) {
+        this.tonalMark = tonalMark;
+    }
+
+    /**
+     * Get the meaning
+     * @return the meaning
+     */
+    public String getMeaning() {
+        return meaning;
+    }
+
+    /**
+     * Sets the meaning
+     * @param meaning the meaning
+     */
+    public void setMeaning(String meaning) {
+        this.meaning = meaning;
+    }
+
+    /**
+     * Get the geo location
+     * @return the geo location
+     */
+    public String getGeoLocation() {
+        return geoLocation;
+    }
+
+    /**
+     * Sets the geolocation
+     * @param geoLocation the geolocation
+     */
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
+    public String getMorphology() {
+        return morphology;
+    }
+
+    public void setMorphology(String morphology) {
+        this.morphology = morphology;
+    }
+
 }

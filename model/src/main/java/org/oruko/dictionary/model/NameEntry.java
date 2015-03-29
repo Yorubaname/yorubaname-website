@@ -3,18 +3,18 @@ package org.oruko.dictionary.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.lang.reflect.Field;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
- * Enity for persisting Name entries
+ * Entity for persisting Name entries
  * Created by dadepo on 2/4/15.
  */
 @Entity
 @Table(name = "name_entry")
-//TODO move getters and setters to AbstractNameEntry
 public class NameEntry extends AbstractNameEntry {
 
     @Column(unique=true)
@@ -53,67 +53,39 @@ public class NameEntry extends AbstractNameEntry {
     }
 
     /**
-     * get the tonal mark
-     * @return the tonal mark
-     */
-    public char[] getTonalMark() {
-        return tonalMark;
-    }
-
-    /**
-     * Set the tonal mark
-     * @param tonalMark the total mark
-     */
-    public void setTonalMark(char[] tonalMark) {
-        this.tonalMark = tonalMark;
-    }
-
-    /**
-     * Get the meaning
-     * @return the meaning
-     */
-    public String getMeaning() {
-        return meaning;
-    }
-
-    /**
-     * Sets the meaning
-     * @param meaning the meaning
-     */
-    public void setMeaning(String meaning) {
-        this.meaning = meaning;
-    }
-
-    /**
-     * Get the geo location
-     * @return the geo location
-     */
-    public String getGeoLocation() {
-        return geoLocation;
-    }
-
-    /**
-     * Sets the geolocation
-     * @param geoLocation the geolocation
-     */
-    public void setGeoLocation(String geoLocation) {
-        this.geoLocation = geoLocation;
-    }
-
-    public String getMorphology() {
-        return morphology;
-    }
-
-    public void setMorphology(String morphology) {
-        this.morphology = morphology;
-    }
-
-    /**
-     * Get's the name entry represented as {@link org.oruko.dictionary.model.Name}
+     * Gets the name entry represented as {@link org.oruko.dictionary.model.Name}
      * @return the {@link org.oruko.dictionary.model.Name}
      */
     @Transient
     public Name toName() {
         return new Name(name, meaning, morphology, geoLocation, new Tone(tonalMark), submittedBy);
     }
+
+    /**
+     * Updates properties using another instance of {@link org.oruko.dictionary.model.NameEntry}
+     */
+    public void update(NameEntry nameEntry) {
+        // TODO revisit the reflection API and see if it is possible to prevent the nested for-loop
+        Field[] fieldsWithOldValues = this.getClass().getSuperclass().getDeclaredFields();
+        Field[] fieldsWithNewValues = nameEntry.getClass().getSuperclass().getDeclaredFields();
+
+        for (Field newField: fieldsWithNewValues) {
+            String fieldNameWithNewValue = newField.getName();
+            if (fieldNameWithNewValue.equalsIgnoreCase("id")) {
+                continue;
+            }
+
+            for (Field oldField: fieldsWithOldValues) {
+                String fieldNameWithOldValue = oldField.getName();
+                if (fieldNameWithOldValue.equalsIgnoreCase(fieldNameWithNewValue)) {
+                    try {
+                        oldField.set(this, newField.get(nameEntry));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
 }
