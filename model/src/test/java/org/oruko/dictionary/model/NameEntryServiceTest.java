@@ -65,7 +65,6 @@ public class NameEntryServiceTest {
 
     @Test
     public void testUpdate() throws Exception {
-        //TODO see how the updates can be verified
         NameEntry oldEntry = mock(NameEntry.class);
         when(nameEntryRepository.findByName(anyString())).thenReturn(oldEntry);
         nameEntryService.update(nameEntry);
