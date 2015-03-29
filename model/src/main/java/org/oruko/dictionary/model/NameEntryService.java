@@ -41,24 +41,35 @@ public class NameEntryService {
         }
     }
 
+    /**
+     * Saves {@link org.oruko.dictionary.model.NameEntry}
+     * @param entry the entry to be saved
+     */
     public void save(NameEntry entry) {
         nameEntryRepository.save(entry);
     }
 
+    /**
+     * Updates the properties with values from another {@link org.oruko.dictionary.model.NameEntry}
+     * @param newEntry the nameEntry to take values used for updating
+     */
     public void update(NameEntry newEntry) {
         NameEntry oldEntry = nameEntryRepository.findByName(newEntry.getName());
         oldEntry.update(newEntry);
         nameEntryRepository.save(oldEntry);
     }
 
-    public void deleteAll() {
-        nameEntryRepository.deleteAll();
-    }
-
-    public List<NameEntry> findAll(Optional<Integer> pageParam, Optional<Integer> countParam) {
+    /**
+     * Used to retrieve {@link org.oruko.dictionary.model.NameEntry} from the repository. Supports ability to
+     * specify how many to retrieve and pagination.
+     * @param pageNumberParam specifies page number
+     * @param countParam specifies the count of result
+     * @return a list of {@link org.oruko.dictionary.model.NameEntry}
+     */
+    public List<NameEntry> findAll(Optional<Integer> pageNumberParam, Optional<Integer> countParam) {
 
         List<NameEntry> nameEntries = new ArrayList<>();
-        Integer pageNumber = pageParam.orElse(PAGE);
+        Integer pageNumber = pageNumberParam.orElse(PAGE);
         Integer count = countParam.orElse(COUNT_SIZE);
 
         PageRequest request =
@@ -72,15 +83,28 @@ public class NameEntryService {
         return nameEntries;
     }
 
+    /**
+     * Duplicates all the name entry plus the duplicates
+     */
+    // TODO Method level security should be added here
     public void deleteAllAndDuplicates() {
         nameEntryRepository.deleteAll();
         duplicateEntryRepository.deleteAll();
     }
 
+    /**
+     * Deletes all {@link org.oruko.dictionary.model.NameEntry}
+     */
+    // TODO Method level security should be added here
     public void deleteInEntry(NameEntry entry) {
         nameEntryRepository.delete(entry);
     }
 
+    /**
+     * Deletes a duplicated entry
+     * @param duplicateNameEntry the duplicated entry to delete
+     */
+    // TODO Method level security should be added here
     public void deleteInDuplicateEntry(DuplicateNameEntry duplicateNameEntry) {
         duplicateEntryRepository.delete(duplicateNameEntry);
     }
