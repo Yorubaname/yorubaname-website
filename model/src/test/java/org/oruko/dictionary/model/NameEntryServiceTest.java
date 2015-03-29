@@ -7,6 +7,8 @@ import org.mockito.runners.*;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
