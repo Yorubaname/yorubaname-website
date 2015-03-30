@@ -18,8 +18,12 @@ import javax.annotation.PostConstruct;
 @Component
 public class ColumnOrder {
 
-    @Value("${nameentry.column.order}")
     private String[] order;
+
+    @Value("${nameentry.column.order}")
+    public void setOrder(String[] order) {
+        this.order = order;
+    }
 
     private BiMap<Integer, String> columnOrder;
 

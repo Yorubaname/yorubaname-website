@@ -16,8 +16,12 @@ import java.util.Iterator;
 @Component
 public class ImporterValidator {
 
-    @Autowired
     ColumnOrder columnOrder;
+
+    @Autowired
+    public void setColumnOrder(ColumnOrder columnOrder) {
+        this.columnOrder = columnOrder;
+    }
 
     /**
      * Used to check if the column order is in the required order.

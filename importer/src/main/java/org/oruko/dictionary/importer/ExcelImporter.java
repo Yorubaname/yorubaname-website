@@ -45,7 +45,7 @@ public class ExcelImporter implements ImporterInterface {
     public ImportStatus doImport(File fileSource) {
         ImportStatus status = new ImportStatus();
 
-        XSSFSheet sheet = null;
+        XSSFSheet sheet;
         try {
             sheet = getSheet(fileSource, 0);
         } catch (IOException e) {
