@@ -35,4 +35,19 @@ To run the maven build and include the dashboard app in the produced war, run wi
 
 2. Run `mvn spring-boot:run -PwithDashboard`
 
+### Dashboard's Authorization
+
+**Note: the authorization module is currently in an early stage of development and thus in a flux.**
+ 
+The dashboard currently requires a login. To create a dev username and account follow these steps:
+
+1. Start the main application. Either by running `mvn spring-boot:run` or via your IDE
+2. Navigate to `localhost:8081/auth/createAdmin` This would create a dev account with the following credentials: <br/>
+    a) username: admin@yorubaname.com <br/>
+    b) password: admin <br/>
+3. You should be able to login with these details.
+4. If you logout and try loggin in and it gives an error, refresh the page. This is a known issue to be fixed.
+
+//TODO auto create the admin account on start up of application
+
 
