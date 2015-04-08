@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -83,21 +84,6 @@ public class AuthController {
     }
 
 
-    @RequestMapping(value = "/createAdmin", method = RequestMethod.GET,
-            produces = "text/plain")
-    @ResponseBody
-    public String createTestAdminData() {
-        UserEntity user = new UserEntity();
-
-        user.setRole(Arrays.asList(Role.ADMIN, Role.LEXICOGRAPHER));
-        user.setEmail("admin@yorubaname.com");
-        user.setUserName("admin");
-        user.setPasswordHash(new BCryptPasswordEncoder().encode("admin"));
-        userService.create(user);
-        return "success";
-    }
-
-
     @RequestMapping("/users")
     @ResponseBody
     public List<UserEntity> users() {
@@ -129,4 +115,18 @@ public class AuthController {
         }
         SecurityContextHolder.getContext().setAuthentication(null);
     }
+
+    @PostConstruct
+    // Creates a default admin account for dev
+    private String createTestAdminData() {
+        UserEntity user = new UserEntity();
+
+        user.setRole(Arrays.asList(Role.ADMIN, Role.LEXICOGRAPHER));
+        user.setEmail("admin@yorubaname.com");
+        user.setUserName("admin");
+        user.setPasswordHash(new BCryptPasswordEncoder().encode("admin"));
+        userService.create(user);
+        return "success";
+    }
+
 }

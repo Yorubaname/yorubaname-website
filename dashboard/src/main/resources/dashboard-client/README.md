@@ -6,7 +6,8 @@ The dashboard client application. It is a stand alone AngularJs that interacts w
 
 ### Development
 
-From the root directory run `grunt serve`. This would serve up the client app on port 9000. Make sure
+From the root directory of the dashboard app(eg /home/dadepo/Documents/fun/ydictionary/dashboard/src/main/resources/dashboard-client), 
+run `grunt serve`. This would serve up the client app on port 9000. Make sure
 the dictionary app is also running: that is having started it via your IDE or via 
 mvn spring-boot:run from the web directory
 
