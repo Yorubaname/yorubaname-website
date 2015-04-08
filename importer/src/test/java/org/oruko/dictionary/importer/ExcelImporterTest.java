@@ -1,12 +1,14 @@
 package org.oruko.dictionary.importer;
 
 
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.hamcrest.text.IsEqualIgnoringCase;
 import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.*;
 import org.mockito.runners.*;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.springframework.core.io.ClassPathResource;
 
@@ -20,9 +22,20 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ExcelImporterTest {
 
-
     @Mock
     NameEntryRepository repository;
+
+    @Mock
+    private NameEntryRepository nameEntryRepository;
+
+    @Mock
+    private DuplicateNameEntryRepository duplicateEntryRepository;
+
+    @Mock
+    private ImporterValidator validator;
+
+    @Mock
+    ColumnOrder columnOrder;
 
     @InjectMocks
     ImporterInterface importer = new ExcelImporter();
@@ -34,7 +47,8 @@ public class ExcelImporterTest {
 
     @Test @Ignore
     public void testDoImport() throws Exception {
-        File file = new ClassPathResource("testdata/extract_only_names.xlsx").getFile();
+        File file = new ClassPathResource("testdata/right_column_order.xlsx").getFile();
+        when(validator.isColumnNameInOrder(any(XSSFSheet.class))).thenReturn(true);
         ImportStatus status = importer.doImport(file);
 
         ArgumentCaptor<NameEntry> messageCaptor = ArgumentCaptor.forClass(NameEntry.class);

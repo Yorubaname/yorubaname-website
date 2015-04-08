@@ -59,6 +59,21 @@ public class DuplicateNameEntry extends AbstractNameEntry {
      */
     @Transient
     public Name toName() {
-        return new Name(name, meaning, morphology, geoLocation, new Tone(tonalMark), submittedBy);
+        Name asName = new Name(name);
+        asName.setEtymology(etymology);
+        asName.setExtendedMeaning(extendedMeaning);
+        asName.setFamousPeople(famousPeople.toString());
+        asName.setGeoLocation(geoLocation);
+        asName.setInOtherLanguages(inOtherLanguages);
+        asName.setIpaNotation(ipaNotation);
+        asName.setMeaning(meaning);
+        asName.setMedia(media);
+        asName.setMorphology(morphology);
+        asName.setPronunciation(pronunciation);
+        asName.setSubmittedBy(submittedBy);
+        asName.setSyllables(syllables);
+        asName.setTags(tags);
+        asName.setVariants(variants);
+        return asName;
     }
 }

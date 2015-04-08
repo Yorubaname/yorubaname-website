@@ -18,8 +18,21 @@ var nameEntry = function ($http, $location, endpointService) {
         scope.formEntry.name = data.mainEntry.name;
         scope.formEntry.meaning = data.mainEntry.meaning;
         scope.formEntry.geoLocation = data.mainEntry.geoLocation;
-        scope.formEntry.toneMark = data.mainEntry.tone.toneMark;
+        //scope.formEntry.toneMark = data.mainEntry.tone.toneMark;
         scope.formEntry.morphology = data.mainEntry.morphology;
+
+        scope.formEntry.pronunciation = data.mainEntry.pronunciation;
+        scope.formEntry.ipaNotation = data.mainEntry.ipaNotation;
+        scope.formEntry.syllables = data.mainEntry.syllables;
+        scope.formEntry.extendedMeaning = data.mainEntry.extendedMeaning;
+
+        scope.formEntry.etymology = data.mainEntry.etymology;
+        scope.formEntry.variants = data.mainEntry.variants;
+        scope.formEntry.famousPeople = data.mainEntry.famousPeople;
+        scope.formEntry.inOtherLanguages = data.mainEntry.inOtherLanguages;
+
+        scope.formEntry.media = data.mainEntry.media;
+        scope.formEntry.tags = data.mainEntry.tags;
 
         if (getDuplicates && getDuplicates === "true") {
             scope.duplicates = data.duplicates;
@@ -40,7 +53,7 @@ var nameEntry = function ($http, $location, endpointService) {
       scope.formEntry = {};
       scope.msg = {};
       scope.buttonAction = "Create Entry";
-
+      scope.duplicateView = attrs.duplicates == "true" ? true : false;
 
       var resetAfterPost = function (element, scope) {
         element.children('form')[0].reset();

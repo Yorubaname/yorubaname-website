@@ -1,6 +1,7 @@
 package org.oruko.dictionary.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
@@ -57,6 +58,9 @@ public class Api {
 
     @Autowired
     private NameEntryService entryService;
+
+    @Autowired
+    private ElasticSearchService elasticSearchService;
 
     /**
      * End point that is used to add a {@link org.oruko.dictionary.model.NameEntry}.
@@ -173,6 +177,14 @@ public class Api {
     public String deleteNames() {
         nameEntryRepository.deleteAll();
         return "Names Deleted";
+    }
+
+
+    @RequestMapping(value = "/v1/dictionary/index")
+    public String indexEntry() {
+        NameEntry entry = new NameEntry("Dadepo");
+        elasticSearchService.doIndex(entry.toIndexEntry());
+        return "index";
     }
 
 

@@ -8,21 +8,59 @@
   <div class="form-group">
     <label for="nameEntry" class="col-sm-2 control-label">Name</label>
     <div class="col-sm-4">
-      <input readonly class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name">
+      <input ng-readonly="duplicateView"  class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name">
     </div>
   </div>
+
   <div class="form-group">
-    <label for="tonalMarkEntry" class="col-sm-2 control-label">Tonal Mark</label>
+    <label for="pronunciationEntry" class="col-sm-2 control-label">Pronunciation</label>
     <div class="col-sm-4">
-      <input class="form-control" id="tonalMarkEntry" placeholder="Tonal mark" name="tonalMark" ng-model="formEntry.toneMark">
+      <input class="form-control" id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
     </div>
   </div>
+
+  <div class="form-group">
+    <label for="ipaEntry" class="col-sm-2 control-label">IPA Notation</label>
+    <div class="col-sm-4">
+      <input class="form-control" id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="syllablesEntry" class="col-sm-2 control-label">Syllabic Breakdown</label>
+    <div class="col-sm-4">
+      <input class="form-control" id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
+    </div>
+  </div>
+
   <div class="form-group">
     <label for="meaningEntry" class="col-sm-2 control-label">Meaning</label>
     <div class="col-sm-4">
       <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
     </div>
   </div>
+
+  <div class="form-group">
+    <label for="extendedMeaningEntry" class="col-sm-2 control-label">Extend Meaning</label>
+    <div class="col-sm-4">
+      <textarea class="form-control" id="extendedMeaningEntry" placeholder="Meaning of word" name="extendedMeaning" ng-model="formEntry.extendedMeaning"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="etymologyEntry" class="col-sm-2 control-label">Etymology</label>
+    <div class="col-sm-4">
+      <textarea class="form-control" id="etymologyEntry" placeholder="etymology" name="etymology" ng-model="formEntry.etymology"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="variantsEntry" class="col-sm-2 control-label">Variants</label>
+    <div class="col-sm-4">
+      <textarea class="form-control" id="variantsEntry" placeholder="Variants" name="variants" ng-model="formEntry.variants"></textarea>
+    </div>
+  </div>
+
   <div class="form-group">
     <label for="morphologyEntry" class="col-sm-2 control-label">Morphology</label>
     <div class="col-sm-4">
@@ -39,6 +77,35 @@
       </select>
     </div>
   </div>
+
+  <div class="form-group">
+    <label for="famousPeopleEntry" class="col-sm-2 control-label">Famous People</label>
+    <div class="col-sm-4">
+      <textarea class="form-control" id="famousPeopleEntry" placeholder="Famous People" name="famousPeople" ng-model="formEntry.famousPeople"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="otherLanguagesEntry" class="col-sm-2 control-label">Found in other languages</label>
+    <div class="col-sm-4">
+      <textarea class="form-control" id="otherLanguagesEntry" placeholder="Names in other languages" name="inOtherLanguages" ng-model="formEntry.inOtherLanguages"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="tagsEntry" class="col-sm-2 control-label">Tag</label>
+    <div class="col-sm-4">
+      <input class="form-control" id="tagsEntry" placeholder="Tags" name="tags" ng-model="formEntry.tags">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="mediaEntry" class="col-sm-2 control-label">Media</label>
+    <div class="col-sm-4">
+      <input class="form-control" id="mediaEntry" placeholder="Pronunciation" name="media" ng-model="formEntry.media">
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button ng-click="create()" class="btn btn-success">{{ buttonAction }}</button>
@@ -46,6 +113,8 @@
   </div>
 </form>
 <hr/>
+
+  <div ng-if="duplicateView">
 <h3>Duplicate entries (Copy and modify main entry if useful. If not remove)</h3>
 <ul id="duplicateList">
   <li ng-repeat="entry in duplicates">
@@ -63,7 +132,6 @@
   </li>
 
 </ul>
-
-
+  </div>
 
 </div>
