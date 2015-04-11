@@ -1,0 +1,70 @@
+{
+  "properties": {
+    "name": {
+      "type": "string",
+      "store": "yes",
+      "index": "analyzed",
+      "boost": "10"
+    },
+    "pronunciation": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    },
+    "ipaNotation": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    },
+    "meaning": {
+      "type": "string",
+      "store": "yes",
+      "index": "analyzed"
+    },
+    "extendedMeaning": {
+      "type": "string",
+      "store": "yes",
+      "index": "analyzed"
+    },
+    "morphology": {
+      "type": "string",
+      "store": "yes",
+      "index": "no"
+    },
+    "etymology": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    },
+    "geoLocation": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    },
+    "variants": {
+      "type": "string",
+      "store": "yes",
+      "index": "analyzed"
+    },
+    "famousPeople": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    },
+    "inOtherLanguages": {
+      "type": "string",
+      "store": "no",
+      "index": "analyzed"
+    },
+    "media": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    },
+    "tags": {
+      "type": "string",
+      "store": "no",
+      "index": "no"
+    }
+  }
+}

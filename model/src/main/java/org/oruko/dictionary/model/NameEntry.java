@@ -77,11 +77,22 @@ public class NameEntry extends AbstractNameEntry {
         return asName;
     }
 
-
     @Transient
     public IndexedNameEntry toIndexEntry() {
         IndexedNameEntry indexedNameEntry = new IndexedNameEntry();
         indexedNameEntry.setName(name);
+        indexedNameEntry.setPronunciation(pronunciation);
+        indexedNameEntry.setIpaNotation(ipaNotation);
+        indexedNameEntry.setMeaning(meaning);
+        indexedNameEntry.setExtendedMeaning(extendedMeaning);
+        indexedNameEntry.setMorphology(morphology);
+        indexedNameEntry.setEtymology(etymology);
+        indexedNameEntry.setGeoLocation(geoLocation);
+        indexedNameEntry.setVariants(variants);
+        indexedNameEntry.setFamousPeople(famousPeople);
+        indexedNameEntry.setInOtherLanguages(inOtherLanguages);
+        indexedNameEntry.setMedia(media);
+        indexedNameEntry.setTags(tags);
         return indexedNameEntry;
     }
 
