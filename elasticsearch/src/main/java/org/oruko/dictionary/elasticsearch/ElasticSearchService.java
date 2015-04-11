@@ -129,20 +129,25 @@ public class ElasticSearchService {
         client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress(hostName, port));
 
-        boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
+        try {
+            boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
 
-        if (!exists) {
-            client.admin().indices()
-                  .create(new CreateIndexRequest(indexName)).actionGet();
+            if (!exists) {
+                client.admin().indices()
+                      .create(new CreateIndexRequest(indexName)).actionGet();
+            }
+
+            PutMappingResponse putMappingResponse = client.admin().indices()
+                                                          .preparePutMapping(indexName)
+                                                          .setType(documentType)
+                                                          .setSource(mapping)
+                                                          .execute().actionGet();
+
+            logger.info("Adding {} to type {} in index {} was {} at startup",
+                        mapping, documentType, indexName, putMappingResponse.isAcknowledged());
+        } catch (Exception e) {
+            logger.error("ElasticSearch not running", e);
         }
 
-        PutMappingResponse putMappingResponse = client.admin().indices()
-                                                      .preparePutMapping(indexName)
-                                                      .setType(documentType)
-                                                      .setSource(mapping)
-                                                      .execute().actionGet();
-
-        logger.info("Adding {} to type {} in index {} was {} at startup",
-                    mapping, documentType, indexName, putMappingResponse.isAcknowledged());
     }
 }

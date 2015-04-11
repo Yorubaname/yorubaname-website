@@ -32,6 +32,18 @@ You have a couple of ways to run the core application.
 
 The application would start up and can be accessed via 8081 port.
 
+### Running the Core Application with ElasticSearch
+
+The application's search functionality is powered by ElasticSearch, thus the application expects to have an ElasticSearch
+cluster it can connect to.
+
+To run the application and have the search functionality working you would have to download ElasticSearch and have it
+running on your local machine. Follow the instructions on how to do this here: http://www.elastic.co/guide/en/elasticsearch/reference/1.4/setup.html
+
+The only configuration needed is to update the cluster name to `yoruba_name_dictionary`. This you can do by editing the
+ElasticSearch configuration file found in `/path/to/elasticsearc/elasticsearch/config/elasticsearch.yml` and edit the
+`cluster.name` key to `yoruba_name_dictionary`
+
 ### Running the dashboard app
 
 You would find the dashbaord related information in README.md in the `dashboard` module
