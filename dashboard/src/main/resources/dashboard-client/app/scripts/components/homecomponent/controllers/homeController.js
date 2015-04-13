@@ -7,14 +7,10 @@
  */
 var homeController = function($scope, profileService) {
 
-  $scope.title = "Dictionary Dashboard";
-  var profileInfo = profileService.getProfileInfo();
-  $scope.profile = {};
+    $scope.title = "Dictionary Dashboard";
 
-  $scope.profile.profilePix = profileInfo.profilePix;
-  $scope.profile.email = profileInfo.email;
-  $scope.profile.role = profileInfo.role;
-  $scope.profile.contributions = profileInfo.contributions;
+    $scope.profile = profileService.getProfileInfo();
+
 
 };
 

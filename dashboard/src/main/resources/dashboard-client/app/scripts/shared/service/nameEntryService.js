@@ -3,29 +3,29 @@
 /**
  * Service use to communicate with endpoint to fetch names
  */
-  // TODO refactor to use the endpointService
-var nameEntryService = function($http, $rootScope) {
-  /**
-   * Get a name by id
-   * returns the one or no result
-   */
-  this.getName = function getName(id) {
+// TODO refactor endpoint raw strings to global variables
+var nameEntryService = function($http, endpointService) {
+    /**
+     * Get a name by id
+     * returns the one or no result
+     */
+    this.getName = function getName(id) {
+        var data = {
+            id: id
+        }
+        var request = endpointService.post('/v1/name/', data);
+        return request;
+    };
 
-  };
+    this.getNames = function getNames(page, count) {
+        var data = {
+            page: page,
+            count: count
+        }
+        var request = endpointService.post('/v1/names/', data);
+        return request;
 
-  this.getNames = function getNames(page, count) {
-    var request = $http({
-            method: 'GET',
-            url: $rootScope.appEndpoint + '/v1/names/',
-            params: {
-              page: page,
-              count: count
-            }
-          });
-
-    return request;
-
-  };
+    };
 
 };
 

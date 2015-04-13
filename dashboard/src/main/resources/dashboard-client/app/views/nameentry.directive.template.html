@@ -1,137 +1,158 @@
 <div>
-<form class="form-horizontal" role="form">
-
-  <div id="msg-container" class="{{msg.type}}">
-    {{msg.text}}
-  </div>
-
-  <div class="form-group">
-    <label for="nameEntry" class="col-sm-2 control-label">Name</label>
-    <div class="col-sm-4">
-      <input ng-readonly="duplicateView"  class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name">
+    <form class="form-horizontal" role="form">
+        <!-- <notification notify="notify" msg="msg"></notification> -->
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="nameEntry" class="col-sm-4 control-label">Name</label>
+                    <div class="col-sm-8">
+                        <input autocomplete="off" ng-readonly="duplicateView" typeahead="obj.name for obj in nameMatchList($viewValue) | filter:$viewValue | limitTo:8" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" typeahead-wait-ms="500" typeahead-min-length="3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pronunciationEntry" class="col-sm-4 control-label">Pronunciation</label>
+                    <div class="col-sm-8">
+                        <tags-input id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ipaEntry" class="col-sm-4 control-label">IPA Notation</label>
+                    <div class="col-sm-8">
+                        <tags-input id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="syllablesEntry" class="col-sm-4 control-label">Syllabic Breakdown</label>
+                    <div class="col-sm-8">
+                        <tags-input id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="morphologyEntry" class="col-sm-4 control-label">Morphology</label>
+                    <div class="col-sm-8">
+                        <tags-input id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology">
+                    </div>
+                </div>
+                <div class="form-group" ng-show="formEntry.morphology.length > 0">
+                    <label for="etymologyEntry" class="col-sm-4 control-label">Etymology</label>
+                    <div class="col-sm-8 well well-sm">
+                        <div class="form-group" ng-repeat="syllable in formEntry.etymology">
+                            <label for="morphologyEntry" class="col-sm-4 control-label"> {{syllable.name}}</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" id="morphologyEntry" placeholder="meaning" name="morphology" ng-model="syllable.meaning">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="geoLocationEntry" class="col-sm-4 control-label">Geolocation</label>
+                    <div class="col-sm-8">
+                        <div class="radio">
+                            <label class="radio-inline" ng-repeat="region in locationTemplate">
+                                <input type="radio" name="topLocation" value="{{region.name}}" ng-model="formEntry.region" checked="checked"> {{region.name}}
+                            </label>
+                        </div>
+                        <br>
+                        <div class="well well-sm" ng-show="formEntry.region == locationTemplate[0].name">
+                            <div class="radio">
+                                <label ng-repeat="sub in locationTemplate[0].subRegions">
+                                    <input type="radio" name="region" value="{{sub.name}}" ng-model="formEntry.subregion" checked="checked"> {{sub.name}}
+                                    <h6><small>{{sub.description}}</small></h6>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="well well-sm" ng-show="formEntry.region == locationTemplate[1].name">
+                            <div class="radio" ng-repeat="sub in locationTemplate[1].subRegions">
+                                <label>
+                                    <input type="radio" name="subregion" value="{{sub.name}}" ng-model="formEntry.subregion" checked="checked"> {{sub.name}}
+                                    <br><i>{{sub.description}}</i>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="subregion" value="african" ng-model="african">Others Africa/Diaspora
+                                </label>
+                            </div>
+                            <input class="form-control" ng-show="african" ng-model="formEntry.subregion">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tagsEntry" class="col-sm-4 control-label">Tag</label>
+                    <div class="col-sm-8">
+                        <tags-input id="tagsEntry" placeholder="Tags" name="tags" ng-model="formEntry.tags">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label for="meaningEntry" class="col-sm-4 control-label">Meaning</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="extendedMeaningEntry" class="col-sm-4 control-label">Extend Meaning</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" id="extendedMeaningEntry" placeholder="Meaning of word" name="extendedMeaning" ng-model="formEntry.extendedMeaning"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="variantsEntry" class="col-sm-4 control-label">Variants</label>
+                    <div class="col-sm-8">
+                        <tags-input id="variantsEntry" placeholder="Variants" name="variants" ng-model="formEntry.variants">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="famousPeopleEntry" class="col-sm-4 control-label">Famous People</label>
+                    <div class="col-sm-8">
+                        <tags-input id="famousPeopleEntry" placeholder="Famous People" name="famousPeople" ng-model="formEntry.famousPeople">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="otherLanguagesEntry" class="col-sm-4 control-label">Found in other languages</label>
+                    <div class="col-sm-8">
+                        <tags-input id="otherLanguagesEntry" placeholder="Names in other languages" name="inOtherLanguages" ng-model="formEntry.inOtherLanguages">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="mediaEntry" class="col-sm-4 control-label">Media</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="mediaEntry" placeholder="Media" name="media" ng-model="formEntry.media">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button ng-click="create()" class="btn btn-success btn-block">{{ buttonAction }}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <hr/>
+    <div ng-if="duplicateView">
+        <h3>Duplicate entries (Copy and modify main entry if useful. If not remove)</h3>
+        <ul id="duplicateList">
+            <li ng-repeat="entry in duplicates">
+                {{ entry.name }} - {{ entry.meaning | limitTo: 80}} ... <a class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#collapseEntry{{$index}}">more</a>
+                <br/>
+                <div class="collapse" id="collapseEntry{{$index}}">
+                    <div class="duplicateDetails">
+                        <strong>Name:</strong> {{ entry.name }}
+                        <br/>
+                        <strong>Tone Mark:</strong> {{ entry.tonalMark }}
+                        <br/>
+                        <strong>Meaning:</strong> {{ entry.meaning }}
+                        <br/>
+                        <strong>Morphology:</strong> {{ entry.morphology }}
+                        <br/>
+                        <strong>Geolocation:</strong> {{ entry.geoLocation }}
+                        <br/>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
-  </div>
-
-  <div class="form-group">
-    <label for="pronunciationEntry" class="col-sm-2 control-label">Pronunciation</label>
-    <div class="col-sm-4">
-      <input class="form-control" id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="ipaEntry" class="col-sm-2 control-label">IPA Notation</label>
-    <div class="col-sm-4">
-      <input class="form-control" id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="syllablesEntry" class="col-sm-2 control-label">Syllabic Breakdown</label>
-    <div class="col-sm-4">
-      <input class="form-control" id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="meaningEntry" class="col-sm-2 control-label">Meaning</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="extendedMeaningEntry" class="col-sm-2 control-label">Extend Meaning</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="extendedMeaningEntry" placeholder="Meaning of word" name="extendedMeaning" ng-model="formEntry.extendedMeaning"></textarea>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="etymologyEntry" class="col-sm-2 control-label">Etymology</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="etymologyEntry" placeholder="etymology" name="etymology" ng-model="formEntry.etymology"></textarea>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="variantsEntry" class="col-sm-2 control-label">Variants</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="variantsEntry" placeholder="Variants" name="variants" ng-model="formEntry.variants"></textarea>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="morphologyEntry" class="col-sm-2 control-label">Morphology</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology"></textarea>
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="geoLocationEntry" class="col-sm-2 control-label">Geolocation</label>
-    <div class="col-sm-4">
-      <select id="geoLocationEntry" name="geoLocation" ng-model="formEntry.geoLocation">
-        <option value="awori">Awori</option>
-        <option value="egba">Egba</option>
-        <option value="ijesha">Ijesha</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="famousPeopleEntry" class="col-sm-2 control-label">Famous People</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="famousPeopleEntry" placeholder="Famous People" name="famousPeople" ng-model="formEntry.famousPeople"></textarea>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="otherLanguagesEntry" class="col-sm-2 control-label">Found in other languages</label>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="otherLanguagesEntry" placeholder="Names in other languages" name="inOtherLanguages" ng-model="formEntry.inOtherLanguages"></textarea>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="tagsEntry" class="col-sm-2 control-label">Tag</label>
-    <div class="col-sm-4">
-      <input class="form-control" id="tagsEntry" placeholder="Tags" name="tags" ng-model="formEntry.tags">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label for="mediaEntry" class="col-sm-2 control-label">Media</label>
-    <div class="col-sm-4">
-      <input class="form-control" id="mediaEntry" placeholder="Media" name="media" ng-model="formEntry.media">
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button ng-click="create()" class="btn btn-success">{{ buttonAction }}</button>
-    </div>
-  </div>
-</form>
-<hr/>
-
-  <div ng-if="duplicateView">
-<h3>Duplicate entries (Copy and modify main entry if useful. If not remove)</h3>
-<ul id="duplicateList">
-  <li ng-repeat="entry in duplicates">
-    {{ entry.name }} - {{ entry. meaning | limitTo: 80}} ... <a class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#collapseEntry{{$index}}">more</a>
-  <br/>
-    <div class="collapse" id="collapseEntry{{$index}}">
-      <div class="duplicateDetails">
-        <strong>Name:</strong> {{ entry.name }} <br/>
-        <strong>Tone Mark:</strong> {{ entry.tonalMark }} <br/>
-        <strong>Meaning:</strong> {{ entry.meaning }} <br/>
-        <strong>Morphology:</strong> {{ entry.morphology }} <br/>
-        <strong>Geolocation:</strong> {{ entry.geoLocation }} <br/>
-      </div>
-    </div>
-  </li>
-
-</ul>
-  </div>
-
 </div>
