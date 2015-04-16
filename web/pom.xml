@@ -39,6 +39,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.yorubaname</groupId>
+            <artifactId>tts-module</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -91,6 +97,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

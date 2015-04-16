@@ -10,6 +10,9 @@ import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
+import org.oruko.dictionary.tts.AudioSegmentMapper;
+import org.oruko.dictionary.tts.SimpleNameTokenizer;
+import org.oruko.dictionary.tts.TextToSpeechService;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,6 +249,15 @@ public class Api {
         }
         message = new StringBuilder(name).append(" not found for deletion").toString();
         return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @RequestMapping(value = "v1/tts/{name}", method = RequestMethod.GET,
+    produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> doTTS(@PathVariable String name) {
+        TextToSpeechService ttsService = new TextToSpeechService(new SimpleNameTokenizer(), new AudioSegmentMapper());
+        ttsService.convertToSpeech(name);
+        return new ResponseEntity<String>("Still cooking", HttpStatus.OK);
     }
 
     //=====================================Helpers=========================================================//
