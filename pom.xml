@@ -42,6 +42,7 @@
         <poi-ooxml.version>3.11</poi-ooxml.version>
         <guava.version>18.0</guava.version>
         <es.version>1.5.0</es.version>
+        <commons-io.version>2.4</commons-io.version>
     </properties>
 
     <dependencyManagement>
@@ -119,6 +120,13 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
 
             <!-- Test dependencies -->
             <dependency>

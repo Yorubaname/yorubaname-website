@@ -16,4 +16,8 @@ View <a href="/template">template</a>
 Enter name <br/>
 <input id="nametts" type="text"/>
 <input id="submittts" type="button" value="Get Pronunciation" style="margin-top:-10px">
+<br/>
+<div id="ttsPlayer">
+
+</div>
 </@decorator.layout>

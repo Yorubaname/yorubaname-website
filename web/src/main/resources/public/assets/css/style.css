@@ -106,6 +106,10 @@ a:hover { text-decoration: none; }
     height: 100%;
 }
 
+div.wrapper {
+    padding: 30px;
+}
+
 .numbers {
     width: 55px;
     text-align: center; 

@@ -1,6 +1,7 @@
 package org.oruko.dictionary.tts;
 
 import java.util.List;
+import javax.sound.sampled.AudioInputStream;
 
 /**
  * Text to speech service.
@@ -17,8 +18,9 @@ public class TextToSpeechService {
         this.audioMapper = mapper;
     }
 
-    public List<String> convertToSpeech(String nameInput) {
-        return tokenizer.split(nameInput);
+    public AudioInputStream convertToSpeech(String nameInput) {
+        List<String> wordSegments = tokenizer.split(nameInput);
+        return audioMapper.getAudio(wordSegments);
     }
 
 }
