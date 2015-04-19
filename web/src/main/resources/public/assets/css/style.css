@@ -247,6 +247,25 @@ form button:active {
 }
 
 
+div#tts-left {
+    float: left;
+    width: 20%;
+}
+
+div#tts-right {
+    float: right;
+    width: 70%;
+}
+
+div#tts-right div#segments {
+    padding: 5px;
+    background-color: #fff;
+    -webkit-column-count: 14;
+    -moz-column-count: 14;
+    column-count: 14;
+}
+
+
 /* ----- Media queries ----- */
 
 @media (max-width: 1200px) {
