@@ -9,12 +9,12 @@
 
     <modules>
         <module>model</module>
+        <module>tts-module</module>
         <module>web</module>
         <module>importer</module>
         <module>dashboard</module>
         <module>auth</module>
         <module>elasticsearch</module>
-        <module>tts-module</module>
     </modules>
     <packaging>pom</packaging>
 

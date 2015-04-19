@@ -21,25 +21,25 @@
         </dependency>
 
         <dependency>
-            <groupId>org.yorubaname</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>importer-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.yorubaname</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dashboard-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.yorubaname</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>auth-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.yorubaname</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>tts-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

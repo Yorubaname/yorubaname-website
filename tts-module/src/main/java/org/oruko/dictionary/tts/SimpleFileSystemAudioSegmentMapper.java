@@ -1,5 +1,6 @@
 package org.oruko.dictionary.tts;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
@@ -64,7 +65,8 @@ public class SimpleFileSystemAudioSegmentMapper implements AudioSegmentMapper {
         List<String> fileNames = tokenizedName.stream().map(this::mapToFile).collect(Collectors.toList());
 
         for (String fileName: fileNames) {
-            InputStream resourceAsStream = this.getClass().getResourceAsStream("/segments/translated/" + fileName);
+            InputStream resourceAsStream =
+                    new BufferedInputStream(this.getClass().getResourceAsStream("/segments/translated/" + fileName));
             fileAsInputStream.add(resourceAsStream);
         }
 
