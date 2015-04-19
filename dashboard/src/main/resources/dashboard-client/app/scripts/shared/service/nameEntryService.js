@@ -13,7 +13,7 @@ var nameEntryService = function($http, endpointService) {
         var data = {
             id: id
         }
-        var request = endpointService.post('/v1/name/', data);
+        var request = endpointService.get('/v1/name/', data);
         return request;
     };
 
@@ -22,7 +22,7 @@ var nameEntryService = function($http, endpointService) {
             page: page,
             count: count
         }
-        var request = endpointService.post('/v1/names/', data);
+        var request = endpointService.get('/v1/names/', data);
         return request;
 
     };
