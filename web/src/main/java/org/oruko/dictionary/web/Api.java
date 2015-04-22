@@ -201,7 +201,7 @@ public class Api {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> indexEntry(@Valid NameEntry entry) {
-        boolean isIndexed = elasticSearchService.doIndex(entry.toIndexEntry());
+        boolean isIndexed = elasticSearchService.indexName(entry.toIndexEntry());
         String message;
         if (isIndexed) {
             message = new StringBuilder(entry.getName()).append(" successfully indexed").toString();
@@ -229,7 +229,9 @@ public class Api {
             return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
         }
 
-        boolean isIndexed = elasticSearchService.doIndex(nameEntry.toIndexEntry());
+        // TODO now cause of index failure cannot be propagated to client. Fix this. One way is to return
+        // TODO a status object from the indexName method?
+        boolean isIndexed = elasticSearchService.indexName(nameEntry.toIndexEntry());
 
         if (isIndexed) {
             message = new StringBuilder(name).append(" successfully indexed").toString();

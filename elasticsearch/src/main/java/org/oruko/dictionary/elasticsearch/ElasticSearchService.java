@@ -7,6 +7,8 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.node.DiscoveryNode;
+import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -39,6 +41,7 @@ public class ElasticSearchService {
     private Integer port;
     private ResourceLoader resourceLoader;
     private ObjectMapper mapper = new ObjectMapper();
+    private boolean elasticSearchNodeAvailable;
     private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
 
     @Value("${es.clustername:yoruba_name_dictionary}")
@@ -74,13 +77,23 @@ public class ElasticSearchService {
     ElasticSearchService() {
     }
 
+    public boolean isElasticSearchNodeAvailable() {
+        return elasticSearchNodeAvailable;
+    }
+
     /**
      * Add a {@link org.oruko.dictionary.elasticsearch.IndexedNameEntry} into ElasticSearch index
      *
      * @param entry the {@link org.oruko.dictionary.elasticsearch.IndexedNameEntry} to index
      * @return returns true | false depending on if the indexing operation was successful.
      */
-    public boolean doIndex(IndexedNameEntry entry) {
+    public boolean indexName(IndexedNameEntry entry) {
+
+        if (!isElasticSearchNodeAvailable()) {
+            logger.info("Index attempt not possible. You do not have an elasticsearch node running");
+            return false;
+        }
+
         try {
             String entryAsJson = mapper.writeValueAsString(entry);
             client.prepareIndex(indexName, documentType, entry.getName())
@@ -96,10 +109,17 @@ public class ElasticSearchService {
 
     /**
      * Deletes a document by name (which is the id within ElasticSearch index)
+     *
      * @param name the name to delete from the index
      * @return true | false depending on if deleting operation was successful
      */
     public boolean deleteFromIndex(String name) {
+
+        if (!isElasticSearchNodeAvailable()) {
+            logger.info("Delete attempt not possible. You do not have an elasticsearch node running");
+            return false;
+        }
+
         DeleteResponse response = client.prepareDelete(indexName, documentType, name)
                                         .execute()
                                         .actionGet();
@@ -129,25 +149,33 @@ public class ElasticSearchService {
         client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress(hostName, port));
 
-        try {
-            boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
+        ImmutableList<DiscoveryNode> nodes = ((TransportClient) client).connectedNodes();
 
-            if (!exists) {
-                client.admin().indices()
-                      .create(new CreateIndexRequest(indexName)).actionGet();
+        if (nodes.isEmpty()) {
+            elasticSearchNodeAvailable = false;
+            client.close();
+        } else {
+            elasticSearchNodeAvailable = true;
+
+            try {
+                boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
+
+                if (!exists) {
+                    client.admin().indices()
+                          .create(new CreateIndexRequest(indexName)).actionGet();
+                }
+
+                PutMappingResponse putMappingResponse = client.admin().indices()
+                                                              .preparePutMapping(indexName)
+                                                              .setType(documentType)
+                                                              .setSource(mapping)
+                                                              .execute().actionGet();
+
+                logger.info("Adding {} to type {} in index {} was {} at startup",
+                            mapping, documentType, indexName, putMappingResponse.isAcknowledged());
+            } catch (Exception e) {
+                logger.error("ElasticSearch not running", e);
             }
-
-            PutMappingResponse putMappingResponse = client.admin().indices()
-                                                          .preparePutMapping(indexName)
-                                                          .setType(documentType)
-                                                          .setSource(mapping)
-                                                          .execute().actionGet();
-
-            logger.info("Adding {} to type {} in index {} was {} at startup",
-                        mapping, documentType, indexName, putMappingResponse.isAcknowledged());
-        } catch (Exception e) {
-            logger.error("ElasticSearch not running", e);
         }
-
     }
 }
