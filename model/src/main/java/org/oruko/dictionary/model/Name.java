@@ -22,6 +22,7 @@ public class Name {
     private String inOtherLanguages;
     private String media;
     private String tags;
+    private Boolean isIndexed;
 
     /**
      * Public constructor for creating an instance of @{link Name} using only
@@ -35,7 +36,7 @@ public class Name {
     public Name(String name, Tone tone, String meaning, String geoLocation, String morphology, String submittedBy,
                 String pronunciation, String ipaNotation, String syllables, String extendedMeaning,
                 String etymology, String variants, String famousPeople, String inOtherLanguages, String media,
-                String tags) {
+                String tags, Boolean isIndexed) {
         this.name = name;
         this.tone = tone;
         this.meaning = meaning;
@@ -52,6 +53,7 @@ public class Name {
         this.inOtherLanguages = inOtherLanguages;
         this.media = media;
         this.tags = tags;
+        this.isIndexed = isIndexed;
     }
 
     /**
@@ -222,5 +224,13 @@ public class Name {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public Boolean isIndexed() {
+        return isIndexed;
+    }
+
+    public void isIndexed(Boolean isPublished) {
+        this.isIndexed = isPublished;
     }
 }

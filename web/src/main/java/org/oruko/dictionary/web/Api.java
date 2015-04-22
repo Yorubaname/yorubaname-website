@@ -234,6 +234,8 @@ public class Api {
         boolean isIndexed = elasticSearchService.indexName(nameEntry.toIndexEntry());
 
         if (isIndexed) {
+            nameEntry.isIndexed(true);
+            nameEntryRepository.save(nameEntry);
             message = new StringBuilder(name).append(" successfully indexed").toString();
             return new ResponseEntity<String>(message, HttpStatus.CREATED);
         }
@@ -255,6 +257,11 @@ public class Api {
         String message;
         boolean deleted = elasticSearchService.deleteFromIndex(name);
         if (deleted) {
+            NameEntry nameEntry = nameEntryRepository.findByName(name);
+            if (nameEntry != null) {
+                nameEntry.isIndexed(false);
+                nameEntryRepository.save(nameEntry);
+            }
             message = new StringBuilder(name).append(" successfully removed from index").toString();
             return new ResponseEntity<String>(message, HttpStatus.OK);
         }

@@ -74,6 +74,7 @@ public class NameEntry extends AbstractNameEntry {
         asName.setSyllables(syllables);
         asName.setTags(tags);
         asName.setVariants(variants);
+        asName.isIndexed(isIndexed);
         return asName;
     }
 

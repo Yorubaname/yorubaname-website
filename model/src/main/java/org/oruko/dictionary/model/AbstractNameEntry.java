@@ -77,6 +77,8 @@ public abstract class AbstractNameEntry {
     @Column(length = 1000)
     protected String tags;
 
+    protected Boolean isIndexed = false;
+
     public String getSubmittedBy() {
         return submittedBy;
     }
@@ -219,5 +221,13 @@ public abstract class AbstractNameEntry {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public Boolean isIndexed() {
+        return isIndexed;
+    }
+
+    public void isIndexed(Boolean published) {
+        this.isIndexed = published;
     }
 }
