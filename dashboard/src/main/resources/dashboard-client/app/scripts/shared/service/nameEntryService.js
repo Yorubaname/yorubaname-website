@@ -12,7 +12,7 @@ var nameEntryService = function($http, endpointService) {
     this.getName = function getName(id) {
         var data = {
             id: id
-        }
+        };
         var request = endpointService.get('/v1/name/', data);
         return request;
     };
@@ -21,7 +21,7 @@ var nameEntryService = function($http, endpointService) {
         var data = {
             page: page,
             count: count
-        }
+        };
         var request = endpointService.get('/v1/names/', data);
         return request;
 

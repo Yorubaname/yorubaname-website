@@ -6,10 +6,12 @@
 
 var nameAutocompleteService = function(endpointService) {
     // TODO change endpoint to use elastic search
+
     this.getList = function getUser(val) {
-        var nameRequest = endpointService.get('/v1/name', {
+        var nameRequest = endpointService.get('/v1/names/', {
             name: val
         });
+
         return nameRequest.then(function(data) {
             if (!isEmptyObj(data)) {
                 return data
