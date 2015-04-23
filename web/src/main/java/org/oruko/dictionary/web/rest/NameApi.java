@@ -1,7 +1,6 @@
-package org.oruko.dictionary.web;
+package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.io.IOUtils;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
@@ -9,9 +8,6 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.Name;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
-import org.oruko.dictionary.tts.SimpleFileSystemAudioSegmentMapper;
-import org.oruko.dictionary.tts.SimpleYorubaNameTokenizer;
-import org.oruko.dictionary.tts.TextToSpeechService;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.validation.Valid;
 
 /**
@@ -49,9 +41,9 @@ import javax.validation.Valid;
  * Created by dadepo on 2/12/15.
  */
 @RestController
-public class Api {
+public class NameApi {
 
-    private Logger logger = LoggerFactory.getLogger(Api.class);
+    private Logger logger = LoggerFactory.getLogger(NameApi.class);
 
     @Autowired
     ServletContext servletContext;
@@ -180,104 +172,6 @@ public class Api {
     public String deleteNames() {
         entryService.deleteAllAndDuplicates();
         return "Names Deleted";
-    }
-
-    // TODO this endpoint should be authorized
-    /**
-     * Endpoint to index a NameEntry sent in as JSON string.
-     * @param entry the {@link org.oruko.dictionary.model.NameEntry} representation of the JSON String.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
-     */
-    @RequestMapping(value = "/v1/search/indexes", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> indexEntry(@Valid NameEntry entry) {
-        boolean isIndexed = elasticSearchService.indexName(entry.toIndexEntry());
-        String message;
-        if (isIndexed) {
-            message = new StringBuilder(entry.getName()).append(" successfully indexed").toString();
-            return new ResponseEntity<String>(message, HttpStatus.CREATED);
-        }
-        message = new StringBuilder(entry.getName()).append(" could not be indexed").toString();
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
-    }
-
-    // TODO this endpoint should be authorized
-    /**
-     * Endpoint that takes a name, looks it up in the repository and index the entry found
-     * @param name the name
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
-     */
-    @RequestMapping(value = "/v1/search/indexes/{name}", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> indexEntryByName(@PathVariable String name) {
-        String message;
-        NameEntry nameEntry = entryService.loadName(name);
-        if (nameEntry == null) {
-            // name requested to be indexed not in the database
-            message = new StringBuilder(name).append(" not found in the repository so not indexed").toString();
-            return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
-        }
-
-        // TODO now cause of index failure cannot be propagated to client. Fix this. One way is to return
-        // TODO a status object from the indexName method?
-        boolean isIndexed = elasticSearchService.indexName(nameEntry.toIndexEntry());
-
-        if (isIndexed) {
-            nameEntry.isIndexed(true);
-            entryService.saveName(nameEntry);
-            message = new StringBuilder(name).append(" successfully indexed").toString();
-            return new ResponseEntity<String>(message, HttpStatus.CREATED);
-        }
-
-        message = new StringBuilder(name).append(" could not be indexed").toString();
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
-    }
-
-    // TODO this endpoint should be authorized
-    /**
-     * Endpoint used to remove a name from the index.
-     * @param name the name to remove from the index.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
-     */
-    @RequestMapping(value = "/v1/search/indexes/{name}", method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> deleteFromIndex(@PathVariable String name) {
-        String message;
-        boolean deleted = elasticSearchService.deleteFromIndex(name);
-        if (deleted) {
-            NameEntry nameEntry = entryService.loadName(name);
-            if (nameEntry != null) {
-                nameEntry.isIndexed(false);
-                entryService.saveName(nameEntry);
-            }
-            message = new StringBuilder(name).append(" successfully removed from index").toString();
-            return new ResponseEntity<String>(message, HttpStatus.OK);
-        }
-        message = new StringBuilder(name).append(" not found for deletion").toString();
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
-    }
-
-
-    @RequestMapping(value = "v1/tts/{name}", method = RequestMethod.GET,
-    produces = MediaType.TEXT_PLAIN_VALUE)
-    public void doTTS(@PathVariable String name, HttpServletResponse response) {
-        TextToSpeechService ttsService = new TextToSpeechService(new SimpleYorubaNameTokenizer(),
-                                                                 new SimpleFileSystemAudioSegmentMapper());
-        AudioInputStream audioInputStream = ttsService.convertToSpeech(name);
-
-        try {
-            response.setContentType("audio/wav");
-            AudioSystem.write(audioInputStream,
-                              AudioFileFormat.Type.WAVE, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(audioInputStream);
-        }
     }
 
     //=====================================Helpers=========================================================//
