@@ -9,8 +9,6 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.Name;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
-import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
-import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.oruko.dictionary.tts.SimpleFileSystemAudioSegmentMapper;
 import org.oruko.dictionary.tts.SimpleYorubaNameTokenizer;
 import org.oruko.dictionary.tts.TextToSpeechService;
@@ -48,7 +46,6 @@ import javax.validation.Valid;
 /**
  * End point for inserting and retrieving Name Entries
  * This would be the end point the clients would interact with to get names in and out of the dictionary
- * TODO Consider moving this as a stand alone service
  * Created by dadepo on 2/12/15.
  */
 @RestController
@@ -58,12 +55,6 @@ public class Api {
 
     @Autowired
     ServletContext servletContext;
-
-    @Autowired
-    private NameEntryRepository nameEntryRepository;
-
-    @Autowired
-    private DuplicateNameEntryRepository duplicateEntryRepository;
 
     @Autowired
     private ImporterInterface importerInterface;
