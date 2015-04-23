@@ -103,7 +103,7 @@ public class Api {
     public ResponseEntity<String> updateName(@Valid NameEntry entry, BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
-            entryService.update(entry);
+            entryService.updateName(entry);
             return new ResponseEntity<>("success", HttpStatus.CREATED);
         }
         return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -122,7 +122,7 @@ public class Api {
                                   @RequestParam("count") Optional<Integer> countParam) throws JsonProcessingException {
 
         List<Name> names = new ArrayList<>();
-        Iterable<NameEntry> allNameEntries = entryService.findAll(pageParam, countParam);;
+        Iterable<NameEntry> allNameEntries = entryService.loadAllNames(pageParam, countParam);;
 
         allNameEntries.forEach(nameEntry -> {
             names.add(nameEntry.toName());
@@ -141,14 +141,14 @@ public class Api {
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
     public Object getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
                           @PathVariable String name) throws JsonProcessingException {
-        NameEntry nameEntry = nameEntryRepository.findByName(name);
+        NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
             String errorMsg = "#NAME not found in the database".replace("#NAME", name);
             throw new GenericApiCallException(errorMsg);
         }
 
         if (withDuplicates) {
-            List<DuplicateNameEntry> duplicates = duplicateEntryRepository.findByName(name);
+            List<DuplicateNameEntry> duplicates = entryService.loadNameDuplicates(name);
             HashMap<String, Object> duplicateEntries = new HashMap<String, Object>();
 
             duplicateEntries.put("mainEntry", nameEntry.toName());
@@ -187,7 +187,7 @@ public class Api {
     // TODO add method authorization for methods like this
     @RequestMapping(value = "/v1/names/delete")
     public String deleteNames() {
-        nameEntryRepository.deleteAll();
+        entryService.deleteAllAndDuplicates();
         return "Names Deleted";
     }
 
@@ -222,7 +222,7 @@ public class Api {
             produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> indexEntryByName(@PathVariable String name) {
         String message;
-        NameEntry nameEntry = nameEntryRepository.findByName(name);
+        NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
             message = new StringBuilder(name).append(" not found in the repository so not indexed").toString();
@@ -235,7 +235,7 @@ public class Api {
 
         if (isIndexed) {
             nameEntry.isIndexed(true);
-            nameEntryRepository.save(nameEntry);
+            entryService.saveName(nameEntry);
             message = new StringBuilder(name).append(" successfully indexed").toString();
             return new ResponseEntity<String>(message, HttpStatus.CREATED);
         }
@@ -257,10 +257,10 @@ public class Api {
         String message;
         boolean deleted = elasticSearchService.deleteFromIndex(name);
         if (deleted) {
-            NameEntry nameEntry = nameEntryRepository.findByName(name);
+            NameEntry nameEntry = entryService.loadName(name);
             if (nameEntry != null) {
                 nameEntry.isIndexed(false);
-                nameEntryRepository.save(nameEntry);
+                entryService.saveName(nameEntry);
             }
             message = new StringBuilder(name).append(" successfully removed from index").toString();
             return new ResponseEntity<String>(message, HttpStatus.OK);

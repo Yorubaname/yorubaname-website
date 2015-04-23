@@ -45,7 +45,7 @@ public class NameEntryService {
      * Saves {@link org.oruko.dictionary.model.NameEntry}
      * @param entry the entry to be saved
      */
-    public void save(NameEntry entry) {
+    public void saveName(NameEntry entry) {
         nameEntryRepository.save(entry);
     }
 
@@ -53,7 +53,7 @@ public class NameEntryService {
      * Updates the properties with values from another {@link org.oruko.dictionary.model.NameEntry}
      * @param newEntry the nameEntry to take values used for updating
      */
-    public void update(NameEntry newEntry) {
+    public void updateName(NameEntry newEntry) {
         NameEntry oldEntry = nameEntryRepository.findByName(newEntry.getName());
         oldEntry.update(newEntry);
         nameEntryRepository.save(oldEntry);
@@ -66,7 +66,7 @@ public class NameEntryService {
      * @param countParam specifies the count of result
      * @return a list of {@link org.oruko.dictionary.model.NameEntry}
      */
-    public List<NameEntry> findAll(Optional<Integer> pageNumberParam, Optional<Integer> countParam) {
+    public List<NameEntry> loadAllNames(Optional<Integer> pageNumberParam, Optional<Integer> countParam) {
 
         List<NameEntry> nameEntries = new ArrayList<>();
         Integer pageNumber = pageNumberParam.orElse(PAGE);
@@ -81,6 +81,24 @@ public class NameEntryService {
         });
 
         return nameEntries;
+    }
+
+    /**
+     * Used to retrieve a {@link org.oruko.dictionary.model.NameEntry} from the repository using its known name
+     * @param name the name
+     * @return the NameEntry
+     */
+    public NameEntry loadName(String name) {
+        return nameEntryRepository.findByName(name);
+    }
+
+    /**
+     * Used to retrieve the duplicate entries for the given name string
+     * @param name the name
+     * @return a list of {@link org.oruko.dictionary.model.DuplicateNameEntry}
+     */
+    public List<DuplicateNameEntry> loadNameDuplicates(String name) {
+        return duplicateEntryRepository.findByName(name);
     }
 
     /**

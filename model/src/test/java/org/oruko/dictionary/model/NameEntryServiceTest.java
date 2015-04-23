@@ -58,7 +58,7 @@ public class NameEntryServiceTest {
 
     @Test
     public void testSave() throws Exception {
-        nameEntryService.save(nameEntry);
+        nameEntryService.saveName(nameEntry);
         verify(nameEntryRepository).save(nameEntry);
         verifyNoMoreInteractions(nameEntryRepository);
     }
@@ -67,7 +67,7 @@ public class NameEntryServiceTest {
     public void testUpdate() throws Exception {
         NameEntry oldEntry = mock(NameEntry.class);
         when(nameEntryRepository.findByName(anyString())).thenReturn(oldEntry);
-        nameEntryService.update(nameEntry);
+        nameEntryService.updateName(nameEntry);
         verify(oldEntry).update(nameEntry);
     }
 
