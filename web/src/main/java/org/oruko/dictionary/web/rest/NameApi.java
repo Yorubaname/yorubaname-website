@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.ServletContext;
 import javax.validation.Valid;
 
@@ -102,7 +103,9 @@ public class NameApi {
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
     public List<Name> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
-                                  @RequestParam("count") Optional<Integer> countParam) throws JsonProcessingException {
+                                  @RequestParam("count") Optional<Integer> countParam,
+                                  @RequestParam(value = "indexed", required = false) Optional<Boolean> indexed)
+            throws JsonProcessingException {
 
         List<Name> names = new ArrayList<>();
         Iterable<NameEntry> allNameEntries = entryService.loadAllNames(pageParam, countParam);;
@@ -111,7 +114,15 @@ public class NameApi {
             names.add(nameEntry.toName());
         });
 
-        return names;
+        if (indexed.isPresent()) {
+            if (indexed.get().equals(true)) {
+                return names.stream().filter(name -> name.isIndexed()).collect(Collectors.toCollection(ArrayList::new));
+            } else {
+                return names.stream().filter(name -> !name.isIndexed()).collect(Collectors.toCollection(ArrayList::new));
+            }
+        } else {
+            return names;
+        }
     }
 
     /**
