@@ -179,8 +179,8 @@ public class NameApi {
     }
 
     // TODO add method authorization for methods like this
-    @RequestMapping(value = "/v1/names/delete")
-    public ResponseEntity<String> deleteNames() {
+    @RequestMapping(value = "/v1/names/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteAllNames() {
         entryService.deleteAllAndDuplicates();
         return new ResponseEntity<String>("Names Deleted", HttpStatus.OK);
     }
