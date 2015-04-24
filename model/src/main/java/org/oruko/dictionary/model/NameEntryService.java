@@ -118,6 +118,13 @@ public class NameEntryService {
         nameEntryRepository.delete(entry);
     }
 
+    // TODO Method level security should be added here
+    public void deleteNameInEntryAndDuplicates(String name) {
+        NameEntry nameEntry = nameEntryRepository.findByName(name);
+        nameEntryRepository.delete(nameEntry);
+        duplicateEntryRepository.delete(new DuplicateNameEntry(nameEntry));
+    }
+
     /**
      * Deletes a duplicated entry
      * @param duplicateNameEntry the duplicated entry to delete

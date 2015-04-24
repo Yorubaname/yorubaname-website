@@ -169,9 +169,16 @@ public class NameApi {
 
     // TODO add method authorization for methods like this
     @RequestMapping(value = "/v1/names/delete")
-    public String deleteNames() {
+    public ResponseEntity<String> deleteNames() {
         entryService.deleteAllAndDuplicates();
-        return "Names Deleted";
+        return new ResponseEntity<String>("Names Deleted", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteName(@PathVariable String name) {
+        entryService.deleteNameInEntryAndDuplicates(name);
+        return new ResponseEntity<String>(name + "Deleted", HttpStatus.OK);
+
     }
 
     //=====================================Helpers=========================================================//
