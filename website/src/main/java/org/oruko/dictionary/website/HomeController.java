@@ -1,4 +1,4 @@
-package org.oruko.dictionary.web.frontend;
+package org.oruko.dictionary.website;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

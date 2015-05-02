@@ -3,17 +3,18 @@ package org.oruko.dictionary;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * @author Dadepo Aderemi.
+ */
 @SpringBootApplication
-@EnableJpaRepositories
 @EnableSwagger2
-@EnableWebSecurity // Switches off the automatic spring boot configurations
+@EnableWebSecurity //switches off auto configuration for spring security
 public class DictionaryApplication {
 
     /**
