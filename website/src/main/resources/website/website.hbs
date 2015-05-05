@@ -7,7 +7,10 @@
 
 <body>
 <div class="wrapper">
-    Welcome to {{appName}}.
+    Welcome to {{appName}}. <br/>
+
+    When locale is en_Us --> {{i18n "lang.welcome"}} <br/>
+    When locale is yoruba --> {{i18n "lang.welcome" bundle="messages_yor"}}
 </div>
 <!-- Javascript -->
 {{> scriptIncludes }}
