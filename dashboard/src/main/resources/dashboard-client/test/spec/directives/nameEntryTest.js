@@ -35,7 +35,7 @@ describe('Directive: nameEntry', function() {
         });
     });
 
-    it('Autocomplete should serve name', function() {
+    xit('Autocomplete should serve name', function() {
         //set a value (the same one we had in the html)
         scope.formEntry = {};
         scope.formEntry.pronunciation = '';

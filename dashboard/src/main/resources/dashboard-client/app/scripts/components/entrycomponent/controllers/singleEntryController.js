@@ -7,7 +7,7 @@
  * @param $element angular element
  */
 // TODO a nameEntryDirective is now available. Use that instead
-var singleEntryController = function ($scope, $http, $element, $cookies) {
+var singleEntryController = function ($scope, $http, $element, $cookies, ENV) {
   $scope.formEntry = {};
   $scope.msg = {};
   $scope.formEntry.submittedBy = $cookies.userName;
@@ -17,7 +17,7 @@ var singleEntryController = function ($scope, $http, $element, $cookies) {
 
     $http({
             method: 'POST',
-            url: $scope.appEndpoint+'/v1/name',
+            url: ENV.appEndpoint+'/v1/name',
             data: $element.serialize($scope.formEntry)
           })
       .success(function (data) {

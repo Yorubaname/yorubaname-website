@@ -1,6 +1,6 @@
 'use strict';
 
-var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap'])
+var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env'])
     .config(function($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/home');
 
@@ -78,10 +78,6 @@ angular.module('dashboardappApp').controller('indexLogin', function($scope, $coo
 
 });
 
-dashboardappApp.run(function($rootScope) {
-    $rootScope.dashboardEndpoint = 'http://localhost:8081/dashboard';
-    $rootScope.appEndpoint = 'http://localhost:8081';
-});
 
 dashboardappApp.config(function(tagsInputConfigProvider) {
     /*Global configuration for tags inputs for text seperation*/
