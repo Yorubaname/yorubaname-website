@@ -442,12 +442,12 @@ module.exports = function (grunt) {
    * Grunt task kicked off by the web module that copies the dashboard app into an accessible
    * location within the web module app. public, static or webapp.
    */
-  grunt.registerTask('spring-boot-build', 'Compile then copy to public folder in web', function (target) {
-    if (grunt.option("target") !== "") {
-      var destination = grunt.option("target");
+  grunt.registerTask('spring-boot-build', 'Compile then copy to public folder in web', function () {
+    if (grunt.option('target') !== '') {
+      var destination = grunt.option('target');
 
-      console.log(grunt.option("target"));
-      grunt.log.ok("Copying dashboard app to " + destination);
+      console.log(grunt.option('target'));
+      grunt.log.ok('Copying dashboard app to ' + destination);
 
       var appConfig = {
         app: require('./bower.json').appPath || 'app',

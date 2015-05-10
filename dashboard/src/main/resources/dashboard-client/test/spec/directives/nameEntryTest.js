@@ -7,7 +7,6 @@
 describe('Directive: nameEntry', function() {
     var scope,
         elem,
-        directive,
         compiled,
         html;
     beforeEach(angular.mock.module('ngMockE2E'));
@@ -38,14 +37,14 @@ describe('Directive: nameEntry', function() {
 
     it('Autocomplete should serve name', function() {
         //set a value (the same one we had in the html)
-        scope.formEntry = {}
+        scope.formEntry = {};
         scope.formEntry.pronunciation = '';
 
         //check to see if it's blank first.
-        expect(elem.find("pronunciation").text()).toBe('');
+        expect(elem.find('pronunciation').text()).toBe('');
         scope.formEntry.pronunciation = 'odu to la';
         //test to see if it was updated.
-        console.log(elem.find("pronunciation"))
-        expect(elem.find("pronunciation").text()).toBe(['odu', 'to', 'la']);
+        console.log(elem.find('pronunciation'));
+        expect(elem.find('pronunciation').text()).toBe(['odu', 'to', 'la']);
     });
 });
