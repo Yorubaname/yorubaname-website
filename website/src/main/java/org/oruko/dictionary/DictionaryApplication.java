@@ -5,6 +5,7 @@ import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -47,5 +48,13 @@ public class DictionaryApplication {
                 .build();
     }
 
+    @Bean
+    // This switches off the ContentNegotiatingViewResolver as instructed in this issue
+    // https://github.com/spring-projects/spring-boot/issues/546. This is due to the issue
+    // in spring-boot-starter-handlebars reported here
+    // https://github.com/allegro/handlebars-spring-boot-starter/issues/7
+    public ContentNegotiatingViewResolver viewResolver() {
+        return null;
+    }
 
 }
