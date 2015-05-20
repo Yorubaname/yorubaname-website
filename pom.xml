@@ -9,12 +9,13 @@
 
     <modules>
         <module>model</module>
-        <module>tts-module</module>
-        <module>web</module>
+        <module>tts</module>
+        <module>webapi</module>
         <module>importer</module>
         <module>dashboard</module>
         <module>auth</module>
         <module>elasticsearch</module>
+        <module>website</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -34,7 +35,7 @@
         <start-class>org.oruko.dictionary.DictionaryApplication</start-class>
         <main.basedir>${project.basedir}</main.basedir>
         <java.version>1.8</java.version>
-        <spring-boot.version>1.2.1.RELEASE</spring-boot.version>
+        <spring-boot.version>1.2.3.RELEASE</spring-boot.version>
         <mysql-connector.version>5.1.34</mysql-connector.version>
         <jackson-core.version>2.5.1</jackson-core.version>
         <logback-classic.version>1.1.2</logback-classic.version>
@@ -44,6 +45,7 @@
         <es.version>1.5.0</es.version>
         <commons-io.version>2.4</commons-io.version>
         <springfox-swagger>2.0.0</springfox-swagger>
+        <spring-handlebars.version>0.1.1</spring-handlebars.version>
     </properties>
 
     <dependencyManagement>
@@ -67,18 +69,13 @@
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-freemarker</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId>pl.allegro.tech.boot</groupId>
+                <artifactId>spring-boot-starter-handlebars</artifactId>
+                <version>${spring-handlebars.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-security</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
@@ -139,6 +136,11 @@
                 <version>${commons-io.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars-springmvc</artifactId>
+                <version>2.0.0</version>
+            </dependency>
 
             <!-- Test dependencies -->
             <dependency>
@@ -159,6 +161,15 @@
     </dependencyManagement>
 
     <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>jcenter-snapshots</id>
             <name>jcenter</name>

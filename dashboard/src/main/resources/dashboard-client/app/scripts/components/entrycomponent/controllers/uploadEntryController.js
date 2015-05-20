@@ -5,7 +5,7 @@
  * @param $element angular element
  * @param fileUploader service for uploading file to a url
  */
-var uploadEntryController = function ($scope, $element, fileUploader) {
+var uploadEntryController = function ($scope, $element, fileUploader, ENV) {
   $scope.namesfile = {};
   $scope.msg = {};
 
@@ -44,7 +44,7 @@ var uploadEntryController = function ($scope, $element, fileUploader) {
     $scope.msg.text = "Uploading...";
     $scope.msg.type = "msg-info";
 
-    fileUploader.uploadFileToUrl($scope.namesfile, $scope.appEndpoint + '/v1/names/upload', success, error);
+    fileUploader.uploadFileToUrl($scope.namesfile, ENV.appEndpoint + '/v1/names/upload', success, error);
 
   };
 };

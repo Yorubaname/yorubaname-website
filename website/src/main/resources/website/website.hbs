@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ {{> headHtml }}
+</head>
+
+<body>
+<div class="wrapper">
+
+    Welcome to {{appName}}. <br/><br/>
+
+    Switch Language:
+    <select onChange="window.document.location.href=this.options[this.selectedIndex].value;">
+
+        <option id="en" value="/?lang=en">English</option>
+        <option id="yo" value="/?lang=yo">Yoruba</option>
+        <option id="hs" value="/?lang=hs">Hausa</option>
+        <option id="ig" value="/?lang=ig">Igbo</option>
+        <option id="fr" value="/?lang=fr">French</option>
+    </select>
+    <br/>
+
+    Welcome message: --> {{message "lang.welcome"}} <br/>
+
+</div>
+<!-- Javascript -->
+{{> scriptIncludes }}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var id = document.location.search.split("=")[1];
+        $("#"+id).attr("selected", "selected");
+    });
+</script>
+
+</body>
+</html>

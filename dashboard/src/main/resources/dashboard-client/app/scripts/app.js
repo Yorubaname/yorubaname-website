@@ -1,6 +1,6 @@
 'use strict';
 
-var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap'])
+var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env'])
     .config(function($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/home');
 
@@ -53,13 +53,13 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies
     });
 
 
-angular.module('dashboardappApp').controller("search", function($scope) {
+angular.module('dashboardappApp').controller('search', function($scope) {
     $scope.search = function() {
-        window.location.href = "#/list/edit?name=" + $scope.searchTerm;
+        window.location.href = '#/list/edit?name=' + $scope.searchTerm;
     };
 });
 
-angular.module('dashboardappApp').controller("indexLogin", function($scope, $cookies) {
+angular.module('dashboardappApp').controller('indexLogin', function($scope, $cookies) {
 
     $scope.logoutUser = function() {
         $cookies.isAuthenticated = false;
@@ -68,11 +68,11 @@ angular.module('dashboardappApp').controller("indexLogin", function($scope, $coo
         $scope.isAdmin = false;
     };
 
-    if ($cookies.isAuthenticated && $cookies.isAuthenticated === "true") {
+    if ($cookies.isAuthenticated && $cookies.isAuthenticated === 'true') {
         $scope.isAuthenticated = true;
     }
 
-    if ($cookies.isAdmin && $cookies.isAdmin === "true") {
+    if ($cookies.isAdmin && $cookies.isAdmin === 'true') {
         $scope.isAdmin = true;
     }
 
@@ -92,7 +92,6 @@ dashboardappApp.run(function($rootScope) {
         console.log($rootScope.previousParams)
     });
 });
-
 dashboardappApp.config(function(tagsInputConfigProvider) {
     /*Global configuration for tags inputs for text seperation*/
     tagsInputConfigProvider.setDefaults('tagsInput', {

@@ -157,7 +157,7 @@ module.exports = function (grunt) {
       },
       server: {
         options: {
-          map: true,
+          map: true
         },
         files: [{
           expand: true,
@@ -387,6 +387,39 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+
+    // environment properties
+    ngconstant: {
+      // Options for all targets
+      options: {
+        space: '  ',
+        wrap: '"use strict";\n\n {%= __ngModule %}',
+        name: 'env'
+      },
+      // Environment targets
+      development: {
+        options: {
+          dest: '<%= yeoman.app %>/scripts/env.js'
+        },
+        constants: {
+          ENV: {
+            name: 'development',
+            appEndpoint: 'http://localhost:8081'
+          }
+        }
+      },
+      production: {
+        options: {
+          dest: '<%= yeoman.dist %>/scripts/env.js'
+        },
+        constants: {
+          ENV: {
+            name: 'production',
+            appEndpoint: 'http://www.yorubaname.com:8081'
+          }
+        }
+      }
     }
   });
 
@@ -398,6 +431,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'ngconstant:development',
       'wiredep',
       'concurrent:server',
       'autoprefixer:server',
@@ -422,6 +456,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'ngconstant:production',
     'wiredep',
     'useminPrepare',
     'concurrent:dist',
@@ -442,12 +477,12 @@ module.exports = function (grunt) {
    * Grunt task kicked off by the web module that copies the dashboard app into an accessible
    * location within the web module app. public, static or webapp.
    */
-  grunt.registerTask('spring-boot-build', 'Compile then copy to public folder in web', function (target) {
-    if (grunt.option("target") !== "") {
-      var destination = grunt.option("target");
+  grunt.registerTask('spring-boot-build', 'Compile then copy to public folder in web', function () {
+    if (grunt.option('target') !== '') {
+      var destination = grunt.option('target');
 
-      console.log(grunt.option("target"));
-      grunt.log.ok("Copying dashboard app to " + destination);
+      console.log(grunt.option('target'));
+      grunt.log.ok('Copying dashboard app to ' + destination);
 
       var appConfig = {
         app: require('./bower.json').appPath || 'app',

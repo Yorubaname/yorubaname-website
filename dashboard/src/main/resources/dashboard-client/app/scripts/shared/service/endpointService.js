@@ -6,13 +6,13 @@
  * @param $http angulars http service
  * @param $rootScope angulars root scope
  */
-var endpointService = function ($http, $rootScope) {
+var endpointService = function ($http, $rootScope, ENV) {
 
   this.post = function(endpoint, data) {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     var request = $http({
           method: 'POST',
-          url: $rootScope.appEndpoint + endpoint,
+          url: ENV.appEndpoint + endpoint,
           data: $.param(data)
     });
 
@@ -22,7 +22,7 @@ var endpointService = function ($http, $rootScope) {
   this.postJson = function(endpoint, data) {
     var request = $http({
           method: 'POST',
-          url: $rootScope.appEndpoint + endpoint,
+          url: ENV.appEndpoint + endpoint,
           data: data
     });
 
@@ -33,7 +33,7 @@ var endpointService = function ($http, $rootScope) {
 
     var request = $http({
           method: 'GET',
-          url: $rootScope.appEndpoint + endpoint,
+          url: ENV.appEndpoint + endpoint,
           params: params ? params : '',
           headers: headers? headers : ''
      });
@@ -44,7 +44,7 @@ var endpointService = function ($http, $rootScope) {
   this.put = function (endpoint, params) {
     var request = $http({
           method: 'PUT',
-          url: $rootScope.appEndpoint + endpoint,
+          url: ENV.appEndpoint + endpoint,
           params: params
     });
 
