@@ -117,7 +117,7 @@ body {
     .page-title {
         font-weight: bold;
         margin: 0px;
-        border-bottom: 1px solid #eee;
+        /*border-bottom: 1px solid #eee;*/
     }
     /** components **/
     /** sidebar **/
@@ -238,14 +238,64 @@ tags-input .tags {
     background-color: white;
     height: 100%;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 0px;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
     -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
     -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+/*.form-control,
+.navbar,
+.btn {
+    border-radius: 0px;
+}
+*/
+/*.navbar {
+    border-radius: 0px;
+}
+*/
 
 tags-input .tags .tag-item {
-    background: khaki;
+    background: #F5EFB0;
+}
+
+.bg-khaki {
+    background: #C3A96E;
+}
+
+.color-khaki {
+    color: #C3A96E;
+}
+
+.form-group label {
+    color: cadetblue;
+}
+
+.navbar-default {
+    background-color: #C3A96E;
+    border-color: #4D4D4D;
+    color: #fff;
+}
+
+.navbar-default .navbar-brand {
+    color: #fff;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #fff;
+    background-color: #4D4D4D;
+}
+
+a:hover,
+a:focus {
+    color: #C3A96E;
+    text-decoration: underline;
+}
+
+a {
+    color: #4D4D4D;
+    text-decoration: none;
 }

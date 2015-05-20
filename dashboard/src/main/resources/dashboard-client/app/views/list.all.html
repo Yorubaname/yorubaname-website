@@ -1,36 +1,58 @@
 <div id="child-page-title">
-  .::{{ childTitle }}::.
+    .::{{ childTitle }}::.
 </div>
-
-<div class="row page-content">
-  <div class="btn-group" role="group">
-    <button class="btn-default" ng-click="previous()">Previous</button>
-    <button class="btn-default" ng-click="next()">Next</button>
-  </div>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Meaning</th>
-      <th>Tonal Mark</th>
-      <th>Morphology</th>
-      <th>Submitted By</th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="entry in names">
-      <th scope="row">{{ ($index + 1 + count * (page - 1) ) }}</th>
-      <td>{{ entry.name }}</td>
-      <td>{{ entry.meaning }}</td>
-      <td>{{ entry.tone.toneMark }}</td>
-      <td>{{ entry.morphology }}</td>
-      <td>{{ entry.submittedBy }}</td>
-      <td>
-        <a href="#/list/edit?name={{ entry.name }}" class="btn btn-primary btn-xs">Edit</a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <input type="text" class="form-control" ng-model="searchTerm" placeholder="Filter list by name">
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    List Entries <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">All</a></li>
+                    <li><a href="#">Requiring Attention</a></li>
+                    <li><a href="#">Submitted for review</a></li>
+                    <li><a href="#">Published</a></li>
+                    <li><a href="#">Saved for later</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row page-content panel panel-body panel-default">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Meaning</th>
+                    <th>Tonal Mark</th>
+                    <th>Morphology</th>
+                    <th>Submitted By</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entry in names | filter:searchTerm">
+                    <th scope="row">{{ ($index + 1 + count * (page - 1) ) }}</th>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.meaning }}</td>
+                    <td>{{ entry.tone.toneMark }}</td>
+                    <td>{{ entry.morphology }}</td>
+                    <td>{{ entry.submittedBy }}</td>
+                    <td>
+                        <a href="#/list/edit?name={{ entry.name }}" class="btn btn-primary btn-xs">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row text-right">
+        <div class="btn-group" role="group">
+            <button class="btn btn-default" ng-click="previous()">Previous</button>
+            <button class="btn btn-default" ng-click="next()">Next</button>
+        </div>
+    </div>
 </div>

@@ -81,6 +81,16 @@ angular.module('dashboardappApp').controller("indexLogin", function($scope, $coo
 dashboardappApp.run(function($rootScope) {
     $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";
     $rootScope.appEndpoint = "http://localhost:8081";
+    $rootScope.previousState;
+    $rootScope.previousParams;
+    $rootScope.currentState;
+    $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
+        $rootScope.previousState = from.name;
+        $rootScope.currentState = to.name;
+        $rootScope.previousParams = fromParams;
+        console.log('Previous state:' + $rootScope.previousState)
+        console.log($rootScope.previousParams)
+    });
 });
 
 dashboardappApp.config(function(tagsInputConfigProvider) {

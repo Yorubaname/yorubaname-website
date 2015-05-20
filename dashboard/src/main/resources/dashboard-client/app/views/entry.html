@@ -1,12 +1,11 @@
 <h4 class="page-title">{{ title }}</h4>
+<hr>
 <div class="viewnav">
-  <div class="btn-group" role="group">
-   <button type="button" class="btn btn-default" ui-sref-active="active" ui-sref=".single">Create Entry</button>
-    <button type="button" class="btn btn-default" ui-sref-active="active" ui-sref=".upload">Upload entries in bulk</button>
-  </div>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-info" ui-sref-active="active" ui-sref=".single">Create Entry</button>
+        <button type="button" class="btn btn-info" ui-sref-active="active" ui-sref=".upload">Upload entries in bulk</button>
+    </div>
 </div>
 <div class="row page-content">
-
-  <div ui-view></div>
-
+    <div ui-view></div>
 </div>

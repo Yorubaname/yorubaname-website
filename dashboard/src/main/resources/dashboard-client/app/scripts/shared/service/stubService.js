@@ -39,7 +39,7 @@ var stub = function() {
     /**
      * Parse form by convering array objects generated from inline tags to string for submission
      */
-    this.joinArrays = function(obj, delimeter) {
+    this.arraysToString = function(obj, delimeter) {
         for (var attr in obj) {
             if (Object.prototype.toString.call(obj[attr]) == "[object Array]" && attr !== "etymology") {
                 if (obj[attr].length > 0) {

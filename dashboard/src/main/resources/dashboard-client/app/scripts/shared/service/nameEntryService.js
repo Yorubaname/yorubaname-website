@@ -6,21 +6,23 @@
 // TODO refactor endpoint raw strings to global variables
 var nameEntryService = function($http, endpointService) {
     /**
-     * Get a name by id
-     * returns the one or no result
+     * Get a name
+     * returns the one or zero result
      */
-    this.getName = function getName(id) {
+    this.getName = function getName(name) {
         var data = {
-            id: id
+            name: name
         };
         var request = endpointService.get('/v1/name/', data);
         return request;
     };
 
-    this.getNames = function getNames(page, count) {
+    this.getNames = function getNames(page, count, filter, indexed) {
         var data = {
             page: page,
-            count: count
+            count: count,
+            filter: filter,
+            indexed: indexed
         };
         var request = endpointService.get('/v1/names/', data);
         return request;
@@ -28,5 +30,7 @@ var nameEntryService = function($http, endpointService) {
     };
 
 };
+
+
 
 angular.module('dashboardappApp').service('nameEntryService', nameEntryService);

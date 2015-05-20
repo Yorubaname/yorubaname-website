@@ -123,8 +123,6 @@ public class ElasticSearchService {
         DeleteResponse response = client.prepareDelete(indexName, documentType, name)
                                         .execute()
                                         .actionGet();
-
-
         return response.isFound();
     }
 

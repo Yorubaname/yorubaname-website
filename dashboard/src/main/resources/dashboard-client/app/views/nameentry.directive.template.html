@@ -1,132 +1,292 @@
 <div>
     <form class="form-horizontal" role="form">
         <!-- <notification notify="notify" msg="msg"></notification> -->
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <div class="form-group">
-                    <label for="nameEntry" class="col-sm-4 control-label">Name</label>
-                    <div class="col-sm-8">
-                        <input autocomplete="off" ng-readonly="duplicateView" typeahead="obj.name for obj in nameMatchList($viewValue) | filter:$viewValue | limitTo:8" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" typeahead-wait-ms="500" typeahead-min-length="3">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <h2>Entry</h2>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="nameEntry" class="control-label">Name</label>
+                            <input autocomplete="off" ng-readonly="duplicateView" typeahead="obj as obj.name for obj in nameMatchList($viewValue) | filter:$viewValue | limitTo:8" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" typeahead-wait-ms="500" typeahead-min-length="3" typeahead-on-select="onNameSelected(formEntry.name)">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="pronunciationEntry" class="col-sm-4 control-label">Pronunciation</label>
-                    <div class="col-sm-8">
-                        <tags-input id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="meaningEntry" class="control-label">Meaning</label>
+                            <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="ipaEntry" class="col-sm-4 control-label">IPA Notation</label>
-                    <div class="col-sm-8">
-                        <tags-input id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="extendedMeaningEntry" class="control-label">Extra information about this name</label>
+                            <textarea class="form-control" id="extendedMeaningEntry" placeholder="Meaning of word" name="extendedMeaning" ng-model="formEntry.extendedMeaning"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="syllablesEntry" class="col-sm-4 control-label">Syllabic Breakdown</label>
-                    <div class="col-sm-8">
-                        <tags-input id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="ipaEntry" class="control-label">IPA Notation</label>
+                            <tags-input id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="morphologyEntry" class="col-sm-4 control-label">Morphology</label>
-                    <div class="col-sm-8">
-                        <tags-input id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="pronunciationEntry" class="control-label">Pronunciation</label>
+                            <tags-input id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group" ng-show="formEntry.morphology.length > 0">
-                    <label for="etymologyEntry" class="col-sm-4 control-label">Etymology</label>
-                    <div class="col-sm-8 well well-sm">
-                        <div class="form-group" ng-repeat="syllable in formEntry.etymology">
-                            <label for="morphologyEntry" class="col-sm-4 control-label"> {{syllable.name}}</label>
-                            <div class="col-sm-6">
-                                <input class="form-control" id="morphologyEntry" placeholder="meaning" name="morphology" ng-model="syllable.meaning">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="syllablesEntry" class="control-label">Syllabic Breakdown</label>
+                            <tags-input id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="morphologyEntry" class="control-label">Morphology</label>
+                            <tags-input id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology">
+                        </div>
+                    </div>
+                    <!--    <div class="form-group" ng-show="formEntry.morphology.length > 0">
+                        <div class="col-sm-8 well well-sm">
+                            <label for="etymologyEntry" class="control-label">Etymology</label>
+                            <div class="form-group" ng-repeat="syllable in formEntry.etymology">
+                                <label for="morphologyEntry" class="col-sm-4 control-label"> {{syllable.name}}</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="morphologyEntry" placeholder="meaning" name="morphology" ng-model="syllable.meaning">
+                                </div>
                             </div>
+                        </div>
+                    </div> -->
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="variantsEntry" class="control-label">Variants</label>
+                            <tags-input id="variantsEntry" placeholder="Variants" name="variants" ng-model="formEntry.variants">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div id="mediaList">
+                            <add-media></add-media>
+                        </div>
+                        <label ng-click="addMedia()" class="control-label">Add more</label>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="famousPeopleEntry" class="control-label">Famous People</label>
+                            <tags-input id="famousPeopleEntry" placeholder="Famous People" name="famousPeople" ng-model="formEntry.famousPeople">
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="geoLocationEntry" class="col-sm-4 control-label">Geolocation</label>
-                    <div class="col-sm-8">
-                        <div class="radio">
-                            <label class="radio-inline" ng-repeat="region in locationTemplate">
-                                <input type="radio" name="topLocation" value="{{region.name}}" ng-model="formEntry.region" checked="checked"> {{region.name}}
-                            </label>
-                        </div>
-                        <br>
-                        <div class="well well-sm" ng-show="formEntry.region == locationTemplate[0].name">
-                            <div class="radio">
-                                <label ng-repeat="sub in locationTemplate[0].subRegions">
-                                    <input type="radio" name="region" value="{{sub.name}}" ng-model="formEntry.subregion" checked="checked"> {{sub.name}}
-                                    <h6><small>{{sub.description}}</small></h6>
-                                </label>
+                <!--<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <h2>Tags</h2>
+                    <div class="container">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="gender" value="female" ng-model="formEntry.gender"> Female
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="gender" value="male" ng-model="formEntry.gender"> Male
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="well well-sm" ng-show="formEntry.region == locationTemplate[1].name">
-                            <div class="radio" ng-repeat="sub in locationTemplate[1].subRegions">
-                                <label>
-                                    <input type="radio" name="subregion" value="{{sub.name}}" ng-model="formEntry.subregion" checked="checked"> {{sub.name}}
-                                    <br><i>{{sub.description}}</i>
-                                </label>
+                        <hr>
+                        <label>Usage</label>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="usage" value="First Name" ng-model="formEntry.usage"> First Name
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="usage" value="Surname" ng-model="formEntry.usage"> Surname
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="subregion" value="african" ng-model="african">Others Africa/Diaspora
-                                </label>
+                        </div>
+                        <hr>
+                        <label>Religious</label>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="religious" value="Yourba Traditional Religion" ng-model="formEntry.religious"> Yourba Traditional Religion
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="religious" value="Muslim" ng-model="formEntry.religious"> Muslim
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            <input class="form-control" ng-show="african" ng-model="formEntry.subregion">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="religious" value="Christian" ng-model="formEntry.religious"> Christian
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="religious" value="Name brought from heaven" ng-model="formEntry.religious"> Name brought from heaven
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <label>Social</label>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="social" value="Nickname, abbreviation" ng-model="formEntry.social"> Nickname, abbreviation
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="social" value="Title, royalty, chieftancy" ng-model="formEntry.social"> Title, royalty, chieftancy
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="social" value="Pet name" ng-model="formEntry.social"> Pet name
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="social" value="Praise name" ng-model="formEntry.social"> Praise name
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <label>Temporal and geographic</label>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="geographic" value="Dates, events" ng-model="formEntry.geographic"> Dates, events
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="geographic" value="Town, village, neighbourhood" ng-model="formEntry.geographic"> Town, village, neighbourhood
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="geographic" value="Foreign (English)" ng-model="formEntry.geographic"> Foreign (English)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="geographic" value="Foreign (French)" ng-model="formEntry.geographic"> Foreign (French)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="geographic" value="Foreign (Arabic)" ng-model="formEntry.geographic"> Foreign (Arabic)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="geographic" value="Neologism" ng-model="formEntry.geographic"> Neologism
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <label>Geolocation</label>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="radio">
+                                        <label class="radio-inline" ng-repeat="region in locationTemplate">
+                                            <input type="radio" name="topLocation" value="{{region.name}}" ng-model="formEntry.region" checked="checked"> {{region.name}}
+                                        </label>
+                                    </div>
+                                    <br>
+                                    <div class="well well-sm" ng-show="formEntry.region == locationTemplate[0].name">
+                                        <div class="radio">
+                                            <label ng-repeat="sub in locationTemplate[0].subRegions">
+                                                <input type="radio" name="region" value="{{sub.name}}" ng-model="formEntry.subregion" checked="checked"> {{sub.name}}
+                                                <h6><small>{{sub.description}}</small></h6>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="well well-sm" ng-show="formEntry.region == locationTemplate[1].name">
+                                        <div class="radio" ng-repeat="sub in locationTemplate[1].subRegions">
+                                            <label>
+                                                <input type="radio" name="subregion" value="{{sub.name}}" ng-model="formEntry.subregion" checked="checked"> {{sub.name}}
+                                                <br><i>{{sub.description}}</i>
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="subregion" value="african" ng-model="african">Others Africa/Diaspora
+                                            </label>
+                                        </div>
+                                        <input class="form-control" ng-show="african" ng-model="formEntry.subregion">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="tagsEntry" class="col-sm-4 control-label">Tag</label>
-                    <div class="col-sm-8">
-                        <tags-input id="tagsEntry" placeholder="Tags" name="tags" ng-model="formEntry.tags">
-                    </div>
-                </div>
+                </div> -->
             </div>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <hr>
+            <div class="row">
                 <div class="form-group">
-                    <label for="meaningEntry" class="col-sm-4 control-label">Meaning</label>
-                    <div class="col-sm-8">
-                        <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
+                    <div class="col-sm-6">
+                        <button ng-click="create()" class="btn bg-khaki">{{ buttonAction }}</button>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="extendedMeaningEntry" class="col-sm-4 control-label">Extend Meaning</label>
-                    <div class="col-sm-8">
-                        <textarea class="form-control" id="extendedMeaningEntry" placeholder="Meaning of word" name="extendedMeaning" ng-model="formEntry.extendedMeaning"></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="variantsEntry" class="col-sm-4 control-label">Variants</label>
-                    <div class="col-sm-8">
-                        <tags-input id="variantsEntry" placeholder="Variants" name="variants" ng-model="formEntry.variants">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="famousPeopleEntry" class="col-sm-4 control-label">Famous People</label>
-                    <div class="col-sm-8">
-                        <tags-input id="famousPeopleEntry" placeholder="Famous People" name="famousPeople" ng-model="formEntry.famousPeople">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="otherLanguagesEntry" class="col-sm-4 control-label">Found in other languages</label>
-                    <div class="col-sm-8">
-                        <tags-input id="otherLanguagesEntry" placeholder="Names in other languages" name="inOtherLanguages" ng-model="formEntry.inOtherLanguages">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="mediaEntry" class="col-sm-4 control-label">Media</label>
-                    <div class="col-sm-8">
-                        <input class="form-control" id="mediaEntry" placeholder="Media" name="media" ng-model="formEntry.media">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button ng-click="create()" class="btn btn-success btn-block">{{ buttonAction }}</button>
                 </div>
             </div>
         </div>
