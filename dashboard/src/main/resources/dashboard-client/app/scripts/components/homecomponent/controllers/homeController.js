@@ -10,8 +10,6 @@ var homeController = function($scope, profileService) {
     $scope.title = "Dictionary Dashboard";
 
     $scope.profile = profileService.getProfileInfo();
-
-
 };
 
 angular.module('dashboardappApp').controller("homeController", homeController);

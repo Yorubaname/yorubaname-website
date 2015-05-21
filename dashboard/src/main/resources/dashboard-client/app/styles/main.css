@@ -96,9 +96,6 @@ body {
     }
     /** Bootstrap override **/
     
-    .navbar-default {
-        border-bottom: none;
-    }
     .navbar-brand {
         float: left;
         height: 50px;
@@ -134,13 +131,6 @@ body {
         background-color: #F8F8F8;
     }
     /** content **/
-    
-    #content {
-        padding-left: 10px;
-        border-left: 1px solid #DDD;
-        float: left;
-        width: 77%;
-    }
 }
 /** navvar **/
 
@@ -273,20 +263,41 @@ tags-input .tags .tag-item {
 }
 
 .navbar-default {
-    background-color: #C3A96E;
-    border-color: #4D4D4D;
-    color: #fff;
+    /*background-color: #C3A96E;*/
+    
+    background-color: transparent;
+    border-style: solid;
+    border-width: thick;
+    /* border-top: none;
+    border-left: none;
+    border-right: none;*/
+    
+    color: #000;
+}
+
+.navbar {
+    border-radius: 0px;
 }
 
 .navbar-default .navbar-brand {
-    color: #fff;
+    color: #000;
 }
 
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
-    color: #fff;
-    background-color: #4D4D4D;
+    color: #000;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #000;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #000;
+    background-color: transparent;
 }
 
 a:hover,
@@ -298,4 +309,18 @@ a:focus {
 a {
     color: #4D4D4D;
     text-decoration: none;
+}
+
+.noTableBorder > thead > tr > th,
+.noTableBorder > tbody > tr > th,
+.noTableBorder > tfoot > tr > th,
+.noTableBorder > thead > tr > td,
+.noTableBorder > tbody > tr > td,
+.noTableBorder > tfoot > tr > td {
+    border: none;
+}
+
+.rowClearance {
+    margin-bottom: 30px;
+    margin-top: 30px;
 }
