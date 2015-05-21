@@ -1,28 +1,105 @@
-<h4 class="page-title">{{ title }}</h4>
-<div class="row page-content">
-
-  <div class="row profile-row">
-    <div class="col-md-8"></div>
-    <div class="col-md-4">
-      <div id="profileBox">
-        <div id="pix">
-          <!--<img src="../images/stub-profile-pix.png" />-->
-          {{ profilePix }}
+<div class="row rowClearance">
+    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+        <h3>Volunteer Dashboard</h3>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <img ng-src="{{profile.image}}" class="img-responsive" alt="{{profile.name}}">
+            </div>
+            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                <h4>{{profle.name}} <a ui-sref="editProfile({id:profile.id})">Edit</a></h4>
+                <h5>Email: {{profile.email}}</h5>
+                <h5>Role {{profile.role}}</h5>
+                <h5>Contributions: {{profile.contributions}}</h5>
+                <h5>Password: {{profile.password}}</h5>
+            </div>
         </div>
-        <div id="info">
-          {{ profile.email }} <br/>
-          {{ profile.role }} <br/>
-          {{ profile.contributions }} <br/>
-        </div>
-      </div>
     </div>
-  </div>
-
-  <div class="row stats">
-    <div class="col-md-6 left">Stuff goes here</div>
-    <div class="col-md-6 right">Stuff goes here</div>
-  </div>
-
-
-
+    <div class="col-md-offset-2 col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Your Stats</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-hover noTableBorder">
+                        <tbody>
+                            <tr>
+                                <td>Entries requiring your attention</td>
+                                <td>{{profile.attentions.length}}</td>
+                            </tr>
+                            <tr>
+                                <td>Entries saved for later</td>
+                                <td>{{profile.saved.length}}</td>
+                            </tr>
+                            <tr>
+                                <td>Entries submitted for review</td>
+                                <td>{{profile.reviewed.length}}</td>
+                            </tr>
+                            <tr>
+                                <td>Entries published</td>
+                                <td>{{profile.published.length}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row rowClearance">
+    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+        <div class="panel panel-default panel-body">
+            <h3>Find Entry</h3>
+            <div class="input-group " ng-controller="search" ng-show="isAuthenticated">
+                <input type="text" class="form-control" ng-model="searchTerm">
+                <span ng-click="search()" class="input-group-addon">Go!</span>
+            </div>
+            <h6><input type="checkbox" ng-model="filter" value="{{profile.id}}">Only search my entries</h6>
+            <hr>
+            <h5><a href="#/list/all">List all entries</a></h5>
+            <h5><a href="">List only my entries</a></h5>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+        <div class="panel panel-default panel-body">
+            <h3>Create Entry</h3>
+            <h5><a href="">How to create an entry</a></h5>
+            <hr>
+            <a class="btn btn-danger btn-lg" href="#/entry/single">+ CREATE NEW ENTRY</a>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+        <div class="panel panel-default panel-body">
+            <h3>Upload Entries in bulk</h3>
+            <h5><a href="">Download Template</a></h5>
+            <hr>
+            <button type="button" class="btn btn-danger btn-lg">+ UPLOAD TEMPLATE</button>
+        </div>
+    </div>
+</div>
+<div class="row rowClearance">
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Your latest entries</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li ng-repeat="entry in profile.entries | orderBy:entries.date">{{entry.title}} <span class="pull-right">{{entry.date}}</span> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Notifications</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li ng-repeat="notification in profile.notifications | orderBy:entries.date">{{notification.date}} <span class="pull-right"> {{notification.title}}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
