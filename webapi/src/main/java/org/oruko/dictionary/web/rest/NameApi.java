@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
-import org.oruko.dictionary.model.DuplicateNameEntry;
-import org.oruko.dictionary.model.Name;
-import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryService;
+import org.oruko.dictionary.model.*;
+import org.oruko.dictionary.model.repository.GeoLocationRepository;
+import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,26 +17,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-import javax.servlet.ServletContext;
-import javax.validation.Valid;
 
 /**
- * End point for inserting and retrieving Name Entries
+ * End point for inserting and retrieving NameDto Entries
  * This would be the end point the clients would interact with to get names in and out of the dictionary
  * Created by dadepo on 2/12/15.
  */
@@ -47,9 +38,6 @@ public class NameApi {
     private Logger logger = LoggerFactory.getLogger(NameApi.class);
 
     @Autowired
-    ServletContext servletContext;
-
-    @Autowired
     private ImporterInterface importerInterface;
 
     @Autowired
@@ -57,6 +45,14 @@ public class NameApi {
 
     @Autowired
     private ElasticSearchService elasticSearchService;
+
+    @Autowired
+    private GeoLocationRepository geoLocationRepository;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(GeoLocation.class, new GeoLocationTypeConverter(geoLocationRepository));
+    }
 
     /**
      * End point that is used to add a {@link org.oruko.dictionary.model.NameEntry}.
@@ -98,20 +94,20 @@ public class NameApi {
      * @param pageParam a {@link Integer} representing the page (offset) to start the
      *                  result set from. 0 if none is given
      * @param countParam a {@link Integer} the number of names to return. 50 is none is given
-     * @return the list of {@link org.oruko.dictionary.model.Name}
+     * @return the list of {@link org.oruko.dictionary.model.NameDto}
      * @throws JsonProcessingException
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
-    public List<Name> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
+    public List<NameDto> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
                                   @RequestParam(value = "indexed", required = false) Optional<Boolean> indexed)
             throws JsonProcessingException {
 
-        List<Name> names = new ArrayList<>();
+        List<NameDto> names = new ArrayList<>();
         Iterable<NameEntry> allNameEntries = entryService.loadAllNames(pageParam, countParam);;
 
         allNameEntries.forEach(nameEntry -> {
-            names.add(nameEntry.toName());
+            names.add(nameEntry.toNameDto());
         });
 
         if (indexed.isPresent()) {
@@ -145,12 +141,12 @@ public class NameApi {
             List<DuplicateNameEntry> duplicates = entryService.loadNameDuplicates(name);
             HashMap<String, Object> duplicateEntries = new HashMap<String, Object>();
 
-            duplicateEntries.put("mainEntry", nameEntry.toName());
+            duplicateEntries.put("mainEntry", nameEntry.toNameDto());
             duplicateEntries.put("duplicates", duplicates);
 
             return duplicateEntries;
         }
-        return nameEntry.toName();
+        return nameEntry.toNameDto();
     }
 
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,

@@ -4,14 +4,14 @@ package org.oruko.dictionary.model;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.oruko.dictionary.elasticsearch.IndexedNameEntry;
 
-import java.lang.reflect.Field;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.lang.reflect.Field;
 
 /**
- * Entity for persisting Name entries
+ * Entity for persisting NameDto entries
  * Created by dadepo on 2/4/15.
  */
 @Entity
@@ -54,12 +54,12 @@ public class NameEntry extends AbstractNameEntry {
     }
 
     /**
-     * Gets the name entry represented as {@link org.oruko.dictionary.model.Name}
-     * @return the {@link org.oruko.dictionary.model.Name}
+     * Gets the name entry represented as {@link NameDto}
+     * @return the {@link NameDto}
      */
     @Transient
-    public Name toName() {
-        Name asName = new Name(name);
+    public NameDto toNameDto() {
+        NameDto asName = new NameDto(name);
         asName.setEtymology(etymology);
         asName.setExtendedMeaning(extendedMeaning);
         asName.setFamousPeople(famousPeople);
@@ -88,7 +88,7 @@ public class NameEntry extends AbstractNameEntry {
         indexedNameEntry.setExtendedMeaning(extendedMeaning);
         indexedNameEntry.setMorphology(morphology);
         indexedNameEntry.setEtymology(etymology);
-        indexedNameEntry.setGeoLocation(geoLocation);
+        indexedNameEntry.setGeoLocation(geoLocation.toString());
         indexedNameEntry.setVariants(variants);
         indexedNameEntry.setFamousPeople(famousPeople);
         indexedNameEntry.setInOtherLanguages(inOtherLanguages);

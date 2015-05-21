@@ -6,8 +6,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
+import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,9 @@ public class ExcelImporter implements ImporterInterface {
 
     @Autowired
     private NameEntryRepository nameEntryRepository;
+
+    @Autowired
+    private GeoLocationRepository geoLocationRepository;
 
     @Autowired
     private DuplicateNameEntryRepository duplicateEntryRepository;
@@ -97,7 +102,7 @@ public class ExcelImporter implements ImporterInterface {
                 nameEntry.setName(name);
                 nameEntry.setTonalMark(tone.toCharArray());
                 nameEntry.setMeaning(meaning);
-                nameEntry.setGeoLocation(location);
+                nameEntry.setGeoLocation(getGeoLocation(location));
 
                 if (alreadyExists(name)) {
                     duplicateEntryRepository.save(new DuplicateNameEntry(nameEntry));
@@ -113,6 +118,10 @@ public class ExcelImporter implements ImporterInterface {
         }
 
         return status;
+    }
+
+    private GeoLocation getGeoLocation(String location) {
+        return geoLocationRepository.findByPlace(location);
     }
 
     // ==================================================== Helpers ====================================================

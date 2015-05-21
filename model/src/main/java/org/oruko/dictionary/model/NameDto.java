@@ -1,15 +1,15 @@
 package org.oruko.dictionary.model;
 
 /**
- * Value object Representation of a name Entry in dictionary
+ * DTO Representation of a name Entry in dictionary
  * Created by dadepo on 2/11/15.
  */
-public class Name {
+public class NameDto {
 
     private String name;
     private Tone tone;
     private String meaning;
-    private String geoLocation;
+    private GeoLocation geoLocation;
     private String morphology;
     private String submittedBy;
     private String pronunciation;
@@ -25,18 +25,18 @@ public class Name {
     private Boolean isIndexed;
 
     /**
-     * Public constructor for creating an instance of @{link Name} using only
+     * Public constructor for creating an instance of @{link NameDto} using only
      * the name value;
      * @param name
      */
-    public Name(String name) {
+    public NameDto(String name) {
         this.name = name;
     }
 
-    public Name(String name, Tone tone, String meaning, String geoLocation, String morphology, String submittedBy,
-                String pronunciation, String ipaNotation, String syllables, String extendedMeaning,
-                String etymology, String variants, String famousPeople, String inOtherLanguages, String media,
-                String tags, Boolean isIndexed) {
+    public NameDto(String name, Tone tone, String meaning, GeoLocation geoLocation, String morphology, String submittedBy,
+                   String pronunciation, String ipaNotation, String syllables, String extendedMeaning,
+                   String etymology, String variants, String famousPeople, String inOtherLanguages, String media,
+                   String tags, Boolean isIndexed) {
         this.name = name;
         this.tone = tone;
         this.meaning = meaning;
@@ -107,10 +107,9 @@ public class Name {
 
     /**
      * Get the geolocation
-     * TODO move this to an enum or db entry
      * @return the geolocation
      */
-    public String getGeoLocation() {
+    public GeoLocation getGeoLocation() {
         return geoLocation;
     }
 
@@ -118,7 +117,7 @@ public class Name {
      * Set the geo location
      * @param geoLocation the geolocation
      */
-    public void setGeoLocation(String geoLocation) {
+    public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
     }
 

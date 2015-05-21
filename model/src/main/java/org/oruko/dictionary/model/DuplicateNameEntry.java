@@ -54,12 +54,12 @@ public class DuplicateNameEntry extends AbstractNameEntry {
     }
 
     /**
-     * Get's the name entry represented as {@link Name}
-     * @return the {@link Name}
+     * Gets the name entry represented as {@link NameDto}
+     * @return the {@link NameDto}
      */
     @Transient
-    public Name toName() {
-        Name asName = new Name(name);
+    public NameDto toNameDto() {
+        NameDto asName = new NameDto(name);
         asName.setEtymology(etymology);
         asName.setExtendedMeaning(extendedMeaning);
         asName.setFamousPeople(famousPeople.toString());

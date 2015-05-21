@@ -3,20 +3,22 @@ package org.oruko.dictionary.model;
 import org.junit.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class NameEntryTest {
 
     @Test
     public void testUpdate() throws Exception {
+        GeoLocation geoLocation = mock(GeoLocation.class);
         NameEntry nameEntry = new NameEntry("Ajani");
-        nameEntry.setGeoLocation("geolocation");
+        nameEntry.setGeoLocation(geoLocation);
         nameEntry.setMeaning("meaning");
         nameEntry.setMorphology("Morphology");
         nameEntry.setSubmittedBy("submittedBy");
         nameEntry.setTonalMark(new char[]{'A'});
 
         NameEntry newEntry = new NameEntry("Ajani");
-        newEntry.setGeoLocation("geolocation1");
+        newEntry.setGeoLocation(geoLocation);
         newEntry.setMeaning("meaning1");
         newEntry.setMorphology("morphology1");
         newEntry.setSubmittedBy("submittedBy1");
@@ -27,7 +29,7 @@ public class NameEntryTest {
         nameEntry.update(newEntry);
 
         assertEquals("Ajani", nameEntry.getName());
-        assertEquals("geolocation1", nameEntry.getGeoLocation());
+        assertEquals(geoLocation, nameEntry.getGeoLocation());
         assertEquals("morphology1", nameEntry.getMorphology());
         assertEquals("submittedBy1", nameEntry.getSubmittedBy());
         assertEquals(tonalMark, nameEntry.getTonalMark());

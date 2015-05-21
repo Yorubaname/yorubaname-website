@@ -1,13 +1,9 @@
 package org.oruko.dictionary.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 /**
- * 1. Name
+ * 1. NameDto
  * 2. Pronunciation
  * 3. IPA notation
  * 4. Syllabic breakdown:
@@ -29,6 +25,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 //TODO revisit the entries and use a more appropriate data type in cases this is necessary
 public abstract class AbstractNameEntry {
+
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -38,13 +35,16 @@ public abstract class AbstractNameEntry {
     @Column
     protected String ipaNotation;
 
+    @Column(length = 1000)
+    protected String variants;
+
     @Column
     protected String syllables;
 
-    @Column(length = 1000)
+    @Column(length = 5000)
     protected String meaning;
 
-    @Column(length = 1000)
+    @Column(length = 50000)
     protected String extendedMeaning;
 
     @Column(length = 1000)
@@ -53,17 +53,9 @@ public abstract class AbstractNameEntry {
     @Column(length = 1000)
     protected String etymology;
 
-    @Column
-    protected char[] tonalMark;
-
-    @Column
-    protected String geoLocation;
-
-    @Column(length = 1000)
-    protected String submittedBy = "Not Available";
-
-    @Column(length = 1000)
-    protected String variants;
+    @JoinColumn(name = "geo_location_id")
+    @ManyToOne
+    protected GeoLocation geoLocation;
 
     @Column(length = 1000)
     protected String famousPeople;
@@ -74,9 +66,16 @@ public abstract class AbstractNameEntry {
     @Column(length = 1000)
     protected String media;
 
+    @Column
+    protected char[] tonalMark;
+
     @Column(length = 1000)
     protected String tags;
 
+    @Column(length = 1000)
+    protected String submittedBy = "Not Available";
+
+    @Column
     protected Boolean isIndexed = false;
 
     public String getSubmittedBy() {
@@ -123,15 +122,15 @@ public abstract class AbstractNameEntry {
      * Get the geo location
      * @return the geo location
      */
-    public String getGeoLocation() {
+    public GeoLocation getGeoLocation() {
         return geoLocation;
     }
 
     /**
-     * Sets the geolocation
-     * @param geoLocation the geolocation
+     * Sets the geo location
+     * @param geoLocation the geo location
      */
-    public void setGeoLocation(String geoLocation) {
+    public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
     }
 
