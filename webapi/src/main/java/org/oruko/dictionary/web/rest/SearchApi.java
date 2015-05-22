@@ -1,6 +1,7 @@
 package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
+import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class SearchApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> indexEntry(@Valid NameEntry entry) {
-        boolean isIndexed = elasticSearchService.indexName(entry.toIndexEntry());
+        boolean isIndexed = elasticSearchService.indexName(entry.toNameDto());
         String message;
         if (isIndexed) {
             message = new StringBuilder(entry.getName()).append(" successfully indexed").toString();
@@ -79,7 +80,8 @@ public class SearchApi {
 
         // TODO now cause of index failure cannot be propagated to client. Fix this. One way is to return
         // TODO a status object from the indexName method?
-        boolean isIndexed = elasticSearchService.indexName(nameEntry.toIndexEntry());
+        NameDto nameDto = nameEntry.toNameDto();
+        boolean isIndexed = elasticSearchService.indexName(nameDto);
 
         if (isIndexed) {
             nameEntry.isIndexed(true);

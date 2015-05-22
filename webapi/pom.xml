@@ -22,6 +22,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>elasticsearch-module</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>importer-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

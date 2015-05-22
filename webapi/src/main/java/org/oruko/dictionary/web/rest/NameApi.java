@@ -1,7 +1,6 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
@@ -56,9 +55,6 @@ public class NameApi {
 
     @Autowired
     private NameEntryService entryService;
-
-    @Autowired
-    private ElasticSearchService elasticSearchService;
 
     @Autowired
     private GeoLocationRepository geoLocationRepository;

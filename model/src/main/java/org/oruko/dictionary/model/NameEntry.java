@@ -2,13 +2,12 @@ package org.oruko.dictionary.model;
 
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.oruko.dictionary.elasticsearch.IndexedNameEntry;
 
+import java.lang.reflect.Field;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.lang.reflect.Field;
 
 /**
  * Entity for persisting NameDto entries
@@ -76,25 +75,6 @@ public class NameEntry extends AbstractNameEntry {
         asName.setVariants(variants);
         asName.isIndexed(isIndexed);
         return asName;
-    }
-
-    @Transient
-    public IndexedNameEntry toIndexEntry() {
-        IndexedNameEntry indexedNameEntry = new IndexedNameEntry();
-        indexedNameEntry.setName(name);
-        indexedNameEntry.setPronunciation(pronunciation);
-        indexedNameEntry.setIpaNotation(ipaNotation);
-        indexedNameEntry.setMeaning(meaning);
-        indexedNameEntry.setExtendedMeaning(extendedMeaning);
-        indexedNameEntry.setMorphology(morphology);
-        indexedNameEntry.setEtymology(etymology);
-        indexedNameEntry.setGeoLocation(geoLocation.toString());
-        indexedNameEntry.setVariants(variants);
-        indexedNameEntry.setFamousPeople(famousPeople);
-        indexedNameEntry.setInOtherLanguages(inOtherLanguages);
-        indexedNameEntry.setMedia(media);
-        indexedNameEntry.setTags(tags);
-        return indexedNameEntry;
     }
 
     /**

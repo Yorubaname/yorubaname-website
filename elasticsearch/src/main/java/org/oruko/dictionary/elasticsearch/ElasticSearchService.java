@@ -12,6 +12,7 @@ import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.oruko.dictionary.model.NameDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,12 +83,12 @@ public class ElasticSearchService {
     }
 
     /**
-     * Add a {@link org.oruko.dictionary.elasticsearch.IndexedNameEntry} into ElasticSearch index
+     * Add a {@link org.oruko.dictionary.model.NameDto} into ElasticSearch index
      *
-     * @param entry the {@link org.oruko.dictionary.elasticsearch.IndexedNameEntry} to index
+     * @param entry the {@link org.oruko.dictionary.model.NameDto} to index
      * @return returns true | false depending on if the indexing operation was successful.
      */
-    public boolean indexName(IndexedNameEntry entry) {
+    public boolean indexName(NameDto entry) {
 
         if (!isElasticSearchNodeAvailable()) {
             logger.info("Index attempt not possible. You do not have an elasticsearch node running");
