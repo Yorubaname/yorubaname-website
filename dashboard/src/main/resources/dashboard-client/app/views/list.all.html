@@ -1,36 +1,83 @@
-<div id="child-page-title">
-    .::{{ childTitle }}::.
-</div>
 <div class="container">
     <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <input type="text" class="form-control" ng-model="searchTerm" placeholder="Filter list by name">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h2><strong>Dashboard Entries:</strong> <a ui-sref="entry.single" class="btn btn-danger btn-lg pull-right">+ CREATE NEW ENTRY</a></h2>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    List Entries <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">All</a></li>
-                    <li><a href="#">Requiring Attention</a></li>
-                    <li><a href="#">Submitted for review</a></li>
-                    <li><a href="#">Published</a></li>
-                    <li><a href="#">Saved for later</a></li>
-                </ul>
+    </div>
+    <div class="row rowClearance">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">List Filter</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="filter" value="" checked="checked"> All
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="filter" value="" checked="checked"> Requiring Attention
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="filter" value="" checked="checked"> Published
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="filter" value="" checked="checked"> Submitted for review
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="filter" value="" checked="checked"> Saved for later
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Character Filter</h3>
+                </div>
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Find Entry</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="input-group " ng-controller="search" ng-show="isAuthenticated">
+                        <input type="text" class="form-control" ng-model="searchTerm">
+                        <span ng-click="search()" class="input-group-addon">Go!</span>
+                    </div>
+                    <h6><input type="checkbox" ng-model="filter" value="{{profile.id}}">Only search my entries</h6>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row page-content panel panel-body panel-default">
-        <table class="table table-striped">
+    <div class="row page-content">
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Meaning</th>
-                    <th>Tonal Mark</th>
-                    <th>Morphology</th>
                     <th>Submitted By</th>
+                    <th>Status</th>
+                    <th>Date</th>
                     <th></th>
                 </tr>
             </thead>
@@ -39,9 +86,9 @@
                     <th scope="row">{{ ($index + 1 + count * (page - 1) ) }}</th>
                     <td>{{ entry.name }}</td>
                     <td>{{ entry.meaning }}</td>
-                    <td>{{ entry.tone.toneMark }}</td>
-                    <td>{{ entry.morphology }}</td>
                     <td>{{ entry.submittedBy }}</td>
+                    <td>{{ entry.status }}</td>
+                    <td>{{ entry.date }}</td>
                     <td>
                         <a href="#/list/edit?name={{ entry.name }}" class="btn btn-primary btn-xs">Edit</a>
                     </td>
@@ -50,9 +97,11 @@
         </table>
     </div>
     <div class="row text-right">
-        <div class="btn-group" role="group">
-            <button class="btn btn-default" ng-click="previous()">Previous</button>
-            <button class="btn btn-default" ng-click="next()">Next</button>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="btn-group" role="group">
+                <button class="btn btn-default" ng-click="previous()">Previous</button>
+                <button class="btn btn-default" ng-click="next()">Next</button>
+            </div>
         </div>
     </div>
 </div>

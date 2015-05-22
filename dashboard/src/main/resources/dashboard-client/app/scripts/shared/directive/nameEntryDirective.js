@@ -23,9 +23,9 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             scope.formEntry.ipaNotation = sToArraysFilter(data.mainEntry.ipaNotation, delim)
             scope.formEntry.pronunciation = sToArraysFilter(data.mainEntry.pronunciation, delim)
             scope.formEntry.syllables = sToArraysFilter(data.mainEntry.syllables, delim)
-            scope.formEntry.variants = sToArraysFilter(data.mainEntry.variants, delim)
-            scope.formEntry.famousPeople = sToArraysFilter(data.mainEntry.famousPeople, delim)
             scope.formEntry.morphology = sToArraysFilter(data.mainEntry.morphology, delim)
+            scope.formEntry.etymology = !isEmptyObj(data.mainEntry.etymology) ? data.mainEntry.etymology : []
+            scope.formEntry.media = !isEmptyObj(data.mainEntry.media) ? data.mainEntry.media : []
 
             if (getDuplicates && getDuplicates === "true") {
                 scope.duplicates = data.duplicates;
@@ -42,7 +42,13 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
         link: function(scope, element, attrs, notification) {
             var request;
             scope.selectedName;
-            var delim = "-"
+            scope.formEntry = {
+                etymology: [],
+                media: []
+            };
+            scope.msg = {};
+            scope.buttonAction = "Create Entry";
+            scope.duplicateView = attrs.duplicates == "true" ? true : false;
             scope.locationTemplate = stubService.getLocationTemplate
             scope.nameMatchList = function() {
                 return nameEntryService.getNames().then(function(response) {
@@ -61,23 +67,6 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                 populateForm(scope, true);
             }
 
-            scope.addMedia = function() {
-                var media = angular.element(document.createElement('add-media'));
-                var el = $compile(media)(scope);
-                angular.element(document.getElementById("mediaList")).append(media);
-            }
-
-            scope.addMedia = function() {
-                var media = angular.element(document.createElement('add-media'));
-                var el = $compile(media)(scope);
-                angular.element(document.getElementById("mediaList")).append(media);
-            }
-
-
-            scope.formEntry = {};
-            scope.msg = {};
-            scope.buttonAction = "Create Entry";
-            scope.duplicateView = attrs.duplicates == "true" ? true : false;
 
             var resetAfterPost = function(element, scope) {
                 element.children('form')[0].reset();
@@ -97,8 +86,7 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                 populateForm(scope, attrs.duplicates);
             };
 
-            console.log(attrs.action === 'put')
-                /*Submit new or update entries*/
+            /*Submit new or update entries*/
             scope.create = function() {
                 // parse tags to strings using stubservice
                 var parsedEntry = angular.copy(scope.formEntry)
@@ -138,20 +126,6 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                 });
             };
 
-            /*Watch morphology model to build template for etymology template generation*/
-            // scope.$watch('formEntry.morphology', function(morphology) {
-            //     scope.formEntry.etymology = []
-
-            //     if (morphology) {
-            //         for (var i = morphology.length - 1; i >= 0; i--) {
-            //             console.log(morphology[i].text)
-            //             scope.formEntry.etymology.push({
-            //                 name: morphology[i].text
-            //             })
-            //         };
-            //     };
-
-            // }, true);
             scope.$watch('formEntry.name', function(newname) {
                 if (!isEmpty(scope.selectedName) && newname === "") {
                     scope.formEntry = {}

@@ -56,8 +56,8 @@
             </div>
             <h6><input type="checkbox" ng-model="filter" value="{{profile.id}}">Only search my entries</h6>
             <hr>
-            <h5><a href="#/list/all">List all entries</a></h5>
-            <h5><a href="">List only my entries</a></h5>
+            <h5><a href="#/list/all" ng-if="isAdmin">List all entries</a></h5>
+            <h5><a href="#/list/?submittedby={{profile.id}}">List only my entries</a></h5>
         </div>
     </div>
     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
@@ -73,7 +73,7 @@
             <h3>Upload Entries in bulk</h3>
             <h5><a href="">Download Template</a></h5>
             <hr>
-            <button type="button" class="btn btn-danger btn-lg">+ UPLOAD TEMPLATE</button>
+            <button type="button" ui-sref="entry.upload" class="btn btn-danger btn-lg">+ UPLOAD TEMPLATE</button>
         </div>
     </div>
 </div>

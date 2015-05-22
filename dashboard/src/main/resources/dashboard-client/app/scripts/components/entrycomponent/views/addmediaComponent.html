@@ -1,0 +1,18 @@
+<div class="row ng-scope" ng-repeat="obj in formEntry.media track by $index">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="row">
+            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <input placeholder="Title" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.title" type="text">
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><i ng-click="removeMedia($index)" class="fa fa-close"></i></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <input placeholder="Link/Url" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.link" type="text">
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+<br class="ng-scope" ng-if="formEntry.media.length> 0">
+<button type="button" ng-click="addMedia()" class="btn btn-sm btn-inverse">Add</button>

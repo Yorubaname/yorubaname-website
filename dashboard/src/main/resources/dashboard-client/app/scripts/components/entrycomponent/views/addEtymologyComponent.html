@@ -1,0 +1,11 @@
+<div class="row ng-scope" ng-repeat="obj in formEntry.etymology track by $index">
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <input placeholder="Part" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.part" type="text">
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <input placeholder="Meaning" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.meaning" type="text">
+    </div>
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><i ng-click="removeEtymology($index)" class="fa fa-close"></i></div>
+</div>
+<br class="ng-scope" ng-if="formEntry.etymology.length> 0">
+<button type="button" ng-click="addEtymology()" class="btn btn-sm btn-inverse">Add</button>

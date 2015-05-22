@@ -258,8 +258,8 @@ tags-input .tags .tag-item {
     color: #C3A96E;
 }
 
-.form-group label {
-    color: cadetblue;
+.margin15down {
+    margin-bottom: 15px;
 }
 
 .navbar-default {
@@ -299,8 +299,7 @@ tags-input .tags .tag-item {
     color: #000;
     background-color: transparent;
 }
-
-a:hover,
+/*a:hover,
 a:focus {
     color: #C3A96E;
     text-decoration: underline;
@@ -309,7 +308,7 @@ a:focus {
 a {
     color: #4D4D4D;
     text-decoration: none;
-}
+}*/
 
 .noTableBorder > thead > tr > th,
 .noTableBorder > tbody > tr > th,
@@ -323,4 +322,8 @@ a {
 .rowClearance {
     margin-bottom: 30px;
     margin-top: 30px;
+}
+
+.form-control {
+    border-radius: 0px;
 }
