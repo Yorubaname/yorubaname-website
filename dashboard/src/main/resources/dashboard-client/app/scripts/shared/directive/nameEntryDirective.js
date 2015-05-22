@@ -10,6 +10,7 @@
 // TODO this todo is not perculair to this file. Standardize either to use toneMark or tonalMark
 var nameEntry = function($http, $location, $state, $rootScope, endpointService, stubService, nameEntryService, sToArraysFilter, $compile) {
 
+    var delim = "-";
     var populateForm = function(scope, getDuplicates) {
         // reach out to the endpoint to get data for this name
 
@@ -18,7 +19,6 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
         });
         request.success(function(data) {
             //REASON: since objects values are parse by angular, and objects attribute coincide with api attributes
-            var delim = "-"
             scope.formEntry = data.mainEntry
             scope.formEntry.ipaNotation = sToArraysFilter(data.mainEntry.ipaNotation, delim)
             scope.formEntry.pronunciation = sToArraysFilter(data.mainEntry.pronunciation, delim)
@@ -69,12 +69,13 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
 
 
             var resetAfterPost = function(element, scope) {
-                element.children('form')[0].reset();
+                scope.formEntry = {};
                 scope.msg.text = "Successfully added name";
                 scope.msg.type = "msg-success";
             };
 
             var resetAfterPut = function(element, sope) {
+                scope.formEntry = {};
                 scope.msg.text = "Successfully updated name";
                 scope.msg.type = "msg-success";
 
