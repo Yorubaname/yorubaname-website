@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
-import org.oruko.dictionary.model.*;
+import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.GeoLocation;
+import org.oruko.dictionary.model.NameDto;
+import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.NameEntryService;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
@@ -18,14 +22,24 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 /**
  * End point for inserting and retrieving NameDto Entries
@@ -100,7 +114,8 @@ public class NameApi {
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
     public List<NameDto> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
-                                  @RequestParam(value = "indexed", required = false) Optional<Boolean> indexed)
+                                  @RequestParam("submittedBy") final Optional<String> submittedBy,
+                                  @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
             throws JsonProcessingException {
 
         List<NameDto> names = new ArrayList<>();
@@ -110,15 +125,29 @@ public class NameApi {
             names.add(nameEntry.toNameDto());
         });
 
-        if (indexed.isPresent()) {
-            if (indexed.get().equals(true)) {
-                return names.stream().filter(name -> name.isIndexed()).collect(Collectors.toCollection(ArrayList::new));
+        // for filtering based on whether entry has been indexed
+        Predicate<NameDto> filterBasedOnIndex = (name) -> {
+            if (indexed.isPresent()) {
+                return name.isIndexed().equals(indexed.get());
             } else {
-                return names.stream().filter(name -> !name.isIndexed()).collect(Collectors.toCollection(ArrayList::new));
+                return true;
             }
-        } else {
-            return names;
-        }
+        };
+
+        // for filtering based on value of submitBy
+        Predicate<NameDto> filterBasedOnSubmitBy = (name) -> {
+            if (submittedBy.isPresent()) {
+                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().toString().trim());
+            } else {
+                return true;
+            }
+        };
+
+        return names.stream()
+                    .filter(filterBasedOnIndex)
+                    .filter(filterBasedOnSubmitBy)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
     }
 
     /**
