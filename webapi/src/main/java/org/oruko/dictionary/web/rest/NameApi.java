@@ -23,6 +23,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +39,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
 
 /**
  * End point for inserting and retrieving NameDto Entries
@@ -71,8 +71,9 @@ public class NameApi {
      * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
      * "success" is returned if no error
      */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
-    public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
+    @RequestMapping(value = "/v1/name", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addName(@RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
@@ -89,8 +90,10 @@ public class NameApi {
      * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
      * "success" is returned if no error
      */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.PUT, produces = "text/plain")
-    public ResponseEntity<String> updateName(@Valid NameEntry entry, BindingResult bindingResult) {
+    @RequestMapping(value = "/v1/name",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.PUT)
+    public ResponseEntity<String> updateName(@RequestBody NameEntry entry, BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
             entryService.updateName(entry);

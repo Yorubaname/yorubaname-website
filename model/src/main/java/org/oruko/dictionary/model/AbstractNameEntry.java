@@ -1,6 +1,12 @@
 package org.oruko.dictionary.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
 /**
  * 1. NameDto
@@ -49,9 +55,6 @@ public abstract class AbstractNameEntry {
 
     @Column(length = 1000)
     protected String morphology;
-
-    @Column(length = 1000)
-    protected String etymology;
 
     @JoinColumn(name = "geo_location_id")
     @ManyToOne
@@ -172,14 +175,6 @@ public abstract class AbstractNameEntry {
 
     public void setExtendedMeaning(String extendedMeaning) {
         this.extendedMeaning = extendedMeaning;
-    }
-
-    public String getEtymology() {
-        return etymology;
-    }
-
-    public void setEtymology(String etymology) {
-        this.etymology = etymology;
     }
 
     public String getVariants() {

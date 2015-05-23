@@ -2,9 +2,12 @@ package org.oruko.dictionary.model;
 
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.oruko.dictionary.model.repository.Etymology;
+import org.springframework.beans.BeanUtils;
 
-import java.lang.reflect.Field;
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,6 +24,8 @@ public class NameEntry extends AbstractNameEntry {
     @NotEmpty
     private String name;
 
+    @ElementCollection
+    protected List<Etymology> etymology;
     public NameEntry() {
     }
 
@@ -52,6 +57,15 @@ public class NameEntry extends AbstractNameEntry {
         this.name = name;
     }
 
+    public List<Etymology> getEtymology() {
+        return etymology;
+    }
+
+    public void setEtymology(List<Etymology> etymology) {
+        this.etymology = etymology;
+    }
+
+
     /**
      * Gets the name entry represented as {@link NameDto}
      * @return the {@link NameDto}
@@ -59,7 +73,7 @@ public class NameEntry extends AbstractNameEntry {
     @Transient
     public NameDto toNameDto() {
         NameDto asName = new NameDto(name);
-        asName.setEtymology(etymology);
+        asName.setEtymology(etymology.toString());
         asName.setExtendedMeaning(extendedMeaning);
         asName.setFamousPeople(famousPeople);
         asName.setGeoLocation(geoLocation);
@@ -81,27 +95,7 @@ public class NameEntry extends AbstractNameEntry {
      * Updates properties using another instance of {@link org.oruko.dictionary.model.NameEntry}
      */
     public void update(NameEntry nameEntry) {
-        // TODO revisit the reflection API and see if it is possible to prevent the nested for-loop
-        Field[] fieldsWithOldValues = this.getClass().getSuperclass().getDeclaredFields();
-        Field[] fieldsWithNewValues = nameEntry.getClass().getSuperclass().getDeclaredFields();
-
-        for (Field newField: fieldsWithNewValues) {
-            String fieldNameWithNewValue = newField.getName();
-            if (fieldNameWithNewValue.equalsIgnoreCase("id")) {
-                continue;
-            }
-
-            for (Field oldField: fieldsWithOldValues) {
-                String fieldNameWithOldValue = oldField.getName();
-                if (fieldNameWithOldValue.equalsIgnoreCase(fieldNameWithNewValue)) {
-                    try {
-                        oldField.set(this, newField.get(nameEntry));
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        BeanUtils.copyProperties(nameEntry, this);
     }
 
 }

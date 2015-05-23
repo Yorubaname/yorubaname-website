@@ -2,7 +2,11 @@ package org.oruko.dictionary.model;
 
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.oruko.dictionary.model.repository.Etymology;
+import org.springframework.beans.BeanUtils;
 
+import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -19,15 +23,24 @@ public class DuplicateNameEntry extends AbstractNameEntry {
     @NotEmpty
     private String name;
 
+    @ElementCollection
+    protected List<Etymology> etymology;
+
     public DuplicateNameEntry() {
     }
 
     public DuplicateNameEntry(NameEntry entry) {
-        this.name = entry.getName();
-        this.geoLocation= entry.getGeoLocation();
-        this.meaning = entry.getMeaning();
-        this.tonalMark = entry.getTonalMark();
+        BeanUtils.copyProperties(entry, this);
     }
+
+    public List<Etymology> getEtymology() {
+        return etymology;
+    }
+
+    public void setEtymology(List<Etymology> etymology) {
+        this.etymology = etymology;
+    }
+
 
     /**
      * Returns the identifier, in this case the database primary key
@@ -60,7 +73,7 @@ public class DuplicateNameEntry extends AbstractNameEntry {
     @Transient
     public NameDto toNameDto() {
         NameDto asName = new NameDto(name);
-        asName.setEtymology(etymology);
+        asName.setEtymology(etymology.toString());
         asName.setExtendedMeaning(extendedMeaning);
         asName.setFamousPeople(famousPeople.toString());
         asName.setGeoLocation(geoLocation);
