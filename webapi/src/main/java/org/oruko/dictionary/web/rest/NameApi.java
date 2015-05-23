@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -231,6 +232,11 @@ public class NameApi {
     public ResponseEntity<String> deleteName(@PathVariable String name) {
         entryService.deleteNameInEntryAndDuplicates(name);
         return new ResponseEntity<String>(name + "Deleted", HttpStatus.OK);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //=====================================Helpers=========================================================//
