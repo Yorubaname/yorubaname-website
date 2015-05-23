@@ -11,6 +11,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity for persisting NameDto entries
@@ -21,6 +22,7 @@ import javax.persistence.Transient;
 public class NameEntry extends AbstractNameEntry {
 
     @Column(unique=true)
+    @NotNull
     @NotEmpty
     private String name;
 

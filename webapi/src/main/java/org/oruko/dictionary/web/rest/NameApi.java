@@ -39,6 +39,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 /**
  * End point for inserting and retrieving NameDto Entries
@@ -72,7 +73,7 @@ public class NameApi {
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addName(@RequestBody NameEntry entry, BindingResult bindingResult) {
+    public ResponseEntity<String> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
@@ -168,7 +169,7 @@ public class NameApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.PUT)
     public ResponseEntity<String> updateName(@PathVariable String name,
-                                             @RequestBody NameEntry entry,
+                                             @Valid @RequestBody NameEntry entry,
                                              BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
