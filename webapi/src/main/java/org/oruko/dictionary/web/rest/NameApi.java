@@ -71,8 +71,7 @@ public class NameApi {
      * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
      * "success" is returned if no error
      */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addName(@RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
@@ -80,26 +79,6 @@ public class NameApi {
             return new ResponseEntity<>("success", HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
-    }
-
-
-    /**
-     * End point that is used to update a {@link org.oruko.dictionary.model.NameEntry}.
-     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
-     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
-     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
-     * "success" is returned if no error
-     */
-    @RequestMapping(value = "/v1/name",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.PUT)
-    public ResponseEntity<String> updateName(@RequestBody NameEntry entry, BindingResult bindingResult) {
-        //TODO tonalMark is returning null on update. Fix
-        if (!bindingResult.hasErrors()) {
-            entryService.updateName(entry);
-            return new ResponseEntity<>("success", HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -110,7 +89,7 @@ public class NameApi {
      * @return the list of {@link org.oruko.dictionary.model.NameDto}
      * @throws JsonProcessingException
      */
-    @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NameDto> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
@@ -156,7 +135,7 @@ public class NameApi {
      * @return a name serialized to a jason string
      * @throws JsonProcessingException json processing expectopm
      */
-    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Object getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
                           @PathVariable String name) throws JsonProcessingException {
         NameEntry nameEntry = entryService.loadName(name);
@@ -176,6 +155,40 @@ public class NameApi {
         }
         return nameEntry.toNameDto();
     }
+
+
+    /**
+     * End point that is used to update a {@link org.oruko.dictionary.model.NameEntry}.
+     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
+    @RequestMapping(value = "/v1/names/{name}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.PUT)
+    public ResponseEntity<String> updateName(@PathVariable String name,
+                                             @RequestBody NameEntry entry,
+                                             BindingResult bindingResult) {
+        //TODO tonalMark is returning null on update. Fix
+        if (!bindingResult.hasErrors()) {
+            if (!entry.getName().equals(name)) {
+                return new ResponseEntity<>("Name given in URL is different from name in request payload",
+                                            HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            NameEntry nameEntry = entryService.loadName(name);
+
+            if (nameEntry == null) {
+                return new ResponseEntity<>(name + " not in database", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            entryService.updateName(entry);
+            return new ResponseEntity<>("success", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -203,17 +216,20 @@ public class NameApi {
     }
 
     // TODO add method authorization for methods like this
-    @RequestMapping(value = "/v1/names/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v1/names/delete",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteAllNames() {
         entryService.deleteAllAndDuplicates();
         return new ResponseEntity<String>("Names Deleted", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v1/names/{name}",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteName(@PathVariable String name) {
         entryService.deleteNameInEntryAndDuplicates(name);
         return new ResponseEntity<String>(name + "Deleted", HttpStatus.OK);
-
     }
 
     //=====================================Helpers=========================================================//

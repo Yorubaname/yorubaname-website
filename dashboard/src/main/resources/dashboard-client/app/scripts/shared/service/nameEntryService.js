@@ -13,7 +13,7 @@ var nameEntryService = function($http, endpointService) {
         var data = {
             name: name
         };
-        var request = endpointService.get('/v1/name/', data);
+        var request = endpointService.get('/v1/names/', data);
         return request;
     };
 

@@ -90,12 +90,16 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             /*Submit new or update entries*/
             scope.create = function() {
                 // parse tags to strings using stubservice
-                var parsedEntry = angular.copy(scope.formEntry)
-                parsedEntry = stubService.arraysToString(parsedEntry, delim)
+                var parsedEntry = angular.copy(scope.formEntry);
+                parsedEntry = stubService.arraysToString(parsedEntry, delim);
                 if (attrs.action === 'put') {
-                    request = endpointService.put('/v1/name', parsedEntry);
+                    // TODO There seems to be an issue with making a PUT request via AngularJs that needs to be
+                    // investigated. Seems Angular fails to put the data as a request body, instead it is making
+                    // it a URL request params. The endpoint can be reached when called via curl but fails here because
+                    // of this. @ttola, Leaving this to you to help investigate further.
+                    request = endpointService.putJson('/v1/names/'+parsedEntry.name, parsedEntry);
                 } else {
-                    request = endpointService.post('/v1/name', parsedEntry);
+                    request = endpointService.postJson('/v1/names', parsedEntry);
                 }
 
                 request.success(function(data) {

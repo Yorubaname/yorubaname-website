@@ -8,6 +8,18 @@
  */
 var endpointService = function ($http, $rootScope, ENV) {
 
+  this.get = function(endpoint, data, headers) {
+
+    var request = $http({
+           method: 'GET',
+           url: ENV.appEndpoint + endpoint,
+           params: data ? data : '',
+           headers: headers? headers : ''
+    });
+
+    return request;
+  };
+
   this.post = function(endpoint, data) {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     var request = $http({
@@ -29,23 +41,22 @@ var endpointService = function ($http, $rootScope, ENV) {
     return request;
   };
 
-  this.get = function(endpoint, params, headers) {
-
+  this.put = function (endpoint, data) {
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     var request = $http({
-          method: 'GET',
+          method: 'PUT',
           url: ENV.appEndpoint + endpoint,
-          params: params ? params : '',
-          headers: headers? headers : ''
-     });
+          params: data
+    });
 
     return request;
   };
 
-  this.put = function (endpoint, params) {
+  this.putJson = function (endpoint, data) {
     var request = $http({
-          method: 'PUT',
-          url: ENV.appEndpoint + endpoint,
-          params: params
+            method: 'PUT',
+            url: ENV.appEndpoint + endpoint,
+            params: data
     });
 
     return request;

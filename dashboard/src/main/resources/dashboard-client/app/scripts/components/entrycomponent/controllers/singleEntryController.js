@@ -17,7 +17,7 @@ var singleEntryController = function ($scope, $http, $element, $cookies, ENV) {
 
     $http({
             method: 'POST',
-            url: ENV.appEndpoint+'/v1/name',
+            url: ENV.appEndpoint+'/v1/names',
             data: $element.serialize($scope.formEntry)
           })
       .success(function (data) {
