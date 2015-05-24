@@ -4,8 +4,11 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.*;
 import org.mockito.runners.*;
+import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
+
+import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -44,14 +47,31 @@ public class NameEntryServiceTest {
     }
 
     @Test
-    public void testInsertTakingCareOfDuplicates_with_duplicates() throws Exception {
+    public void testInsertTakingCareOfDuplicates_with_duplicates_and_name_not_in_variant() throws Exception {
         String testName = "Ajani";
+        NameEntry nameEntryMock = mock(NameEntry.class);
+        when(nameEntryMock.getVariants()).thenReturn(null);
         when(nameEntry.getName()).thenReturn(testName);
+        when(nameEntryRepository.findAll()).thenReturn(Arrays.asList(nameEntryMock));
         when(nameEntryRepository.findByName(testName)).thenReturn(nameEntry);
         nameEntryService.insertTakingCareOfDuplicates(nameEntry);
 
         verify(duplicateEntryRepository).save(any(DuplicateNameEntry.class));
+        verify(nameEntryRepository).findAll();
         verify(nameEntryRepository).findByName(testName);
+        verifyZeroInteractions(nameEntryRepository);
+    }
+
+    @Test(expected = RepositoryAccessError.class)
+    public void testInsertTakingCareOfDuplicates_with_duplicates_and_name_already_in_variant() throws Exception {
+        String testName = "Ajani";
+        NameEntry nameEntryMock = mock(NameEntry.class);
+        when(nameEntryMock.getVariants()).thenReturn("Ajani");
+        when(nameEntry.getName()).thenReturn(testName);
+        when(nameEntryRepository.findAll()).thenReturn(Arrays.asList(nameEntryMock));
+        when(nameEntryRepository.findByName(testName)).thenReturn(nameEntry);
+        nameEntryService.insertTakingCareOfDuplicates(nameEntry);
+
         verifyZeroInteractions(nameEntryRepository);
     }
 
