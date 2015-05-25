@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 /**
- * 1. NameDto
+ * 1. Name
  * 2. Pronunciation
  * 3. IPA notation
  * 4. Syllabic breakdown:

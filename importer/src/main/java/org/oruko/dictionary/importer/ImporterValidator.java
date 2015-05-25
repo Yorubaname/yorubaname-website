@@ -38,7 +38,7 @@ public class ImporterValidator {
             if (cell.toString().isEmpty()) {
                 break;
             }
-            result = cell.toString().equalsIgnoreCase(columnOrder.getColumnOrder().get(counter));
+            result = cell.toString().trim().equalsIgnoreCase(columnOrder.getColumnOrder().get(counter).trim());
             if (!result) {
                 break;
             }

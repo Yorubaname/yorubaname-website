@@ -11,7 +11,7 @@ var uploadEntryController = function ($scope, $element, fileUploader, ENV) {
 
   $scope.upload = function () {
 
-    if ($scope.namesfile === undefined || Object.keys($scope.namesfile).length === 0) {
+    if ($scope.namesfile === undefined) {
           $scope.msg.text = "You need to choose file before uploading";
           $scope.msg.type = "msg-error";
           return;

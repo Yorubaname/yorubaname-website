@@ -21,7 +21,6 @@ public class ImporterValidatorTest {
         validator = new ImporterValidator();
         columnOrder = new ColumnOrder();
         columnOrder.setOrder(new String[]{"name","tone","meaning","morphology","location"});
-        columnOrder.initColumnOrder();
     }
 
     @Test
