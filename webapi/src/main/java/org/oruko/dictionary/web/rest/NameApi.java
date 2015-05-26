@@ -217,7 +217,6 @@ public class NameApi {
         return new ResponseEntity<ImportStatus>(status, HttpStatus.CREATED);
     }
 
-    // TODO add method authorization for methods like this
     @RequestMapping(value = "/v1/names/delete",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
