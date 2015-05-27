@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class NameApi {
      * End point that is used to add a {@link org.oruko.dictionary.model.NameEntry}.
      * @param entry the {@link org.oruko.dictionary.model.NameEntry}
      * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
-     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * @return {@link org.springframework.http.ResponseEntity} with string containing error message.
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -89,7 +90,7 @@ public class NameApi {
      *                  result set from. 0 if none is given
      * @param countParam a {@link Integer} the number of names to return. 50 is none is given
      * @return the list of {@link org.oruko.dictionary.model.NameDto}
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException JSON processing exception
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NameDto> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
@@ -135,7 +136,7 @@ public class NameApi {
      * @param withDuplicates flag whether to return duplicate entries for the name being retrieved
      * @param name the name whose details needs to be retrieved
      * @return a name serialized to a jason string
-     * @throws JsonProcessingException json processing expectopm
+     * @throws JsonProcessingException json processing exception
      */
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Object getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
@@ -192,6 +193,13 @@ public class NameApi {
     }
 
 
+    /**
+     * Endpoint for uploading names via spreadsheet
+     *
+     * @param multipartFile the spreadsheet file
+     * @return the Import status
+     * @throws JsonProcessingException Json processing exception
+     */
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImportStatus> upload(@RequestParam("nameFiles") MultipartFile multipartFile)
@@ -215,6 +223,28 @@ public class NameApi {
             return new ResponseEntity<ImportStatus>(status, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<ImportStatus>(status, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint for batch uploading of names. Names are sent as array of json from the client
+     * @param nameEntries the array of {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
+    @RequestMapping(value = "/v1/names/batch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+
+            Arrays.stream(nameEntries).forEach(entry -> {
+                entry.setName(entry.getName().toLowerCase());
+                entryService.insertTakingCareOfDuplicates(entry);
+            });
+
+            return new ResponseEntity<>("success", HttpStatus.CREATED);
+        }
+
+        throw new GenericApiCallException(formatErrorMessage(bindingResult));
     }
 
     @RequestMapping(value = "/v1/names/delete",

@@ -133,6 +133,12 @@ public class NameApiTest {
 
     @Test
     @Ignore
+    public void test_batch_upload() throws Exception {
+        // TODO
+    }
+
+    @Test
+    @Ignore
     public void test_deleting_a_name() throws Exception {
         // TODO
     }
