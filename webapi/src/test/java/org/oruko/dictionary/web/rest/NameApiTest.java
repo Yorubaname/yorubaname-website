@@ -9,6 +9,7 @@ import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.View;
@@ -65,22 +66,67 @@ public class NameApiTest {
     }
 
     @Test
-    @Ignore
-    public void test_get_all_names_filterd_by_is_indexed() throws Exception {
-        // TODO
+    public void test_get_all_names_filtered_by_is_indexed() throws Exception {
+        NameEntry indexedEntry = mock(NameEntry.class);
+        NameEntry notIndexedEntry = mock(NameEntry.class);
+
+        NameDto indexedDto = new NameDto("indexed");
+        NameDto notIndexedDto = new NameDto("not-indexed");
+
+        ReflectionTestUtils.setField(indexedDto, "isIndexed", true);
+        ReflectionTestUtils.setField(notIndexedDto, "isIndexed", false);
+
+        when(indexedEntry.toNameDto()).thenReturn(indexedDto);
+        when(notIndexedEntry.toNameDto()).thenReturn(notIndexedDto);
+
+        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(indexedEntry, notIndexedEntry));
+
+        mockMvc.perform(get("/v1/names?indexed=true"))
+               .andExpect(jsonPath("$", hasSize(1)))
+               .andExpect(jsonPath("$[0].name", is("indexed")))
+               .andExpect(status().isOk());
     }
 
     @Test
-    @Ignore
-    public void test_get_all_names_filterd_by_is_submitted_by() throws Exception {
-        // TODO
+    public void test_get_all_names_filtered_by_is_submitted_by() throws Exception {
+        NameEntry firstEntry = mock(NameEntry.class);
+        NameEntry secondEntry = mock(NameEntry.class);
+
+        NameDto firstDto = new NameDto("first-entry");
+        NameDto secondDto = new NameDto("second-entry");
+
+        ReflectionTestUtils.setField(firstDto, "submittedBy", "test");
+        ReflectionTestUtils.setField(secondDto, "submittedBy", "Not Available");
+
+        when(firstEntry.toNameDto()).thenReturn(firstDto);
+        when(secondEntry.toNameDto()).thenReturn(secondDto);
+
+        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(firstEntry, secondEntry));
+
+        mockMvc.perform(get("/v1/names?submittedBy=test"))
+               .andExpect(jsonPath("$", hasSize(1)))
+               .andExpect(jsonPath("$[0].name", is("first-entry")))
+               .andExpect(status().isOk());
     }
 
 
     @Test
-    @Ignore
-    public void test_get_all_a_name() throws Exception {
-        // TODO
+    public void test_get_a_name() throws Exception {
+        NameEntry nameEntry = mock(NameEntry.class);
+        when(entryService.loadName("test")).thenReturn(nameEntry);
+        when(nameEntry.toNameDto()).thenReturn(new NameDto("test"));
+
+        mockMvc.perform(get("/v1/names/test"))
+               .andExpect(jsonPath("$.name", is("test")))
+               .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test_get_a_name_not_found_in_db() throws Exception {
+        when(entryService.loadName("test")).thenReturn(null);
+
+        mockMvc.perform(get("/v1/names/test"))
+               .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -115,13 +161,13 @@ public class NameApiTest {
 
     @Test
     @Ignore
-    public void test_modofying_name_via_put_request() throws Exception {
+    public void test_modifying_name_via_put_request() throws Exception {
         // TODO
     }
 
     @Test
     @Ignore
-    public void test_modofying_name_via_put_request_but_faulty_request() throws Exception {
+    public void test_modifying_name_via_put_request_but_faulty_request() throws Exception {
         // TODO
     }
 
