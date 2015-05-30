@@ -42,6 +42,7 @@ public class NameApiTest {
     MockMvc mockMvc;
 
     NameEntry testNameEntry;
+    NameEntry faultNameEntry;
 
     @Before
     public void setUp() {
@@ -49,6 +50,8 @@ public class NameApiTest {
         testNameEntry = new NameEntry("test");
         testNameEntry.setMeaning("test_meaning");
         testNameEntry.setExtendedMeaning("test_extended_meaning");
+
+        faultNameEntry = new NameEntry();
     }
 
     @Test
@@ -143,20 +146,16 @@ public class NameApiTest {
                                 .content(requestJson))
                .andExpect(status().isCreated());
 
-        verify(entryService).insertTakingCareOfDuplicates(anyObject()); // TODO. NameEntry and not any
-    }
-
-
-    @Test
-    @Ignore
-    public void test_add_duplicate_name_via_post_request() throws Exception {
-        // TODO
+        verify(entryService).insertTakingCareOfDuplicates(any(NameEntry.class));
     }
 
     @Test
-    @Ignore
     public void test_add_name_via_get_but_faulty_request() throws Exception {
-        // TODO
+        String requestJson = new ObjectMapper().writeValueAsString(faultNameEntry);
+        mockMvc.perform(post("/v1/names")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(status().isInternalServerError());
     }
 
     @Test
