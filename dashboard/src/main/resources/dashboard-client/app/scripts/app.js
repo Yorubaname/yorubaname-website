@@ -78,7 +78,7 @@ angular.module('dashboardappApp').controller('indexLogin', function($scope, $coo
 
 });
 
-dashboardappApp.run(function($rootScope) {
+dashboardappApp.run(function($rootScope, $cookies) {
     $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";
     $rootScope.appEndpoint = "http://localhost:8081";
     $rootScope.previousState;
@@ -91,6 +91,12 @@ dashboardappApp.run(function($rootScope) {
         console.log('Previous state:' + $rootScope.previousState)
         console.log($rootScope.previousParams)
     });
+
+  // TODO remove when account creation for users is added
+  $rootScope.isAuthenticated = true;
+  $rootScope.isAdmin = true;
+  $cookies.isAuthenticated = true;
+  $cookies.isAdmin = true;
 });
 dashboardappApp.config(function(tagsInputConfigProvider) {
     /*Global configuration for tags inputs for text seperation*/
