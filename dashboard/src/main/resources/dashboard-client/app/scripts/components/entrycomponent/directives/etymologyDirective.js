@@ -7,7 +7,7 @@
 var etymology = function() {
     return {
         restrict: 'E',
-        templateUrl: '/scripts/components/entrycomponent/views/addEtymologyComponent.html',
+        templateUrl: 'views/addEtymologyComponent.html',
         link: function(scope, element, iAttrs) {
             var etyObj = {
                 part: '',
