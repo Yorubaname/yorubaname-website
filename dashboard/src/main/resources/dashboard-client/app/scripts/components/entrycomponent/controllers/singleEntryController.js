@@ -10,7 +10,7 @@
 var singleEntryController = function ($scope, $http, $element, $cookies, ENV) {
   $scope.formEntry = {};
   $scope.msg = {};
-  $scope.formEntry.submittedBy = $cookies.userName;
+  $scope.formEntry.submittedBy = $cookies.username;
 
   $scope.create = function () {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";

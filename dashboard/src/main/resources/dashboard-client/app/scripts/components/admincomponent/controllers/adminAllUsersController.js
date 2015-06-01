@@ -7,18 +7,16 @@
 var adminAllUsersController = function($scope, endpointService) {
   $scope.childTitle = "All registered users";
   $scope.users = [];
-  var response = endpointService.get("/auth/users");
+  var response = endpointService.get("/v1/auth/users");
   response.success(function(responseData){
     responseData.forEach(function(user){
       $scope.users.push({
           email: user.email,
-          role: user.role,
-          userName: user.userName
+          roles: user.roles,
+          username: user.username
        });
     });
 
-    console.log($scope.users);
-    console.log(responseData);
   }).error(function(responseData) {
 
   });

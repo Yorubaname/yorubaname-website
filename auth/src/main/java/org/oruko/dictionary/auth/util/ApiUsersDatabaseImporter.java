@@ -37,6 +37,13 @@ public class ApiUsersDatabaseImporter {
                            ApiUser.ROLE.BASIC.getRole());
         userRepository.save(dashboard);
 
+        // lexi user
+        ApiUser lexicographer = new ApiUser();
+        lexicographer.setEmail("lexicographer@example.com");
+        lexicographer.setPassword("lexicographer");
+        lexicographer.setRoles(ApiUser.ROLE.LEXICOGRAPHER.getRole());
+        userRepository.save(lexicographer);
+
         // normal user
         ApiUser basic = new ApiUser();
         basic.setEmail("basic@example.com");

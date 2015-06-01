@@ -16,6 +16,7 @@ public class ApiUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String email;
+    private String username;
     private String password;
     private String roles;
 
@@ -60,16 +61,21 @@ public class ApiUser {
         this.roles = String.join(",", roles);
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public enum ROLE {
-        ADMIN("ROLE_ADMIN"),DASHBOARD("ROLE_DASHBOARD"), BASIC("ROLE_BASIC");
+        ADMIN("ROLE_ADMIN"), DASHBOARD("ROLE_DASHBOARD"), LEXICOGRAPHER("ROLE_LEXICOGRAPHER"), BASIC("ROLE_BASIC");
 
         private final String role;
-
         private ROLE(String role) {
             this.role = role;
         }
-
         public String getRole() {
             return role;
         }

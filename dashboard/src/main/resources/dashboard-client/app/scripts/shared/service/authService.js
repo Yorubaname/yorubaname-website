@@ -7,7 +7,7 @@
 var authService = function($cookies, endpointService) {
 
   this.getUser = function getUser(callback) {
-    endpointService.get("/auth/user").then(function(response) {
+    endpointService.get("/v1/auth/user").then(function(response) {
       return response;
     });
   };
@@ -21,7 +21,7 @@ var authService = function($cookies, endpointService) {
     response.success(function(response) {
       $cookies.isAuthenticated = true;
       currentScope.isAuthenticated = true;
-      $cookies.userName = response.username;
+      $cookies.username = response.username;
       $cookies.token = authData;
 
       response.roles.every(function(role) {

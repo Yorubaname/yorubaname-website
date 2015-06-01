@@ -63,7 +63,7 @@ var endpointService = function ($http, $rootScope, ENV) {
   };
 
   this.authenticate = function(authData) {
-    var endpoint = "/dashboard/login";
+    var endpoint = "/v1/auth/login";
     $http.defaults.headers.common['Authorization'] = 'Basic ' + authData;
 
     var request = $http({
