@@ -1,7 +1,7 @@
 'use strict';
 
 //TODO refactor
-var loginForm = function (endpointService, $cookies) {
+var loginForm = function (authService) {
 
   return {
     restrict: 'E',
@@ -14,33 +14,7 @@ var loginForm = function (endpointService, $cookies) {
       scope.login = function () {
 
         var authData = btoa(scope.loginForm.email + ":" + scope.loginForm.password);
-        var response = endpointService.authenticate(authData);
-        response.success(function(response) {
-          $cookies.isAuthenticated = true;
-          scope.isAuthenticated = true;
-          $cookies.userName = response.username;
-          $cookies.token = authData;
-
-          response.roles.every(function(role) {
-            if (role === "ROLE_ADMIN") {
-              $cookies.isAdmin = true;
-              scope.isAdmin = response.admin;
-              return false;
-            }
-          });
-
-          scope.msg = {};
-          window.location.href = "#/home";
-
-        }).error(function(response){
-          $cookies.isAuthenticated = false;
-          $cookies.isAdmin = response.isAdmin;
-
-          scope.isAuthenticated = false;
-          scope.isAdmin = response.isAdmin;
-          scope.msg.type = "msg-error";
-          scope.msg.text = "Can not login with the credentials provided";
-        });
+        authService.authenticate(authData, scope);
 
       };
     }
