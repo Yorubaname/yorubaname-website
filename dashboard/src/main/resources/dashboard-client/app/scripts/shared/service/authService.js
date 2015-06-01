@@ -27,7 +27,7 @@ var authService = function($cookies, endpointService) {
       response.roles.every(function(role) {
         if (role === "ROLE_ADMIN") {
           $cookies.isAdmin = true;
-          currentScope.isAdmin = response.admin;
+          currentScope.isAdmin = true;
           return false;
         }
       });
