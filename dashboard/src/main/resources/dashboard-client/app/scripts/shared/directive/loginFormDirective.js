@@ -12,19 +12,23 @@ var loginForm = function (endpointService, $cookies) {
       scope.msg = {};
       scope.buttonAction = "Login";
       scope.login = function () {
-        var data = {
-          email: scope.loginForm.email,
-          password: scope.loginForm.password
-        };
 
-        var response = endpointService.postJson("/auth/login", data);
+        var authData = btoa(scope.loginForm.email + ":" + scope.loginForm.password);
+        var response = endpointService.authenticate(authData);
         response.success(function(response) {
           $cookies.isAuthenticated = true;
-          $cookies.isAdmin = response.admin;
-          $cookies.userName = response.username;
-
           scope.isAuthenticated = true;
-          scope.isAdmin = response.admin;
+          $cookies.userName = response.username;
+          $cookies.token = authData;
+
+          response.roles.every(function(role) {
+            if (role === "ROLE_ADMIN") {
+              $cookies.isAdmin = true;
+              scope.isAdmin = response.admin;
+              return false;
+            }
+          });
+
           scope.msg = {};
           window.location.href = "#/home";
 

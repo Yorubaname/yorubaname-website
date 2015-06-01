@@ -91,12 +91,6 @@ dashboardappApp.run(function($rootScope, $cookies) {
         console.log('Previous state:' + $rootScope.previousState)
         console.log($rootScope.previousParams)
     });
-
-  // TODO remove when account creation for users is added
-  $rootScope.isAuthenticated = true;
-  $rootScope.isAdmin = true;
-  $cookies.isAuthenticated = true;
-  $cookies.isAdmin = true;
 });
 dashboardappApp.config(function(tagsInputConfigProvider) {
     /*Global configuration for tags inputs for text seperation*/

@@ -62,6 +62,18 @@ var endpointService = function ($http, $rootScope, ENV) {
     return request;
   };
 
+  this.authenticate = function(authData) {
+    var endpoint = "/dashboard/login";
+    $http.defaults.headers.common['Authorization'] = 'Basic ' + authData;
+
+    var request = $http({
+              method: 'POST',
+              url: ENV.appEndpoint + endpoint
+    });
+
+    return request;
+  }
+
 };
 
 angular.module('dashboardappApp').service('endpointService', endpointService);
