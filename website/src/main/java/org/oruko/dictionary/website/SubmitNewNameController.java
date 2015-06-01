@@ -6,15 +6,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Map;
 
 /**
- * @author Dadepo Aderemi.
+ * Created by Dadepo Aderemi.
  */
 @Controller
-public class HomeController {
-
-    @RequestMapping("/")
+public class SubmitNewNameController {
+    @RequestMapping("/submitname")
     public String indexPage(Map<String, String> map) {
-        map.put("title", "Welcome - Yoruba Dictionary Application");
-        return "home";
+        map.put("title", "Submit name");
+        return "submitname";
     }
-
 }
