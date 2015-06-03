@@ -32,14 +32,34 @@
       "index": "no"
     },
     "etymology": {
-      "type": "string",
-      "store": "no",
-      "index": "no"
+      "type": "object",
+      "properties" : {
+        "part": {
+          "type": "string",
+          "store": "yes",
+          "index": "analyzed"
+        },
+        "meaning": {
+          "type": "string",
+          "store": "yes",
+          "index": "analyzed"
+        }
+      }
     },
     "geoLocation": {
-      "type": "string",
-      "store": "no",
-      "index": "no"
+      "type": "object",
+      "properties" : {
+        "place" : {
+          "type": "string",
+          "store": "yes",
+          "index": "analyzed"
+        },
+        "region": {
+          "type": "string",
+          "store": "yes",
+          "index": "analyzed"
+        }
+      }
     },
     "variants": {
       "type": "string",
