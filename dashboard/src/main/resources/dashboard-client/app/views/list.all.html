@@ -91,6 +91,8 @@
                     <td>{{ entry.date }}</td>
                     <td>
                         <a href="#/list/edit?name={{ entry.name }}" class="btn btn-primary btn-xs">Edit</a>
+                        <a ng-if="entry.indexed  === false && isAdmin === true" ng-click="indexName(entry.name)" class="btn btn-primary btn-xs">Add to Search</a>
+                        <a ng-if="entry.indexed  === true && isAdmin === true" ng-click="removeNameFromIndex(entry.name)" class="btn btn-danger btn-xs">Remove from Search</a>
                     </td>
                 </tr>
             </tbody>

@@ -1,7 +1,6 @@
 package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
-import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryService;
 import org.slf4j.Logger;
@@ -49,7 +48,7 @@ public class SearchApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> indexEntry(@Valid NameEntry entry) {
-        boolean isIndexed = elasticSearchService.indexName(entry.toNameDto());
+        boolean isIndexed = elasticSearchService.indexName(entry);
         String message;
         if (isIndexed) {
             message = new StringBuilder(entry.getName()).append(" successfully indexed").toString();
@@ -66,22 +65,21 @@ public class SearchApi {
      * @param name the name
      * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
      */
-    @RequestMapping(value = "/indexes/{name}", method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = "/indexes/{name}", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> indexEntryByName(@PathVariable String name) {
         String message;
         NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
             message = new StringBuilder(name).append(" not found in the repository so not indexed").toString();
-            return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>(message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // TODO now cause of index failure cannot be propagated to client. Fix this. One way is to return
         // TODO a status object from the indexName method?
-        NameDto nameDto = nameEntry.toNameDto();
-        boolean isIndexed = elasticSearchService.indexName(nameDto);
+        boolean isIndexed = elasticSearchService.indexName(nameEntry);
 
         if (isIndexed) {
             nameEntry.isIndexed(true);
@@ -101,8 +99,8 @@ public class SearchApi {
      * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteFromIndex(@PathVariable String name) {
         String message;
         boolean deleted = elasticSearchService.deleteFromIndex(name);

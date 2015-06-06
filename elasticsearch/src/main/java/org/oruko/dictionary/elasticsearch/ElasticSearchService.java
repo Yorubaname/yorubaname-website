@@ -12,7 +12,7 @@ import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.oruko.dictionary.model.NameDto;
+import org.oruko.dictionary.model.NameEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +88,7 @@ public class ElasticSearchService {
      * @param entry the {@link org.oruko.dictionary.model.NameDto} to index
      * @return returns true | false depending on if the indexing operation was successful.
      */
-    public boolean indexName(NameDto entry) {
+    public boolean indexName(NameEntry entry) {
 
         if (!isElasticSearchNodeAvailable()) {
             logger.info("Index attempt not possible. You do not have an elasticsearch node running");
@@ -97,7 +97,7 @@ public class ElasticSearchService {
 
         try {
             String entryAsJson = mapper.writeValueAsString(entry);
-            client.prepareIndex(indexName, documentType, entry.getName())
+            client.prepareIndex(indexName, documentType, entry.getName().toLowerCase())
                   .setSource(entryAsJson)
                   .execute()
                   .actionGet();
@@ -121,7 +121,7 @@ public class ElasticSearchService {
             return false;
         }
 
-        DeleteResponse response = client.prepareDelete(indexName, documentType, name)
+        DeleteResponse response = client.prepareDelete(indexName, documentType, name.toLowerCase())
                                         .execute()
                                         .actionGet();
         return response.isFound();

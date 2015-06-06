@@ -22,13 +22,14 @@ var authService = function($cookies, endpointService) {
       $cookies.isAuthenticated = true;
       currentScope.isAuthenticated = true;
       $cookies.username = response.username;
+      // TODO maybe not. This is a security loop hole
       $cookies.token = authData;
 
-      response.roles.every(function(role) {
+      response.roles.some(function(role) {
         if (role === "ROLE_ADMIN") {
           $cookies.isAdmin = true;
           currentScope.isAdmin = true;
-          return false;
+          return true;
         }
       });
 

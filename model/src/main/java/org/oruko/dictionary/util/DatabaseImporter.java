@@ -1,7 +1,9 @@
 package org.oruko.dictionary.util;
 
 import org.oruko.dictionary.model.GeoLocation;
+import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
+import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,9 @@ public class DatabaseImporter {
 
     @Autowired
     private GeoLocationRepository geoLocationRepository;
+
+    @Autowired
+    private NameEntryRepository nameEntryRepository;
 
 
     @PostConstruct
@@ -41,6 +46,15 @@ public class DatabaseImporter {
         geoLocationRepository.save(new GeoLocation("OWO", "SEY"));
         geoLocationRepository.save(new GeoLocation("IKARE", "SEY"));
         geoLocationRepository.save(new GeoLocation("SAGAMU", "SEY"));
+
+
+
+        // sample name entries
+        NameEntry lagbaja = new NameEntry("Lagbaja");
+        NameEntry tamedo = new NameEntry("Tamedo");
+        nameEntryRepository.save(lagbaja);
+        nameEntryRepository.save(tamedo);
+
     }
 
 }
