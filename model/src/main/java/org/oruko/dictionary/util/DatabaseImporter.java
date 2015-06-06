@@ -50,8 +50,8 @@ public class DatabaseImporter {
 
 
         // sample name entries
-        NameEntry lagbaja = new NameEntry("Lagbaja");
-        NameEntry tamedo = new NameEntry("Tamedo");
+        NameEntry lagbaja = new NameEntry("lagbaja");
+        NameEntry tamedo = new NameEntry("tamedo");
         nameEntryRepository.save(lagbaja);
         nameEntryRepository.save(tamedo);
 
