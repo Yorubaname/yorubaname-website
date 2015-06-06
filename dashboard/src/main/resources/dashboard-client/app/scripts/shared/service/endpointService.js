@@ -35,7 +35,7 @@ var endpointService = function ($http, $rootScope, ENV) {
     var request = $http({
           method: 'POST',
           url: ENV.appEndpoint + endpoint,
-          data: data ? data : ""
+          data: data ? data : ''
     });
 
     return request;
@@ -46,17 +46,18 @@ var endpointService = function ($http, $rootScope, ENV) {
     var request = $http({
           method: 'PUT',
           url: ENV.appEndpoint + endpoint,
-          params: data
+          data: data ? data : ''
     });
 
     return request;
   };
 
   this.putJson = function (endpoint, data) {
+
     var request = $http({
             method: 'PUT',
             url: ENV.appEndpoint + endpoint,
-            params: data
+            data: data ? data : ''
     });
 
     return request;
@@ -68,7 +69,7 @@ var endpointService = function ($http, $rootScope, ENV) {
     var request = $http({
         method: 'DELETE',
         url: ENV.appEndpoint + endpoint,
-        data : data ? data : ""
+        data : data ? data : ''
     });
 
     return request;
