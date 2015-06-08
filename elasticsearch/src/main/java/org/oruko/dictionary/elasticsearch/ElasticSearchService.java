@@ -88,11 +88,12 @@ public class ElasticSearchService {
      * @param entry the {@link org.oruko.dictionary.model.NameDto} to index
      * @return returns true | false depending on if the indexing operation was successful.
      */
-    public boolean indexName(NameEntry entry) {
+    public IndexOperationStatus indexName(NameEntry entry) {
 
         if (!isElasticSearchNodeAvailable()) {
-            logger.info("Index attempt not possible. You do not have an elasticsearch node running");
-            return false;
+            return new IndexOperationStatus(false,
+                                     "Index attempt unsuccessful. You do not have an elasticsearch node running");
+
         }
 
         try {
@@ -101,10 +102,10 @@ public class ElasticSearchService {
                   .setSource(entryAsJson)
                   .execute()
                   .actionGet();
-            return true;
+            return new IndexOperationStatus(true, entry.getName() + "indexed successfully");
         } catch (JsonProcessingException e) {
             logger.info("Failed to parse NameEntry into Json", e);
-            return false;
+            return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
         }
     }
 
@@ -114,17 +115,20 @@ public class ElasticSearchService {
      * @param name the name to delete from the index
      * @return true | false depending on if deleting operation was successful
      */
-    public boolean deleteFromIndex(String name) {
+    public IndexOperationStatus deleteFromIndex(String name) {
 
         if (!isElasticSearchNodeAvailable()) {
-            logger.info("Delete attempt not possible. You do not have an elasticsearch node running");
-            return false;
+
+            return new IndexOperationStatus(false,
+                                            "Delete unsuccessful. You do not have an elasticsearch node running");
+
         }
 
         DeleteResponse response = client.prepareDelete(indexName, documentType, name.toLowerCase())
                                         .execute()
                                         .actionGet();
-        return response.isFound();
+
+        return new IndexOperationStatus(response.isFound(),name + " found");
     }
 
     // On start up, creates an index for the application if one does not
