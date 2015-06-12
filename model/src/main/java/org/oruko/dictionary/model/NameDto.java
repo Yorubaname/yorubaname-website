@@ -1,5 +1,8 @@
 package org.oruko.dictionary.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * DTO Representation of a name Entry in dictionary
  * Created by dadepo on 2/11/15.
@@ -29,7 +32,8 @@ public class NameDto {
      * the name value;
      * @param name
      */
-    public NameDto(String name) {
+    @JsonCreator
+    public NameDto(@JsonProperty("name") String name) {
         this.name = name;
     }
 
