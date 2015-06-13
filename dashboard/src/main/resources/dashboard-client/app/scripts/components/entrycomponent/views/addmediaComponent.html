@@ -2,13 +2,15 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="row">
             <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                <input placeholder="Title" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.title" type="text">
+                <input placeholder="Title" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.title" type="text" name="mediaTitle{{$index}}">
+                <h6 ng-show="nameForm.mediaTitle{{$index}}.$invalid && !nameForm.mediaTitle{{$index}}.$pristine" class="help-block">Media title cannot be empty</h6>
             </div>
             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><i ng-click="removeMedia($index)" class="fa fa-close"></i></div>
         </div>
         <div class="row">
             <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                <input placeholder="Link/Url" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.link" type="text">
+                <input placeholder="Link/Url" class="form-control margin15down ng-pristine ng-valid" ng-model="obj.link" type="text" name="mediaLink{{$index}}">
+                <h6 ng-show="nameForm.mediaLink{{$index}}.$invalid && !nameForm.mediaLink{{$index}}.$pristine" class="help-block">Media link cannot be empty</h6>
             </div>
         </div>
     </div>

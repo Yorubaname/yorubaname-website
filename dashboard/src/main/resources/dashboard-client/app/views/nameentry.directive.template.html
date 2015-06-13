@@ -8,42 +8,47 @@
         </div>
     </div>
     <div class="row rowClearance">
-        <form class="form-horizontal" role="form">
+        <form class="form-horizontal" id="nameForm" role="form">
             <!-- <notification notify="notify" msg="msg"></notification> -->
             <div class="container">
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="nameEntry" class="control-label col-sm-4">Name</label>
                             <div class="col-sm-8">
-                                <input autocomplete="off" ng-readonly="duplicateView" typeahead="obj as obj.name for obj in nameMatchList($viewValue) | filter:$viewValue | limitTo:8" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" typeahead-wait-ms="500" typeahead-min-length="3" typeahead-on-select="onNameSelected(formEntry.name)">
+                                <input autocomplete="off" ng-readonly="duplicateView" typeahead="ob as obj.name for obj in nameAutocomplete($viewValue) | filter:$viewValue | limitTo:8" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" typeahead-wait-ms="500" typeahead-min-length="3" typeahead-on-select="onNameSelected(formEntry.name)">
+                                <h6 ng-show="nameForm.name.$invalid && !nameForm.name.$pristine" class="help-block">A valid name is required</h6>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="ipaEntry" class="control-label col-sm-4">IPA Notation</label>
                             <div class="col-sm-8">
                                 <tags-input id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
+                                    <h6 ng-show="nameForm.ipaNotation.$invalid && !nameForm.ipaNotation.$pristine" class="help-block">A valid ipaNotation is required</h6>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="pronunciationEntry" class="control-label col-sm-4">Pronunciation</label>
                             <div class="col-sm-8">
                                 <tags-input id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
+                                    <h6 ng-show="nameForm.tonalMark.$invalid && !nameForm.tonalMark.$pristine" class="help-block">A valid tonalMark is required</h6>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="syllablesEntry" class="control-label col-sm-4">Syllabic Breakdown</label>
                             <div class="col-sm-8">
                                 <tags-input id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
+                                    <h6 ng-show="nameForm.syllables.$invalid && !nameForm.syllables.$pristine" class="help-block">Valid syllables are required</h6>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="meaningEntry" class="control-label col-sm-4">Meaning</label>
                             <div class="col-sm-8">
                                 <textarea class="form-control" id="meaningEntry" placeholder="Meaning of word" name="meaning" ng-model="formEntry.meaning"></textarea>
+                                <h6 ng-show="nameForm.meaning.$invalid && !nameForm.meaning.$pristine" class="help-block">A valid meaning is required</h6>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="extendedMeaningEntry" class="control-label col-sm-4">Extended meaning </label>
                             <div class="col-sm-8">
                                 <textarea class="form-control" id="extendedMeaningEntry" placeholder="Meaning of word" name="extendedMeaning" ng-model="formEntry.extendedMeaning"></textarea>
@@ -51,10 +56,11 @@
                         </div>
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                        <div class="form-group">
+                        <div class="form-group" show-errors>
                             <label for="morphologyEntry" class="control-label col-sm-4">Morphology</label>
                             <div class="col-sm-8">
                                 <tags-input id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology">
+                                    <h6 ng-show="nameForm.morphology.$invalid && !nameForm.morphology.$pristine" class="help-block">A valid morphology is required</h6>
                             </div>
                         </div>
                         <div class="form-group">
@@ -68,6 +74,12 @@
                             <div class="col-sm-8">
                                 <add-media>
                                 </add-media>
+                            </div>
+                        </div>
+                        <div class="form-group" show-errors>
+                            <label for="geolocation" class="col-sm-4 control-label">Geolocation:</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" data-ng-options="o.place for o in geoList" data-ng-model="formEntry.geolocation"></select>
                             </div>
                         </div>
                     </div>

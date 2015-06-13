@@ -87,7 +87,7 @@ body {
         min-height: 600px;
     }
     /* Remove the padding we set earlier */
-    
+
     .header,
     .page-content,
     .footer {
@@ -95,7 +95,7 @@ body {
         padding-right: 0;
     }
     /** Bootstrap override **/
-    
+
     .navbar-brand {
         float: left;
         height: 50px;
@@ -118,7 +118,7 @@ body {
     }
     /** components **/
     /** sidebar **/
-    
+
     #sidebar {
         min-height: 500px;
     }
@@ -264,14 +264,14 @@ tags-input .tags .tag-item {
 
 .navbar-default {
     /*background-color: #C3A96E;*/
-    
+
     background-color: transparent;
     border-style: solid;
     border-width: thick;
     /* border-top: none;
     border-left: none;
     border-right: none;*/
-    
+
     color: #000;
 }
 
@@ -326,4 +326,22 @@ a {
 
 .form-control {
     border-radius: 0px;
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+}
+
+.fileUpload input.upload {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
 }

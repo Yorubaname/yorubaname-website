@@ -1,6 +1,6 @@
 'use strict';
 
-var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env'])
+var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env', 'ui.bootstrap.showErrors'])
     .config(function($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/home');
 

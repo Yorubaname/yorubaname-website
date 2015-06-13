@@ -9,11 +9,12 @@ var addMedia = function() {
         restrict: 'E',
         templateUrl: '/scripts/components/entrycomponent/views/addmediaComponent.html',
         link: function(scope, element, iAttrs) {
-            var etyObj = {
-                title: '',
-                link: ''
-            };
-            scope.addMedia = function() {
+
+            scope.addMedia = function() {#
+                var etyObj = {
+                    title: '',
+                    link: ''
+                };
                 scope.formEntry.media.push(etyObj);
             };
             scope.removeMedia = function(index) {

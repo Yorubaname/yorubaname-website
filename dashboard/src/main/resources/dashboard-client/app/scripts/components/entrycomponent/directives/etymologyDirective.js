@@ -9,11 +9,12 @@ var etymology = function() {
         restrict: 'E',
         templateUrl: '/scripts/components/entrycomponent/views/addEtymologyComponent.html',
         link: function(scope, element, iAttrs) {
-            var etyObj = {
-                part: '',
-                meaning: ''
-            };
+
             scope.addEtymology = function() {
+                var etyObj = {
+                    part: '',
+                    meaning: ''
+                };
                 scope.formEntry.etymology.push(etyObj);
             };
             scope.removeEtymology = function(index) {

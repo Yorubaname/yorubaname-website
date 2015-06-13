@@ -8,14 +8,22 @@
 // TODO move the dependent template into a directory with the directive This involves updating the grunt task to deal with when views are not in the root views dir
 // TODO update checks to also cater for other HTTP actions. POST etc
 // TODO this todo is not perculair to this file. Standardize either to use toneMark or tonalMark
-var nameEntry = function($http, $location, $state, $rootScope, endpointService, stubService, nameEntryService, sToArraysFilter, $compile) {
+var nameEntry = function($http, $location, $state, $rootScope, endpointService, stubService, nameService, sToArraysFilter, $compile, $q) {
+    var delim = '-'
+    var getGeolocations = function(scope) {
+        // reach out to the endpoint to get data for this name
+        var request = endpointService.get('/v1/admin/geolocations');
+        request.then(function(data) {
+            scope.geoList = data.data
+            scope.formEntry.geolocation = data.data[0]
+        }, function(data) {
+            console.log(data);
+        });
+    }
 
     var populateForm = function(scope, getDuplicates) {
         // reach out to the endpoint to get data for this name
-
-        var request = endpointService.get('/v1/names/' + scope.currentName, {
-            'duplicates': 'yes'
-        });
+        var request = nameService.getName(scope.currentName, 'yes');
         request.success(function(data) {
             //REASON: since objects values are parse by angular, and objects attribute coincide with api attributes
             var delim = "-"
@@ -41,44 +49,45 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
         replace: true,
         link: function(scope, element, attrs, notification) {
             var request;
+            scope.geoList = []
             scope.selectedName;
-            scope.formEntry = {
-                etymology: [],
-                media: []
-            };
+            scope.loadingMsg = "Retrieving list of matching names..."
+            scope.formEntry = {}
+            getGeolocations(scope)
+            scope.locationTemplate = stubService.getLocationTemplate
+            scope.duplicateView = attrs.duplicates == "true" ? true : false;
             scope.msg = {};
             scope.buttonAction = "Create Entry";
-            scope.duplicateView = attrs.duplicates == "true" ? true : false;
-            scope.locationTemplate = stubService.getLocationTemplate
-            scope.nameMatchList = function() {
-                return nameEntryService.getNames().then(function(response) {
-                    if (!isEmptyObj(response.data)) {
-                        return response.data
-                    }
-                    return []
-                }, function(error) {
-                    console.log(error)
-                })
-            }
 
+            var setupForm = function() {
+                scope.formEntry = {
+                    etymology: [],
+                    media: []
+                };
+            }
+            setupForm()
+
+            scope.setGeolocation = function(geo) {
+                    scope.geolocation = geo
+                }
+                /* Promise for the autocomplete input box query*/
+            scope.nameAutocomplete = function(name) {
+                    var names = nameService.getName(name)
+                    return names.then(function(response) {
+                        if (!isEmptyObj(response.data)) {
+                            return response.data
+                        }
+                        return []
+                    }, function(error) {
+                        console.log(error)
+                    })
+                }
+                /* DO these when a name match is selected from the autocomplete dropdown*/
             scope.onNameSelected = function(formEntry) {
                 scope.currentName = scope.selectedName = formEntry.name
                 scope.buttonAction = "Submit Duplicate";
                 populateForm(scope, true);
             }
-
-
-            var resetAfterPost = function(element, scope) {
-                element.children('form')[0].reset();
-                scope.msg.text = "Successfully added name";
-                scope.msg.type = "msg-success";
-            };
-
-            var resetAfterPut = function(element, sope) {
-                scope.msg.text = "Successfully updated name";
-                scope.msg.type = "msg-success";
-
-            };
 
             if (attrs.action === 'put') {
                 scope.buttonAction = "Update Entry";
@@ -88,23 +97,30 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
 
             /*Submit new or update entries*/
             scope.create = function() {
+                // force form validation check
+                $scope.$broadcast('show-errors-check-validity');
+                if (!$scope.nameForm.$valid) {
+                    return
+                }
                 // parse tags to strings using stubservice
-                var parsedEntry = angular.copy(scope.formEntry)
-                parsedEntry = stubService.arraysToString(parsedEntry, delim)
+                var parsedEntry = stubService.arraysToString(angular.copy(scope.formEntry), delim)
+                console.log(parsedEntry)
+                var put = false;
                 if (attrs.action === 'put') {
+                    put = true
                     request = endpointService.put('/v1/name', parsedEntry);
                 } else {
                     request = endpointService.post('/v1/name', parsedEntry);
                 }
-
                 request.success(function(data) {
                     if (data === "success") {
-                        if (attrs.action === "put") {
-                            resetAfterPut(element, scope);
+                        if (put) {
                             $state.go($rootScope.previousState)
                         } else {
-                            resetAfterPost(element, scope);
+                            setupForm()
                         }
+                        scope.msg.text = "Successfully added name";
+                        scope.msg.type = "msg-success";
                         setTimeout(function() {
                             scope.$apply(function() {
                                 scope.msg.text = "";
@@ -122,7 +138,6 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                             scope.msg.type = "";
                         });
                     }, 5000);
-
                 });
             };
 
