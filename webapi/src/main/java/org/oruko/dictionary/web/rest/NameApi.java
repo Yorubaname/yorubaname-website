@@ -1,10 +1,13 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
-import org.oruko.dictionary.model.*;
+import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.GeoLocation;
+import org.oruko.dictionary.model.NameDto;
+import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.NameEntryService;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
@@ -18,14 +21,27 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 
 /**
  * End point for inserting and retrieving NameDto Entries
@@ -44,9 +60,6 @@ public class NameApi {
     private NameEntryService entryService;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
-
-    @Autowired
     private GeoLocationRepository geoLocationRepository;
 
     @InitBinder
@@ -58,11 +71,11 @@ public class NameApi {
      * End point that is used to add a {@link org.oruko.dictionary.model.NameEntry}.
      * @param entry the {@link org.oruko.dictionary.model.NameEntry}
      * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
-     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * @return {@link org.springframework.http.ResponseEntity} with string containing error message.
      * "success" is returned if no error
      */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
-    public ResponseEntity<String> addName(@Valid NameEntry entry, BindingResult bindingResult) {
+    @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
@@ -71,36 +84,19 @@ public class NameApi {
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
     }
 
-
-    /**
-     * End point that is used to update a {@link org.oruko.dictionary.model.NameEntry}.
-     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
-     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
-     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
-     * "success" is returned if no error
-     */
-    @RequestMapping(value = "/v1/name", method = RequestMethod.PUT, produces = "text/plain")
-    public ResponseEntity<String> updateName(@Valid NameEntry entry, BindingResult bindingResult) {
-        //TODO tonalMark is returning null on update. Fix
-        if (!bindingResult.hasErrors()) {
-            entryService.updateName(entry);
-            return new ResponseEntity<>("success", HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     /**
      * Get names that has been persisted. Supports ability to specify the count of names to return and the offset
      * @param pageParam a {@link Integer} representing the page (offset) to start the
      *                  result set from. 0 if none is given
      * @param countParam a {@link Integer} the number of names to return. 50 is none is given
      * @return the list of {@link org.oruko.dictionary.model.NameDto}
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException JSON processing exception
      */
-    @RequestMapping(value = "/v1/names", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NameDto> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
-                                  @RequestParam(value = "indexed", required = false) Optional<Boolean> indexed)
+                                  @RequestParam("submittedBy") final Optional<String> submittedBy,
+                                  @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
             throws JsonProcessingException {
 
         List<NameDto> names = new ArrayList<>();
@@ -110,15 +106,29 @@ public class NameApi {
             names.add(nameEntry.toNameDto());
         });
 
-        if (indexed.isPresent()) {
-            if (indexed.get().equals(true)) {
-                return names.stream().filter(name -> name.isIndexed()).collect(Collectors.toCollection(ArrayList::new));
+        // for filtering based on whether entry has been indexed
+        Predicate<NameDto> filterBasedOnIndex = (name) -> {
+            if (indexed.isPresent()) {
+                return name.isIndexed().equals(indexed.get());
             } else {
-                return names.stream().filter(name -> !name.isIndexed()).collect(Collectors.toCollection(ArrayList::new));
+                return true;
             }
-        } else {
-            return names;
-        }
+        };
+
+        // for filtering based on value of submitBy
+        Predicate<NameDto> filterBasedOnSubmitBy = (name) -> {
+            if (submittedBy.isPresent()) {
+                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().toString().trim());
+            } else {
+                return true;
+            }
+        };
+
+        return names.stream()
+                    .filter(filterBasedOnIndex)
+                    .filter(filterBasedOnSubmitBy)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
     }
 
     /**
@@ -126,9 +136,9 @@ public class NameApi {
      * @param withDuplicates flag whether to return duplicate entries for the name being retrieved
      * @param name the name whose details needs to be retrieved
      * @return a name serialized to a jason string
-     * @throws JsonProcessingException json processing expectopm
+     * @throws JsonProcessingException json processing exception
      */
-    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Object getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
                           @PathVariable String name) throws JsonProcessingException {
         NameEntry nameEntry = entryService.loadName(name);
@@ -149,6 +159,47 @@ public class NameApi {
         return nameEntry.toNameDto();
     }
 
+
+    /**
+     * End point that is used to update a {@link org.oruko.dictionary.model.NameEntry}.
+     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
+    @RequestMapping(value = "/v1/names/{name}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.PUT)
+    public ResponseEntity<String> updateName(@PathVariable String name,
+                                             @Valid @RequestBody NameEntry entry,
+                                             BindingResult bindingResult) {
+        //TODO tonalMark is returning null on update. Fix
+        if (!bindingResult.hasErrors()) {
+            if (!entry.getName().equals(name)) {
+                return new ResponseEntity<>("Name given in URL is different from name in request payload",
+                                            HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            NameEntry nameEntry = entryService.loadName(name);
+
+            if (nameEntry == null) {
+                return new ResponseEntity<>(name + " not in database", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            entryService.updateName(entry);
+            return new ResponseEntity<>("success", HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    /**
+     * Endpoint for uploading names via spreadsheet
+     *
+     * @param multipartFile the spreadsheet file
+     * @return the Import status
+     * @throws JsonProcessingException Json processing exception
+     */
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImportStatus> upload(@RequestParam("nameFiles") MultipartFile multipartFile)
@@ -174,18 +225,47 @@ public class NameApi {
         return new ResponseEntity<ImportStatus>(status, HttpStatus.CREATED);
     }
 
-    // TODO add method authorization for methods like this
-    @RequestMapping(value = "/v1/names/delete", method = RequestMethod.DELETE)
+    /**
+     * Endpoint for batch uploading of names. Names are sent as array of json from the client
+     * @param nameEntries the array of {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
+    @RequestMapping(value = "/v1/names/batch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
+        if (!bindingResult.hasErrors()) {
+
+            Arrays.stream(nameEntries).forEach(entry -> {
+                entry.setName(entry.getName().toLowerCase());
+                entryService.insertTakingCareOfDuplicates(entry);
+            });
+
+            return new ResponseEntity<>("success", HttpStatus.CREATED);
+        }
+
+        throw new GenericApiCallException(formatErrorMessage(bindingResult));
+    }
+
+    @RequestMapping(value = "/v1/names/delete",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteAllNames() {
         entryService.deleteAllAndDuplicates();
         return new ResponseEntity<String>("Names Deleted", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v1/names/{name}",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteName(@PathVariable String name) {
         entryService.deleteNameInEntryAndDuplicates(name);
         return new ResponseEntity<String>(name + "Deleted", HttpStatus.OK);
+    }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //=====================================Helpers=========================================================//

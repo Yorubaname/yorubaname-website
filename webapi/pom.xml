@@ -22,6 +22,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>elasticsearch-module</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>importer-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -76,6 +82,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

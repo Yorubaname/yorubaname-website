@@ -34,6 +34,34 @@ var listAllController = function($scope, $location, nameEntryService) {
 
     };
 
+    $scope.indexName = function (name) {
+      var result = nameEntryService.indexName(name);
+      result.success(function(data){
+        $scope.names.some(function(aname){
+          if (aname.name === name) {
+            aname.indexed = true;
+            return true;
+          }
+        });
+      }).error(function(data){
+          console.log("error", data);
+      });
+    };
+
+    $scope.removeNameFromIndex = function(name) {
+      var result = nameEntryService.removeNameFromIndex(name);
+      result.success(function(data){
+        $scope.names.some(function(aname){
+          if (aname.name === name) {
+            aname.indexed = false;
+            return true;
+          }
+        });
+      }).error(function(data) {
+        console.log("error", data);
+      });
+    };
+
     $scope.edit = function(toEdit) {
         $scope.toEdit = toEdit;
         $location.path('/list/edit').search({
@@ -43,7 +71,7 @@ var listAllController = function($scope, $location, nameEntryService) {
 
     $scope.filterList = function(filter) {
         getNamesAndPutOnScope($scope.page, $scope.count, filter);
-    }
+    };
 
     var getNamesAndPutOnScope = function(page, count, filter) {
         page = (page != 'undefined' && !isNaN(page)) ? page : 1;

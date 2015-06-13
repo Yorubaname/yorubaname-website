@@ -12,4 +12,6 @@ public interface ImporterInterface {
      * @return {@link org.oruko.dictionary.importer.ImportStatus}
      */
     ImportStatus doImport(File source);
+
+    //TODO Add method to ImportInterface that returns the format the importer expects the columns to be
 }

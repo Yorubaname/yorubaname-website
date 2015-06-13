@@ -4,129 +4,91 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 
 /**
- * @author Dadepo Aderemi.
+ * Controller for Authentication related endpoints
+ * Created by Dadepo Aderemi.
  */
-@Controller
-@RequestMapping("/auth")
+@RestController
+@RequestMapping("/v1/auth")
 public class AuthController {
 
-
     @Autowired
-    DictionaryUserDetailsService userDetailsService;
+    private ApiUserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    /**
+     * Login endpoint serves as the endpoint to validate a user details is valid and to get any associated
+     * needed properties of the user
+     * @param principal the {@link java.security.Principal}
+     * @return a map of principal properties
+     */
+    @RequestMapping("/login")
+    public Map<String, Object> login(Principal principal) {
+        Map<String, Object> userDetails = new HashMap<>();
+        Collection<GrantedAuthority> authorities = ((UsernamePasswordAuthenticationToken) principal).getAuthorities();
 
-    @Autowired
-    DictionaryUserService userService;
+        ArrayList<String> roles = authorities.stream().map(auth -> {
+            return auth.getAuthority();
+        }).collect(Collectors.toCollection(ArrayList::new));
 
-    @RequestMapping("/")
-    @ResponseBody
-    public String indexPage() {
-        return "Index Page";
+        userDetails.put("roles", roles);
+        userDetails.put("username", principal.getName());
+        return userDetails;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE   )
-    @ResponseBody
-    //TODO
-    public ResponseEntity<String> createUser(SignUpCredential credentials) {
-        UserEntity user = new UserEntity();
 
-        String username = credentials.getUserName();
-        String email = credentials.getEmail();
-        String password = credentials.getPassword();
-        String role = credentials.getRole() != null ? credentials.getRole() : "lexicographer";
+    /**
+     * //TODO look at how to inject the values as an object instead of a map
+     * Endpoint to create user
+     */
+    @RequestMapping(value = "/create",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.POST)
+    public ResponseEntity<String> create(@RequestBody Map<String, Object> createUserRequest) {
+        String username = (String) createUserRequest.get("username");
+        String email = (String) createUserRequest.get("email");
+        String password = (String) createUserRequest.get("password");
+        ArrayList<String> roles = (ArrayList<String>) createUserRequest.get("roles");
+        roles = roles.stream().map(role -> role.toUpperCase()).collect(Collectors.toCollection(ArrayList::new));
 
-        List<Role> roles = new ArrayList<>();
+        ApiUser apiUser = new ApiUser();
+        apiUser.setEmail(email);
+        apiUser.setPassword(password);
+        apiUser.setUsername(username);
+        apiUser.setRoles(roles.toArray(new String[roles.size()]));
+        ApiUser savedUser = userRepository.save(apiUser);
 
-
-        if (role.equalsIgnoreCase("admin")) {
-            roles.addAll(Arrays.asList(Role.ADMIN, Role.LEXICOGRAPHER));
-        } else if (role.equalsIgnoreCase("lexicographer")) {
-            roles.add(Role.LEXICOGRAPHER);
-        } else {
-            roles.addAll(Arrays.asList(Role.LEXICOGRAPHER));
+        if (savedUser == null) {
+            return new ResponseEntity<String>("failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        user.setRole(roles);
-        user.setEmail(email);
-        user.setUserName(username);
-        user.setPasswordHash(new BCryptPasswordEncoder().encode(password));
-
-        try {
-            userService.create(user);
-            return new ResponseEntity<String>("success", HttpStatus.CREATED);
-        } catch (Exception exception) {
-            return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-
-    @RequestMapping("/users")
-    @ResponseBody
-    public List<UserEntity> users() {
-        return userRepository.findAll();
+    /**
+     * End point listing all users
+     * @return list of all {@link org.oruko.dictionary.auth.ApiUser}
+     */
+    @RequestMapping(value = "/users",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.GET)
+    public List<ApiUser> getUsers() {
+        List<ApiUser> all = userRepository.findAll();
+        all.forEach(user -> user.setPassword("xxx"));
+        return all;
     }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public UserDetails login(@RequestBody Map<String, String> credentials) {
-
-        String password = credentials.get("password");
-        String email = credentials.get("email");
-        UserEntity user = userRepository.findByEmail(email);
-
-        if (new BCryptPasswordEncoder().matches(password, user.getPasswordHash())) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            return userDetails;
-        } else {
-            throw new BadCredentialsException("Can not login with the given credentials");
-        }
-
-    }
-
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        SecurityContextHolder.getContext().setAuthentication(null);
-    }
-
-    @PostConstruct
-    // Creates a default admin account for dev
-    private String createTestAdminData() {
-        UserEntity user = new UserEntity();
-
-        user.setRole(Arrays.asList(Role.ADMIN, Role.LEXICOGRAPHER));
-        user.setEmail("admin@yorubaname.com");
-        user.setUserName("admin");
-        user.setPasswordHash(new BCryptPasswordEncoder().encode("admin"));
-        userService.create(user);
-        return "success";
-    }
-
 }

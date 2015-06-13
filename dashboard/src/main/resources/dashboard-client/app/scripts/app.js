@@ -78,7 +78,7 @@ angular.module('dashboardappApp').controller('indexLogin', function($scope, $coo
 
 });
 
-dashboardappApp.run(function($rootScope) {
+dashboardappApp.run(function($rootScope, $cookies) {
     $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";
     $rootScope.appEndpoint = "http://localhost:8081";
     $rootScope.previousState;

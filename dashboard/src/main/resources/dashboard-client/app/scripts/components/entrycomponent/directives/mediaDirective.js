@@ -7,7 +7,7 @@
 var addMedia = function() {
     return {
         restrict: 'E',
-        templateUrl: '/scripts/components/entrycomponent/views/addmediaComponent.html',
+        templateUrl: 'views/addmediaComponent.html',
         link: function(scope, element, iAttrs) {
 
             scope.addMedia = function() {#

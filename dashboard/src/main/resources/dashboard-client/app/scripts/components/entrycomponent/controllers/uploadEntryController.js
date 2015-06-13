@@ -70,6 +70,7 @@ var uploadEntryController = function($scope, $element, fileUploader, ENV) {
         parseForm()
     }, true)
 
+
     $scope.submitNames = function() {
         for (var i = $scope.names.length - 1; i >= 0; i--) {
             console.log($scope.names[i])
@@ -80,6 +81,12 @@ var uploadEntryController = function($scope, $element, fileUploader, ENV) {
                 $scope.postErrors.push(data);
             });
         }
+    }
+
+    if ($scope.namesfile === undefined) {
+        $scope.msg.text = "You need to choose file before uploading";
+        $scope.msg.type = "msg-error";
+        return;
     }
 
     $scope.upload = function() {

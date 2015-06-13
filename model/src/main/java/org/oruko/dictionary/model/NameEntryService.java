@@ -1,5 +1,6 @@
 package org.oruko.dictionary.model;
 
+import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * The service for managing name entries
  * @author Dadepo Aderemi.
  */
-//TODO refactor so methods give meaningful feedbacks
 @Service
 public class NameEntryService {
 
@@ -34,10 +35,16 @@ public class NameEntryService {
      * @param entry
      */
     public void insertTakingCareOfDuplicates(NameEntry entry) {
-        if (alreadyExists(entry.getName())) {
-            duplicateEntryRepository.save(new DuplicateNameEntry(entry));
+        String name = entry.getName();
+
+        if (!namePresentAsVariant(name)) {
+            if (alreadyExists(name)) {
+                duplicateEntryRepository.save(new DuplicateNameEntry(entry));
+            } else {
+                nameEntryRepository.save(entry);
+            }
         } else {
-            nameEntryRepository.save(entry);
+            throw new RepositoryAccessError("Given name already exists as a variant entry");
         }
     }
 
@@ -45,18 +52,18 @@ public class NameEntryService {
      * Saves {@link org.oruko.dictionary.model.NameEntry}
      * @param entry the entry to be saved
      */
-    public void saveName(NameEntry entry) {
-        nameEntryRepository.save(entry);
+    public NameEntry saveName(NameEntry entry) {
+        return nameEntryRepository.save(entry);
     }
 
     /**
      * Updates the properties with values from another {@link org.oruko.dictionary.model.NameEntry}
      * @param newEntry the nameEntry to take values used for updating
      */
-    public void updateName(NameEntry newEntry) {
+    public NameEntry updateName(NameEntry newEntry) {
         NameEntry oldEntry = nameEntryRepository.findByName(newEntry.getName());
         oldEntry.update(newEntry);
-        nameEntryRepository.save(oldEntry);
+        return nameEntryRepository.save(oldEntry);
     }
 
     /**
@@ -142,5 +149,17 @@ public class NameEntryService {
         }
         return true;
     }
+
+    private boolean namePresentAsVariant(String name) {
+        // TODO revisit. Might end up being impacting performance
+        List<NameEntry> allNames = nameEntryRepository.findAll();
+        return allNames.stream().anyMatch((nameEntry) -> {
+            if (nameEntry.getVariants() != null) {
+                return nameEntry.getVariants().contains(name);
+            }
+            return false;
+        });
+    }
+
 
 }

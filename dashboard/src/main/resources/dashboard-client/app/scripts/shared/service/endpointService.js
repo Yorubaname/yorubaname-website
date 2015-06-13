@@ -8,6 +8,18 @@
  */
 var endpointService = function ($http, $rootScope, ENV) {
 
+  this.get = function(endpoint, data, headers) {
+
+    var request = $http({
+           method: 'GET',
+           url: ENV.appEndpoint + endpoint,
+           params: data ? data : '',
+           headers: headers? headers : ''
+    });
+
+    return request;
+  };
+
   this.post = function(endpoint, data) {
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     var request = $http({
@@ -23,33 +35,57 @@ var endpointService = function ($http, $rootScope, ENV) {
     var request = $http({
           method: 'POST',
           url: ENV.appEndpoint + endpoint,
-          data: data
+          data: data ? data : ''
     });
 
     return request;
   };
 
-  this.get = function(endpoint, params, headers) {
-
-    var request = $http({
-          method: 'GET',
-          url: ENV.appEndpoint + endpoint,
-          params: params ? params : '',
-          headers: headers? headers : ''
-     });
-
-    return request;
-  };
-
-  this.put = function (endpoint, params) {
+  this.put = function (endpoint, data) {
+    $http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
     var request = $http({
           method: 'PUT',
           url: ENV.appEndpoint + endpoint,
-          params: params
+          data: data ? data : ''
     });
 
     return request;
   };
+
+  this.putJson = function (endpoint, data) {
+
+    var request = $http({
+            method: 'PUT',
+            url: ENV.appEndpoint + endpoint,
+            data: data ? data : ''
+    });
+
+    return request;
+  };
+
+  this.deleteJson = function(endpoint, data) {
+    // had to explicitly set the content-type for the delete request to work, Why? I do not know yet
+    $http.defaults.headers.common['Content-Type'] = "application/json";
+    var request = $http({
+        method: 'DELETE',
+        url: ENV.appEndpoint + endpoint,
+        data : data ? data : ''
+    });
+
+    return request;
+  };
+
+  this.authenticate = function(authData) {
+    var endpoint = "/v1/auth/login";
+    $http.defaults.headers.common['Authorization'] = 'Basic ' + authData;
+
+    var request = $http({
+              method: 'POST',
+              url: ENV.appEndpoint + endpoint
+    });
+
+    return request;
+  }
 
 };
 

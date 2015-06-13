@@ -14,7 +14,7 @@ var createUserForm = function (endpointService, $cookies) {
       scope.createUser = function () {
 
 
-        var response = endpointService.post("/auth/create", scope.createUserForm);
+        var response = endpointService.postJson("/v1/auth/create", scope.createUserForm);
         response.success(function(response) {
           scope.msg.type = "msg-success";
           scope.msg.text = "User successfully created";
