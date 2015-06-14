@@ -33,6 +33,7 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class ElasticSearchService {
+    private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
 
     private Client client;
     private String clusterName;
@@ -43,7 +44,7 @@ public class ElasticSearchService {
     private ResourceLoader resourceLoader;
     private ObjectMapper mapper = new ObjectMapper();
     private boolean elasticSearchNodeAvailable;
-    private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
+
 
     @Value("${es.clustername:yoruba_name_dictionary}")
     public void setClusterName(String clusterName) {

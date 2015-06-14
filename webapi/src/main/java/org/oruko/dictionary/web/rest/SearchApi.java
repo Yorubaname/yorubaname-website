@@ -1,9 +1,13 @@
 package org.oruko.dictionary.web.rest;
 
+import com.google.common.eventbus.EventBus;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryService;
+import org.oruko.dictionary.web.NameEntryService;
+import org.oruko.dictionary.web.events.EventBusFactory;
+import org.oruko.dictionary.web.events.NameIndexedEvent;
+import org.oruko.dictionary.web.events.NameSearchedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 // TODO all endpoints should be authorized
@@ -31,13 +35,24 @@ public class SearchApi {
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
     @Autowired
-    ServletContext servletContext;
+    private EventBusFactory eventBusFactory;
 
     @Autowired
     private NameEntryService entryService;
 
     @Autowired
     private ElasticSearchService elasticSearchService;
+
+    @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> search(String searchTerm, HttpServletRequest request) {
+
+        EventBus eventBus = eventBusFactory.getEventBus();
+        eventBus.post(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+        eventBus.post(new NameIndexedEvent(searchTerm));
+
+        return null;
+    }
 
     /**
      * Endpoint to index a NameEntry sent in as JSON string.

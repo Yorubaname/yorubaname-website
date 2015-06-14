@@ -7,7 +7,7 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryService;
+import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.exception.GenericApiCallException;

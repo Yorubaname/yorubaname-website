@@ -7,7 +7,7 @@ import org.mockito.*;
 import org.mockito.runners.*;
 import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryService;
+import org.oruko.dictionary.web.NameEntryService;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;

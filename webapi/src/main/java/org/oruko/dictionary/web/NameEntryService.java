@@ -1,5 +1,7 @@
-package org.oruko.dictionary.model;
+package org.oruko.dictionary.web;
 
+import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
