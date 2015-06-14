@@ -84,10 +84,10 @@ body {
         max-width: 100%;
         margin-right: 5px;
         margin-left: 5px;
-        min-height: 600px;
+        /*min-height: 600px;*/
     }
     /* Remove the padding we set earlier */
-
+    
     .header,
     .page-content,
     .footer {
@@ -95,7 +95,7 @@ body {
         padding-right: 0;
     }
     /** Bootstrap override **/
-
+    
     .navbar-brand {
         float: left;
         height: 50px;
@@ -118,7 +118,7 @@ body {
     }
     /** components **/
     /** sidebar **/
-
+    
     #sidebar {
         min-height: 500px;
     }
@@ -264,14 +264,14 @@ tags-input .tags .tag-item {
 
 .navbar-default {
     /*background-color: #C3A96E;*/
-
+    
     background-color: transparent;
     border-style: solid;
     border-width: thick;
     /* border-top: none;
     border-left: none;
     border-right: none;*/
-
+    
     color: #000;
 }
 

@@ -7,8 +7,7 @@
  * @param nameEntryService
  */
 var listController = function($scope, $location) {
-  $scope.title = "All Names";
-
+    $scope.title = "All Names";
 };
 
 angular.module('dashboardappApp').controller("listController", listController);

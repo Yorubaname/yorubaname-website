@@ -2,13 +2,13 @@
     <div class="row rowClearance">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <button ng-click="create()" class="btn btn-inverse btn-lg">{{ buttonAction }}</button>
-            <button ng-click="create()" class="btn btn-inverse btn-lg">Save for Review</button>
-            <button ng-click="create()" class="btn btn-inverse btn-lg">Save for Later</button>
-            &nbsp<a href="">Delete entry</a>
+            <!-- <button ng-click="create()" class="btn btn-inverse btn-lg">Save for Review</button>
+            <button ng-click="create()" class="btn btn-inverse btn-lg">Save for Later</button> -->
+            <span ng-show="isAdmin"> &nbsp<a href="">Delete entry</a></span>
         </div>
     </div>
     <div class="row rowClearance">
-        <form class="form-horizontal" id="nameForm" role="form">
+        <form class="form-horizontal" name="nameForm" id="nameForm" role="form">
             <!-- <notification notify="notify" msg="msg"></notification> -->
             <div class="container">
                 <div class="row">
@@ -20,21 +20,21 @@
                                 <h6 ng-show="nameForm.name.$invalid && !nameForm.name.$pristine" class="help-block">A valid name is required</h6>
                             </div>
                         </div>
-                        <div class="form-group" show-errors>
+                        <div class="form-group">
                             <label for="ipaEntry" class="control-label col-sm-4">IPA Notation</label>
                             <div class="col-sm-8">
                                 <tags-input id="ipaEntry" placeholder="IPA Notation" name="ipaNotation" ng-model="formEntry.ipaNotation">
                                     <h6 ng-show="nameForm.ipaNotation.$invalid && !nameForm.ipaNotation.$pristine" class="help-block">A valid ipaNotation is required</h6>
                             </div>
                         </div>
-                        <div class="form-group" show-errors>
+                        <div class="form-group">
                             <label for="pronunciationEntry" class="control-label col-sm-4">Pronunciation</label>
                             <div class="col-sm-8">
                                 <tags-input id="pronunciationEntry" placeholder="pronunciation" name="tonalMark" ng-model="formEntry.pronunciation">
                                     <h6 ng-show="nameForm.tonalMark.$invalid && !nameForm.tonalMark.$pristine" class="help-block">A valid tonalMark is required</h6>
                             </div>
                         </div>
-                        <div class="form-group" show-errors>
+                        <div class="form-group">
                             <label for="syllablesEntry" class="control-label col-sm-4">Syllabic Breakdown</label>
                             <div class="col-sm-8">
                                 <tags-input id="syllablesEntry" placeholder="Syllables" name="syllables" ng-model="formEntry.syllables">
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                        <div class="form-group" show-errors>
+                        <div class="form-group">
                             <label for="morphologyEntry" class="control-label col-sm-4">Morphology</label>
                             <div class="col-sm-8">
                                 <tags-input id="morphologyEntry" placeholder="Morphology" name="morphology" ng-model="formEntry.morphology">
@@ -69,17 +69,24 @@
                                 <etymology id="etymology"></etymology>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <!-- Not yet implemented on server -->
+                        <!--  <div class="form-group">
                             <label for="addmedia" class="col-sm-4 control-label">Add Media:</label>
                             <div class="col-sm-8">
                                 <add-media id="addmedia">
                                 </add-media>
                             </div>
+                        </div> -->
+                        <div class="form-group">
+                            <label for="addmedia" class="col-sm-4 control-label">Add Media:</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="media" class="form-control" ng-model="formEntry.media">
+                            </div>
                         </div>
                         <div class="form-group" show-errors>
                             <label for="geolocation" class="col-sm-4 control-label">Geolocation:</label>
                             <div class="col-sm-8">
-                                <select class="form-control" data-ng-options="o.place for o in geoList" data-ng-model="formEntry.geolocation"></select>
+                                <select class="form-control" name="geolocation" ng-init="formEntry.geoLocation = formEntry.geolocation || o[0].place" data-ng-options="o.place for o in geoList" data-ng-model="formEntry.geolocation"></select>
                             </div>
                         </div>
                     </div>

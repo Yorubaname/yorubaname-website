@@ -5,7 +5,7 @@
         </div>
     </div>
     <div class="row rowClearance">
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">List Filter</h3>
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <!--    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Character Filter</h3>
@@ -53,8 +53,8 @@
                 <div class="panel-body">
                 </div>
             </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        </div> -->
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Find Entry</h3>
@@ -85,7 +85,6 @@
                 <tr ng-repeat="entry in names | filter:searchTerm">
                     <th scope="row">{{ ($index + 1 + count * (page - 1) ) }}</th>
                     <td>{{ entry.name }}</td>
-                    <td>{{ entry.meaning }}</td>
                     <td>{{ entry.submittedBy }}</td>
                     <td>{{ entry.status }}</td>
                     <td>{{ entry.date }}</td>

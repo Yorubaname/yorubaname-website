@@ -10,7 +10,7 @@ var addMedia = function() {
         templateUrl: 'views/addmediaComponent.html',
         link: function(scope, element, iAttrs) {
 
-            scope.addMedia = function() {#
+            scope.addMedia = function() {
                 var etyObj = {
                     title: '',
                     link: ''

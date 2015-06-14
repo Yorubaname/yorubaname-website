@@ -1,15 +1,21 @@
 'use strict';
 
 var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env', 'ui.bootstrap.showErrors'])
-    .config(function($stateProvider, $urlRouterProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider, tagsInputConfigProvider) {
         $urlRouterProvider.otherwise('/home');
+        // $httpProvider.interceptors.push('authHttpResponseInterceptor');
+        tagsInputConfigProvider.setDefaults('tagsInput', {
+            addOnSpace: true,
+            addOnPaste: true,
+            minLength: 1
+
+        });
 
         $stateProvider.state('home', {
             url: '/home',
             controller: 'homeController',
             templateUrl: 'views/home.html'
         });
-
         $stateProvider.state('entry', {
             url: '/entry',
             controller: 'entryController',
@@ -59,45 +65,40 @@ angular.module('dashboardappApp').controller('search', function($scope) {
     };
 });
 
-angular.module('dashboardappApp').controller('indexLogin', function($scope, $cookies) {
+angular.module('dashboardappApp').controller('indexLogin', function($scope, $cookies, $rootScope) {
 
     $scope.logoutUser = function() {
         $cookies.isAuthenticated = false;
         $cookies.isAdmin = false;
-        $scope.isAuthenticated = false;
-        $scope.isAdmin = false;
+        $rootScope.isAuthenticated = false;
+        $rootScope.isAdmin = false;
     };
+    console.log($cookies.isAdmin)
 
     if ($cookies.isAuthenticated && $cookies.isAuthenticated === 'true') {
-        $scope.isAuthenticated = true;
+        $rootScope.isAuthenticated = true;
+    }
+    if ($cookies.isAdmin && $cookies.isAdmin === 'true') {
+        $rootScope.isAdmin = true;
     }
 
-    if ($cookies.isAdmin && $cookies.isAdmin === 'true') {
-        $scope.isAdmin = true;
-    }
+
 
 });
 
-dashboardappApp.run(function($rootScope, $cookies) {
+dashboardappApp.run(function($rootScope, $cookies, $http) {
     $rootScope.dashboardEndpoint = "http://localhost:8081/dashboard";
     $rootScope.appEndpoint = "http://localhost:8081";
     $rootScope.previousState;
     $rootScope.previousParams;
     $rootScope.currentState;
+    $rootScope.state
+
+    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
+
     $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
         $rootScope.previousState = from.name;
         $rootScope.currentState = to.name;
         $rootScope.previousParams = fromParams;
-        console.log('Previous state:' + $rootScope.previousState)
-        console.log($rootScope.previousParams)
-    });
-});
-dashboardappApp.config(function(tagsInputConfigProvider) {
-    /*Global configuration for tags inputs for text seperation*/
-    tagsInputConfigProvider.setDefaults('tagsInput', {
-        addOnSpace: true,
-        addOnPaste: true,
-        minLength: 1
-
     });
 });

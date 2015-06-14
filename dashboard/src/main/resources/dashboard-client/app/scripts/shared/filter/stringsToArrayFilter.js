@@ -9,7 +9,6 @@ var sToArrays = function() {
         if (!text || !delimeter) return text;
         return text.split(delimeter)
     }
-
 };
 
 angular.module('dashboardappApp').filter('sToArrays', sToArrays);
