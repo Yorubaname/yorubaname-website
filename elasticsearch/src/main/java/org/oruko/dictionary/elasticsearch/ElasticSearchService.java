@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.node.DiscoveryNode;
@@ -12,6 +13,7 @@ import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.oruko.dictionary.model.NameEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,10 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
 /**
@@ -82,6 +88,46 @@ public class ElasticSearchService {
     public boolean isElasticSearchNodeAvailable() {
         return elasticSearchNodeAvailable;
     }
+
+
+    /**
+     * For getting an entry from the search index by name
+     * @param nameQuery the name
+     * @return the nameEntry as a Map
+     */
+    public Map<String, Object> getByName(String nameQuery) {
+
+        //TODO update to use Query builders
+        SearchResponse searchResponse = client.prepareSearch(indexName)
+                                        .setQuery("{\"term\" : {\"name\": \"$NAME\"}}".replace("$NAME", nameQuery))
+                                        .execute()
+                                        .actionGet();
+
+        return searchResponse.getHits().getHits()[0].getSource();
+    }
+
+    /**
+     * For searching the index for a name
+     * @param searchTerm the search term
+     * @return the list of entries found
+     */
+    public List<Map<String, Object>> search(String searchTerm) {
+
+        final List<Map<String, Object>> result = new ArrayList();
+
+        // TODO update to implement search behaviour needed
+        SearchResponse searchResponse = client.prepareSearch(indexName)
+                                              .setQuery(QueryBuilders.matchAllQuery())
+                                              .execute()
+                                              .actionGet();
+
+        Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
+                result.add(hit.getSource());
+        });
+
+        return result;
+    }
+
 
     /**
      * Add a {@link org.oruko.dictionary.model.NameDto} into ElasticSearch index
@@ -182,4 +228,6 @@ public class ElasticSearchService {
             }
         }
     }
+
+
 }

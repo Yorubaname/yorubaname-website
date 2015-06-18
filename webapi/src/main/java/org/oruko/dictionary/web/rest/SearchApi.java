@@ -1,12 +1,10 @@
 package org.oruko.dictionary.web.rest;
 
-import com.google.common.eventbus.EventBus;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.web.NameEntryService;
-import org.oruko.dictionary.web.events.EventBusFactory;
-import org.oruko.dictionary.web.events.NameIndexedEvent;
+import org.oruko.dictionary.web.events.EventPubService;
 import org.oruko.dictionary.web.events.NameSearchedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -35,7 +36,7 @@ public class SearchApi {
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
     @Autowired
-    private EventBusFactory eventBusFactory;
+    private EventPubService eventPubService;
 
     @Autowired
     private NameEntryService entryService;
@@ -43,15 +44,31 @@ public class SearchApi {
     @Autowired
     private ElasticSearchService elasticSearchService;
 
+
+    @RequestMapping(value = "/", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
+                                            HttpServletRequest request) {
+
+        List<Map<String, Object>> name = elasticSearchService.search(searchTerm);
+
+        if (name != null) {
+            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+        }
+
+        return name;
+    }
+
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,
     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> search(String searchTerm, HttpServletRequest request) {
+    public Map<String, Object> findByName(@PathVariable String searchTerm, HttpServletRequest request) {
 
-        EventBus eventBus = eventBusFactory.getEventBus();
-        eventBus.post(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
-        eventBus.post(new NameIndexedEvent(searchTerm));
+        Map<String, Object> name = elasticSearchService.getByName(searchTerm);
 
-        return null;
+        if (name != null) {
+            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+        }
+        return name;
     }
 
     /**
