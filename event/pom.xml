@@ -9,34 +9,26 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>elasticsearch-module</artifactId>
+    <artifactId>event-module</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>model-module</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>event-module</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
+            <artifactId>spring-boot</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
     </dependencies>
+
 </project>

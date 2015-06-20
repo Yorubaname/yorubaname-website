@@ -28,4 +28,8 @@ public class ApiService {
     public static List<Map<String, Object>> searchName(String nameQuery) {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/search/?q=" + nameQuery, Map[].class));
     }
+
+    public static Map<String, String[]> getSearchActivity() {
+        return restTemplate.getForObject(APIPATH + "/search/activity/all", Map.class);
+    }
 }

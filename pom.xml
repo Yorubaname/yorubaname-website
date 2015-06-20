@@ -16,6 +16,7 @@
         <module>auth</module>
         <module>elasticsearch</module>
         <module>website</module>
+        <module>event</module>
     </modules>
     <packaging>pom</packaging>
 

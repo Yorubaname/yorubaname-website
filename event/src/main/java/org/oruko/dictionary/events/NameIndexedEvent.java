@@ -1,4 +1,4 @@
-package org.oruko.dictionary.web.events;
+package org.oruko.dictionary.events;
 
 import java.time.LocalDateTime;
 

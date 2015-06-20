@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -14,6 +15,8 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +54,8 @@ public class ElasticSearchService {
     private ObjectMapper mapper = new ObjectMapper();
     private boolean elasticSearchNodeAvailable;
 
+    @Autowired
+    private EventPubService eventPubService;
 
     @Value("${es.clustername:yoruba_name_dictionary}")
     public void setClusterName(String clusterName) {
@@ -145,11 +150,17 @@ public class ElasticSearchService {
 
         try {
             String entryAsJson = mapper.writeValueAsString(entry);
-            client.prepareIndex(indexName, documentType, entry.getName().toLowerCase())
-                  .setSource(entryAsJson)
-                  .execute()
-                  .actionGet();
-            return new IndexOperationStatus(true, entry.getName() + "indexed successfully");
+            String name = entry.getName();
+            IndexResponse indexResponse = client.prepareIndex(indexName, documentType, name.toLowerCase())
+                                                .setSource(entryAsJson)
+                                                .execute()
+                                                .actionGet();
+
+            if (indexResponse.getVersion() == 1L) {
+                eventPubService.publish(new NameIndexedEvent(name));
+            }
+
+            return new IndexOperationStatus(true, name + "indexed successfully");
         } catch (JsonProcessingException e) {
             logger.info("Failed to parse NameEntry into Json", e);
             return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
@@ -175,7 +186,7 @@ public class ElasticSearchService {
                                         .execute()
                                         .actionGet();
 
-        return new IndexOperationStatus(response.isFound(),name + " found");
+        return new IndexOperationStatus(response.isFound(),name + " deleted from index");
     }
 
     // On start up, creates an index for the application if one does not

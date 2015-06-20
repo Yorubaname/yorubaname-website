@@ -2,10 +2,13 @@ package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
+import org.oruko.dictionary.events.RecentIndexes;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.web.NameEntryService;
-import org.oruko.dictionary.web.events.EventPubService;
-import org.oruko.dictionary.web.events.NameSearchedEvent;
+import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameSearchedEvent;
+import org.oruko.dictionary.events.RecentSearches;
+import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +21,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-// TODO all endpoints should be authorized
 /**
  * Handler for search functionality
  *
@@ -44,6 +49,11 @@ public class SearchApi {
     @Autowired
     private ElasticSearchService elasticSearchService;
 
+    @Autowired
+    private RecentSearches recentSearches;
+
+    @Autowired
+    private RecentIndexes recentIndexes;
 
     @RequestMapping(value = "/", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,6 +79,39 @@ public class SearchApi {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
         }
         return name;
+    }
+
+    @RequestMapping(value = "/activity", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String[] recentSearches(@RequestParam(value = "q", required = false) String activityType, HttpServletResponse response)
+            throws IOException {
+        if (activityType == null || activityType.isEmpty()) {
+            response.sendRedirect("/v1//search/activity/all");
+        }
+
+        if ("search".equalsIgnoreCase(activityType)) {
+            return recentSearches.get();
+        }
+
+        if ("index".equals(activityType)) {
+            return recentIndexes.get();
+        }
+
+        if ("popular".equals(activityType)) {
+            return recentSearches.getMostPopular();
+        }
+
+        throw new GenericApiCallException("Activity type not recognized");
+    }
+
+    @RequestMapping(value = "/activity/all", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String[]> allActivity() {
+        Map<String, String[]> activities = new HashMap<>();
+        activities.put("search", recentSearches.get());
+        activities.put("popular", recentSearches.getMostPopular());
+        activities.put("index", recentIndexes.get());
+        return activities;
     }
 
     /**
