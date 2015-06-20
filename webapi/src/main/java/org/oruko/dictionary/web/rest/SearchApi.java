@@ -77,8 +77,10 @@ public class SearchApi {
 
         if (name != null) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+            return name;
         }
-        return name;
+
+        throw new GenericApiCallException(searchTerm + " not found");
     }
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET,

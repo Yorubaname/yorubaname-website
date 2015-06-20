@@ -15,6 +15,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.model.NameEntry;
@@ -98,7 +99,7 @@ public class ElasticSearchService {
     /**
      * For getting an entry from the search index by name
      * @param nameQuery the name
-     * @return the nameEntry as a Map
+     * @return the nameEntry as a Map or null if name not found
      */
     public Map<String, Object> getByName(String nameQuery) {
 
@@ -108,7 +109,12 @@ public class ElasticSearchService {
                                         .execute()
                                         .actionGet();
 
-        return searchResponse.getHits().getHits()[0].getSource();
+        SearchHit[] hits = searchResponse.getHits().getHits();
+        if (hits.length == 1) {
+            return hits[0].getSource();
+        } else {
+            return null;
+        }
     }
 
     /**
