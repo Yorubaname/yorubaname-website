@@ -21,12 +21,12 @@
 <div class="container">
 		<div class="llm">
     	<div class="row">
-        	<div class="col-xs-6 col-sm-4 llm-box">              	
+        	<div class="col-xs-6 col-sm-4 llm-box">
                 <ul>
                     <li><h5 class="pri-color">{{message "lang.latest-search"}}</h5></li>
                     <hr />
                     {{#each latestSearches}}
-                        <li>{{this.name}}</li>
+                        <li><a href="/entries/{{this}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
             </div>
@@ -35,7 +35,7 @@
                     <li><h5 class="pri-color">{{message "lang.latest-add"}}</h5></li>
                     <hr />
                     {{#each latestAdditions}}
-                        <li>{{this.name}}</li>
+                        <li><a href="/entries/{{this}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
             </div>
@@ -44,7 +44,7 @@
                     <li><h5 class="pri-color">{{message "lang.most-popular"}}</h5></li>
                     <hr />
                     {{#each mostPopular}}
-                        <li>{{this.name}}</li>
+                        <li><a href="/entries/{{this}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
             </div>

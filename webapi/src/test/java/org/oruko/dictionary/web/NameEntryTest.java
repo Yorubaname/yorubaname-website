@@ -1,6 +1,8 @@
-package org.oruko.dictionary.model;
+package org.oruko.dictionary.web;
 
 import org.junit.*;
+import org.oruko.dictionary.model.GeoLocation;
+import org.oruko.dictionary.model.NameEntry;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

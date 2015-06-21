@@ -52,9 +52,15 @@ public class DatabaseImporter {
         // sample name entries
         NameEntry lagbaja = new NameEntry("lagbaja");
         NameEntry tamedo = new NameEntry("tamedo");
+        NameEntry koko = new NameEntry("koko");
+        NameEntry tola = new NameEntry("tola");
+        NameEntry bolanle = new NameEntry("Bọ́lánlé");
         nameEntryRepository.save(lagbaja);
         nameEntryRepository.save(tamedo);
-
+        nameEntryRepository.save(koko);
+        nameEntryRepository.save(tola);
+        nameEntryRepository.save(tola);
+        nameEntryRepository.save(bolanle);
     }
 
 }

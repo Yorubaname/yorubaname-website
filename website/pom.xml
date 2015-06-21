@@ -17,6 +17,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>webapi-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -38,6 +44,7 @@
             <groupId>pl.allegro.tech.boot</groupId>
             <artifactId>spring-boot-starter-handlebars</artifactId>
         </dependency>
+
     </dependencies>
 
     <!-- Profiles with slightly different build behaviour -->

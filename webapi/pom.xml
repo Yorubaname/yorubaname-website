@@ -40,6 +40,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>event-module</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>auth-module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

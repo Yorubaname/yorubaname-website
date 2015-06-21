@@ -2,13 +2,33 @@
 <html lang="en">
 
 <head>
- {{> headHtml }}
+ {{> header }}
     <title>{{ title }}</title>
 </head>
 
 <body>
 <div class="wrapper">
-{{ title }}
+    {{ title }}
+    <br/>
+
+    <h4>Search result page</h4>
+
+    Result page showing the various results returned from performing search query with a name. <br/>
+    Also if if url is /entries/all, this template is also used to list the pageable entries
+    (if need be we can create a different template for this) <br/>
+
+    <em>Note that right now the search has not been implemented yet, so no matter what you include in the q parameter
+    you always get all the names in the database</em> <br/>
+
+    {{#each names}}
+        <br/>
+        id: {{ this.id }}<br/>
+        name: <a href="/entries/{{this.name}}">{{ this.name }}</a><br/>
+        submitted by: {{ this.submittedBy }}<br/>
+        <br/>
+        <hr/>
+    {{/each}}
+
 
 </div>
 <!-- Javascript -->
