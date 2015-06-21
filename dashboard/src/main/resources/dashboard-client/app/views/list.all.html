@@ -1,12 +1,12 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <h2><strong>Dashboard Entries:</strong> <a ui-sref="entry.single" class="btn btn-danger btn-lg pull-right">+ CREATE NEW ENTRY</a></h2>
+            <h2><strong>Dashboard Entries:</strong> <a ui-sref="entry.single" class="btn btn-primary btn-lg pull-right">+ CREATE NEW ENTRY</a></h2>
         </div>
     </div>
     <div class="row rowClearance">
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">List Filter</h3>
                 </div>
@@ -15,29 +15,19 @@
                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="filter" value="" checked="checked"> All
+                                    <input type="radio" name="filter" ng-click="filterList()" checked="checked"> All
                                 </label>
                             </div>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="filter" value="" checked="checked"> Requiring Attention
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="filter" value="" checked="checked"> Published
+                                    <input type="radio" name="filter" ng-click="indexedList()"> Published
                                 </label>
                             </div>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="filter" value="" checked="checked"> Submitted for review
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="filter" value="" checked="checked"> Saved for later
+                                    <input type="radio" name="filter" ng-click="reviewList()"> Submitted for review
                                 </label>
                             </div>
                         </div>
@@ -45,17 +35,8 @@
                 </div>
             </div>
         </div>
-        <!--    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Character Filter</h3>
-                </div>
-                <div class="panel-body">
-                </div>
-            </div>
-        </div> -->
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Find Entry</h3>
                 </div>
@@ -76,8 +57,6 @@
                     <th>#</th>
                     <th>Name</th>
                     <th>Submitted By</th>
-                    <th>Status</th>
-                    <th>Date</th>
                     <th></th>
                 </tr>
             </thead>
@@ -86,8 +65,6 @@
                     <th scope="row">{{ ($index + 1 + count * (page - 1) ) }}</th>
                     <td>{{ entry.name }}</td>
                     <td>{{ entry.submittedBy }}</td>
-                    <td>{{ entry.status }}</td>
-                    <td>{{ entry.date }}</td>
                     <td>
                         <a href="#/list/edit?name={{ entry.name }}" class="btn btn-primary btn-xs">Edit</a>
                         <a ng-if="entry.indexed  === false && isAdmin === true" ng-click="indexName(entry.name)" class="btn btn-primary btn-xs">Add to Search</a>

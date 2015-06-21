@@ -1,14 +1,22 @@
 'use strict';
 
-var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env', 'ui.bootstrap.showErrors'])
-    .config(function($stateProvider, $urlRouterProvider, $httpProvider, tagsInputConfigProvider) {
+var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies', 'ngTagsInput', 'ui.bootstrap', 'env', 'ui.bootstrap.showErrors', 'ui-notification', 'ngFileUpload'])
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider, tagsInputConfigProvider, NotificationProvider) {
         $urlRouterProvider.otherwise('/home');
         // $httpProvider.interceptors.push('authHttpResponseInterceptor');
         tagsInputConfigProvider.setDefaults('tagsInput', {
-            addOnSpace: true,
             addOnPaste: true,
             minLength: 1
+        });
 
+        NotificationProvider.setOptions({
+            delay: 10000,
+            startTop: 20,
+            startRight: 10,
+            verticalSpacing: 20,
+            horizontalSpacing: 20,
+            positionX: 'right',
+            positionY: 'top'
         });
 
         $stateProvider.state('home', {
@@ -33,7 +41,7 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies
             controller: 'listController',
             templateUrl: 'views/list.html'
         }).state('list.all', {
-            url: '/all',
+            url: '/all?submittedBy',
             controller: 'listAllController',
             templateUrl: 'views/list.all.html'
         }).state('list.edit', {
@@ -73,7 +81,7 @@ angular.module('dashboardappApp').controller('indexLogin', function($scope, $coo
         $rootScope.isAuthenticated = false;
         $rootScope.isAdmin = false;
     };
-    console.log($cookies.isAdmin)
+    console.log($cookies.isAuthenticated)
 
     if ($cookies.isAuthenticated && $cookies.isAuthenticated === 'true') {
         $rootScope.isAuthenticated = true;
@@ -81,9 +89,6 @@ angular.module('dashboardappApp').controller('indexLogin', function($scope, $coo
     if ($cookies.isAdmin && $cookies.isAdmin === 'true') {
         $rootScope.isAdmin = true;
     }
-
-
-
 });
 
 dashboardappApp.run(function($rootScope, $cookies, $http) {

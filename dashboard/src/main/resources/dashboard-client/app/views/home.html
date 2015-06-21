@@ -3,25 +3,22 @@
         <h3>Volunteer Dashboard</h3>
         <div class="row">
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                <img ng-src="{{profile.image}}" class="img-responsive" alt="{{profile.name}}">
+                <img ng-src="{{profile.image}}" style="width:120px; height:120px; background:  #9EAFBC " class="img-responsive img-rounded" alt="{{profile.name}}">
             </div>
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                <h4>{{profle.name}}</h4>
-                <h5>Email: {{profile.email}}</h5>
-                <h5>Role {{profile.role}}</h5>
-                <h5>Contributions: {{profile.contributions}}</h5>
-                <h5>Password: {{profile.password}}</h5>
+                <h4>{{profile.username}}</h4>
+                <h5 ng-if="profile.role.length > 0">Role: {{profile.role}}</h5>
             </div>
         </div>
     </div>
     <div class="col-md-offset-2 col-xs-5 col-sm-5 col-md-5 col-lg-5">
-        <div class="panel panel-default">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">Your Stats</h3>
             </div>
             <div class="panel-body">
                 <div class="table-responsive">
-                    <table class="table table-hover noTableBorder">
+                    <table class="table table-hover table-bordered">
                         <tbody>
                             <tr>
                                 <td>Entries requiring your attention</td>
@@ -48,32 +45,45 @@
 </div>
 <div class="row rowClearance">
     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-        <div class="panel panel-default panel-body">
-            <h3>Find Entry</h3>
-            <div class="input-group " ng-controller="search" ng-show="isAuthenticated">
-                <input type="text" class="form-control" ng-model="searchTerm">
-                <span ng-click="search()" class="input-group-addon">Go!</span>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Find Entry</h3>
             </div>
-            <h6><input type="checkbox" ng-model="filter" value="{{profile.id}}">Only search my entries</h6>
-            <hr>
-            <h5><a href="#/list/all" ng-if="isAdmin">List all entries</a></h5>
-            <h5><a href="#/list/?submittedby={{profile.id}}">List only my entries</a></h5>
+            <div class="panel-body">
+                <h3></h3>
+                <div class="input-group " ng-controller="search" ng-show="isAuthenticated">
+                    <input type="text" class="form-control" ng-model="searchTerm">
+                    <span ng-click="search()" class="input-group-addon">Go!</span>
+                </div>
+                <span><input type="checkbox" ng-model="filter" class="input-control" name="searchfilter" value="{{profile.id}}"><label for="searchfilter">Only search my entries</label></span>
+                <hr>
+                <h5><a href="#/list/all" ng-if="isAdmin">List all entries</a></h5>
+                <h5 ng-if="profile.username.length > 0"><a ui-sref="list.all({submittedBy: profile.username})">List only my entries</a></h5>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-        <div class="panel panel-default panel-body">
-            <h3>Create Entry</h3>
-            <h5><a href="">How to create an entry</a></h5>
-            <hr>
-            <a class="btn btn-danger btn-lg" href="#/entry/single">+ CREATE NEW ENTRY</a>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Create Entry</h3>
+            </div>
+            <div class="panel-body">
+                <h5><a href="">How to create an entry</a></h5>
+                <hr>
+                <a class="btn btn-primary btn-lg" href="#/entry/single">+ CREATE NEW ENTRY</a>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-        <div class="panel panel-default panel-body">
-            <h3>Upload Entries in bulk</h3>
-            <h5><a href="">Download Template</a></h5>
-            <hr>
-            <button type="button" ui-sref="entry.upload" class="btn btn-danger btn-lg">+ UPLOAD TEMPLATE</button>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Upload Entries in bulk</h3>
+            </div>
+            <div class="panel-body">
+                <h5><a href="{{appEndpoint}}/name_entry_template.xlsx">Download Template</a></h5>
+                <hr>
+                <button type="button" ui-sref="entry.upload" class="btn btn-primary btn-lg">+ UPLOAD TEMPLATE</button>
+            </div>
         </div>
     </div>
 </div>

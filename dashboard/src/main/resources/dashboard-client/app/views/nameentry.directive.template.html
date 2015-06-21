@@ -1,22 +1,21 @@
 <div>
     <div class="row rowClearance">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <button ng-click="create()" class="btn btn-inverse btn-lg">{{ buttonAction }}</button>
-            <!-- <button ng-click="create()" class="btn btn-inverse btn-lg">Save for Review</button>
-            <button ng-click="create()" class="btn btn-inverse btn-lg">Save for Later</button> -->
-            <span ng-show="isAdmin"> &nbsp<a href="">Delete entry</a></span>
+            <div class="btn-group">
+                <button ng-click="create()" class="btn btn-default btn-lg">{{ buttonAction }}</button>
+                <button class="btn btn-default btn-lg" ng-show="isAdmin" ng-click="delete(formEntry.name)">Delete entry</button>
+            </div>
         </div>
     </div>
     <div class="row rowClearance">
         <form class="form-horizontal" name="nameForm" id="nameForm" role="form">
-            <!-- <notification notify="notify" msg="msg"></notification> -->
             <div class="container">
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                         <div class="form-group" show-errors>
                             <label for="nameEntry" class="control-label col-sm-4">Name</label>
                             <div class="col-sm-8">
-                                <input autocomplete="off" ng-readonly="duplicateView" typeahead="ob as obj.name for obj in nameAutocomplete($viewValue) | filter:$viewValue | limitTo:8" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" typeahead-wait-ms="500" typeahead-min-length="3" typeahead-on-select="onNameSelected(formEntry.name)">
+                                <input required autocomplete="off" ng-readonly="duplicateView" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" ng-change="findName(formEntry.name)">
                                 <h6 ng-show="nameForm.name.$invalid && !nameForm.name.$pristine" class="help-block">A valid name is required</h6>
                             </div>
                         </div>
@@ -86,7 +85,7 @@
                         <div class="form-group" show-errors>
                             <label for="geolocation" class="col-sm-4 control-label">Geolocation:</label>
                             <div class="col-sm-8">
-                                <select class="form-control" name="geolocation" ng-init="formEntry.geoLocation = formEntry.geolocation || o[0].place" data-ng-options="o.place for o in geoList" data-ng-model="formEntry.geolocation"></select>
+                                <select class="form-control" name="geolocation" data-ng-options="o.place for o in geoList track by o.place" data-ng-model="formEntry.geoLocation"></select>
                             </div>
                         </div>
                     </div>

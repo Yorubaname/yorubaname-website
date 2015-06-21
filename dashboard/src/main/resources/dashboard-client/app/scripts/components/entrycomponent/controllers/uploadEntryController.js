@@ -5,126 +5,126 @@
  * @param $element angular element
  * @param fileUploader service for uploading file to a url
  */
-var uploadEntryController = function($scope, $element, fileUploader, ENV) {
-    $scope.namesfile = {};
-    $scope.names = [];
-    $scope.postErrors = [];
-    $scope.msg = {};
+var uploadEntryController = function($scope, $element, Upload, ENV, Notification, endpointService) {
+    // $scope.namesfile = {};
+    // $scope.names = [];
     $scope.validFile = false;
-    var columns = ["name", "pronounciation", "ipanotation", "syllable", "meaning", "extended meaning", "morphology", "etymology", "geolocation", "media"]
-    var columnsHash = {}
-    $scope.invalidColumns = []
-        /*Generate list of columns found in csv that's not in attribute list*/
-    var getInvalidColumns = function(list) {
-            var invalids = []
-            for (var i = columns.length - 1; i >= 0; i--) {
-                columnsHash[columns[i]] = columns[i]
-            }
-            for (var i = list.length - 1; i >= 0; i--) {
-                if (typeof columnsHash[list[i].toLowerCase()] == 'undefined') {
-                    invalids.push(list[i])
-                }
-            }
-            return invalids;
-        }
-        /*verify if invalid columns exist in csv*/
-    var isValidFile = function(list) {
-            $scope.invalidColumns = getInvalidColumns(list)
-            if ($scope.invalidColumns.length < 1) {
-                $scope.validFile = true
-            }
-            $scope.$apply()
-        }
-        /*Parse cvs to json, get callback to validated parse file*/
-    var parseForm = function() {
-            $('input[type=file]').parse({
-                config: {
-                    skipEmptyLines: true,
-                    header: true,
-                    complete: function(results, file) {
-                        $scope.filename = file.name;
-                        isValidFile(results.meta.fields)
-                        $scope.names = results.data
-                    },
-                    error: function(error, file) {
-                        console.log(error)
-                        $scope.validFile = false;
-                    },
-                },
-                before: function(file, inputElem) {
-                    // executed before parsing each file begins;
-                    // what you return here controls the flow
-                    console.log(file)
-                },
-                error: function(error, file) {
-                    console.log(error)
-                },
-                complete: function() {
-                    // console.log("Parsing complete:", results, file);
+    $scope.$watch('files', function(files) {
 
-                }
-            });
+        if (files && files.length) {
+            if (files[0].name.substr(files[0].name.length - 5) !== '.xlsx') {
+                Notification({
+                    title: 'You have selected an invalid file',
+                    message: 'Upload the correct template or download a new one'
+                })
+                return
+            }
+            $scope.filename = files[0].name
+            $scope.validFile = true
+        } else {
+            $scope.validFile = false
         }
-        /*watch the uploaded file to start parsing*/
-    $scope.watch("namesfile", function(file) {
-        parseForm()
-    }, true)
+    });
 
-
-    $scope.submitNames = function() {
-        for (var i = $scope.names.length - 1; i >= 0; i--) {
-            console.log($scope.names[i])
-            request = endpointService.post('/v1/name', $scope.names[i]);
-            request.success(function(data) {
-                if (data === "success") {}
+    $scope.upload = function(files) {
+        if (files && files.length) {
+            var namesFile = files[0];
+            console.log(namesFile)
+            Upload.upload({
+                url: ENV.appEndpoint + '/v1/names/upload',
+                file: namesFile,
+                fileFormDataName: 'nameFiles'
+            }).progress(function(evt) {
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            }).success(function(data, status, headers, config) {
+                $scope.validFile = false
+                $scope.filename = ""
+                Notification.success('File uploaded successfully')
             }).error(function(data, status, headers, config) {
-                $scope.postErrors.push(data);
+                $scope.validFile = false
+                $scope.filename = ""
+                Notification.error({
+                    title: 'An error occured uploading file',
+                    message: data
+                })
             });
         }
     }
 
-    if ($scope.namesfile === undefined) {
-        $scope.msg.text = "You need to choose file before uploading";
-        $scope.msg.type = "msg-error";
-        return;
-    }
+    // Incomplete implementation on server
+    /* var columns = ["name", "pronunciation", "ipa_notation", "ipanotation", "syllable", "meaning", "extended_meaning", "extendedmeaning", "morphology", "etymology", "geo_location", "geolocation", "media", "variant"]
+     var columnsHash = {}
+     $scope.invalidColumns = []
+         // Generate list of columns found in csv that's not in attribute list
+     var getInvalidColumns = function(list) {
+             var invalids = []
+             for (var i = columns.length - 1; i >= 0; i--) {
+                 columnsHash[columns[i]] = columns[i]
+             }
+             for (var i = list.length - 1; i >= 0; i--) {
+                 if (typeof columnsHash[list[i].toLowerCase()] == 'undefined') {
+                     invalids.push(list[i])
+                 }
+             }
+             return invalids;
+         }
+         // verify if invalid columns exist in csv
+     var isValidFile = function(list) {
+             $scope.invalidColumns = []
+             $scope.invalidColumns = getInvalidColumns(list)
+             if ($scope.invalidColumns.length == 0) {
+                 $scope.validFile = true
+             }
+             $scope.$apply()
+         }
+         // Parse cvs to json, get callback to validated parse file
+     var parseForm = function() {
+             $('input[type=file]').parse({
+                 config: {
+                     skipEmptyLines: true,
+                     header: true,
+                     encoding: 'ISO-8859-1',
+                     complete: function(results, file) {
+                         $scope.filename = file.name;
+                         $scope.names = results.data
+                         isValidFile(results.meta.fields)
 
-    $scope.upload = function() {
-        if ($scope.namesfile === undefined || Object.keys($scope.namesfile).length === 0) {
-            $scope.msg.text = "You need to choose file before uploading";
-            $scope.msg.type = "msg-error";
-            return;
-        }
+                     },
+                     error: function(error, file) {
+                         $scope.validFile = false;
+                         Notification.error(error)
+                     },
+                 },
+                 before: function(file, inputElem) {
+                     // executed before parsing each file begins;
+                     // what you return here controls the flow
 
-        var success = function(response) {
-            $scope.msg.text = "File successful uploaded";
-            $scope.msg.type = "msg-success";
-            $element[0].reset();
+                 },
+                 error: function(error, file) {
+                     Notification.error(error)
+                 },
+                 complete: function() {
+                     // console.log("Parsing complete:", results, file);
+                 }
+             });
+         }
+         // watch the uploaded file to start parsing
+     $scope.watch("namesfile", function(file) {
+         parseForm()
+     }, true)
 
-            setTimeout(function() {
-                $scope.$apply(function() {
-                    $scope.msg.text = "";
-                    $scope.msg.type = "";
-                });
-            }, 5000);
-        };
 
-        var error = function(response) {
-            $scope.msg.text = response.errorMessages[0];
-            $scope.msg.type = "msg-error";
-            setTimeout(function() {
-                $scope.$apply(function() {
-                    $scope.msg.text = "";
-                    $scope.msg.type = "";
-                });
-            }, 5000);
-        };
-
-        $scope.msg.text = "Uploading...";
-        $scope.msg.type = "msg-info";
-
-        fileUploader.uploadFileToUrl($scope.namesfile, ENV.appEndpoint + '/v1/names/upload', success, error);
-    };
-};
-
+     $scope.submitNames = function() {
+         var request = endpointService.postJson('/v1/names/batch', $scope.names);
+         request.success(function(data) {
+             console.log(data)
+             if (data === "success") {
+                 alert('upload successful')
+             }
+         }).error(function(data, status, headers, config) {
+             console.log(data)
+             $scope.postErrors.push(data);
+         });
+     }*/
+}
 angular.module('dashboardappApp').controller("uploadEntryController", uploadEntryController);

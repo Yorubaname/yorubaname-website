@@ -8,17 +8,15 @@
 // TODO move the dependent template into a directory with the directive This involves updating the grunt task to deal with when views are not in the root views dir
 // TODO update checks to also cater for other HTTP actions. POST etc
 // TODO this todo is not perculair to this file. Standardize either to use toneMark or tonalMark
-var nameEntry = function($http, $location, $state, $rootScope, endpointService, aToStringFilter, nameEntryService, sToArraysFilter, $compile, $q) {
+var nameEntry = function($http, $location, $state, $rootScope, endpointService, aToStringFilter, nameEntryService, sToArraysFilter, $compile, $q, Notification) {
     var delim = '-'
     var getGeolocations = function(scope) {
         // reach out to the endpoint to get data for this name
         var request = endpointService.get('/v1/admin/geolocations');
         request.then(function(data) {
             scope.geoList = data.data
-            scope.formEntry.geolocation = data.data[0]
-        }, function(data) {
-            console.log(data);
-        });
+            scope.formEntry.geoLocation = data.data[0]
+        }, function(data) {});
     }
 
     var delim = "-";
@@ -32,13 +30,13 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             scope.formEntry.pronunciation = sToArraysFilter(data.mainEntry.pronunciation, delim)
             scope.formEntry.syllables = sToArraysFilter(data.mainEntry.syllables, delim)
             scope.formEntry.morphology = sToArraysFilter(data.mainEntry.morphology, delim)
-            scope.formEntry.etymology = !isEmptyObj(data.mainEntry.etymology) ? $.parseJSON(data.mainEntry.etymology) : []
+            scope.formEntry.etymology = !isEmptyObj(data.mainEntry.etymology) ? angular.fromJson(data.mainEntry.etymology) : []
             scope.formEntry.media = !isEmptyObj(data.mainEntry.media) ? data.mainEntry.media : []
             if (getDuplicates && getDuplicates === "true") {
                 scope.duplicates = data.duplicates;
             }
         }).error(function(data) {
-            console.log(data);
+            Notification.error(data)
         });
     };
     return {
@@ -49,7 +47,6 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             var request;
             scope.geoList = []
             scope.tempList = ["Something", "yes"]
-            scope.selectedName;
             scope.loadingMsg = "Retrieving list of matching names..."
             scope.formEntry = {}
             getGeolocations(scope)
@@ -64,44 +61,30 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             }
             setupForm()
             scope.setGeolocation = function(geo) {
-                    scope.geolocation = geo
-                }
+                scope.geoLocation = geo
+            }
+
+            scope.testautocomplete = [{
+                    name: 'ttola'
+                }, {
+                    name: 'odutola'
+                }]
                 /* Promise for the autocomplete input box query*/
-            scope.nameAutocomplete = function(name) {
-                    var names = nameEntryService.getName(name)
-                    return names.then(function(response) {
-                        if (!isEmptyObj(response.data)) {
-                            return response.data
-                        }
-                        return []
-                    }, function(error) {
-                        console.log(error)
-                    })
-                }
-                /* DO these when a name match is selected from the autocomplete dropdown*/
-            scope.onNameSelected = function(formEntry) {
-                scope.currentName = scope.selectedName = formEntry.name
-                scope.buttonAction = "Submit Duplicate";
-                populateForm(scope, true);
-            }
-
-            var resetAfterPost = function(element, scope) {
-                scope.formEntry = {};
-                scope.msg.text = "Successfully added name";
-                scope.msg.type = "msg-success";
-            }
-
-            var resetAfterPut = function(element, sope) {
-                scope.formEntry = {};
-                scope.msg.text = "Successfully updated name";
-                scope.msg.type = "msg-success";
+            scope.findName = function(name) {
+                var names = nameEntryService.getName(name)
+                return names.then(function(response) {
+                    scope.currentName = response.data.name
+                    scope.buttonAction = "Submit Duplicate";
+                    populateForm(scope, true);
+                }, function(error) {
+                    console.log(error)
+                })
             }
 
             if (attrs.action === 'put') {
                 scope.buttonAction = "Update Entry";
                 scope.currentName = $location.search().name;
                 populateForm(scope, attrs.duplicates);
-                console.log(scope.formEntry.geolocation)
             }
 
             /*Submit new or update entries*/
@@ -129,31 +112,37 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                         } else {
                             setupForm()
                         }
-                        scope.msg.text = "Successfully added name";
-                        scope.msg.type = "msg-success";
-                        setTimeout(function() {
-                            scope.$apply(function() {
-                                scope.msg.text = "";
-                                scope.msg.type = "";
-                            });
-                        }, 5000);
+                        Notification.primary('Successfully added name');
+
                     }
                 }).error(function(data, status, headers, config) {
-                    scope.msg.text = "Error in adding name:" + data;
-                    scope.msg.type = "msg-error";
-                    console.log(data)
-                    setTimeout(function() {
-                        scope.$apply(function() {
-                            scope.msg.text = "";
-                            scope.msg.type = "";
-                        });
-                    }, 5000);
+                    Notification.error({
+                        title: 'Error adding name',
+                        message: data
+                    });
                 });
             };
 
+            scope.delete = function(name) {
+                request = endpointService.deleteJson('/v1/names/' + name);
+                request.success(function() {
+                    $state.go("list.all")
+                }).error(function(error) {
+                    Notification.error({
+                        title: "An error occured deleted name",
+                        message: error
+                    })
+                })
+            }
+
+
             scope.$watch('formEntry.name', function(newname) {
-                if (!isEmpty(scope.selectedName) && newname === "") {
-                    scope.formEntry = {}
+                if (!isEmpty(scope.currentName) && newname !== scope.currentName && attrs.action !== 'put') {
+                    scope.formEntry = {
+                        name: newname
+                    }
+
+                    scope.buttonAction = "Create Entry";
                 }
             }, true);
         }

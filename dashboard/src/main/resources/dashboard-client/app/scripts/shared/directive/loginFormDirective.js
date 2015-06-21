@@ -13,7 +13,6 @@ var loginForm = function(authService, $rootScope) {
             scope.buttonAction = "Login";
             scope.login = function() {
                 var authData = btoa(scope.loginForm.email + ":" + scope.loginForm.password);
-                console.log(authData)
                 authService.authenticate(authData, $rootScope);
 
             };

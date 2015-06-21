@@ -6,15 +6,15 @@
 
 var profileService = function() {
 
-  this.getProfileInfo = function () {
-    //Stubbing this for now
-    return {
-      profilePix : "",
-      email: "stubemail@stub.com",
-      role: "stub role",
-      contributions: "stub contribution"
+    this.getProfileInfo = function() {
+        //Stubbing this for now
+        return {
+            profilePix: "",
+            email: "stubemail@stub.com",
+            role: "stub role",
+            contributions: "stub contribution"
+        };
     };
-  };
 
 
 };

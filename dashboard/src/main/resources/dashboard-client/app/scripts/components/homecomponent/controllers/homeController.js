@@ -5,11 +5,13 @@
  * @param $scope angular scope
  * @param profileService the service use to fetch profile information
  */
-var homeController = function($scope, profileService) {
+var homeController = function($scope, profileService, $cookies) {
 
     $scope.title = "Dictionary Dashboard";
-
-    $scope.profile = profileService.getProfileInfo();
+    $scope.profile = {
+        username: $cookies.username,
+        role: $cookies.role
+    }
 };
 
 angular.module('dashboardappApp').controller("homeController", homeController);

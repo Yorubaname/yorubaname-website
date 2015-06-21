@@ -14,6 +14,14 @@
     padding: 0.2em 0;
 }
 
+.button {
+    -moz-appearance: button;
+    -webkit-appearance: button;
+    padding: 10px;
+    margin: 10px;
+    display: inline-block;
+}
+
 body {
     padding: 0;
 }
@@ -247,7 +255,7 @@ tags-input .tags {
 */
 
 tags-input .tags .tag-item {
-    background: #F5EFB0;
+    background: #ABBCDA;
 }
 
 .bg-khaki {
@@ -263,15 +271,6 @@ tags-input .tags .tag-item {
 }
 
 .navbar-default {
-    /*background-color: #C3A96E;*/
-    
-    background-color: transparent;
-    border-style: solid;
-    border-width: thick;
-    /* border-top: none;
-    border-left: none;
-    border-right: none;*/
-    
     color: #000;
 }
 
@@ -283,20 +282,23 @@ tags-input .tags .tag-item {
     color: #000;
 }
 
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus {
-    color: #000;
-    background-color: transparent;
-}
-
 .navbar-default .navbar-nav > li > a {
     color: #000;
 }
 
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
+    color: #ABBCDA;
+    background-color: transparent;
+}
+
+.navbar-default > li > a {
     color: #000;
+}
+
+.navbar-default > li > a:hover,
+.navbar-default > li > a:focus {
+    color: #ABBCDA;
     background-color: transparent;
 }
 /*a:hover,

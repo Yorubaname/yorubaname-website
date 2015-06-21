@@ -17,8 +17,11 @@ var nameEntryService = function($http, endpointService) {
         return request;
     };
 
-    this.getNames = function getNames(params) {
-        var request = endpointService.get('/v1/names/', params);
+    this.getNames = function getNames(page, count, filter) {
+        filter = !isEmptyObj(filter) ? filter : {}
+        filter.page = page
+        filter.count = count
+        var request = endpointService.get('/v1/names/', filter);
         return request;
 
     };
