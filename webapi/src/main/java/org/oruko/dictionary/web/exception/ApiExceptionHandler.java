@@ -21,9 +21,9 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(GenericApiCallException.class)
     public ResponseEntity<String> handlerException(GenericApiCallException ex) throws JsonProcessingException {
-        Map<String, String> errMap = new HashMap<>();
-        errMap.put("error", "true");
-        errMap.put("errorMessage", ex.getErrorMessage());
-        return new ResponseEntity<String>(mapper.writeValueAsString(errMap), ex.getStatusResponse());
+        Map<String, Object> errMap = new HashMap<>();
+        errMap.put("error", true);
+        errMap.put("message", ex.getErrorMessage());
+        return new ResponseEntity<>(mapper.writeValueAsString(errMap), ex.getStatusResponse());
     }
 }

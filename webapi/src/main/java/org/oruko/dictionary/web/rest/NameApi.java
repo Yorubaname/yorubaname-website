@@ -21,7 +21,6 @@ import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -75,11 +75,15 @@ public class NameApi {
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
+    public ResponseEntity<Map<String, String>> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
-            return new ResponseEntity<>("success", HttpStatus.CREATED);
+
+            HashMap<String, String> response = new HashMap<>();
+            response.put("message", "Name successfully added");
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
     }
@@ -149,7 +153,7 @@ public class NameApi {
 
         if (withDuplicates) {
             List<DuplicateNameEntry> duplicates = entryService.loadNameDuplicates(name);
-            HashMap<String, Object> duplicateEntries = new HashMap<String, Object>();
+            HashMap<String, Object> duplicateEntries = new HashMap<>();
 
             duplicateEntries.put("mainEntry", nameEntry.toNameDto());
             duplicateEntries.put("duplicates", duplicates);
@@ -170,26 +174,30 @@ public class NameApi {
     @RequestMapping(value = "/v1/names/{name}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.PUT)
-    public ResponseEntity<String> updateName(@PathVariable String name,
+    public ResponseEntity<Map> updateName(@PathVariable String name,
                                              @Valid @RequestBody NameEntry entry,
                                              BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
             if (!entry.getName().equals(name)) {
-                return new ResponseEntity<>("Name given in URL is different from name in request payload",
-                                            HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new GenericApiCallException("Name given in URL is different from name in request payload",
+                                                  HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             NameEntry nameEntry = entryService.loadName(name);
 
             if (nameEntry == null) {
-                return new ResponseEntity<>(name + " not in database", HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new GenericApiCallException(name + " not in database", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             entryService.updateName(entry);
-            return new ResponseEntity<>("success", HttpStatus.CREATED);
+            HashMap<String, String> response = new HashMap<>();
+            response.put("message", "Name successfully updated");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(formatErrorMessage(bindingResult), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        throw new GenericApiCallException(formatErrorMessage(bindingResult),
+                                          HttpStatus.BAD_REQUEST);
     }
 
 
@@ -202,7 +210,7 @@ public class NameApi {
      */
     @RequestMapping(value = "/v1/names/upload", method = RequestMethod.POST,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ImportStatus> upload(@RequestParam("nameFiles") MultipartFile multipartFile)
+    public ResponseEntity<Map<String, String>> upload(@RequestParam("nameFiles") MultipartFile multipartFile)
             throws JsonProcessingException {
         Assert.state(!multipartFile.isEmpty(), "You can't upload an empty file");
 
@@ -220,9 +228,12 @@ public class NameApi {
         }
 
         if (status.hasErrors()) {
-            return new ResponseEntity<ImportStatus>(status, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw  new GenericApiCallException(status.getErrorMessages().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<ImportStatus>(status, HttpStatus.CREATED);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "File successfully imported");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**
@@ -233,39 +244,40 @@ public class NameApi {
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names/batch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
-        if (!bindingResult.hasErrors()) {
+    public ResponseEntity< Map<String, String>> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
+        if (!bindingResult.hasErrors() && nameEntries.length != 0) {
 
             Arrays.stream(nameEntries).forEach(entry -> {
                 entry.setName(entry.getName().toLowerCase());
                 entryService.insertTakingCareOfDuplicates(entry);
             });
 
-            return new ResponseEntity<>("success", HttpStatus.CREATED);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Names successfully imported");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
 
-        throw new GenericApiCallException(formatErrorMessage(bindingResult));
+        throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/v1/names/delete",
+    @RequestMapping(value = "/v1/names",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteAllNames() {
+    public ResponseEntity<Map<String, String>> deleteAllNames() {
         entryService.deleteAllAndDuplicates();
-        return new ResponseEntity<String>("Names Deleted", HttpStatus.OK);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Names deleted");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/v1/names/{name}",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteName(@PathVariable String name) {
-        entryService.deleteNameInEntryAndDuplicates(name);
-        return new ResponseEntity<String>(name + "Deleted", HttpStatus.OK);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity< Map<String, String>> deleteName(@PathVariable String name) {
+        entryService.deleteNameEntryAndDuplicates(name);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", name + "Deleted");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //=====================================Helpers=========================================================//
@@ -273,7 +285,7 @@ public class NameApi {
     private String formatErrorMessage(BindingResult bindingResult) {
         StringBuilder builder = new StringBuilder();
         for (FieldError error : bindingResult.getFieldErrors()) {
-            builder.append(error.getField() + " " + error.getDefaultMessage());
+            builder.append(error.getField() + " " + error.getDefaultMessage() + " ");
         }
         return builder.toString();
     }

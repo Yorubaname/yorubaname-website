@@ -1,26 +1,38 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.core.IsNot;
 import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.*;
 import org.mockito.runners.*;
+import org.oruko.dictionary.importer.ImportStatus;
+import org.oruko.dictionary.importer.ImporterInterface;
+import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.web.NameEntryService;
+import org.oruko.dictionary.web.exception.ApiExceptionHandler;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,6 +51,9 @@ public class NameApiTest {
     @Mock
     private NameEntryService entryService;
 
+    @Mock
+    private ImporterInterface importerInterface;
+
     MockMvc mockMvc;
 
     NameEntry testNameEntry;
@@ -46,7 +61,7 @@ public class NameApiTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(nameApi).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(nameApi).setHandlerExceptionResolvers(createExceptionResolver()).build();
         testNameEntry = new NameEntry("test");
         testNameEntry.setMeaning("test_meaning");
         testNameEntry.setExtendedMeaning("test_extended_meaning");
@@ -129,14 +144,24 @@ public class NameApiTest {
         when(entryService.loadName("test")).thenReturn(null);
 
         mockMvc.perform(get("/v1/names/test"))
-               .andExpect(status().isInternalServerError());
+               .andExpect(status().isBadRequest());
     }
 
     @Test
-    @Ignore
     public void test_get_all_a_name_that_has_duplicates() throws Exception {
-        // TODO
+        NameEntry nameEntry = mock(NameEntry.class);
+        DuplicateNameEntry duplicateNameEntry = new DuplicateNameEntry(nameEntry);
+
+        when(entryService.loadName("test")).thenReturn(nameEntry);
+        when(entryService.loadNameDuplicates("test")).thenReturn(Arrays.asList(duplicateNameEntry));
+        when(nameEntry.toNameDto()).thenReturn(new NameDto("test"));
+
+        mockMvc.perform(get("/v1/names/test?duplicates=true"))
+               .andExpect(jsonPath("$.duplicates", hasSize(1)))
+               .andExpect(jsonPath("$.mainEntry.name", is("test")))
+               .andExpect(status().isOk());
     }
+
 
     @Test
     public void test_add_name_via_post_request() throws Exception {
@@ -144,6 +169,7 @@ public class NameApiTest {
         mockMvc.perform(post("/v1/names")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
                                 .content(requestJson))
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())))
                .andExpect(status().isCreated());
 
         verify(entryService).insertTakingCareOfDuplicates(any(NameEntry.class));
@@ -155,43 +181,141 @@ public class NameApiTest {
         mockMvc.perform(post("/v1/names")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
                                 .content(requestJson))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test_modifying_name_via_put_request_but_faulty_request() throws Exception {
+        String requestJson = new ObjectMapper().writeValueAsString(faultNameEntry);
+        mockMvc.perform(put("/v1/names/jaja")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void test_modifying_name_via_put_request_but_name_is_different_from_json_sent() throws Exception {
+        String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
+        mockMvc.perform(put("/v1/names/jaja")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(jsonPath("$.error", is(true)))
+               .andExpect(status().isInternalServerError());
+    }
+
+
+    @Test
+    public void test_modifying_name_via_put_request_but_name_to_update_not_in_db() throws Exception {
+        String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
+        mockMvc.perform(put("/v1/names/test")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(jsonPath("$.error", is(true)))
                .andExpect(status().isInternalServerError());
     }
 
     @Test
-    @Ignore
     public void test_modifying_name_via_put_request() throws Exception {
-        // TODO
+        NameEntry nameEntry = mock(NameEntry.class);
+        when(entryService.loadName("test")).thenReturn(nameEntry);
+        String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
+        mockMvc.perform(put("/v1/names/test")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(status().isCreated());
+
+        //TODO revisit and see if argument captor can be put to use here
+        verify(entryService).updateName(isA(NameEntry.class));
     }
 
     @Test
-    @Ignore
-    public void test_modifying_name_via_put_request_but_faulty_request() throws Exception {
-        // TODO
-    }
-
-    @Test
-    @Ignore
     public void test_uploading_vai_spreadsheet() throws Exception {
-        // TODO
+
+        ImportStatus importStatus = mock(ImportStatus.class);
+        when(importStatus.hasErrors()).thenReturn(false);
+        when(importerInterface.doImport(any())).thenReturn(importStatus);
+        MockMultipartFile spreadsheet = new MockMultipartFile("nameFiles", "filename.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "some spreadsheet".getBytes());
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/v1/names/upload").file(spreadsheet))
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
+
     }
 
     @Test
-    @Ignore
+    public void test_uploading_vai_spreadsheet_has_errors() throws Exception {
+        ImportStatus importStatus = new ImportStatus();
+        importStatus.setErrorMessages("an error occured");
+        when(importerInterface.doImport(any())).thenReturn(importStatus);
+        MockMultipartFile spreadsheet = new MockMultipartFile("nameFiles", "filename.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "some spreadsheet".getBytes());
+        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/v1/names/upload").file(spreadsheet))
+               .andExpect(status().isInternalServerError());
+
+        verify(importerInterface).doImport(any());
+
+    }
+
+    @Test
     public void test_batch_upload() throws Exception {
-        // TODO
+        NameEntry[] nameEntries = new NameEntry[2];
+        nameEntries[0] = new NameEntry("test");
+        nameEntries[1] = new NameEntry("anothertest");
+        String requestJson = new ObjectMapper().writeValueAsString(nameEntries);
+        mockMvc.perform(post("/v1/names/batch")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
+
+        verify(entryService, times(2)).insertTakingCareOfDuplicates(any(NameEntry.class));
     }
 
     @Test
-    @Ignore
-    public void test_deleting_a_name() throws Exception {
-        // TODO
+    public void test_batch_upload_with_faulty_request() throws Exception {
+        NameEntry[] nameEntries = new NameEntry[0];
+        String requestJson = new ObjectMapper().writeValueAsString(nameEntries);
+        mockMvc.perform(post("/v1/names/batch")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(status().isBadRequest());
+
+        verifyZeroInteractions(entryService);
     }
 
     @Test
-    @Ignore
     public void test_deleting_all_names() throws Exception {
-        // TODO
+        mockMvc.perform(delete("/v1/names")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
+
+        verify(entryService).deleteAllAndDuplicates();
     }
+
+    @Test
+    public void test_deleting_a_name() throws Exception {
+        mockMvc.perform(delete("/v1/names/test")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
+
+        verify(entryService).deleteNameEntryAndDuplicates("test");
+    }
+
+    // ==================================================== Helpers ====================================================
+
+    private ExceptionHandlerExceptionResolver createExceptionResolver() {
+        ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
+            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
+                Method method = new ExceptionHandlerMethodResolver(ApiExceptionHandler.class).resolveMethod(exception);
+                if (method == null) {
+                    return null;
+                }
+                return new ServletInvocableHandlerMethod(new ApiExceptionHandler(), method);
+            }
+        };
+        exceptionResolver.afterPropertiesSet();
+        return exceptionResolver;
+    }
+
 
 }
