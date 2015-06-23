@@ -3,16 +3,17 @@
 
 <!-- main-content -->
 <div class="jumbotron" id="home-banner">
-   <div class="container">
+   <div class="container" align="center">
    		<h1>{{message "lang.jumbotron1"}} <span class="y-color">10,000</span> {{message "lang.jumbotron2"}}</h1>
    		<form class="form-horizontal" role="form">
-            <div class="search-input">               			
+            <div class="search-input" id="search-tph">             			
+                <input type="text" class="form-control th this-query" id="keyboard" name="searchname" placeholder="{{message "lang.search-plchol"}}" autocomplete="off" spellcheck="false">
                 <i class="fa fa-keyboard-o" id="keyboardp" data-toggle="tooltip" data-placement="top" title="{{message "lang.kybtitle"}}"></i>
-                <input type="text" class="form-control banner-search-input" id="keyboard" placeholder="{{message "lang.search-plchol"}}">
+                <!-- <p class="jtext"><a href="#"><i class="fa fa-search-plus"> {{message "lang.adv-search"}} </i></a></p> -->
                 <button class="btn btn-search" type="button"><i class="fa fa-search"></i></button>
             </div><br /><!-- /input-group -->                
         </form>
-        <p class="jtext"><a href="#"><i class="fa fa-search-plus"> {{message "lang.adv-search"}} </i></a></p>
+        
         <h3>{{message "lang.jumboh31"}} <br /> <a href="#">{{message "lang.jumboh32"}}</a></h3>
    </div>
 </div>
@@ -21,12 +22,12 @@
 <div class="container">
 		<div class="llm">
     	<div class="row">
-        	<div class="col-xs-6 col-sm-4 llm-box">
+        	<div class="col-xs-6 col-sm-4 llm-box">              	
                 <ul>
                     <li><h5 class="pri-color">{{message "lang.latest-search"}}</h5></li>
                     <hr />
                     {{#each latestSearches}}
-                        <li><a href="/entries/{{this}}">{{this}}</a></li>
+                        <li><a href="/entries/{{this.name}}">{{this.name}}</a></li>
                     {{/each}}
                 </ul>
             </div>
@@ -35,7 +36,7 @@
                     <li><h5 class="pri-color">{{message "lang.latest-add"}}</h5></li>
                     <hr />
                     {{#each latestAdditions}}
-                        <li><a href="/entries/{{this}}">{{this}}</a></li>
+                        <li><a href="/entries/{{this.name}}">{{this.name}}</a></li>
                     {{/each}}
                 </ul>
             </div>
@@ -44,7 +45,7 @@
                     <li><h5 class="pri-color">{{message "lang.most-popular"}}</h5></li>
                     <hr />
                     {{#each mostPopular}}
-                        <li><a href="/entries/{{this}}">{{this}}</a></li>
+                        <li><a href="/entries/{{this.name}}">{{this.name}}</a></li>
                     {{/each}}
                 </ul>
             </div>
