@@ -18,7 +18,7 @@ var adminAllUsersController = function($scope, endpointService, Notification) {
         });
 
     }).error(function(responseData) {
-        Notification.error(responseData)
+        Notification.error(responseData.message)
     });
 
 };

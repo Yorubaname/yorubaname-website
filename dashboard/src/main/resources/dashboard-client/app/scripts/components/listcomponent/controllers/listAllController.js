@@ -46,7 +46,7 @@ var listAllController = function($scope, $location, nameEntryService, Notificati
         }).error(function(data) {
             Notification.error({
                 title: 'An error occured',
-                message: data
+                message: data.message
             })
         });
     };
@@ -63,7 +63,7 @@ var listAllController = function($scope, $location, nameEntryService, Notificati
         }).error(function(data) {
             Notification.error({
                 title: 'An error occured',
-                message: data
+                message: data.message
             })
         });
     };

@@ -18,7 +18,7 @@ var createUserForm = function(endpointService, $cookies, Notification) {
                     Notification.success('User successfully created')
 
                 }).error(function(response) {
-                    Notification.error('Can not create user due to:' + response)
+                    Notification.error('Can not create user due to:' + response.message)
                 });
             }
         }

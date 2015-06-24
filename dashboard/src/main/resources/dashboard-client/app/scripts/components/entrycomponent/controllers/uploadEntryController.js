@@ -45,7 +45,7 @@ var uploadEntryController = function($scope, $element, Upload, ENV, Notification
                 $scope.filename = ""
                 Notification.error({
                     title: 'An error occured uploading file',
-                    message: data
+                    message: data.message
                 })
             });
         }

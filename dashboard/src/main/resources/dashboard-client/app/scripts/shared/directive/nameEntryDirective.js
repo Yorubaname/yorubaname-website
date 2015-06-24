@@ -31,7 +31,6 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             scope.formEntry.syllables = sToArraysFilter(data.mainEntry.syllables, delim)
             scope.formEntry.morphology = sToArraysFilter(data.mainEntry.morphology, delim)
             scope.formEntry.etymology = !isEmptyObj(data.mainEntry.etymology) ? angular.fromJson(data.mainEntry.etymology) : []
-            scope.formEntry.media = !isEmptyObj(data.mainEntry.media) ? data.mainEntry.media : []
             if (getDuplicates && getDuplicates === "true") {
                 scope.duplicates = data.duplicates;
             }
@@ -55,8 +54,7 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
             scope.buttonAction = "Create Entry";
             var setupForm = function() {
                 scope.formEntry = {
-                    etymology: [],
-                    media: []
+                    etymology: []
                 }
             }
             setupForm()
@@ -106,19 +104,17 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                     request = endpointService.postJson('/v1/names', parsedEntry);
                 }
                 request.success(function(data) {
-                    if (data === "success") {
-                        if (attrs.action === 'put') {
-                            $state.go("list.all")
-                        } else {
-                            setupForm()
-                        }
-                        Notification.primary('Successfully added name');
-
+                    if (attrs.action === 'put') {
+                        $state.go("list.all")
+                    } else {
+                        setupForm()
                     }
+                    Notification.primary('Successfully added name');
+
                 }).error(function(data, status, headers, config) {
                     Notification.error({
                         title: 'Error adding name',
-                        message: data
+                        message: data.message
                     });
                 });
             };

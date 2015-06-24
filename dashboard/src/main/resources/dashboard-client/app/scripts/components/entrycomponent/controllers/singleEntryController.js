@@ -28,7 +28,7 @@ var singleEntryController = function($scope, $http, $element, $cookies, ENV, Not
             }).error(function(data, status, headers, config) {
                 Notification.error({
                     title: 'Error in adding name:' + data.errorMessage,
-                    message: data
+                    message: data.message
                 })
             });
 

@@ -92,8 +92,8 @@
                 </div>
             </div>
         </form>
-        <hr/>
-        <div ng-if="duplicateView">
+        <div ng-if="duplicateView.length >0">
+            <hr/>
             <h3>Duplicate entries (Copy and modify main entry if useful. If not remove)</h3>
             <ul id="duplicateList">
                 <li ng-repeat="entry in duplicates">
