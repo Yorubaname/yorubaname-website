@@ -2,12 +2,12 @@ package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
-import org.oruko.dictionary.events.RecentIndexes;
-import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameSearchedEvent;
+import org.oruko.dictionary.events.RecentIndexes;
 import org.oruko.dictionary.events.RecentSearches;
+import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,20 +119,22 @@ public class SearchApi {
     /**
      * Endpoint to index a NameEntry sent in as JSON string.
      *
-     * @param entry the {@link org.oruko.dictionary.model.NameEntry} representation of the JSON String.
+     * @param entry the {@link NameEntry} representation of the JSON String.
      * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> indexEntry(@Valid NameEntry entry) {
+    public ResponseEntity<Map<String, Object>> indexEntry(@Valid NameEntry entry) {
         IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(entry);
         boolean isIndexed = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
+        Map<String, Object> response = new HashMap<>();
         if (isIndexed) {
-            return new ResponseEntity<String>(message, HttpStatus.CREATED);
+            response.put("message", message);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -145,27 +147,28 @@ public class SearchApi {
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> indexEntryByName(@PathVariable String name) {
-        String message;
+    public ResponseEntity<Map<String, Object>> indexEntryByName(@PathVariable String name) {
+        Map<String, Object> response = new HashMap<>();
         NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
-            message = new StringBuilder(name).append(" not found in the repository so not indexed").toString();
-            return new ResponseEntity<String>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put("message",
+                         new StringBuilder(name).append(" not found in the repository so not indexed").toString());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(nameEntry);
         boolean isIndexed = indexOperationStatus.getStatus();
-        message = indexOperationStatus.getMessage();
+
+        response.put("message", indexOperationStatus.getMessage());
 
         if (isIndexed) {
             nameEntry.isIndexed(true);
             entryService.saveName(nameEntry);
-            return new ResponseEntity<String>(message, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
 
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -177,18 +180,20 @@ public class SearchApi {
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteFromIndex(@PathVariable String name) {
+    public ResponseEntity<Map<String, Object>> deleteFromIndex(@PathVariable String name) {
         IndexOperationStatus indexOperationStatus = elasticSearchService.deleteFromIndex(name);
         boolean deleted = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", message);
         if (deleted) {
             NameEntry nameEntry = entryService.loadName(name);
             if (nameEntry != null) {
                 nameEntry.isIndexed(false);
                 entryService.saveName(nameEntry);
             }
-            return new ResponseEntity<String>(message, HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

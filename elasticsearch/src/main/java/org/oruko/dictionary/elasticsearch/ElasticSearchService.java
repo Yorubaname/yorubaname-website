@@ -166,7 +166,7 @@ public class ElasticSearchService {
                 eventPubService.publish(new NameIndexedEvent(name));
             }
 
-            return new IndexOperationStatus(true, name + "indexed successfully");
+            return new IndexOperationStatus(true, name + " indexed successfully");
         } catch (JsonProcessingException e) {
             logger.info("Failed to parse NameEntry into Json", e);
             return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
