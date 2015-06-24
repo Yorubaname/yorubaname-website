@@ -18,7 +18,7 @@ public class SearchResultController {
 
     /**
      * Controller for page that displays multiple result for a search. i.e. ambiguous page
-     * @param map model
+     * @param map model the model
      * @return returns the view name
      */
     @RequestMapping("/entries")
@@ -35,6 +35,11 @@ public class SearchResultController {
         return "searchresults";
     }
 
+    /**
+     * Displays all the names in the dictionary. Supports pagination
+     * @param map model the model
+     * @return returns the view name
+     */
     @RequestMapping("/entries/all")
     public String showAll(Model map) {
         map.addAttribute("title", "All name entries");
@@ -43,6 +48,12 @@ public class SearchResultController {
     }
 
 
+    /**
+     * Displays the result for a single entry
+     * @param nameEntry the {@link org.oruko.dictionary.model.NameEntry}
+     * @param map the map
+     * @return the view name
+     */
     @RequestMapping("/entries/{nameEntry}")
     public String showEntry(@PathVariable String nameEntry, Model map) {
         Map<String, Object> name = ApiService.getName(nameEntry);
