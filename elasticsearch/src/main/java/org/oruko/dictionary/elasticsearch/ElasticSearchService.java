@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -92,7 +91,12 @@ public class ElasticSearchService {
     }
 
     public boolean isElasticSearchNodeAvailable() {
-        return elasticSearchNodeAvailable;
+        //TODO revisit and examine performance consequence
+        ImmutableList<DiscoveryNode> nodes = ((TransportClient) client).connectedNodes();
+        if (nodes.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -157,14 +161,12 @@ public class ElasticSearchService {
         try {
             String entryAsJson = mapper.writeValueAsString(entry);
             String name = entry.getName();
-            IndexResponse indexResponse = client.prepareIndex(indexName, documentType, name.toLowerCase())
+            client.prepareIndex(indexName, documentType, name.toLowerCase())
                                                 .setSource(entryAsJson)
                                                 .execute()
                                                 .actionGet();
 
-            if (indexResponse.getVersion() == 1L) {
                 eventPubService.publish(new NameIndexedEvent(name));
-            }
 
             return new IndexOperationStatus(true, name + " indexed successfully");
         } catch (JsonProcessingException e) {
