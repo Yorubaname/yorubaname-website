@@ -228,21 +228,21 @@ body { background: #FFFFFF; }
 	margin: 5px;
 	padding: 5px;
 	margin: 0 auto;
-	font-family: 'Pontano Sans', sans-serif;
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 }
 .main-content h3 {
 	font-size: 18px;
 	margin-top: 2px;
 	color: #075265;
 	font-weight: bold;
-	font-family: 'Pontano Sans', sans-serif;
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 	letter-spacing: 1px;
 }
 .main-content h4 {
 	font-size: 16px;
 	color: #075265;
 	font-weight: bold;
-	font-family: 'Pontano Sans', sans-serif;
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 	text-decoration: underline;
 	letter-spacing: 1px;
 }
@@ -266,7 +266,7 @@ body { background: #FFFFFF; }
 	font-size: 16px;
 	letter-spacing: 1px;
 	text-transform: capitalize;
-	font-family: 'Pontano Sans'
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 }
 .llm-box > ul > li h5 {
 	color: #075265;
