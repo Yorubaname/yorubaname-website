@@ -13,7 +13,9 @@ import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameIndexedEvent;
@@ -106,12 +108,7 @@ public class ElasticSearchService {
      * @return the nameEntry as a Map or null if name not found
      */
     public Map<String, Object> getByName(String nameQuery) {
-
-        //TODO update to use Query builders
-        SearchResponse searchResponse = client.prepareSearch(indexName)
-                                        .setQuery("{\"term\" : {\"name\": \"$NAME\"}}".replace("$NAME", nameQuery))
-                                        .execute()
-                                        .actionGet();
+        SearchResponse searchResponse = exactSearchGetByName(nameQuery);
 
         SearchHit[] hits = searchResponse.getHits().getHits();
         if (hits.length == 1) {
@@ -127,16 +124,36 @@ public class ElasticSearchService {
      * @return the list of entries found
      */
     public List<Map<String, Object>> search(String searchTerm) {
+        /**
+         * 1. First do a exact search. If found return result. If not go to 2.
+         * 2. Do a search based on partial match. Irrespective of outcome, proceed to 3
+         *    2a - Using nGram?
+         *    2b - ?
+         * 3. Do a full text search against other variants. Irrespective of outcome, proceed to 4
+         * 4. Do a full text search against meaning. Irrespective of outcome, proceed to 5
+         * 5. Do a full text search against extendedMeaning
+         */
 
         final List<Map<String, Object>> result = new ArrayList();
 
+        // 1. exact search
+        SearchResponse searchResponse = exactSearchGetByName(searchTerm);
+        if (searchResponse.getHits().getHits().length >= 1) {
+            Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
+                result.add(hit.getSource());
+            });
+
+            return result;
+        }
+
+
         // TODO update to implement search behaviour needed
-        SearchResponse searchResponse = client.prepareSearch(indexName)
+        SearchResponse tempSearchAll = client.prepareSearch(indexName)
                                               .setQuery(QueryBuilders.matchAllQuery())
                                               .execute()
                                               .actionGet();
 
-        Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
+        Stream.of(tempSearchAll.getHits().getHits()).forEach(hit -> {
                 result.add(hit.getSource());
         });
 
@@ -195,6 +212,12 @@ public class ElasticSearchService {
                                         .actionGet();
 
         return new IndexOperationStatus(response.isFound(),name + " deleted from index");
+    }
+
+
+    private SearchResponse exactSearchGetByName(String nameQuery) {
+        TermFilterBuilder termFilter = FilterBuilders.termFilter("name", nameQuery.toLowerCase());
+        return client.prepareSearch(indexName).setPostFilter(termFilter).execute().actionGet();
     }
 
     // On start up, creates an index for the application if one does not

@@ -56,6 +56,9 @@ public class DatabaseImporter {
         NameEntry tola = new NameEntry("tola");
         NameEntry dadepo = new NameEntry("dadepo");
         NameEntry bolanle = new NameEntry("Bọ́lánlé");
+        NameEntry ade1 = new NameEntry("Adewale");
+        NameEntry ade2 = new NameEntry("Adekunle");
+        NameEntry ade3 = new NameEntry("Adetunji");
         nameEntryRepository.save(lagbaja);
         nameEntryRepository.save(tamedo);
         nameEntryRepository.save(koko);
@@ -63,6 +66,9 @@ public class DatabaseImporter {
         nameEntryRepository.save(tola);
         nameEntryRepository.save(dadepo);
         nameEntryRepository.save(bolanle);
+        nameEntryRepository.save(ade1);
+        nameEntryRepository.save(ade2);
+        nameEntryRepository.save(ade3);
     }
 
 }
