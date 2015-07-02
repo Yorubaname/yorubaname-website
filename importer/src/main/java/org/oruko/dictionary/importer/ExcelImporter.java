@@ -31,20 +31,39 @@ public class ExcelImporter implements ImporterInterface {
 
     private Logger logger = LoggerFactory.getLogger(ExcelImporter.class);
 
-    @Autowired
     private NameEntryRepository nameEntryRepository;
-
-    @Autowired
     private GeoLocationRepository geoLocationRepository;
-
-    @Autowired
     private DuplicateNameEntryRepository duplicateEntryRepository;
-
-    @Autowired
     private ImporterValidator validator;
+    ColumnOrder columnOrder;
 
     @Autowired
-    ColumnOrder columnOrder;
+    public void setNameEntryRepository(NameEntryRepository nameEntryRepository) {
+        this.nameEntryRepository = nameEntryRepository;
+    }
+
+    @Autowired
+    public void setGeoLocationRepository(
+            GeoLocationRepository geoLocationRepository) {
+        this.geoLocationRepository = geoLocationRepository;
+    }
+
+    @Autowired
+    public void setDuplicateEntryRepository(
+            DuplicateNameEntryRepository duplicateEntryRepository) {
+        this.duplicateEntryRepository = duplicateEntryRepository;
+    }
+
+    @Autowired
+    public void setValidator(ImporterValidator validator) {
+        this.validator = validator;
+    }
+
+    @Autowired
+    public void setColumnOrder(ColumnOrder columnOrder) {
+        this.columnOrder = columnOrder;
+    }
+    
 
     @Override
     public ImportStatus doImport(File fileSource) {

@@ -25,11 +25,21 @@ public class NameEntryService {
     private Integer PAGE = 0;
     private Integer COUNT_SIZE = 50;
 
-    @Autowired
     NameEntryRepository nameEntryRepository;
-
-    @Autowired
     DuplicateNameEntryRepository duplicateEntryRepository;
+
+    /**
+     * Public constructor for {@link NameEntryService} depends on instances of
+     * {@link NameEntryRepository} and {@link DuplicateNameEntryRepository}
+     * @param nameEntryRepository Repository responsible for persisting {@link NameEntry}
+     * @param duplicateEntryRepository Repository responsoble for persisting {@link DuplicateNameEntry}
+     */
+    @Autowired
+    public NameEntryService(NameEntryRepository nameEntryRepository,
+                            DuplicateNameEntryRepository duplicateEntryRepository) {
+        this.nameEntryRepository = nameEntryRepository;
+        this.duplicateEntryRepository = duplicateEntryRepository;
+    }
 
     /**
      * Adds a new name if not present. If already present, adds the name to the

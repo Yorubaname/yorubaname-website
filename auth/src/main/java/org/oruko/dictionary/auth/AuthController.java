@@ -27,8 +27,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/auth")
 public class AuthController {
 
-    @Autowired
     private ApiUserRepository userRepository;
+
+    /**
+     * Public constructor for {@link AuthController}
+     * @param userRepository repository for persisting {@link ApiUser}
+     */
+    @Autowired
+    public AuthController(ApiUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Login endpoint serves as the endpoint to validate a user details is valid and to get any associated

@@ -2,8 +2,6 @@ package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +19,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/admin")
 public class AdminApi {
-    private Logger logger = LoggerFactory.getLogger(AdminApi.class);
 
-    @Autowired
     private GeoLocationRepository geoLocationRepository;
+
+    /**
+     * Public constructor for {@link AdminApi}
+     * @param geoLocationRepository instance of {@link GeoLocationRepository} used for persisting {@link GeoLocation}
+     */
+    @Autowired
+    public AdminApi(GeoLocationRepository geoLocationRepository) {
+        this.geoLocationRepository = geoLocationRepository;
+    }
 
     /**
      * End point for returning the locations a name entry could be from

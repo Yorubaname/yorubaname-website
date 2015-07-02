@@ -40,20 +40,30 @@ public class SearchApi {
 
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
-    @Autowired
     private EventPubService eventPubService;
-
-    @Autowired
     private NameEntryService entryService;
-
-    @Autowired
     private ElasticSearchService elasticSearchService;
-
-    @Autowired
     private RecentSearches recentSearches;
-
-    @Autowired
     private RecentIndexes recentIndexes;
+
+    /**
+     * Public constructor for {@link SearchApi}
+     * @param eventPubService instance of {@link EventPubService} for publishing events
+     * @param entryService service layer for interacting with name entries
+     * @param elasticSearchService service layer for elastic search functions
+     * @param recentSearches object holding the recent searches in memory
+     * @param recentIndexes object holding the recent index names in memory
+     */
+    @Autowired
+    public SearchApi(EventPubService eventPubService, NameEntryService entryService,
+                     ElasticSearchService elasticSearchService, RecentSearches recentSearches,
+                     RecentIndexes recentIndexes) {
+        this.eventPubService = eventPubService;
+        this.entryService = entryService;
+        this.elasticSearchService = elasticSearchService;
+        this.recentSearches = recentSearches;
+        this.recentIndexes = recentIndexes;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)

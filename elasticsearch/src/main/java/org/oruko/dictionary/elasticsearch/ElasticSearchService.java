@@ -54,10 +54,16 @@ public class ElasticSearchService {
     private Integer port;
     private ResourceLoader resourceLoader;
     private ObjectMapper mapper = new ObjectMapper();
-    private boolean elasticSearchNodeAvailable;
-
-    @Autowired
     private EventPubService eventPubService;
+
+    /**
+     * Public constructor for {@link ElasticSearchService}
+     * @param eventPubService for publishing events
+     */
+    @Autowired
+    public ElasticSearchService(EventPubService eventPubService) {
+        this.eventPubService = eventPubService;
+    }
 
     @Value("${es.clustername:yoruba_name_dictionary}")
     public void setClusterName(String clusterName) {
@@ -244,11 +250,8 @@ public class ElasticSearchService {
         ImmutableList<DiscoveryNode> nodes = ((TransportClient) client).connectedNodes();
 
         if (nodes.isEmpty()) {
-            elasticSearchNodeAvailable = false;
             client.close();
         } else {
-            elasticSearchNodeAvailable = true;
-
             try {
                 boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
 

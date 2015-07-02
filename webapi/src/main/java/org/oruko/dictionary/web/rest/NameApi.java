@@ -53,14 +53,23 @@ public class NameApi {
 
     private Logger logger = LoggerFactory.getLogger(NameApi.class);
 
-    @Autowired
     private ImporterInterface importerInterface;
-
-    @Autowired
     private NameEntryService entryService;
-
-    @Autowired
     private GeoLocationRepository geoLocationRepository;
+
+    /**
+     * Public constructor for {@link NameApi}
+     * @param importerInterface an implementation of {@link ImporterInterface} used for adding names in files
+     * @param entryService an instance of {@link NameEntryService} representing the service layer
+     * @param geoLocationRepository an instance of {@link GeoLocationRepository} for persiting {@link GeoLocation}
+     */
+    @Autowired
+    public NameApi(ImporterInterface importerInterface, NameEntryService entryService,
+                   GeoLocationRepository geoLocationRepository) {
+        this.importerInterface = importerInterface;
+        this.entryService = entryService;
+        this.geoLocationRepository = geoLocationRepository;
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
