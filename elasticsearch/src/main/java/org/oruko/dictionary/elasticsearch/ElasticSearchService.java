@@ -2,8 +2,7 @@ package org.oruko.dictionary.elasticsearch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -15,7 +14,6 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameIndexedEvent;
@@ -30,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +111,7 @@ public class ElasticSearchService {
      * @return the nameEntry as a Map or null if name not found
      */
     public Map<String, Object> getByName(String nameQuery) {
-        SearchResponse searchResponse = exactSearchGetByName(nameQuery);
+        SearchResponse searchResponse = exactSearchByName(nameQuery);
 
         SearchHit[] hits = searchResponse.getHits().getHits();
         if (hits.length == 1) {
@@ -143,7 +140,7 @@ public class ElasticSearchService {
         final List<Map<String, Object>> result = new ArrayList();
 
         // 1. exact search
-        SearchResponse searchResponse = exactSearchGetByName(searchTerm);
+        SearchResponse searchResponse = exactSearchByName(searchTerm);
         if (searchResponse.getHits().getHits().length >= 1) {
             Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
                 result.add(hit.getSource());
@@ -161,6 +158,23 @@ public class ElasticSearchService {
 
         Stream.of(tempSearchAll.getHits().getHits()).forEach(hit -> {
                 result.add(hit.getSource());
+        });
+
+        return result;
+    }
+
+    /**
+     * For getting the list of partial matches for autocomplete
+     * @param query the query
+     * @return the list of partial matches
+     */
+    public List<String> autocomplete(String query) {
+        final List<String> result = new ArrayList();
+
+        SearchResponse tempSearchAll = partialSearchByName(query);
+
+        Stream.of(tempSearchAll.getHits().getHits()).forEach(hit -> {
+            result.add(hit.getSource().get("name").toString());
         });
 
         return result;
@@ -221,9 +235,18 @@ public class ElasticSearchService {
     }
 
 
-    private SearchResponse exactSearchGetByName(String nameQuery) {
-        TermFilterBuilder termFilter = FilterBuilders.termFilter("name", nameQuery.toLowerCase());
-        return client.prepareSearch(indexName).setPostFilter(termFilter).execute().actionGet();
+    private SearchResponse exactSearchByName(String nameQuery) {
+        return client.prepareSearch(indexName)
+                     .setPostFilter(FilterBuilders.termFilter("name", nameQuery.toLowerCase()))
+                     .execute()
+                     .actionGet();
+    }
+
+    private SearchResponse partialSearchByName(String nameQuery) {
+        return client.prepareSearch(indexName)
+                     .setQuery(QueryBuilders.matchQuery("name", nameQuery.toLowerCase()))
+                     .execute()
+                     .actionGet();
     }
 
     // On start up, creates an index for the application if one does not
@@ -231,15 +254,17 @@ public class ElasticSearchService {
     @PostConstruct
     private void buildElasticSearchClient() {
         String mapping = "";
+        String indexSettings = "";
         Settings settings = ImmutableSettings.settingsBuilder()
                                              .put("cluster.name", clusterName)
                                              .build();
 
-        Resource resource = resourceLoader.getResource("classpath:NameEntryElasticSearchMapping.json");
+        Resource mappingResource = resourceLoader.getResource("classpath:NameEntryElasticSearchMapping.json");
+        Resource settingResource = resourceLoader.getResource("classpath:NameEntryElasticSearchSettings.json");
 
         try {
-            InputStream resourceInputStream = resource.getInputStream();
-            mapping = new String(FileCopyUtils.copyToByteArray(resourceInputStream));
+            mapping = new String(FileCopyUtils.copyToByteArray(mappingResource.getInputStream()));
+            indexSettings = new String(FileCopyUtils.copyToByteArray(settingResource.getInputStream()));
         } catch (IOException e) {
             logger.info("Failed to read ES mapping");
         }
@@ -256,23 +281,21 @@ public class ElasticSearchService {
                 boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
 
                 if (!exists) {
-                    client.admin().indices()
-                          .create(new CreateIndexRequest(indexName)).actionGet();
+
+                    CreateIndexResponse createIndexResponse = client.admin().indices().prepareCreate(indexName)
+                                                                    .setSettings(indexSettings)
+                                                                    .addMapping(documentType, mapping).execute()
+                                                                    .actionGet();
+
+                    logger.info("Created {} and added {} to type {} status was {} at startup",
+                                indexName, mapping, documentType, createIndexResponse.isAcknowledged());
+
                 }
 
-                PutMappingResponse putMappingResponse = client.admin().indices()
-                                                              .preparePutMapping(indexName)
-                                                              .setType(documentType)
-                                                              .setSource(mapping)
-                                                              .execute().actionGet();
-
-                logger.info("Adding {} to type {} in index {} was {} at startup",
-                            mapping, documentType, indexName, putMappingResponse.isAcknowledged());
             } catch (Exception e) {
                 logger.error("ElasticSearch not running", e);
             }
         }
     }
-
 
 }

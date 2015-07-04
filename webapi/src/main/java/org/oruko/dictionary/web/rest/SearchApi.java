@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -77,6 +79,18 @@ public class SearchApi {
         }
 
         return name;
+    }
+
+
+    @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public  List<String>  getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
+        if (!searchQuery.isPresent()) {
+            return new ArrayList<>();
+        }
+
+        String query = searchQuery.get();
+        return elasticSearchService.autocomplete(query);
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,

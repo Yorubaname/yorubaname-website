@@ -4,6 +4,7 @@
       "type": "string",
       "store": "yes",
       "index": "analyzed",
+      "analyzer": "autocomplete_analyzer",
       "boost": "10"
     },
     "pronunciation": {
