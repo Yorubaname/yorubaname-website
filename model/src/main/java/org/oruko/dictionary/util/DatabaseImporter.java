@@ -56,9 +56,23 @@ public class DatabaseImporter {
         NameEntry tola = new NameEntry("tola");
         NameEntry dadepo = new NameEntry("dadepo");
         NameEntry bolanle = new NameEntry("Bọ́lánlé");
+
+        NameEntry ade0 = new NameEntry("Ade");
         NameEntry ade1 = new NameEntry("Adewale");
         NameEntry ade2 = new NameEntry("Adekunle");
         NameEntry ade3 = new NameEntry("Adetunji");
+        NameEntry ade4 = new NameEntry("Adedotun");
+
+
+        /**
+         * Sample for search beahviour with variants and otherlanguages
+         */
+        NameEntry omowumi = new NameEntry("Omowumi");
+        omowumi.setVariants("omawunmi, omawumi");
+        omowumi.setInOtherLanguages("omewami");
+
+        NameEntry omolabi = new NameEntry("Omolabi");
+
         nameEntryRepository.save(lagbaja);
         nameEntryRepository.save(tamedo);
         nameEntryRepository.save(koko);
@@ -66,9 +80,13 @@ public class DatabaseImporter {
         nameEntryRepository.save(tola);
         nameEntryRepository.save(dadepo);
         nameEntryRepository.save(bolanle);
+        nameEntryRepository.save(ade0);
         nameEntryRepository.save(ade1);
         nameEntryRepository.save(ade2);
         nameEntryRepository.save(ade3);
+        nameEntryRepository.save(ade4);
+        nameEntryRepository.save(omowumi);
+        nameEntryRepository.save(omolabi);
     }
 
 }
