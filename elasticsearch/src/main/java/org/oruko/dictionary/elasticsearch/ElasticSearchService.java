@@ -99,11 +99,13 @@ public class ElasticSearchService {
         //TODO revisit and examine performance consequence
         ImmutableList<DiscoveryNode> nodes = ((TransportClient) client).connectedNodes();
         if (nodes.isEmpty()) {
-            return false;
+            client = getClient();
+            if (((TransportClient) client).connectedNodes().isEmpty()) {
+                return false;
+            }
         }
         return true;
     }
-
 
     /**
      * For getting an entry from the search index by name
@@ -255,9 +257,6 @@ public class ElasticSearchService {
     private void buildElasticSearchClient() {
         String mapping = "";
         String indexSettings = "";
-        Settings settings = ImmutableSettings.settingsBuilder()
-                                             .put("cluster.name", clusterName)
-                                             .build();
 
         Resource mappingResource = resourceLoader.getResource("classpath:NameEntryElasticSearchMapping.json");
         Resource settingResource = resourceLoader.getResource("classpath:NameEntryElasticSearchSettings.json");
@@ -269,20 +268,19 @@ public class ElasticSearchService {
             logger.info("Failed to read ES mapping");
         }
 
-        client = new TransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(hostName, port));
+        client = getClient();
 
-        ImmutableList<DiscoveryNode> nodes = ((TransportClient) client).connectedNodes();
+        ImmutableList<DiscoveryNode> nodes = ((TransportClient) this.client).connectedNodes();
 
         if (nodes.isEmpty()) {
-            client.close();
+            this.client.close();
         } else {
             try {
-                boolean exists = client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
+                boolean exists = this.client.admin().indices().prepareExists(indexName).execute().actionGet().isExists();
 
                 if (!exists) {
 
-                    CreateIndexResponse createIndexResponse = client.admin().indices().prepareCreate(indexName)
+                    CreateIndexResponse createIndexResponse = this.client.admin().indices().prepareCreate(indexName)
                                                                     .setSettings(indexSettings)
                                                                     .addMapping(documentType, mapping).execute()
                                                                     .actionGet();
@@ -298,4 +296,11 @@ public class ElasticSearchService {
         }
     }
 
+    private Client getClient() {
+        Settings settings = ImmutableSettings.settingsBuilder()
+                                             .put("cluster.name", clusterName)
+                                             .build();
+        return new TransportClient(settings)
+                .addTransportAddress(new InetSocketTransportAddress(hostName, port));
+    }
 }
