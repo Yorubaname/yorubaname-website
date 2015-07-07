@@ -15,7 +15,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String indexPage(Model map) {
-        map.addAttribute("title", "Welcome - Yoruba Dictionary Application");
+        map.addAttribute("title", "Home");
         Map<String, String[]> searchActivity = ApiService.getSearchActivity();
 
         map.addAttribute("latestSearches", searchActivity.get("search"));

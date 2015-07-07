@@ -2,8 +2,8 @@ package org.oruko.dictionary.website;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -57,6 +57,7 @@ public class SearchResultController {
     @RequestMapping("/entries/{nameEntry}")
     public String showEntry(@PathVariable String nameEntry, Model map) {
         Map<String, Object> name = ApiService.getName(nameEntry);
+		map.addAttribute("title", "Name Entry");
         map.addAttribute("name", name);
         return "singleresult";
     }
