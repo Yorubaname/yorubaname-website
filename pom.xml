@@ -48,6 +48,7 @@
         <springfox-swagger>2.0.0</springfox-swagger>
         <spring-handlebars.version>0.1.1</spring-handlebars.version>
         <json-path-assert.version>2.0.0</json-path-assert.version>
+        <lucene.version>4.10.4</lucene.version>
     </properties>
 
     <dependencyManagement>
@@ -163,6 +164,13 @@
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path-assert</artifactId>
                 <version>${json-path-assert.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-test-framework</artifactId>
+                <version>${lucene.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
