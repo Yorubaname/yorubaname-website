@@ -1,38 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Header -->
+{{> header }}
 
-<head>
- {{> header }}
-    <title>{{ title }}</title>
-</head>
+<!-- main-content -->
 
-<body>
-<div class="wrapper">
-    {{ title }}
-    <br/>
-
-    <h4>Search result page</h4>
-
-    Result page showing the various results returned from performing search query with a name. <br/>
-    Also if if url is /entries/all, this template is also used to list the pageable entries
-    (if need be we can create a different template for this) <br/>
-
-    <em>Note that right now the search has not been implemented yet, so no matter what you include in the q parameter
-    you always get all the names in the database</em> <br/>
-
-    {{#each names}}
-        <br/>
-        id: {{ this.id }}<br/>
-        name: <a href="/entries/{{this.name}}">{{ this.name }}</a><br/>
-        submitted by: {{ this.submittedBy }}<br/>
-        <br/>
-        <hr/>
-    {{/each}}
-
-
+<div class="search jumbotron" id="home-banner">
+        <div class="container" align="center">
+            <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
+            {{> searchcomponent }} 
+        </div>
 </div>
-<!-- Javascript -->
-{{> scriptIncludes }}
+<!-- /Search -->
 
-</body>
-</html>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+
+            <h4>{{message "lang.entryfoundfor"}}<span class="name">Koko</span></h4>
+            <div class="well">
+                {{#each names}}
+                    <h4 class="name">name: <a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
+                    <p><i>Brief meaning: </i></p>
+                    <p class="small">{{message "lang.submitby"}} {{ this.submittedBy }} </p>       
+                    <hr>
+                {{/each}}
+            </div>
+
+        </div>
+
+        <!-- sidebar -->
+        <div class="col-md-4">
+            {{> rsidebar }}
+        </div>
+        <!-- /sidebar -->
+
+    </div>
+</div>
+
+<!-- /main-content -->
+
+<!-- footer -->
+{{> footer }}
