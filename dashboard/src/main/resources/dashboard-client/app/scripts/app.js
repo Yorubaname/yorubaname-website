@@ -99,7 +99,8 @@ dashboardappApp.run(function($rootScope, $cookies, $http) {
     $rootScope.currentState;
     $rootScope.state
 
-    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
+    // Commenting this out as it was leading to 401 on login page. Needs further looking into
+    //$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
 
     $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
         $rootScope.previousState = from.name;

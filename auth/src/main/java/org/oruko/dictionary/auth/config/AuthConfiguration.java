@@ -26,6 +26,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, "/v1/**").hasAnyRole("ADMIN", "DASHBOARD")
             .antMatchers(HttpMethod.PUT, "/v1/**").hasAnyRole("ADMIN", "DASHBOARD")
             .antMatchers("/v1/**").permitAll()
+            .antMatchers("/dashboardapp/**").permitAll()
             .and()
                 .httpBasic();
     }
