@@ -1,337 +1,337 @@
-body {	
-	border-top: 5px solid #C3A96E;
-    background: #F2F2F2;
-    text-align: left;
-    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
-    color: #555;
-    font-size: 16px;
-    font-weight: 400;
-}
+/*body {	*/
+	/*border-top: 5px solid #C3A96E;*/
+    /*background: #F2F2F2;*/
+    /*text-align: left;*/
+    /*font-family: 'PT Sans', Helvetica, Arial, sans-serif;*/
+    /*color: #555;*/
+    /*font-size: 16px;*/
+    /*font-weight: 400;*/
+/*}*/
 
-div#head {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #D8CBB8;
-    height: 380px;
-}
+/*div#head {*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
+    /*background-color: #D8CBB8;*/
+    /*height: 380px;*/
+/*}*/
 
-div#head div#search {
-    text-align: center;
-    vertical-align: middle;
-    padding-top: 8%;
-}
+/*div#head div#search {*/
+    /*text-align: center;*/
+    /*vertical-align: middle;*/
+    /*padding-top: 8%;*/
+/*}*/
 
-div#search input {
-    height: 48px;
-    width: 38%;
-    border: 2px solid #CCBDA8;
-    font-size: 30px;
-    border-radius: 5px;
-}
+/*div#search input {*/
+    /*height: 48px;*/
+    /*width: 38%;*/
+    /*border: 2px solid #CCBDA8;*/
+    /*font-size: 30px;*/
+    /*border-radius: 5px;*/
+/*}*/
 
-div#search button {
-    height: 52px;
-    width: 105px;
-}
+/*div#search button {*/
+    /*height: 52px;*/
+    /*width: 105px;*/
+/*}*/
 
-div#search span#search-text-heading {
-    color: #C3A96E;
-}
+/*div#search span#search-text-heading {*/
+    /*color: #C3A96E;*/
+/*}*/
 
-strong { font-weight: 700; }
-.brown { color: #C3A96E; }
-a:hover { text-decoration: none; }
+/*strong { font-weight: 700; }*/
+/*.brown { color: #C3A96E; }*/
+/*a:hover { text-decoration: none; }*/
 
-.header {
-    margin: 0 auto;
-    padding-bottom: 5px;
-	background-color: #075265;
-	margin-bottom: 15px;
-	border-radius: 0px 0px 8px 8px;
-}
-.h-form-entry{
-	
-}
-.h-names {
-	
-	border-right: 1px dotted #ccc;
-	border-left: 1px dotted #ccc;
-	border-radius: 0 0 8px 8px;
-}
-.h-names h6 {
-	background-color:#ccc;
-	color:#075265;
-	text-transform:uppercase;
-}
-.search {
-	top:15px;
-	position: relative;
-}
-.search input {
-	height: 40px;
-	width: 100%;
-	text-indent: 10px;
-	font-size:22px;
-	border-radius: 8px;
-}
-.search .fa-search { 
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 25px;
-  color: #ccc;
-}
-.social {
-	position:relative;
-	top: 2px;
-	color: #ccc;
-	font-size: 22px;
-}
+/*.header {*/
+    /*margin: 0 auto;*/
+    /*padding-bottom: 5px;*/
+	/*background-color: #075265;*/
+	/*margin-bottom: 15px;*/
+	/*border-radius: 0px 0px 8px 8px;*/
+/*}*/
+/*.h-form-entry{*/
+	/**/
+/*}*/
+/*.h-names {*/
+	/**/
+	/*border-right: 1px dotted #ccc;*/
+	/*border-left: 1px dotted #ccc;*/
+	/*border-radius: 0 0 8px 8px;*/
+/*}*/
+/*.h-names h6 {*/
+	/*background-color:#ccc;*/
+	/*color:#075265;*/
+	/*text-transform:uppercase;*/
+/*}*/
+/*.search {*/
+	/*top:15px;*/
+	/*position: relative;*/
+/*}*/
+/*.search input {*/
+	/*height: 40px;*/
+	/*width: 100%;*/
+	/*text-indent: 10px;*/
+	/*font-size:22px;*/
+	/*border-radius: 8px;*/
+/*}*/
+/*.search .fa-search { */
+  /*position: absolute;*/
+  /*top: 10px;*/
+  /*right: 10px;*/
+  /*font-size: 25px;*/
+  /*color: #ccc;*/
+/*}*/
+/*.social {*/
+	/*position:relative;*/
+	/*top: 2px;*/
+	/*color: #ccc;*/
+	/*font-size: 22px;*/
+/*}*/
 
-.adspace {
-	border-radius: 8px;
-	background-color: #f9f9f9;
-	min-height: 400px;
-}
+/*.adspace {*/
+	/*border-radius: 8px;*/
+	/*background-color: #f9f9f9;*/
+	/*min-height: 400px;*/
+/*}*/
 
-.footer {
-	font-size:12px;
-}
+/*.footer {*/
+	/*font-size:12px;*/
+/*}*/
 
-.logo h1 {
-    padding-left: 50px;
-    font-family: 'Oleo Script', cursive;
-    font-size: 36px;
-    font-weight: 400;
-}
+/*.logo h1 {*/
+    /*padding-left: 50px;*/
+    /*font-family: 'Oleo Script', cursive;*/
+    /*font-size: 36px;*/
+    /*font-weight: 400;*/
+/*}*/
 
-.logo h1 a { color: #555; }
+/*.logo h1 a { color: #555; }*/
 
-.links {
-    text-align: right;
-}
+/*.links {*/
+    /*text-align: right;*/
+/*}*/
 
-.links a {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    margin: 15px 0 0 20px;
-}
+/*.links a {*/
+    /*display: inline-block;*/
+    /*width: 30px;*/
+    /*height: 30px;*/
+    /*margin: 15px 0 0 20px;*/
+/*}*/
 
-.countspace{
-	margin-top:100px;
-}
+/*.countspace{*/
+	/*margin-top:100px;*/
+/*}*/
 
-.videoWrapper {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 */
-    padding-top: 25px;
-    height: 0;
-}
-.videoWrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+/*.videoWrapper {*/
+    /*position: relative;*/
+    /*padding-bottom: 56.25%; /!* 16:9 *!/*/
+    /*padding-top: 25px;*/
+    /*height: 0;*/
+/*}*/
+/*.videoWrapper iframe {*/
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+/*}*/
 
-.numbers {
-    width: 55px;
-    text-align: center; 
-    font-family: Arial; 
-    font-size: 28px;
-    font-weight: bold;    /* options are normal, bold, bolder, lighter */
-    font-style: normal;   /* options are normal or italic */
-    color: #B55217;       /* change color using the hexadecimal color codes for HTML */
-}
-.title {		/* the styles below will affect the title under the numbers, i.e., "Days", "Hours", etc. */
-    width: 55px;
-    text-align: center; 
-    font-family: Arial; 
-    font-size: 10px;
-    font-weight: bold;    /* options are normal, bold, bolder, lighter */
-    color: #dddddd;       /* change color using the hexadecimal color codes for HTML */
-}
-#table {
-    width: 400px;
-    height: 48px;
-    border-style: none;
-    background-color: transparent;
-    margin: 0px auto;
-    position: relative;   /* leave as "relative" to keep timer centered on your page, or change to "absolute" then change the values of the "top" and "left" properties to position the timer */
-    top: 0px;             /* change to position the timer */
-    left: 0px;            /* change to position the timer; delete this property and it's value to keep timer centered on page */
-}
+/*.numbers {*/
+    /*width: 55px;*/
+    /*text-align: center; */
+    /*font-family: Arial; */
+    /*font-size: 28px;*/
+    /*font-weight: bold;    /!* options are normal, bold, bolder, lighter *!/*/
+    /*font-style: normal;   /!* options are normal or italic *!/*/
+    /*color: #B55217;       /!* change color using the hexadecimal color codes for HTML *!/*/
+/*}*/
+/*.title {		/!* the styles below will affect the title under the numbers, i.e., "Days", "Hours", etc. *!/*/
+    /*width: 55px;*/
+    /*text-align: center; */
+    /*font-family: Arial; */
+    /*font-size: 10px;*/
+    /*font-weight: bold;    /!* options are normal, bold, bolder, lighter *!/*/
+    /*color: #dddddd;       /!* change color using the hexadecimal color codes for HTML *!/*/
+/*}*/
+/*#table {*/
+    /*width: 400px;*/
+    /*height: 48px;*/
+    /*border-style: none;*/
+    /*background-color: transparent;*/
+    /*margin: 0px auto;*/
+    /*position: relative;   /!* leave as "relative" to keep timer centered on your page, or change to "absolute" then change the values of the "top" and "left" properties to position the timer *!/*/
+    /*top: 0px;             /!* change to position the timer *!/*/
+    /*left: 0px;            /!* change to position the timer; delete this property and it's value to keep timer centered on page *!/*/
+/*}*/
 
-.write-left {
-    text-align: center;
-}
+/*.write-left {*/
+    /*text-align: center;*/
+/*}*/
 
-.register-container {
-    margin-top: 50px;
-}
+/*.register-container {*/
+    /*margin-top: 50px;*/
+/*}*/
 
-/* ----- iPhone ----- */
+/*/!* ----- iPhone ----- *!/*/
 
-.iphone {
-    text-align: right;
-}
+/*.iphone {*/
+    /*text-align: right;*/
+/*}*/
 
-.iphone img { margin-right: 10px; }
+/*.iphone img { margin-right: 10px; }*/
 
-/* ----- Registration Form ----- */
-
-
-.register form h2 {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px dotted #bbb;
-    font-size: 30px;
-    font-weight: 400;
-    text-align: center;
-}
-
-.register form input {
-    width: 30%;
-    height: 30px;
-    background: #fcfcfc;
-    border: 1px solid #ddd;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    -moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;
-    -webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;
-    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
-    color: #888;
-    font-size: 16px;
-}
-
-.register form input:focus {
-    border: 1px solid #ccc;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-.register form label {
-    margin: 7px 0 10px 5px;
-    font-size: 16px;
-    text-align: left;
-}
-
-.register form label span {
-    font-style: italic;
-}
-
-.register form input:-moz-placeholder { color: #aaa; }
-.register form input:-ms-input-placeholder { color: #aaa; }
-.register form input::-webkit-input-placeholder { color: #aaa; }
-
-form button {
-    cursor: pointer;
-    width: 20%;
-    height: 30px;
-    margin-top: 0px;
-    padding: 0;
-    background: #B55217;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    border: 0;
-    -moz-box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;
-    -webkit-box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;
-    box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;
-    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,.1);
-    -o-transition: all .2s;
-    -moz-transition: all .2s;
-    -webkit-transition: all .2s;
-    -ms-transition: all .2s;
-}
-
-form button:hover {
-    -moz-box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;
-    -webkit-box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;
-    box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;
-}
-
-form button:active {
-    -moz-box-shadow:
-        0 -15px 30px 0 rgba(255,255,255,.05) inset,       
-        0 5px 8px 0 rgba(0,0,0,.1) inset;
-    -webkit-box-shadow:
-        0 -15px 30px 0 rgba(255,255,255,.05) inset,       
-        0 5px 8px 0 rgba(0,0,0,.1) inset;
-    box-shadow:
-        0 -15px 30px 0 rgba(255,255,255,.05) inset,       
-        0 5px 8px 0 rgba(0,0,0,.1) inset;
-}
+/*/!* ----- Registration Form ----- *!/*/
 
 
-div#tts-left {
-    float: left;
-    width: 20%;
-}
+/*.register form h2 {*/
+    /*margin-bottom: 25px;*/
+    /*padding-bottom: 15px;*/
+    /*border-bottom: 2px dotted #bbb;*/
+    /*font-size: 30px;*/
+    /*font-weight: 400;*/
+    /*text-align: center;*/
+/*}*/
 
-div#tts-right {
-    float: right;
-    width: 70%;
-}
+/*.register form input {*/
+    /*width: 30%;*/
+    /*height: 30px;*/
+    /*background: #fcfcfc;*/
+    /*border: 1px solid #ddd;*/
+    /*-moz-border-radius: 2px;*/
+    /*-webkit-border-radius: 2px;*/
+    /*border-radius: 2px;*/
+    /*-moz-box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;*/
+    /*-webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;*/
+    /*box-shadow: 0 1px 3px 0 rgba(0,0,0,.1) inset;*/
+    /*font-family: 'PT Sans', Helvetica, Arial, sans-serif;*/
+    /*color: #888;*/
+    /*font-size: 16px;*/
+/*}*/
 
-div#tts-right div#segments {
-    padding: 5px;
-    background-color: #fff;
-    -webkit-column-count: 14;
-    -moz-column-count: 14;
-    column-count: 14;
-}
+/*.register form input:focus {*/
+    /*border: 1px solid #ccc;*/
+    /*-moz-box-shadow: none;*/
+    /*-webkit-box-shadow: none;*/
+    /*box-shadow: none;*/
+/*}*/
+
+/*.register form label {*/
+    /*margin: 7px 0 10px 5px;*/
+    /*font-size: 16px;*/
+    /*text-align: left;*/
+/*}*/
+
+/*.register form label span {*/
+    /*font-style: italic;*/
+/*}*/
+
+/*.register form input:-moz-placeholder { color: #aaa; }*/
+/*.register form input:-ms-input-placeholder { color: #aaa; }*/
+/*.register form input::-webkit-input-placeholder { color: #aaa; }*/
+
+/*form button {*/
+    /*cursor: pointer;*/
+    /*width: 20%;*/
+    /*height: 30px;*/
+    /*margin-top: 0px;*/
+    /*padding: 0;*/
+    /*background: #B55217;*/
+    /*-moz-border-radius: 3px;*/
+    /*-webkit-border-radius: 3px;*/
+    /*border-radius: 3px;*/
+    /*border: 0;*/
+    /*-moz-box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;*/
+    /*-webkit-box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;*/
+    /*box-shadow: 0 15px 30px 0 rgba(255,255,255,.1) inset;*/
+    /*font-family: 'PT Sans', Helvetica, Arial, sans-serif;*/
+    /*font-size: 20px;*/
+    /*font-weight: bold;*/
+    /*color: #fff;*/
+    /*text-shadow: 0 1px 2px rgba(0,0,0,.1);*/
+    /*-o-transition: all .2s;*/
+    /*-moz-transition: all .2s;*/
+    /*-webkit-transition: all .2s;*/
+    /*-ms-transition: all .2s;*/
+/*}*/
+
+/*form button:hover {*/
+    /*-moz-box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;*/
+    /*-webkit-box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;*/
+    /*box-shadow: 0 -15px 30px 0 rgba(255,255,255,.05) inset;*/
+/*}*/
+
+/*form button:active {*/
+    /*-moz-box-shadow:*/
+        /*0 -15px 30px 0 rgba(255,255,255,.05) inset,       */
+        /*0 5px 8px 0 rgba(0,0,0,.1) inset;*/
+    /*-webkit-box-shadow:*/
+        /*0 -15px 30px 0 rgba(255,255,255,.05) inset,       */
+        /*0 5px 8px 0 rgba(0,0,0,.1) inset;*/
+    /*box-shadow:*/
+        /*0 -15px 30px 0 rgba(255,255,255,.05) inset,       */
+        /*0 5px 8px 0 rgba(0,0,0,.1) inset;*/
+/*}*/
 
 
-/* ----- Media queries ----- */
+/*div#tts-left {*/
+    /*float: left;*/
+    /*width: 20%;*/
+/*}*/
 
-@media (max-width: 1200px) {
+/*div#tts-right {*/
+    /*float: right;*/
+    /*width: 70%;*/
+/*}*/
 
-    .register form h2 { background: url(../img/pencil.png) 20px 6px no-repeat; }
+/*div#tts-right div#segments {*/
+    /*padding: 5px;*/
+    /*background-color: #fff;*/
+    /*-webkit-column-count: 14;*/
+    /*-moz-column-count: 14;*/
+    /*column-count: 14;*/
+/*}*/
 
-}
 
-@media (min-width: 768px) and (max-width: 979px) {
+/*/!* ----- Media queries ----- *!/*/
 
-    .register form h2 { background: none; }
+/*@media (max-width: 1200px) {*/
 
-}
+    /*.register form h2 { background: url(../img/pencil.png) 20px 6px no-repeat; }*/
 
-@media (max-width: 767px) {
+/*}*/
 
-    body { padding-left: 0; padding-right: 0; }
+/*@media (min-width: 768px) and (max-width: 979px) {*/
 
-    .logo, .links { text-align: center; }
+    /*.register form h2 { background: none; }*/
 
-    .links { padding-bottom: 5px; }
+/*}*/
 
-    .logo h1 { padding-left: 0; }
+/*@media (max-width: 767px) {*/
 
-    .links a.home { margin-left: 0; }
+    /*body { padding-left: 0; padding-right: 0; }*/
 
-    .links a.blog { margin-right: 0; }
+    /*.logo, .links { text-align: center; }*/
 
-    .register-container { padding-left: 20px; padding-right: 20px; }
+    /*.links { padding-bottom: 5px; }*/
 
-    .register form h2 { background: none; }
+    /*.logo h1 { padding-left: 0; }*/
 
-    .iphone img { display: none; }
+    /*.links a.home { margin-left: 0; }*/
 
-}
+    /*.links a.blog { margin-right: 0; }*/
 
-@media (max-width: 480px) {
+    /*.register-container { padding-left: 20px; padding-right: 20px; }*/
 
-    .register form button { width: 97%; }
+    /*.register form h2 { background: none; }*/
 
-}
+    /*.iphone img { display: none; }*/
+
+/*}*/
+
+/*@media (max-width: 480px) {*/
+
+    /*.register form button { width: 97%; }*/
+
+/*}*/
 
 

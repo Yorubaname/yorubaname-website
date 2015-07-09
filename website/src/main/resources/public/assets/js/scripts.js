@@ -112,3 +112,10 @@ $(document).ready(function () {
        source: names
     });
 });
+
+<!-- Triggers the search -->
+$('.btn-search').on("click", function() {
+    var q = $('#keyboard').val() || "";
+    var hostOrigin = window.location.origin;
+    window.location.href = hostOrigin + '/entries/?q='+ q;
+});

@@ -68,27 +68,27 @@ body { background: #FFFFFF; }
     max-width: 960px;
 }
 .jumbotron p { font-size:14px; }
-#home-banner {  
-    background-size:100%;  
-    width:100%; 
-    -webkit-user-select: none; 
-	-khtml-user-select: none; 
-    -moz-user-select: none; 
-	-o-user-select: none; 
-	user-select: none; 
+#home-banner {
+    background-size:100%;
+    width:100%;
+    -webkit-user-select: none;
+	-khtml-user-select: none;
+    -moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 .well {
 	background-color: #F;
 	border: none 0px;
 	box-shadow: none;
 }
-.search-input { position: relative; 
+.search-input { position: relative;
 	width:70%;
   	display: inline-block;
   	margin: 0px 0px 20px 0px;
 }
-.th, th-query{ 
-	text-indent: 0px; 
+.th, .th-query {
+	text-indent: 0px;
   	border-radius: 2px;
 	height: 55px;
 	width: 650px;
@@ -127,7 +127,7 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 -moz-box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 }
-.search-input .fa-keyboard-o { 
+.search-input .fa-keyboard-o {
   	position: absolute;
 	top: 15px;
 	right: 60px;
@@ -137,6 +137,11 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 	cursor: pointer;
 	color: #075265;
 }
+
+.tt-cursor {
+	background-color: #EEE;
+}
+
 .search {
 	color: #C8AD75;
 	padding-top: 15px;
@@ -145,9 +150,9 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 .search-box {
 	color: #FFF;
 }
-.adv-search { 
+.adv-search {
 	margin-bottom: 1px;
-	font-weight: bold; 
+	font-weight: bold;
 }
 .btn.focus, .btn:focus, .btn:hover {
     color: #C8AD75;
@@ -198,7 +203,7 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
     min-width: 60px;
     padding: 5px 0px;
     margin: 2px 0px 0px;
-    font-size: 14px;	
+    font-size: 14px;
     text-align: left;
     list-style: outside none none;
     background-color: #FFFFFF;
@@ -291,8 +296,8 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 	font: 'Benton Sans','Helvetica','sans-serif';
 	font-weight: 700;
 }
-.name button { 
-	border-radius: 8px; 
+.name button {
+	border-radius: 8px;
 	border: none;
 }
 .name-s-col {
@@ -323,7 +328,7 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 /* ----- Media queries ----- */
 
 @media (max-width: 1200px) {
-	
+
 }
 @media (max-width: 767px) {
 .social-icon {
@@ -363,5 +368,5 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 @media (max-width: 480px) {
 .search-input input {
 	width: 150px;
-}	
+}
 }
