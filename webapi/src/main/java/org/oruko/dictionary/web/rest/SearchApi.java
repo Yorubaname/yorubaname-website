@@ -73,11 +73,6 @@ public class SearchApi {
                                             HttpServletRequest request) {
 
         List<Map<String, Object>> name = elasticSearchService.search(searchTerm);
-
-        if (name != null) {
-            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
-        }
-
         return name;
     }
 
