@@ -111,7 +111,7 @@ public class ExcelImporter implements ImporterInterface {
                     name = nameCell.toString();
                     if (!name.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setName(name);
+                        nameEntry.setName(name.trim());
                     } else {
                         // if name is empty then the row is nullified, so skip
                         continue;
@@ -123,7 +123,7 @@ public class ExcelImporter implements ImporterInterface {
                     pronunciation = pronunciationCell.toString();
                     if (!pronunciation.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setPronunciation(pronunciation);
+                        nameEntry.setPronunciation(pronunciation.trim());
                     }
                 }
 
@@ -132,7 +132,7 @@ public class ExcelImporter implements ImporterInterface {
                     ipaNotation = ipaCell.toString();
                     if (!ipaNotation.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setIpaNotation(ipaNotation);
+                        nameEntry.setIpaNotation(ipaNotation.trim());
                     }
                 }
 
@@ -141,7 +141,7 @@ public class ExcelImporter implements ImporterInterface {
                     variant = variantCell.toString();
                     if (!variant.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setVariants(variant);
+                        nameEntry.setVariants(variant.trim());
                     }
                 }
 
@@ -150,7 +150,7 @@ public class ExcelImporter implements ImporterInterface {
                     syllable = syllableCell.toString();
                     if (!syllable.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setSyllables(syllable);
+                        nameEntry.setSyllables(syllable.trim());
                     }
                 }
 
@@ -159,7 +159,7 @@ public class ExcelImporter implements ImporterInterface {
                     meaning = meaningCell.toString();
                     if (!meaning.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setMeaning(meaning);
+                        nameEntry.setMeaning(meaning.trim());
                     }
 
                 }
@@ -169,7 +169,7 @@ public class ExcelImporter implements ImporterInterface {
                     extendedMeaning = extendedMeaningCell.toString();
                     if (!extendedMeaning.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setExtendedMeaning(extendedMeaning);
+                        nameEntry.setExtendedMeaning(extendedMeaning.trim());
                     }
                 }
 
@@ -178,7 +178,7 @@ public class ExcelImporter implements ImporterInterface {
                     morphology = morphologyCell.toString();
                     if (!morphology.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setMorphology(morphology);
+                        nameEntry.setMorphology(morphology.trim());
                     }
                 }
 
@@ -207,7 +207,7 @@ public class ExcelImporter implements ImporterInterface {
                     media = mediaCell.toString();
                     if (!media.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setMedia(media);
+                        nameEntry.setMedia(media.trim());
                     }
                 }
 

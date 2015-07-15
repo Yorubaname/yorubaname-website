@@ -86,7 +86,7 @@ public class NameApi {
     @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
-            entry.setName(entry.getName().toLowerCase());
+            entry.setName(entry.getName().trim().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
 
             HashMap<String, String> response = new HashMap<>();
@@ -188,7 +188,7 @@ public class NameApi {
                                              BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
-            if (!entry.getName().equals(name)) {
+            if (!entry.getName().trim().equals(name.trim())) {
                 throw new GenericApiCallException("Name given in URL is different from name in request payload",
                                                   HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -257,7 +257,7 @@ public class NameApi {
         if (!bindingResult.hasErrors() && nameEntries.length != 0) {
 
             Arrays.stream(nameEntries).forEach(entry -> {
-                entry.setName(entry.getName().toLowerCase());
+                entry.setName(entry.getName().trim().toLowerCase());
                 entryService.insertTakingCareOfDuplicates(entry);
             });
 
