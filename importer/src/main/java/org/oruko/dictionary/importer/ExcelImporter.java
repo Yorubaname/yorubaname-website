@@ -112,6 +112,9 @@ public class ExcelImporter implements ImporterInterface {
                     if (!name.isEmpty()) {
                         fieldIsEmpty = false;
                         nameEntry.setName(name);
+                    } else {
+                        // if name is empty then the row is nullified, so skip
+                        continue;
                     }
 
                 }
