@@ -1,8 +1,8 @@
 {
   "analysis": {
     "filter":{
-      "ngram":{
-        "type":"ngram",
+      "edgeNGram":{
+        "type":"edgeNGram",
         "min_gram":2,
         "max_gram":15
       }
@@ -11,7 +11,7 @@
       "autocomplete_analyzer" : {
         "type": "custom",
         "tokenizer": "standard",
-        "filter":[ "standard", "lowercase", "stop", "ngram" ]
+        "filter":[ "standard", "asciifolding", "lowercase", "stop", "edgeNGram" ]
       }
     }
   }
