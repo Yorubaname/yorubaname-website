@@ -49,7 +49,7 @@ public class ExcelImporterTest {
     public void testDoImport() throws Exception {
         File file = new ClassPathResource("testdata/right_column_order.xlsx").getFile();
         when(validator.isColumnNameInOrder(any(XSSFSheet.class))).thenReturn(true);
-        ImportStatus status = importer.doImport(file);
+        ImportStatus status = importer.importFile(file);
 
         ArgumentCaptor<NameEntry> messageCaptor = ArgumentCaptor.forClass(NameEntry.class);
         List<NameEntry> allValues = messageCaptor.getAllValues();

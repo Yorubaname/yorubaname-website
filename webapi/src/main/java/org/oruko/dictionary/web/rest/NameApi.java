@@ -1,7 +1,7 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oruko.dictionary.importer.ImportStatus;
+import org.oruko.dictionary.events.NameUploadStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -56,6 +58,7 @@ public class NameApi {
     private ImporterInterface importerInterface;
     private NameEntryService entryService;
     private GeoLocationRepository geoLocationRepository;
+    private NameUploadStatus nameUploadStatus;
 
     /**
      * Public constructor for {@link NameApi}
@@ -65,10 +68,11 @@ public class NameApi {
      */
     @Autowired
     public NameApi(ImporterInterface importerInterface, NameEntryService entryService,
-                   GeoLocationRepository geoLocationRepository) {
+                   GeoLocationRepository geoLocationRepository, NameUploadStatus nameUploadStatus) {
         this.importerInterface = importerInterface;
         this.entryService = entryService;
         this.geoLocationRepository = geoLocationRepository;
+        this.nameUploadStatus = nameUploadStatus;
     }
 
     @InitBinder
@@ -223,27 +227,49 @@ public class NameApi {
             throws JsonProcessingException {
         Assert.state(!multipartFile.isEmpty(), "You can't upload an empty file");
 
-        ImportStatus status = new ImportStatus();
-        File file = null;
         try {
-            file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+            File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
             multipartFile.transferTo(file);
-            status = importerInterface.doImport(file);
+
+            // perform the importation of names in a seperate thread
+            // client can poll /v1/names/uploading?q=progress for upload progress
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(() -> {
+                importerInterface.importFile(file);
+                file.delete();
+            });
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "File successfully imported");
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         } catch (IOException e) {
             logger.warn("Failed to import File with error {}", e.getMessage());
-            status.setErrorMessages(e.getMessage());
-        } finally {
-            file.delete();
+            throw new GenericApiCallException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        if (status.hasErrors()) {
-            throw  new GenericApiCallException(status.getErrorMessages().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "File successfully imported");
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    /**
+     * Endpoint that returns if a name uploading is ongoing and if so, provides
+     * the number of total names to be uploaded and the numbers already uploaded.
+     * @param parameter query parameter. Supports "progress"
+     * @return
+     * @throws JsonProcessingException
+     */
+    @RequestMapping(value = "/v1/names/uploading", method = RequestMethod.GET)
+    public ResponseEntity<NameUploadStatus> uploadProgress(@RequestParam("q") Optional<String> parameter)
+            throws JsonProcessingException {
+        if (parameter.isPresent()) {
+            switch (parameter.get()) {
+                case "progress":
+                    return new ResponseEntity<>(nameUploadStatus, HttpStatus.OK);
+                default:
+                    throw new GenericApiCallException("query parameter [" + parameter.get() + "] not supported",
+                                                      HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        throw  new GenericApiCallException("query parameter missing", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     /**
      * Endpoint for batch uploading of names. Names are sent as array of json from the client

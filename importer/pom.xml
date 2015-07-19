@@ -20,6 +20,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.yorubaname</groupId>
+            <artifactId>event-module</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
         </dependency>

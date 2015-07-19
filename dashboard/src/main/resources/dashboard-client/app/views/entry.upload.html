@@ -5,7 +5,9 @@
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4">
-                <div class="button" ngf-select ng-model="files">Select a templete to upload</div>
+                <div class="button" ng-disabled="uploading" ngf-select ng-model="files">
+                  Select a template to upload
+                </div>
                 <h5>{{filename}}</h5>
             </div>
         </div>
@@ -28,7 +30,7 @@
     </div>
     <div class="form-group" ng-if="validFile">
         <div class="col-sm-4">
-            <button ng-click="upload(files)" class="btn btn-success">Upload Now</button>
+            <button ng-click="upload(files)" ng-disabled="uploading" class="btn btn-success">Upload Now</button>
         </div>
     </div>
 </form>

@@ -5,6 +5,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameUploadedEvent;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
@@ -35,7 +37,14 @@ public class ExcelImporter implements ImporterInterface {
     private GeoLocationRepository geoLocationRepository;
     private DuplicateNameEntryRepository duplicateEntryRepository;
     private ImporterValidator validator;
-    ColumnOrder columnOrder;
+    private EventPubService eventPubService;
+    private ColumnOrder columnOrder;
+
+
+    @Autowired
+    public void setEventPubService(EventPubService eventPubService) {
+        this.eventPubService = eventPubService;
+    }
 
     @Autowired
     public void setNameEntryRepository(NameEntryRepository nameEntryRepository) {
@@ -66,8 +75,9 @@ public class ExcelImporter implements ImporterInterface {
     
 
     @Override
-    public ImportStatus doImport(File fileSource) {
+    public ImportStatus importFile(File fileSource) {
         ImportStatus status = new ImportStatus();
+        NameUploadedEvent nameUploadedEvent = new NameUploadedEvent();
 
         XSSFSheet sheet;
         try {
@@ -81,6 +91,10 @@ public class ExcelImporter implements ImporterInterface {
             status.setErrorMessages(e.getMessage());
             return status;
         }
+
+        int totalNumberOfNames = sheet.getPhysicalNumberOfRows() - 1; // removes the header row
+        nameUploadedEvent.setTotalNumberOfNames(totalNumberOfNames);
+        nameUploadedEvent.isUploading(true);
 
         if (validator.isColumnNameInOrder(sheet)) {
             Iterator<Row> rowIterator = sheet.rowIterator();
@@ -215,27 +229,39 @@ public class ExcelImporter implements ImporterInterface {
                     continue;
                 }
 
-                if (alreadyExists(name)) {
-                    duplicateEntryRepository.save(new DuplicateNameEntry(nameEntry));
-                } else {
-                    nameEntryRepository.save(nameEntry);
+                try {
+                    if (alreadyExists(name)) {
+                        duplicateEntryRepository.save(new DuplicateNameEntry(nameEntry));
+                        status.incrementNumberOfNames();
+                    } else {
+                        nameEntryRepository.save(nameEntry);
+                        status.incrementNumberOfNames();
+                    }
+                } catch (Exception e) {
+                    logger.debug("Exception while uploading name entry with name {}", name, e);
                 }
 
-                status.incrementNumberOfNames();
+                nameUploadedEvent.setTotalUploaded(status.getNumberOfNamesUpload());
+                eventPubService.publish(nameUploadedEvent);
             }
         } else {
             status.setErrorMessages("Columns not in order. Should be in the following order {ORDER}"
                                             .replace("{ORDER}", columnOrder.getColumnOrderAsString()));
         }
 
+        // publishes event that signifies end of uploading
+        nameUploadedEvent.isUploading(false);
+        eventPubService.publish(nameUploadedEvent);
         return status;
     }
+
+
+
+    // ==================================================== Helpers ====================================================
 
     private GeoLocation getGeoLocation(String location) {
         return geoLocationRepository.findByPlace(location);
     }
-
-    // ==================================================== Helpers ====================================================
 
     private XSSFSheet getSheet(File file, int sheetIndex) throws IOException, InvalidFormatException {
         XSSFWorkbook wb = new XSSFWorkbook(file);

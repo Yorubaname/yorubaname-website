@@ -24,6 +24,9 @@ public class EventPubService {
     @Autowired
     private NameIndexedEventHandler nameIndexedEventHandler;
 
+    @Autowired
+    private NameUploadedEventHandler nameUploadedEventHandler;
+
     /**
      * public constructor, sets the AsyncEvent bus on construction
      */
@@ -46,5 +49,6 @@ public class EventPubService {
         // TODO configuring the event bus should be extracted into a config file
         this.eventBus.register(nameSearchedEventHandler);
         this.eventBus.register(nameIndexedEventHandler);
+        this.eventBus.register(nameUploadedEventHandler);
     }
 }
