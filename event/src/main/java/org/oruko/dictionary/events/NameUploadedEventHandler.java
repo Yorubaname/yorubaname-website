@@ -6,26 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Handles {@link org.oruko.dictionary.events.NameSearchedEvent}
+ * Handles {@link org.oruko.dictionary.events.NameUploadedEvent}
  * Created by Dadepo Aderemi.
  */
 @Component
-public class NameSearchedEventHandler {
+public class NameUploadedEventHandler {
 
-
-    private RecentSearches recentSearches;
+    private NameUploadStatus uploadStatus;
 
     @Autowired
-    public NameSearchedEventHandler(RecentSearches recentSearches) {
-        this.recentSearches = recentSearches;
+    public NameUploadedEventHandler(NameUploadStatus uploadStatus) {
+        this.uploadStatus = uploadStatus;
     }
 
     @Subscribe
     @AllowConcurrentEvents
-    public void listen(NameSearchedEvent event) {
+    public void listen(NameUploadedEvent event) {
         // Handle when a name is searched
         try {
-            recentSearches.stack(event.getNameSearched());
+            uploadStatus.setStatus(event);
         } catch (Exception e) {
             //TODO log this
         }

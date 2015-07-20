@@ -14,8 +14,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApiUserDetailsService implements UserDetailsService {
 
-    @Autowired
     private ApiUserRepository apiUserRepository;
+
+    /**
+     * Public constructor for {@link ApiUserDetailsService}
+     * @param apiUserRepository the repository used for persisting {@link ApiUser}
+     */
+    @Autowired
+    public ApiUserDetailsService(ApiUserRepository apiUserRepository) {
+        this.apiUserRepository = apiUserRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

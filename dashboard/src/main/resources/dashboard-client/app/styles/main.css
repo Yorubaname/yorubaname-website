@@ -60,7 +60,7 @@ body {
 /** page view **/
 
 .page-content {
-    margin: 15px 0;
+    margin: 15px 5px !important;
 }
 
 .page-content p + h4 {
@@ -95,7 +95,7 @@ body {
         /*min-height: 600px;*/
     }
     /* Remove the padding we set earlier */
-    
+
     .header,
     .page-content,
     .footer {
@@ -103,7 +103,7 @@ body {
         padding-right: 0;
     }
     /** Bootstrap override **/
-    
+
     .navbar-brand {
         float: left;
         height: 50px;
@@ -126,7 +126,7 @@ body {
     }
     /** components **/
     /** sidebar **/
-    
+
     #sidebar {
         min-height: 500px;
     }

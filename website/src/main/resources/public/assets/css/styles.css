@@ -28,12 +28,11 @@ body { background: #FFFFFF; }
 	margin: 33px 0px 0px 0px
 }
 .jumbotron {
-	background: #FAFAFC;
+	background: #F2F2F2;
 	color: #FFF;
 	margin-bottom: 25px;
 	padding-top: 1px;
 	padding-bottom: 25px;
-	border-bottom: 4px solid #C8AD75;
 }
 .jumbotron h1 {
 	font-size: 26px;
@@ -68,29 +67,37 @@ body { background: #FFFFFF; }
 .jumbotron .container {
     max-width: 960px;
 }
-#home-banner {  
-    background-size:100%;  
-    width:100%; 
-    -webkit-user-select: none; 
-	-khtml-user-select: none; 
-    -moz-user-select: none; 
-	-o-user-select: none; 
-	user-select: none; 
+.jumbotron p { font-size:14px; }
+#home-banner {
+    background-size:100%;
+    width:100%;
+    -webkit-user-select: none;
+	-khtml-user-select: none;
+    -moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
-.search-input { position: relative; 
+.well {
+	background-color: #F;
+	border: none 0px;
+	box-shadow: none;
+}
+.search-input { position: relative;
 	width:70%;
   	display: inline-block;
-  	margin: 0px 0px 60px 0px;
+  	margin: 0px 0px 20px 0px;
 }
-.th, th-query{ 
-	text-indent: 0px; 
+.th, .th-query {
+	text-indent: 0px;
   	border-radius: 2px;
 	height: 55px;
 	width: 650px;
 	margin: 0;
 	border: 0;
 	font-size: 17px;
-	box-shadow: inset 0 0 0 1px #555,0 0 0 6px rgba(255,255,255,0.5),0 0 4px 6px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
+-moz-box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
+box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 	color: #555555;
 }
 .tt-hint {
@@ -116,9 +123,11 @@ body { background: #FFFFFF; }
 }
 .search-input input:focus {
     border: 0;
-    box-shadow: inset 0 0 0 1px #555,0 0 0 6px rgba(255,255,255,0.5),0 0 4px 6px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
+-moz-box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
+box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 }
-.search-input .fa-keyboard-o { 
+.search-input .fa-keyboard-o {
   	position: absolute;
 	top: 15px;
 	right: 60px;
@@ -128,23 +137,22 @@ body { background: #FFFFFF; }
 	cursor: pointer;
 	color: #075265;
 }
+
+.tt-cursor {
+	background-color: #EEE;
+}
+
 .search {
-	background-color: #075265;
-	color: #FFF;
-	padding-bottom:5px;
-	padding-top:15px;
-	border-left: 1px solid #C8AD75;
-	border-right: 1px solid #C8AD75;
-	border-bottom: 1px solid #C8AD75;
-	border-radius: 0 0 10px 10px;
-	position: absolute;
+	color: #C8AD75;
+	padding-top: 15px;
+	padding-bottom: 5px;
 }
 .search-box {
 	color: #FFF;
 }
-.adv-search { 
+.adv-search {
 	margin-bottom: 1px;
-	font-weight: bold; 
+	font-weight: bold;
 }
 .btn.focus, .btn:focus, .btn:hover {
     color: #C8AD75;
@@ -195,7 +203,7 @@ body { background: #FFFFFF; }
     min-width: 60px;
     padding: 5px 0px;
     margin: 2px 0px 0px;
-    font-size: 14px;	
+    font-size: 14px;
     text-align: left;
     list-style: outside none none;
     background-color: #FFFFFF;
@@ -228,21 +236,21 @@ body { background: #FFFFFF; }
 	margin: 5px;
 	padding: 5px;
 	margin: 0 auto;
-	font-family: 'Pontano Sans', sans-serif;
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 }
 .main-content h3 {
 	font-size: 18px;
 	margin-top: 2px;
 	color: #075265;
 	font-weight: bold;
-	font-family: 'Pontano Sans', sans-serif;
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 	letter-spacing: 1px;
 }
 .main-content h4 {
 	font-size: 16px;
 	color: #075265;
 	font-weight: bold;
-	font-family: 'Pontano Sans', sans-serif;
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 	text-decoration: underline;
 	letter-spacing: 1px;
 }
@@ -266,7 +274,7 @@ body { background: #FFFFFF; }
 	font-size: 16px;
 	letter-spacing: 1px;
 	text-transform: capitalize;
-	font-family: 'Pontano Sans'
+	font-family: 'Benton Sans','Helvetica','sans-serif';
 }
 .llm-box > ul > li h5 {
 	color: #075265;
@@ -280,10 +288,24 @@ body { background: #FFFFFF; }
 	border: 1px solid #F0F0F0;
 	border-radius: 2px;
 	padding: 15px;
-	margin: 10px;
+	margin: 10px 0px 10px 0px;
 }
-.col-md-3 {
-    width: 30%;
+.name {
+	margin-top: 0px;
+	text-transform: capitalize;
+	font: 'Benton Sans','Helvetica','sans-serif';
+	font-weight: 700;
+}
+.name button {
+	border-radius: 8px;
+	border: none;
+}
+.name-s-col {
+	background: #E0E0E0;
+	border-radius: 2px;
+	margin: 5px;
+	padding: 5px;
+	text-transform: uppercase;
 }
 .side-bar {
 	width: 100%;
@@ -306,7 +328,7 @@ body { background: #FFFFFF; }
 /* ----- Media queries ----- */
 
 @media (max-width: 1200px) {
-	
+
 }
 @media (max-width: 767px) {
 .social-icon {
@@ -346,5 +368,5 @@ body { background: #FFFFFF; }
 @media (max-width: 480px) {
 .search-input input {
 	width: 150px;
-}	
+}
 }

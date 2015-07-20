@@ -40,6 +40,7 @@ var listAllController = function($scope, $location, nameEntryService, Notificati
             $scope.names.some(function(aname) {
                 if (aname.name === name) {
                     aname.indexed = true;
+                    Notification.success(data.message);
                     return true;
                 }
             });

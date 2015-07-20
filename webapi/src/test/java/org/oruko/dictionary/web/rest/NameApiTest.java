@@ -233,24 +233,11 @@ public class NameApiTest {
 
         ImportStatus importStatus = mock(ImportStatus.class);
         when(importStatus.hasErrors()).thenReturn(false);
-        when(importerInterface.doImport(any())).thenReturn(importStatus);
+        when(importerInterface.importFile(any())).thenReturn(importStatus);
         MockMultipartFile spreadsheet = new MockMultipartFile("nameFiles", "filename.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "some spreadsheet".getBytes());
         mockMvc.perform(MockMvcRequestBuilders.fileUpload("/v1/names/upload").file(spreadsheet))
-               .andExpect(status().isCreated())
+               .andExpect(status().isAccepted())
                .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
-
-    }
-
-    @Test
-    public void test_uploading_vai_spreadsheet_has_errors() throws Exception {
-        ImportStatus importStatus = new ImportStatus();
-        importStatus.setErrorMessages("an error occured");
-        when(importerInterface.doImport(any())).thenReturn(importStatus);
-        MockMultipartFile spreadsheet = new MockMultipartFile("nameFiles", "filename.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "some spreadsheet".getBytes());
-        mockMvc.perform(MockMvcRequestBuilders.fileUpload("/v1/names/upload").file(spreadsheet))
-               .andExpect(status().isInternalServerError());
-
-        verify(importerInterface).doImport(any());
 
     }
 

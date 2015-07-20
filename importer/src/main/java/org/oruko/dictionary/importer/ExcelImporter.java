@@ -5,6 +5,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameUploadedEvent;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
@@ -31,24 +33,51 @@ public class ExcelImporter implements ImporterInterface {
 
     private Logger logger = LoggerFactory.getLogger(ExcelImporter.class);
 
-    @Autowired
     private NameEntryRepository nameEntryRepository;
-
-    @Autowired
     private GeoLocationRepository geoLocationRepository;
-
-    @Autowired
     private DuplicateNameEntryRepository duplicateEntryRepository;
-
-    @Autowired
     private ImporterValidator validator;
+    private EventPubService eventPubService;
+    private ColumnOrder columnOrder;
+
 
     @Autowired
-    ColumnOrder columnOrder;
+    public void setEventPubService(EventPubService eventPubService) {
+        this.eventPubService = eventPubService;
+    }
+
+    @Autowired
+    public void setNameEntryRepository(NameEntryRepository nameEntryRepository) {
+        this.nameEntryRepository = nameEntryRepository;
+    }
+
+    @Autowired
+    public void setGeoLocationRepository(
+            GeoLocationRepository geoLocationRepository) {
+        this.geoLocationRepository = geoLocationRepository;
+    }
+
+    @Autowired
+    public void setDuplicateEntryRepository(
+            DuplicateNameEntryRepository duplicateEntryRepository) {
+        this.duplicateEntryRepository = duplicateEntryRepository;
+    }
+
+    @Autowired
+    public void setValidator(ImporterValidator validator) {
+        this.validator = validator;
+    }
+
+    @Autowired
+    public void setColumnOrder(ColumnOrder columnOrder) {
+        this.columnOrder = columnOrder;
+    }
+    
 
     @Override
-    public ImportStatus doImport(File fileSource) {
+    public ImportStatus importFile(File fileSource) {
         ImportStatus status = new ImportStatus();
+        NameUploadedEvent nameUploadedEvent = new NameUploadedEvent();
 
         XSSFSheet sheet;
         try {
@@ -62,6 +91,10 @@ public class ExcelImporter implements ImporterInterface {
             status.setErrorMessages(e.getMessage());
             return status;
         }
+
+        int totalNumberOfNames = sheet.getPhysicalNumberOfRows() - 1; // removes the header row
+        nameUploadedEvent.setTotalNumberOfNames(totalNumberOfNames);
+        nameUploadedEvent.isUploading(true);
 
         if (validator.isColumnNameInOrder(sheet)) {
             Iterator<Row> rowIterator = sheet.rowIterator();
@@ -92,7 +125,10 @@ public class ExcelImporter implements ImporterInterface {
                     name = nameCell.toString();
                     if (!name.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setName(name);
+                        nameEntry.setName(name.trim());
+                    } else {
+                        // if name is empty then the row is nullified, so skip
+                        continue;
                     }
 
                 }
@@ -101,7 +137,7 @@ public class ExcelImporter implements ImporterInterface {
                     pronunciation = pronunciationCell.toString();
                     if (!pronunciation.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setPronunciation(pronunciation);
+                        nameEntry.setPronunciation(pronunciation.trim());
                     }
                 }
 
@@ -110,7 +146,7 @@ public class ExcelImporter implements ImporterInterface {
                     ipaNotation = ipaCell.toString();
                     if (!ipaNotation.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setIpaNotation(ipaNotation);
+                        nameEntry.setIpaNotation(ipaNotation.trim());
                     }
                 }
 
@@ -119,7 +155,7 @@ public class ExcelImporter implements ImporterInterface {
                     variant = variantCell.toString();
                     if (!variant.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setVariants(variant);
+                        nameEntry.setVariants(variant.trim());
                     }
                 }
 
@@ -128,7 +164,7 @@ public class ExcelImporter implements ImporterInterface {
                     syllable = syllableCell.toString();
                     if (!syllable.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setSyllables(syllable);
+                        nameEntry.setSyllables(syllable.trim());
                     }
                 }
 
@@ -137,7 +173,7 @@ public class ExcelImporter implements ImporterInterface {
                     meaning = meaningCell.toString();
                     if (!meaning.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setMeaning(meaning);
+                        nameEntry.setMeaning(meaning.trim());
                     }
 
                 }
@@ -147,7 +183,7 @@ public class ExcelImporter implements ImporterInterface {
                     extendedMeaning = extendedMeaningCell.toString();
                     if (!extendedMeaning.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setExtendedMeaning(extendedMeaning);
+                        nameEntry.setExtendedMeaning(extendedMeaning.trim());
                     }
                 }
 
@@ -156,7 +192,7 @@ public class ExcelImporter implements ImporterInterface {
                     morphology = morphologyCell.toString();
                     if (!morphology.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setMorphology(morphology);
+                        nameEntry.setMorphology(morphology.trim());
                     }
                 }
 
@@ -185,7 +221,7 @@ public class ExcelImporter implements ImporterInterface {
                     media = mediaCell.toString();
                     if (!media.isEmpty()) {
                         fieldIsEmpty = false;
-                        nameEntry.setMedia(media);
+                        nameEntry.setMedia(media.trim());
                     }
                 }
 
@@ -193,27 +229,39 @@ public class ExcelImporter implements ImporterInterface {
                     continue;
                 }
 
-                if (alreadyExists(name)) {
-                    duplicateEntryRepository.save(new DuplicateNameEntry(nameEntry));
-                } else {
-                    nameEntryRepository.save(nameEntry);
+                try {
+                    if (alreadyExists(name)) {
+                        duplicateEntryRepository.save(new DuplicateNameEntry(nameEntry));
+                        status.incrementNumberOfNames();
+                    } else {
+                        nameEntryRepository.save(nameEntry);
+                        status.incrementNumberOfNames();
+                    }
+                } catch (Exception e) {
+                    logger.debug("Exception while uploading name entry with name {}", name, e);
                 }
 
-                status.incrementNumberOfNames();
+                nameUploadedEvent.setTotalUploaded(status.getNumberOfNamesUpload());
+                eventPubService.publish(nameUploadedEvent);
             }
         } else {
             status.setErrorMessages("Columns not in order. Should be in the following order {ORDER}"
                                             .replace("{ORDER}", columnOrder.getColumnOrderAsString()));
         }
 
+        // publishes event that signifies end of uploading
+        nameUploadedEvent.isUploading(false);
+        eventPubService.publish(nameUploadedEvent);
         return status;
     }
+
+
+
+    // ==================================================== Helpers ====================================================
 
     private GeoLocation getGeoLocation(String location) {
         return geoLocationRepository.findByPlace(location);
     }
-
-    // ==================================================== Helpers ====================================================
 
     private XSSFSheet getSheet(File file, int sheetIndex) throws IOException, InvalidFormatException {
         XSSFWorkbook wb = new XSSFWorkbook(file);

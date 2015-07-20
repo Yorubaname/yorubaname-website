@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class NameIndexedEventHandler {
 
-    @Autowired
     private RecentIndexes recentIndexes;
+
+    @Autowired
+    public NameIndexedEventHandler(RecentIndexes recentIndexes) {
+        this.recentIndexes = recentIndexes;
+    }
 
     @Subscribe
     @AllowConcurrentEvents

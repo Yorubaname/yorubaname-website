@@ -1,7 +1,7 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oruko.dictionary.importer.ImportStatus;
+import org.oruko.dictionary.events.NameUploadStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -53,14 +55,25 @@ public class NameApi {
 
     private Logger logger = LoggerFactory.getLogger(NameApi.class);
 
-    @Autowired
     private ImporterInterface importerInterface;
-
-    @Autowired
     private NameEntryService entryService;
-
-    @Autowired
     private GeoLocationRepository geoLocationRepository;
+    private NameUploadStatus nameUploadStatus;
+
+    /**
+     * Public constructor for {@link NameApi}
+     * @param importerInterface an implementation of {@link ImporterInterface} used for adding names in files
+     * @param entryService an instance of {@link NameEntryService} representing the service layer
+     * @param geoLocationRepository an instance of {@link GeoLocationRepository} for persiting {@link GeoLocation}
+     */
+    @Autowired
+    public NameApi(ImporterInterface importerInterface, NameEntryService entryService,
+                   GeoLocationRepository geoLocationRepository, NameUploadStatus nameUploadStatus) {
+        this.importerInterface = importerInterface;
+        this.entryService = entryService;
+        this.geoLocationRepository = geoLocationRepository;
+        this.nameUploadStatus = nameUploadStatus;
+    }
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -77,7 +90,7 @@ public class NameApi {
     @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
-            entry.setName(entry.getName().toLowerCase());
+            entry.setName(entry.getName().trim().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
 
             HashMap<String, String> response = new HashMap<>();
@@ -179,7 +192,7 @@ public class NameApi {
                                              BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
-            if (!entry.getName().equals(name)) {
+            if (!entry.getName().trim().equals(name.trim())) {
                 throw new GenericApiCallException("Name given in URL is different from name in request payload",
                                                   HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -214,27 +227,49 @@ public class NameApi {
             throws JsonProcessingException {
         Assert.state(!multipartFile.isEmpty(), "You can't upload an empty file");
 
-        ImportStatus status = new ImportStatus();
-        File file = null;
         try {
-            file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+            File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
             multipartFile.transferTo(file);
-            status = importerInterface.doImport(file);
+
+            // perform the importation of names in a seperate thread
+            // client can poll /v1/names/uploading?q=progress for upload progress
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(() -> {
+                importerInterface.importFile(file);
+                file.delete();
+            });
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "File successfully imported");
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         } catch (IOException e) {
             logger.warn("Failed to import File with error {}", e.getMessage());
-            status.setErrorMessages(e.getMessage());
-        } finally {
-            file.delete();
+            throw new GenericApiCallException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        if (status.hasErrors()) {
-            throw  new GenericApiCallException(status.getErrorMessages().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "File successfully imported");
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    /**
+     * Endpoint that returns if a name uploading is ongoing and if so, provides
+     * the number of total names to be uploaded and the numbers already uploaded.
+     * @param parameter query parameter. Supports "progress"
+     * @return
+     * @throws JsonProcessingException
+     */
+    @RequestMapping(value = "/v1/names/uploading", method = RequestMethod.GET)
+    public ResponseEntity<NameUploadStatus> uploadProgress(@RequestParam("q") Optional<String> parameter)
+            throws JsonProcessingException {
+        if (parameter.isPresent()) {
+            switch (parameter.get()) {
+                case "progress":
+                    return new ResponseEntity<>(nameUploadStatus, HttpStatus.OK);
+                default:
+                    throw new GenericApiCallException("query parameter [" + parameter.get() + "] not supported",
+                                                      HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        throw  new GenericApiCallException("query parameter missing", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     /**
      * Endpoint for batch uploading of names. Names are sent as array of json from the client
@@ -248,7 +283,7 @@ public class NameApi {
         if (!bindingResult.hasErrors() && nameEntries.length != 0) {
 
             Arrays.stream(nameEntries).forEach(entry -> {
-                entry.setName(entry.getName().toLowerCase());
+                entry.setName(entry.getName().trim().toLowerCase());
                 entryService.insertTakingCareOfDuplicates(entry);
             });
 

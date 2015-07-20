@@ -26,6 +26,10 @@ public class RecentIndexes {
     }
 
     public void stack(String name) {
+        if (deque.contains(name)) {
+            deque.remove(name);
+        }
+
         deque.addFirst(name);
         if (deque.size() > limit) {
             deque.removeLast();

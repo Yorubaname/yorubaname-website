@@ -91,42 +91,31 @@ $(document).ready(function(){
  });
  
 <!-- Typeahead -->
-$(document).ready(function(){
-var substringMatcher = function(strs) {
-  return function findMatches(q, cb) {
-    var matches, substringRegex;
- 
-    // an array that will be populated with substring matches
-    matches = [];
- 
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
- 
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        matches.push(str);
-      }
+$(document).ready(function () {
+
+    var names = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: '/v1/search/autocomplete?q=%QUERY',
+            wildcard: '%QUERY'
+        }
     });
- 
-    cb(matches);
-  };
-};
- 
-var names = ['Olubunmi', 'Otondo', 'Akinwunmi', 'Akerele', 'Kola',
-  'Kunle', 'Gbogije', 'Taiwo', 'Abiola', 'Omoishe', 'Laila',
-  'Tola', 'Tolulope', 'Bolanle', 'Yoruba', 'Ife', 'Ifeoluwa', 'Shalewa',
-  'Shola', 'Eniola', 'Dadepo', 'Koko', 'Jagada'
-];
- 
-$('#search-tph .th').typeahead({
-  hint: true,
-  highlight: true,
-  minLength: 1
-},
-{
-  name: 'searchname',
-  source: substringMatcher(names)
-}); 
+
+    $('#search-tph .th').typeahead({
+         hint: true,
+         highlight: true,
+         minLength: 1
+    },
+    {
+       name: 'searchname',
+       source: names
+    });
+});
+
+<!-- Triggers the search -->
+$('.btn-search').on("click", function() {
+    var q = $('#keyboard').val() || "";
+    var hostOrigin = window.location.origin;
+    window.location.href = hostOrigin + '/entries/?q='+ q;
 });

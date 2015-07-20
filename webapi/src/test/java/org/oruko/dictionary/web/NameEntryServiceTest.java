@@ -27,7 +27,7 @@ public class NameEntryServiceTest {
 
     // System under test
     @InjectMocks
-    private NameEntryService nameEntryService = new NameEntryService();
+    private NameEntryService nameEntryService;
 
     NameEntry nameEntry;
 

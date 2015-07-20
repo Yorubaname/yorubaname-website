@@ -2,12 +2,12 @@ package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
-import org.oruko.dictionary.events.RecentIndexes;
-import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameSearchedEvent;
+import org.oruko.dictionary.events.RecentIndexes;
 import org.oruko.dictionary.events.RecentSearches;
+import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -40,20 +42,30 @@ public class SearchApi {
 
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
-    @Autowired
     private EventPubService eventPubService;
-
-    @Autowired
     private NameEntryService entryService;
-
-    @Autowired
     private ElasticSearchService elasticSearchService;
-
-    @Autowired
     private RecentSearches recentSearches;
-
-    @Autowired
     private RecentIndexes recentIndexes;
+
+    /**
+     * Public constructor for {@link SearchApi}
+     * @param eventPubService instance of {@link EventPubService} for publishing events
+     * @param entryService service layer for interacting with name entries
+     * @param elasticSearchService service layer for elastic search functions
+     * @param recentSearches object holding the recent searches in memory
+     * @param recentIndexes object holding the recent index names in memory
+     */
+    @Autowired
+    public SearchApi(EventPubService eventPubService, NameEntryService entryService,
+                     ElasticSearchService elasticSearchService, RecentSearches recentSearches,
+                     RecentIndexes recentIndexes) {
+        this.eventPubService = eventPubService;
+        this.entryService = entryService;
+        this.elasticSearchService = elasticSearchService;
+        this.recentSearches = recentSearches;
+        this.recentIndexes = recentIndexes;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,12 +73,19 @@ public class SearchApi {
                                             HttpServletRequest request) {
 
         List<Map<String, Object>> name = elasticSearchService.search(searchTerm);
+        return name;
+    }
 
-        if (name != null) {
-            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+
+    @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public  List<String>  getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
+        if (!searchQuery.isPresent()) {
+            return new ArrayList<>();
         }
 
-        return name;
+        String query = searchQuery.get();
+        return elasticSearchService.autocomplete(query);
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,
@@ -119,20 +138,22 @@ public class SearchApi {
     /**
      * Endpoint to index a NameEntry sent in as JSON string.
      *
-     * @param entry the {@link org.oruko.dictionary.model.NameEntry} representation of the JSON String.
+     * @param entry the {@link NameEntry} representation of the JSON String.
      * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> indexEntry(@Valid NameEntry entry) {
+    public ResponseEntity<Map<String, Object>> indexEntry(@Valid NameEntry entry) {
         IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(entry);
         boolean isIndexed = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
+        Map<String, Object> response = new HashMap<>();
         if (isIndexed) {
-            return new ResponseEntity<String>(message, HttpStatus.CREATED);
+            response.put("message", message);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -145,27 +166,28 @@ public class SearchApi {
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> indexEntryByName(@PathVariable String name) {
-        String message;
+    public ResponseEntity<Map<String, Object>> indexEntryByName(@PathVariable String name) {
+        Map<String, Object> response = new HashMap<>();
         NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
-            message = new StringBuilder(name).append(" not found in the repository so not indexed").toString();
-            return new ResponseEntity<String>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put("message",
+                         new StringBuilder(name).append(" not found in the repository so not indexed").toString());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(nameEntry);
         boolean isIndexed = indexOperationStatus.getStatus();
-        message = indexOperationStatus.getMessage();
+
+        response.put("message", indexOperationStatus.getMessage());
 
         if (isIndexed) {
             nameEntry.isIndexed(true);
             entryService.saveName(nameEntry);
-            return new ResponseEntity<String>(message, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
 
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -177,18 +199,20 @@ public class SearchApi {
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteFromIndex(@PathVariable String name) {
+    public ResponseEntity<Map<String, Object>> deleteFromIndex(@PathVariable String name) {
         IndexOperationStatus indexOperationStatus = elasticSearchService.deleteFromIndex(name);
         boolean deleted = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", message);
         if (deleted) {
             NameEntry nameEntry = entryService.loadName(name);
             if (nameEntry != null) {
                 nameEntry.isIndexed(false);
                 entryService.saveName(nameEntry);
             }
-            return new ResponseEntity<String>(message, HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
