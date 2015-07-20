@@ -2,14 +2,15 @@
     <div id="msg-container" class="{{msg.type}}">
         {{msg.text}}
     </div>
+
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4">
                 <div class="button" ngf-select ng-model="files">Select a templete to upload</div>
-                <h5>{{filename}}</h5>
             </div>
         </div>
     </div>
+    <strong>{{filename}}</strong>
     <div class="form-group" ng-show="invalidColumns.length > 0">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-danger">
             <h6>*This file contains the following invalid columns</h6>
@@ -27,8 +28,13 @@
         </div>
     </div>
     <div class="form-group" ng-if="validFile">
+        <div class="col-sm-4" ng-show="disableUploadBtn">
+            <progressbar class="progress-striped active" max="100" value="progressPercentage" type="success"><i>{{progressPercentage}} / 100</i></progressbar>
+        </div>
+    </div>
+     <div class="form-group" ng-if="validFile">
         <div class="col-sm-4">
-            <button ng-click="upload(files)" class="btn btn-success">Upload Now</button>
+            <button ng-click="upload(files)" ng-disabled="disableUploadBtn" class="btn btn-success">Upload Now</button>
         </div>
     </div>
 </form>

@@ -9,6 +9,7 @@ var uploadEntryController = function($scope, $element, Upload, ENV, Notification
     // $scope.namesfile = {};
     // $scope.names = [];
     $scope.validFile = false;
+
     $scope.$watch('files', function(files) {
 
         if (files && files.length) {
@@ -25,24 +26,28 @@ var uploadEntryController = function($scope, $element, Upload, ENV, Notification
             $scope.validFile = false
         }
     });
-
+ 	$scope.disableUploadBtn = false;
+ 	$scope.progressPercentage  = 0;
     $scope.upload = function(files) {
         if (files && files.length) {
             var namesFile = files[0];
+            $scope.disableUploadBtn = true;
             console.log(namesFile)
             Upload.upload({
                 url: ENV.appEndpoint + '/v1/names/upload',
                 file: namesFile,
                 fileFormDataName: 'nameFiles'
             }).progress(function(evt) {
-                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             }).success(function(data, status, headers, config) {
                 $scope.validFile = false
                 $scope.filename = ""
+                $scope.disableUploadBtn = false;
                 Notification.success('File uploaded successfully')
             }).error(function(data, status, headers, config) {
                 $scope.validFile = false
                 $scope.filename = ""
+                $scope.disableUploadBtn = false;
                 Notification.error({
                     title: 'An error occured uploading file',
                     message: data.message
