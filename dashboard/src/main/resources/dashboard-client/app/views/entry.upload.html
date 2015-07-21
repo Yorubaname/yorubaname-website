@@ -3,40 +3,31 @@
         {{msg.text}}
     </div>
 
+    <!-- file select input element -->
     <div class="form-group">
         <div class="row">
             <div class="col-sm-4">
-                <div class="button" ngf-select ng-model="files">Select a templete to upload</div>
+                <div class="button" ngf-select ng-disabled="uploadInProgress" ng-model="files">Select a templete to upload</div>
             </div>
         </div>
     </div>
-    <strong>{{filename}}</strong>
-    <div class="form-group" ng-show="invalidColumns.length > 0">
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-danger">
-            <h6>*This file contains the following invalid columns</h6>
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="column in invalidColumns track by $index">{{column}}</li>
-            </ul>
+
+    <div ng-if="validFile">
+      File to upload: <strong>{{filename}}</strong>
+    </div>
+    <br/>
+
+    <!-- progress bar -->
+    <div class="form-group" ng-if="uploadInProgress">
+        <div class="col-sm-4">
+            <progressbar class="progress-striped active" max="max" value="progressPercentage" type="success"><i>{{progressMessage}}</i></progressbar>
         </div>
     </div>
-    <div class="form-group" ng-show="postErrors.length > 0">
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-danger">
-            <h6>*Error occured on the following rows</h6>
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="column in postErrors track by $index">{{column}}</li>
-            </ul>
-        </div>
-    </div>
-    <div class="form-group" ng-if="validFile">
-        <div class="col-sm-4" ng-show="disableUploadBtn">
-            <progressbar class="progress-striped active" max="100" value="progressPercentage" type="success"><i>{{progressPercentage}} / 100</i></progressbar>
-        </div>
-    </div>
+
+    <!-- upload button -->
      <div class="form-group" ng-if="validFile">
         <div class="col-sm-4">
-
-            <button ng-click="upload(files)" ng-disabled="disableUploadBtn" class="btn btn-success">Upload Now</button>
-
+            <button ng-click="upload(files)" ng-disabled="uploadInProgress" class="btn btn-success">Upload Now</button>
         </div>
     </div>
 </form>

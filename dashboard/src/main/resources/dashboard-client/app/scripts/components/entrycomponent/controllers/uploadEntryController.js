@@ -6,59 +6,87 @@
  * @param fileUploader service for uploading file to a url
  */
 
-var uploadEntryController = function($scope, $element, Upload, ENV, Notification, endpointService) {
-    // $scope.namesfile = {};
-    // $scope.names = [];
-    $scope.validFile = false;
+var uploadEntryController = function ($scope, $element, $interval, Upload, ENV, Notification, endpointService) {
 
-    $scope.$watch('files', function(files) {
+  $scope.validFile = false;
+  $scope.progressMessage = '';
+  $scope.progressPercentage = 0;
+  $scope.disableUploadBtn = false;
+  $scope.uploadInProgress = false;
 
-        if (files && files.length) {
-            if (files[0].name.substr(files[0].name.length - 5) !== '.xlsx') {
-                Notification({
-                    title: 'You have selected an invalid file',
-                    message: 'Upload the correct template or download a new one'
-                })
-                return
-            }
-            $scope.filename = files[0].name
-            $scope.validFile = true
-        } else {
-            $scope.validFile = false
-        }
-    });
- 	$scope.disableUploadBtn = false;
- 	$scope.progressPercentage  = 0;
-    $scope.upload = function(files) {
-        if (files && files.length) {
-            var namesFile = files[0];
-            $scope.disableUploadBtn = true;
-            console.log(namesFile)
-            Upload.upload({
-                url: ENV.appEndpoint + '/v1/names/upload',
-                file: namesFile,
-                fileFormDataName: 'nameFiles'
-            }).progress(function(evt) {
-                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            }).success(function(data, status, headers, config) {
-                $scope.validFile = false
-                $scope.filename = ""
-                $scope.disableUploadBtn = false;
-                Notification.success('File uploaded successfully')
-            }).error(function(data, status, headers, config) {
-                $scope.validFile = false
-                $scope.filename = ""
-                $scope.disableUploadBtn = false;
-                Notification.error({
-                    title: 'An error occured uploading file',
-                    message: data.message
-                })
-            })
-        }
+
+  $scope.$watch('files', function (files) {
+
+    if (files && files.length) {
+      if (files[0].name.substr(files[0].name.length - 5) !== '.xlsx') {
+        Notification({
+          title: 'You have selected an invalid file',
+          message: 'Upload the correct template or download a new one'
+        });
+        $scope.validFile = false;
+        return;
       }
+      $scope.filename = files[0].name;
+      $scope.validFile = true;
+    } else {
+      $scope.validFile = false;
+    }
+  });
+
+  $scope.upload = function (files) {
+    $scope.max = 100;
+    if (files && files.length) {
+      var namesFile = files[0];
+      $scope.disableUploadBtn = true;
+      Upload.upload({
+        url: ENV.appEndpoint + '/v1/names/upload',
+        file: namesFile,
+        fileFormDataName: 'nameFiles'
+      }).progress(function (evt) {
+        $scope.uploadInProgress = true;
+        $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+        $scope.progressMessage = "Uploading spreadsheet..."
+      }).success(function (data, status, headers, config) {
+        $scope.validFile = false;
+        $scope.filename = "";
+        $scope.progressMessage = "Spreadsheet uploaded, now starting name importation...";
+
+        setTimeout(function () {
+          // start polling for upload progress
+          var interval = setInterval(function () {
+            var request = endpointService.get('/v1/names/uploading?q=progress');
+            request.success(function (response) {
+              if (response.uploading === true) {
+                $scope.max = response.totalNumberOfNames;
+                $scope.progressPercentage = response.totalUploaded;
+                $scope.progressMessage = "Imported " + response.totalUploaded + " out of "
+                  + response.totalNumberOfNames + " names.";
+              } else {
+                // addition of names completed
+                $scope.disableUploadBtn = false;
+                $scope.uploadInProgress = false;
+                clearInterval(interval);
+                Notification.success('Names uploaded successfully');
+              }
+            }).error(function () {
+              clearInterval(interval);
+            });
+          }, 250);
+        }, 1000);
+      }).error(function (data, status, headers, config) {
+        $scope.validFile = false;
+        $scope.filename = "";
+        $scope.disableUploadBtn = false;
+        Notification.error({
+          title: 'An error occured uploading file',
+          message: data.message || 'Unknown error'
+        })
+      })
+    }
+  }
 
 
-  // Incomplete implementation on server
+  // Incomplete implementation on server //TODO delete. If needed we can bring this back from the git commit no need to have commented out code
   /* var columns = ["name", "pronunciation", "ipa_notation", "ipanotation", "syllable", "meaning", "extended_meaning", "extendedmeaning", "morphology", "etymology", "geo_location", "geolocation", "media", "variant"]
    var columnsHash = {}
    $scope.invalidColumns = []
