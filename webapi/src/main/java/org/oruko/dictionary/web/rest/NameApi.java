@@ -179,7 +179,7 @@ public class NameApi {
 
     /**
      * End point that is used to update a {@link org.oruko.dictionary.model.NameEntry}.
-     * @param entry the {@link org.oruko.dictionary.model.NameEntry}
+     * @param newNameEntry the {@link org.oruko.dictionary.model.NameEntry}
      * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
      * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
      * "success" is returned if no error
@@ -188,22 +188,18 @@ public class NameApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.PUT)
     public ResponseEntity<Map> updateName(@PathVariable String name,
-                                             @Valid @RequestBody NameEntry entry,
+                                             @Valid @RequestBody NameEntry newNameEntry,
                                              BindingResult bindingResult) {
         //TODO tonalMark is returning null on update. Fix
         if (!bindingResult.hasErrors()) {
-            if (!entry.getName().trim().equals(name.trim())) {
-                throw new GenericApiCallException("Name given in URL is different from name in request payload",
-                                                  HttpStatus.INTERNAL_SERVER_ERROR);
-            }
 
-            NameEntry nameEntry = entryService.loadName(name);
+            NameEntry oldNameEntry = entryService.loadName(name);
 
-            if (nameEntry == null) {
+            if (oldNameEntry == null) {
                 throw new GenericApiCallException(name + " not in database", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            entryService.updateName(entry);
+            entryService.updateName(oldNameEntry, newNameEntry);
             HashMap<String, String> response = new HashMap<>();
             response.put("message", "Name successfully updated");
             return new ResponseEntity<>(response, HttpStatus.CREATED);

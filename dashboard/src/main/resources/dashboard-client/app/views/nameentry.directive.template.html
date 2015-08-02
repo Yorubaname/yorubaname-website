@@ -15,7 +15,7 @@
                         <div class="form-group" show-errors>
                             <label for="nameEntry" class="control-label col-sm-4">Name</label>
                             <div class="col-sm-8">
-                                <input required autocomplete="off" ng-readonly="duplicateView" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" ng-change="findName(formEntry.name)">
+                                <input required autocomplete="off" class="form-control" id="nameEntry" placeholder="Name" name="name" ng-model="formEntry.name" ng-change="findName(formEntry.name)">
                                 <h6 ng-show="nameForm.name.$invalid && !nameForm.name.$pristine" class="help-block">A valid name is required</h6>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                 </div>
             </div>
         </form>
-        <div ng-if="duplicateView.length >0">
+        <div ng-if="duplicateView">
             <hr/>
             <h3>Duplicate entries (Copy and modify main entry if useful. If not remove)</h3>
             <ul id="duplicateList">

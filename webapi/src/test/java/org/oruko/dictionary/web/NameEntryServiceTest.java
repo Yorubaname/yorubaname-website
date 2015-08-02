@@ -31,6 +31,8 @@ public class NameEntryServiceTest {
 
     NameEntry nameEntry;
 
+    NameEntry oldEntry;
+
     @Before
     public void setUp() {
         nameEntry = mock(NameEntry.class);
@@ -88,8 +90,9 @@ public class NameEntryServiceTest {
     @Test
     public void testUpdate() throws Exception {
         NameEntry oldEntry = mock(NameEntry.class);
+        when(oldEntry.getName()).thenReturn("old name");
         when(nameEntryRepository.findByName(anyString())).thenReturn(oldEntry);
-        nameEntryService.updateName(nameEntry);
+        nameEntryService.updateName(oldEntry, nameEntry);
         verify(oldEntry).update(nameEntry);
     }
 

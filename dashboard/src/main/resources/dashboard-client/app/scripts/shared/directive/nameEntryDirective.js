@@ -25,12 +25,13 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
         var request = nameEntryService.getName(scope.currentName, 'yes');
         request.success(function(data) {
             //REASON: since objects values are parse by angular, and objects attribute coincide with api attributes
-            scope.formEntry = data.mainEntry
-            scope.formEntry.ipaNotation = sToArraysFilter(data.mainEntry.ipaNotation, delim)
-            scope.formEntry.pronunciation = sToArraysFilter(data.mainEntry.pronunciation, delim)
-            scope.formEntry.syllables = sToArraysFilter(data.mainEntry.syllables, delim)
-            scope.formEntry.morphology = sToArraysFilter(data.mainEntry.morphology, delim)
-            scope.formEntry.etymology = !isEmptyObj(data.mainEntry.etymology) ? angular.fromJson(data.mainEntry.etymology) : []
+            scope.formEntry = data.mainEntry;
+            scope.formEntry.originalName = data.mainEntry.name;
+            scope.formEntry.ipaNotation = sToArraysFilter(data.mainEntry.ipaNotation, delim);
+            scope.formEntry.pronunciation = sToArraysFilter(data.mainEntry.pronunciation, delim);
+            scope.formEntry.syllables = sToArraysFilter(data.mainEntry.syllables, delim);
+            scope.formEntry.morphology = sToArraysFilter(data.mainEntry.morphology, delim);
+            scope.formEntry.etymology = !isEmptyObj(data.mainEntry.etymology) ? angular.fromJson(data.mainEntry.etymology) : [];
             if (getDuplicates && getDuplicates === "true") {
                 scope.duplicates = data.duplicates;
             }
@@ -44,11 +45,11 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
         replace: true,
         link: function(scope, element, attrs, notification) {
             var request;
-            scope.geoList = []
-            scope.tempList = ["Something", "yes"]
-            scope.loadingMsg = "Retrieving list of matching names..."
-            scope.formEntry = {}
-            getGeolocations(scope)
+            scope.geoList = [];
+            scope.tempList = ["Something", "yes"];
+            scope.loadingMsg = "Retrieving list of matching names...";
+            scope.formEntry = {};
+            getGeolocations(scope);
             scope.duplicateView = attrs.duplicates == "true" ? true : false;
             scope.msg = {};
             scope.buttonAction = "Create Entry";
@@ -57,7 +58,7 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                     etymology: []
                 }
             }
-            setupForm()
+            setupForm();
             scope.setGeolocation = function(geo) {
                 scope.geoLocation = geo
             }
@@ -66,18 +67,18 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                     name: 'ttola'
                 }, {
                     name: 'odutola'
-                }]
+                }];
                 /* Promise for the autocomplete input box query*/
             scope.findName = function(name) {
-                var names = nameEntryService.getName(name)
+                var names = nameEntryService.getName(name);
                 return names.then(function(response) {
-                    scope.currentName = response.data.name
+                    scope.currentName = response.data.name;
                     scope.buttonAction = "Submit Duplicate";
                     populateForm(scope, true);
                 }, function(error) {
                     console.log(error)
                 })
-            }
+            };
 
             if (attrs.action === 'put') {
                 scope.buttonAction = "Update Entry";
@@ -94,12 +95,12 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                 }
                 // parse tags to strings using arraysToString filter
                 var parsedEntry = angular.copy(scope.formEntry);
-                parsedEntry.ipaNotation = aToStringFilter(parsedEntry.ipaNotation, delim)
-                parsedEntry.pronunciation = aToStringFilter(parsedEntry.pronunciation, delim)
-                parsedEntry.syllables = aToStringFilter(parsedEntry.syllables, delim)
-                parsedEntry.morphology = aToStringFilter(parsedEntry.morphology, delim)
+                parsedEntry.ipaNotation = aToStringFilter(parsedEntry.ipaNotation, delim);
+                parsedEntry.pronunciation = aToStringFilter(parsedEntry.pronunciation, delim);
+                parsedEntry.syllables = aToStringFilter(parsedEntry.syllables, delim);
+                parsedEntry.morphology = aToStringFilter(parsedEntry.morphology, delim);
                 if (attrs.action === 'put') {
-                    request = endpointService.putJson('/v1/names/' + parsedEntry.name, parsedEntry);
+                    request = endpointService.putJson('/v1/names/' + parsedEntry.originalName, parsedEntry);
                 } else {
                     request = endpointService.postJson('/v1/names', parsedEntry);
                 }
@@ -129,14 +130,14 @@ var nameEntry = function($http, $location, $state, $rootScope, endpointService, 
                         message: error
                     })
                 })
-            }
+            };
 
 
             scope.$watch('formEntry.name', function(newname) {
                 if (!isEmpty(scope.currentName) && newname !== scope.currentName && attrs.action !== 'put') {
                     scope.formEntry = {
                         name: newname
-                    }
+                    };
 
                     scope.buttonAction = "Create Entry";
                 }

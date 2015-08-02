@@ -2,11 +2,8 @@ package org.oruko.dictionary.model;
 
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.oruko.dictionary.model.repository.Etymology;
 import org.springframework.beans.BeanUtils;
 
-import java.util.List;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,22 +20,11 @@ public class DuplicateNameEntry extends AbstractNameEntry {
     @NotEmpty
     private String name;
 
-    @ElementCollection
-    protected List<Etymology> etymology;
-
     public DuplicateNameEntry() {
     }
 
     public DuplicateNameEntry(NameEntry entry) {
         BeanUtils.copyProperties(entry, this);
-    }
-
-    public List<Etymology> getEtymology() {
-        return etymology;
-    }
-
-    public void setEtymology(List<Etymology> etymology) {
-        this.etymology = etymology;
     }
 
 

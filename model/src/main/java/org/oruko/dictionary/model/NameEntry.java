@@ -2,12 +2,9 @@ package org.oruko.dictionary.model;
 
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.oruko.dictionary.model.repository.Etymology;
 import org.springframework.beans.BeanUtils;
 
-import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -26,8 +23,6 @@ public class NameEntry extends AbstractNameEntry {
     @NotEmpty
     private String name;
 
-    @ElementCollection
-    protected List<Etymology> etymology;
     public NameEntry() {
     }
 
@@ -57,14 +52,6 @@ public class NameEntry extends AbstractNameEntry {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Etymology> getEtymology() {
-        return etymology;
-    }
-
-    public void setEtymology(List<Etymology> etymology) {
-        this.etymology = etymology;
     }
 
 

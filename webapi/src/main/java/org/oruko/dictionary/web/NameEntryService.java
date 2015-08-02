@@ -72,9 +72,19 @@ public class NameEntryService {
      * Updates the properties with values from another {@link org.oruko.dictionary.model.NameEntry}
      * @param newEntry the nameEntry to take values used for updating
      */
-    public NameEntry updateName(NameEntry newEntry) {
-        NameEntry oldEntry = nameEntryRepository.findByName(newEntry.getName());
+    public NameEntry updateName(NameEntry oldEntry, NameEntry newEntry) {
+        String oldEntryName = oldEntry.getName();
+
+        // update main entry
         oldEntry.update(newEntry);
+
+        List<DuplicateNameEntry> oldDuplicateNames = duplicateEntryRepository.findByName(oldEntryName);
+
+        // update all duplicate entries
+        oldDuplicateNames.forEach(duplicateNameEntry -> {
+            duplicateNameEntry.setName(newEntry.getName());
+            duplicateEntryRepository.save(duplicateNameEntry);
+        });
         return nameEntryRepository.save(oldEntry);
     }
 
@@ -172,6 +182,5 @@ public class NameEntryService {
             return false;
         });
     }
-
 
 }

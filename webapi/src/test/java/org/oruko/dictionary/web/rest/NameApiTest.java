@@ -225,7 +225,7 @@ public class NameApiTest {
                .andExpect(status().isCreated());
 
         //TODO revisit and see if argument captor can be put to use here
-        verify(entryService).updateName(isA(NameEntry.class));
+        verify(entryService).updateName(isA(NameEntry.class), isA(NameEntry.class));
     }
 
     @Test

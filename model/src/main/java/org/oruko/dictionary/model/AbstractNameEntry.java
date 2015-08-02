@@ -1,6 +1,10 @@
 package org.oruko.dictionary.model;
 
+import org.oruko.dictionary.model.repository.Etymology;
+
+import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -78,6 +82,9 @@ public abstract class AbstractNameEntry {
     @Column(length = 1000)
     protected String submittedBy = "Not Available";
 
+    @ElementCollection
+    protected List<Etymology> etymology;
+
     @Column
     protected Boolean isIndexed = false;
 
@@ -135,6 +142,14 @@ public abstract class AbstractNameEntry {
      */
     public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
+    }
+
+    public List<Etymology> getEtymology() {
+        return etymology;
+    }
+
+    public void setEtymology(List<Etymology> etymology) {
+        this.etymology = etymology;
     }
 
     public String getMorphology() {
