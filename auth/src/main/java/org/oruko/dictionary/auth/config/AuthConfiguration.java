@@ -21,12 +21,13 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.DELETE, "/v1/names/delete").hasRole("ADMIN")
-            .antMatchers(HttpMethod.DELETE, "/v1/names/*").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/v1/suggest/name").permitAll()
             .antMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
+            .antMatchers(HttpMethod.DELETE, "/v1/names/*").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/v1/**").hasAnyRole("ADMIN", "DASHBOARD")
             .antMatchers(HttpMethod.PUT, "/v1/**").hasAnyRole("ADMIN", "DASHBOARD")
-            .antMatchers("/v1/**").permitAll()
             .antMatchers("/dashboardapp/**").permitAll()
+            .antMatchers("/v1/**").permitAll()
             .and()
                 .httpBasic();
     }

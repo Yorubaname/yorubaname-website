@@ -15,6 +15,7 @@ public class ApiService {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
+    // TODO move to environment dependent configuration file
     public static String APIPATH = "http://127.0.0.1:8081/v1";
 
     public static List<Map<String, Object>> getAllNames() {
@@ -31,5 +32,9 @@ public class ApiService {
 
     public static Map<String, String[]> getSearchActivity() {
         return restTemplate.getForObject(APIPATH + "/search/activity/all", Map.class);
+    }
+
+    public static List<Map<String, Object>> getGeoLocations() {
+        return Arrays.asList(restTemplate.getForObject(APIPATH + "/admin/geolocations", Map[].class));
     }
 }

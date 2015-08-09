@@ -2,9 +2,11 @@ package org.oruko.dictionary.web;
 
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
+import org.oruko.dictionary.model.repository.SuggestedNameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +27,9 @@ public class NameEntryService {
     private Integer PAGE = 0;
     private Integer COUNT_SIZE = 50;
 
-    NameEntryRepository nameEntryRepository;
-    DuplicateNameEntryRepository duplicateEntryRepository;
+    private NameEntryRepository nameEntryRepository;
+    private DuplicateNameEntryRepository duplicateEntryRepository;
+    private SuggestedNameRepository suggestedNameRepository;
 
     /**
      * Public constructor for {@link NameEntryService} depends on instances of
@@ -36,9 +39,11 @@ public class NameEntryService {
      */
     @Autowired
     public NameEntryService(NameEntryRepository nameEntryRepository,
-                            DuplicateNameEntryRepository duplicateEntryRepository) {
+                            DuplicateNameEntryRepository duplicateEntryRepository,
+                            SuggestedNameRepository suggestedNameRepository) {
         this.nameEntryRepository = nameEntryRepository;
         this.duplicateEntryRepository = duplicateEntryRepository;
+        this.suggestedNameRepository = suggestedNameRepository;
     }
 
     /**
@@ -58,6 +63,22 @@ public class NameEntryService {
         } else {
             throw new RepositoryAccessError("Given name already exists as a variant entry");
         }
+    }
+
+    /**
+     * Persist the suggested name
+     * @param suggestedName
+     */
+    public void addSuggestedName(SuggestedName suggestedName) {
+        suggestedNameRepository.save(suggestedName);
+    }
+
+    /**
+     * Returns all the suggested names
+     * @return List of {@link SuggestedName}
+     */
+    public List<SuggestedName> loadAllSuggestedNames() {
+        return suggestedNameRepository.findAll();
     }
 
     /**
@@ -182,5 +203,4 @@ public class NameEntryService {
             return false;
         });
     }
-
 }

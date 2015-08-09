@@ -9,8 +9,10 @@ import org.mockito.runners.*;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
+import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.ApiExceptionHandler;
 import org.springframework.http.MediaType;
@@ -288,7 +290,45 @@ public class NameApiTest {
         verify(entryService).deleteNameEntryAndDuplicates("test");
     }
 
-    // ==================================================== Helpers ====================================================
+    @Test
+    public void test_suggest_name() throws Exception {
+        SuggestedName suggestedName = new SuggestedName("test","this is a test",
+                                                        new GeoLocation("ABEOKUTA", "NWY"),
+                                                        "test@email.com");
+        String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
+        mockMvc.perform(post("/v1/suggest/name")
+                                .content(requestJson)
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isCreated());
+
+        verify(entryService).addSuggestedName(isA(SuggestedName.class));
+    }
+
+
+    @Test
+    public void test_suggest_name_invalid_email() throws Exception {
+        SuggestedName suggestedName = new SuggestedName("test","this is a test",
+                                                        new GeoLocation("ABEOKUTA", "NWY"),
+                                                        "@email.com");
+        String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
+        mockMvc.perform(post("/v1/suggest/name")
+                                .content(requestJson)
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void test_load_suggested_name() throws Exception {
+
+        mockMvc.perform(get("/v1/suggest/name"))
+               .andExpect(status().isOk());
+        verify(entryService).loadAllSuggestedNames();
+    }
+
+
+
+        // ==================================================== Helpers ====================================================
 
     private ExceptionHandlerExceptionResolver createExceptionResolver() {
         ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {

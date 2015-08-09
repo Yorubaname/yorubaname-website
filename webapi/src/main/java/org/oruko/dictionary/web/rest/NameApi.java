@@ -7,6 +7,7 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.NameEntryService;
@@ -60,6 +61,7 @@ public class NameApi {
     private GeoLocationRepository geoLocationRepository;
     private NameUploadStatus nameUploadStatus;
 
+
     /**
      * Public constructor for {@link NameApi}
      * @param importerInterface an implementation of {@link ImporterInterface} used for adding names in files
@@ -68,7 +70,8 @@ public class NameApi {
      */
     @Autowired
     public NameApi(ImporterInterface importerInterface, NameEntryService entryService,
-                   GeoLocationRepository geoLocationRepository, NameUploadStatus nameUploadStatus) {
+                   GeoLocationRepository geoLocationRepository,
+                   NameUploadStatus nameUploadStatus) {
         this.importerInterface = importerInterface;
         this.entryService = entryService;
         this.geoLocationRepository = geoLocationRepository;
@@ -99,6 +102,36 @@ public class NameApi {
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
+    }
+
+    /**
+     * End point for receiving suggested names into the database. The names
+     * suggested won't be added to the main database or search index until
+     * approved by admin of the system.
+     * @param suggestedName the name suggested
+     * @param bindingResult the {@link BindingResult}
+     * @return {@link org.springframework.http.ResponseEntity} with message if successful or not
+     */
+    @RequestMapping(value = "/v1/suggest/name", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> suggestName(@Valid @RequestBody SuggestedName suggestedName,
+                                                           BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
+        }
+
+        entryService.addSuggestedName(suggestedName);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Suggested Name successfully added");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    /**
+     * Returns all the suggested names
+     * @return all suggested names
+     */
+    @RequestMapping(value = "/v1/suggest/name", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SuggestedName> getAllSuggestedNames() {
+        return entryService.loadAllSuggestedNames();
     }
 
     /**
