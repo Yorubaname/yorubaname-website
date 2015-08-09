@@ -1,18 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Header -->
+{{> header }}
 
-<head>
- {{> header }}
-    <title>{{ title }}</title>
-</head>
+<!-- main-content -->
 
-<body>
-<div class="wrapper">
-{{ title }}eldkekdl
-
+<div class="search jumbotron" id="home-banner">
+    <div class="container" align="center">
+        <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
+        {{> searchcomponent }}
+    </div>
 </div>
-<!-- Javascript -->
-{{> scriptIncludes }}
 
-</body>
-</html>
+<div class="container">
+    <div class="col-md-8">
+
+        <div class="well">
+            <h3>{{message "lang.submitname.heading"}}</h3>
+            <hr/>
+
+            <form id="suggest-form">
+                <div class="form-group">
+                    <h5>{{message "lang.submitname.entername"}}: (required)</h5>
+                    <input type="text" name="suggestedName" class="form-control" id="suggestedName" placeholder="Suggested name">
+                </div>
+
+                <div class="form-group">
+                    <h5>{{message "lang.submitname.entermeaning"}}: (optional)</h5>
+                    <textarea name="suggestedMeaning" id="suggestedMeaning" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <h5>{{message "lang.submitname.enterlocation"}}: (optional)</h5>
+                    <select name="suggestedGeoLocation" id="suggestedGeoLocation" class="form-control">
+                        {{#each geoLocations}}
+                            <option>{{this.place}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <!--Uncomment when TTS is implemented<div class="form-group">-->
+                <!--<h5>Please help us pronounce the new name:(optional)</h5>-->
+                <!--<input type="file" id="pronunciation">-->
+                <!--</div>-->
+
+                <div class="form-group">
+                    <h5>{{message "lang.submitname.enteremail"}}: (required)</h5>
+                    <input type="email" name="suggestedEmail" class="form-control" id="suggestedEmail" placeholder="Your email">
+                </div>
+
+                <button type="submit" id="submitName" class="btn btn-default btn-lg">Submit new name</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- sidebar -->
+    <div class="col-md-4">
+    </div>
+    <!-- /sidebar -->
+</div>
+
+<script src="/assets/js/submitname/submitname.js" defer></script>
+<!-- footer -->
+{{> footer }}

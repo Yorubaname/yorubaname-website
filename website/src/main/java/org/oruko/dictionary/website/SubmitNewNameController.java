@@ -1,18 +1,19 @@
 package org.oruko.dictionary.website;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Map;
-
 /**
+ * Controller for submit new name page
  * Created by Dadepo Aderemi.
  */
 @Controller
 public class SubmitNewNameController {
     @RequestMapping("/submitname")
-    public String indexPage(Map<String, String> map) {
-        map.put("title", "Submit name");
+    public String indexPage(Model map) {
+        map.addAttribute("geoLocations", ApiService.getGeoLocations());
+        map.addAttribute("title", "Submit name");
         return "submitname";
     }
 }
