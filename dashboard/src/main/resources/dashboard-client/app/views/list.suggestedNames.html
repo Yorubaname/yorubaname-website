@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h2><strong>Suggested Entries:</strong></h2>
+              <!--<a ui-sref="entry.single" class="btn btn-primary btn-lg pull-right">+ CREATE NEW ENTRY</a></h2>-->
+        </div>
+    </div>
+    <div class="row rowClearance">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Find Entry</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="input-group " ng-controller="search" ng-show="isAuthenticated">
+                        <input type="text" class="form-control" ng-model="searchTerm">
+                        <span ng-click="search()" class="input-group-addon">Go!</span>
+                    </div>
+                    <h6><input type="checkbox" ng-model="filter" value="{{profile.id}}">Only search my entries</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row page-content">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Details</th>
+                    <th>Geo Location</th>
+                    <th>SubmittedBy</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entry in suggestedNames">
+                    <th scope="row">{{ $index + 1 }}</th>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.details }}</td>
+                    <td>{{ entry.geoLocation.place }}</td>
+                    <td>{{ entry.email }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-xs">Accept Entry</a>
+                        <a class="btn btn-danger btn-xs">Delete Entry</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!--<div class="row text-right">-->
+        <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
+            <!--<div class="btn-group" role="group">-->
+                <!--<button class="btn btn-default" ng-click="previous()">Previous</button>-->
+                <!--<button class="btn btn-default" ng-click="next()">Next</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+</div>

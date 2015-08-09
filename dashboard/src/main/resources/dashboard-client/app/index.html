@@ -42,7 +42,8 @@
                     </div>
                     <div class="collapse navbar-collapse" id="js-navbar-collapse">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="#/">Home</a></li>
+                            <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
+                            <li ui-sref-active="active"><a ui-sref="list">Entries</a></li>
                         </ul>
                         <ul class="nav navbar-nav pull-right" ng-show="isAuthenticated">
                             <li ng-show="isAdmin"><a href="#/admin">Admin</a></li>
@@ -104,6 +105,7 @@
     <script src="scripts/components/listcomponent/controllers/listController.js"></script>
     <script src="scripts/components/listcomponent/controllers/listAllController.js"></script>
     <script src="scripts/components/listcomponent/controllers/editNameController.js"></script>
+    <script src="scripts/components/listcomponent/controllers/listSuggestedNamesController.js"></script>
     <script src="scripts/components/admincomponent/controllers/adminController.js"></script>
     <script src="scripts/components/admincomponent/controllers/adminCreateUserController.js"></script>
     <script src="scripts/components/admincomponent/controllers/adminAllUsersController.js"></script>

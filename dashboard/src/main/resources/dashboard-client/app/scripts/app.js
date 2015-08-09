@@ -48,6 +48,10 @@ var dashboardappApp = angular.module('dashboardappApp', ['ui.router', 'ngCookies
             url: '/edit',
             controller: 'editNameController',
             templateUrl: 'views/list.edit.html'
+        }).state('list.suggestedNames', {
+            url: '/suggestedNames',
+            controller: 'listSuggestedNamesController',
+            templateUrl: 'views/list.suggestedNames.html'
         });
 
         $stateProvider.state('admin', {
