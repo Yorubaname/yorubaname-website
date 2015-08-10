@@ -63,6 +63,18 @@ var endpointService = function($http, $rootScope, ENV) {
         return request;
     };
 
+    this.delete = function(endpoint, data) {
+      $http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
+
+      var request = $http({
+        method: 'DELETE',
+        url: ENV.appEndpoint + endpoint,
+        data: data ? data : ''
+      });
+
+      return request;
+
+    };
     this.deleteJson = function(endpoint, data) {
         // had to explicitly set the content-type for the delete request to work, Why? I do not know yet
         $http.defaults.headers.common['Content-Type'] = "application/json";

@@ -95,11 +95,7 @@ public class NameApi {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().trim().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
-
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Name successfully added");
-
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response("Name successfully added"), HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
     }
@@ -112,26 +108,32 @@ public class NameApi {
      * @param bindingResult the {@link BindingResult}
      * @return {@link org.springframework.http.ResponseEntity} with message if successful or not
      */
-    @RequestMapping(value = "/v1/suggest/name", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/suggest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> suggestName(@Valid @RequestBody SuggestedName suggestedName,
                                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
         }
-
         entryService.addSuggestedName(suggestedName);
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "Suggested Name successfully added");
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response("Suggested Name successfully added"), HttpStatus.CREATED);
     }
 
     /**
      * Returns all the suggested names
      * @return all suggested names
      */
-    @RequestMapping(value = "/v1/suggest/name", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/suggest", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SuggestedName> getAllSuggestedNames() {
         return entryService.loadAllSuggestedNames();
+    }
+
+    @RequestMapping(value = "/v1/suggest/{name}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable String name) {
+        boolean deleted = entryService.deleteSuggestedName(name);
+        if (!deleted) {
+            return new ResponseEntity<>(response(name + " not found as a suggested name"), HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -231,11 +233,8 @@ public class NameApi {
             if (oldNameEntry == null) {
                 throw new GenericApiCallException(name + " not in database", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
             entryService.updateName(oldNameEntry, newNameEntry);
-            HashMap<String, String> response = new HashMap<>();
-            response.put("message", "Name successfully updated");
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response("Name successfully updated"), HttpStatus.CREATED);
         }
 
         throw new GenericApiCallException(formatErrorMessage(bindingResult),
@@ -268,9 +267,7 @@ public class NameApi {
                 file.delete();
             });
 
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "File successfully imported");
-            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(response("File successfully imported"), HttpStatus.ACCEPTED);
         } catch (IOException e) {
             logger.warn("Failed to import File with error {}", e.getMessage());
             throw new GenericApiCallException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -316,9 +313,7 @@ public class NameApi {
                 entryService.insertTakingCareOfDuplicates(entry);
             });
 
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Names successfully imported");
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response("Names successfully imported"), HttpStatus.CREATED);
         }
 
         throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
@@ -329,9 +324,7 @@ public class NameApi {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> deleteAllNames() {
         entryService.deleteAllAndDuplicates();
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Names deleted");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response("Names deleted"), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/v1/names/{name}",
@@ -339,9 +332,7 @@ public class NameApi {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< Map<String, String>> deleteName(@PathVariable String name) {
         entryService.deleteNameEntryAndDuplicates(name);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", name + "Deleted");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response(name + "Deleted"), HttpStatus.OK);
     }
 
     //=====================================Helpers=========================================================//
@@ -352,5 +343,12 @@ public class NameApi {
             builder.append(error.getField() + " " + error.getDefaultMessage() + " ");
         }
         return builder.toString();
+    }
+
+
+    private HashMap<String, String> response(String value) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", value);
+        return response;
     }
 }

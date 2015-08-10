@@ -296,7 +296,7 @@ public class NameApiTest {
                                                         new GeoLocation("ABEOKUTA", "NWY"),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
-        mockMvc.perform(post("/v1/suggest/name")
+        mockMvc.perform(post("/v1/suggest")
                                 .content(requestJson)
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
                .andExpect(status().isCreated());
@@ -311,7 +311,7 @@ public class NameApiTest {
                                                         new GeoLocation("ABEOKUTA", "NWY"),
                                                         "@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
-        mockMvc.perform(post("/v1/suggest/name")
+        mockMvc.perform(post("/v1/suggest")
                                 .content(requestJson)
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
                .andExpect(status().isBadRequest());
@@ -321,7 +321,7 @@ public class NameApiTest {
     @Test
     public void test_load_suggested_name() throws Exception {
 
-        mockMvc.perform(get("/v1/suggest/name"))
+        mockMvc.perform(get("/v1/suggest"))
                .andExpect(status().isOk());
         verify(entryService).loadAllSuggestedNames();
     }

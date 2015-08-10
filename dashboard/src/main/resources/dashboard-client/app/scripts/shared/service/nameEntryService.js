@@ -27,7 +27,12 @@ var nameEntryService = function ($http, endpointService) {
   };
 
   this.getSuggestedNames = function() {
-    var request = endpointService.get('/v1/suggest/name');
+    var request = endpointService.get('/v1/suggest');
+    return request;
+  };
+
+  this.deleteSuggestedName = function(suggestedName) {
+    var request = endpointService.delete("/v1/suggest/" + suggestedName);
     return request;
   };
 

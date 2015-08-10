@@ -74,6 +74,19 @@ public class NameEntryService {
     }
 
     /**
+     * Delete the suggested name
+     * @param name the name to delete
+     */
+    public boolean deleteSuggestedName(String name) {
+        SuggestedName suggestedName = suggestedNameRepository.findByName(name);
+        if (suggestedName != null) {
+            suggestedNameRepository.delete(suggestedName);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns all the suggested names
      * @return List of {@link SuggestedName}
      */
