@@ -1,18 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Header -->
+{{> header }}
 
-<head>
- {{> header }}
-    <title>{{ title }}</title>
-</head>
+<!-- main-content -->
 
-<body>
-<div class="wrapper">
-{{ title }}
-
+<div class="search jumbotron" id="home-banner">
+		<div class="container" align="center">
+			<p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
+	        {{> searchcomponent }} 
+	    </div>
 </div>
-<!-- Javascript -->
-{{> scriptIncludes }}
+<!-- /Search -->
 
-</body>
-</html>
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">
+
+			<div class="well">
+				<form>
+					<div class="form-group">
+                		<h3 class="name">{{message "lang.improve-entry.help-us"}} "{{ name.name }}"</h3>
+                		<p class="small">{{message "lang.improve-entry.sub-text"}}</p>
+                		<textarea name="improveEntry" id="improveEntry" class="form-control" rows="5"></textarea>                		
+            		</div>
+            		<button type="submit" id="submitEntry" class="btn btn-info btn-lg">Submit Entry</button>
+            		&nbsp;&nbsp;&nbsp;&nbsp;<a href="/entries/{nameEntry}">Cancel</a>
+				</form>
+			</div>
+
+			<div class="well">
+				<div class="row">
+					<div class="col-sm-8">
+						<h2 class="name">
+						{{ name.name }} 
+						<button class="name-sound">
+							<i class="fa fa-volume-up" data-toggle="tooltip" data-placement="top" title="{{message "lang.play-sound"}}"></i>
+						</button>
+						</h2>										
+						<p>{{message "lang.pronounciation"}} {{ name.pronunciation}}</p>
+					</div>
+					<div class="col-sm-4 small">
+						<div class="name-s-col">
+							<a href="#">
+								{{message "lang.share"}} <i class="fa fa-share-alt"></i>
+							</a>
+						</div>
+						<div class="name-s-col">
+							<a href="/improve-entry">
+								{{message "lang.improve-entry"}} <i class="fa fa-pencil"></i>
+							</a>
+						</div>
+					</div>
+				</div>			
+				<hr>
+				<p class="small">{{message "lang.submitby"}} {{ name.submittedBy }}</p>			
+			</div>
+
+			<div class="well">
+				<h4 class="name">{{message "lang.meaningof"}}{{ name.name }}</h4>
+				<hr>
+				<p class="meaning">{{ name.meaning }}</p><br><br>
+				<h5 class="name">{{message "lang.extendedmeaningof"}}</h5>
+				<hr>
+				<p>{{name.extendedMeaning }}</p>
+			</div>
+			<!-- /meaning of name -->
+
+			<div class="well">
+				<h4 class="name">{{message "lang.morphology"}}</h4>
+				<hr>
+				<p>{{name.morphology}}</p>
+			</div>
+			<!-- /morphology -->
+
+			<div class="well">
+				<h4 class="name">{{message "lang.etymology"}}</h4>
+				<hr>
+            <div class="row">
+                {{#each name.etymology}}
+                        <span>{{this.part}}</span><span> - ({{this.meaning}})</span>
+				{{/each}}
+            </div>
+			</div>
+			<!-- /etymology -->
+
+			<div class="well">
+				<h4 class="name">{{message "lang.geolocation"}}</h4>
+				<hr>
+				<p>{{message "lang.commonin"}} {{name.geoLocation.place}}</p>
+			</div>
+			<!-- /geolocation -->
+
+			<div class="well">
+				<h4 class="name">{{message "lang.variants"}}</h4>
+				<hr>
+			</div>
+			<!-- /variants -->
+
+			<div class="well">
+				<h4 class="name">{{message "lang.see-also"}}</h4>
+				<hr>
+			</div>
+			<!-- /see also -->
+		</div>
+
+		
+
+		<!-- sidebar -->
+		<div class="col-md-4">
+			{{> rsidebar }}
+		</div>
+		<!-- /sidebar -->
+
+	</div>
+</div>
+
+<!-- /main-content -->
+
+<!-- footer -->
+{{> footer }}

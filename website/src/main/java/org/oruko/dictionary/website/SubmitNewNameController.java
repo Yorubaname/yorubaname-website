@@ -13,7 +13,7 @@ public class SubmitNewNameController {
     @RequestMapping("/submitname")
     public String indexPage(Model map) {
         map.addAttribute("geoLocations", ApiService.getGeoLocations());
-        map.addAttribute("title", "Submit name");
+        map.addAttribute("title", "Submit Name");
         return "submitname";
     }
 }

@@ -13,7 +13,7 @@ public class ImproveEntryController {
 
     @RequestMapping("/improve-entry")
     public String indexPage(Map<String, String> map) {
-        map.put("title", "Improve entry");
+        map.put("title", "Improve Entry");
         return "improveentry";
     }
 }
