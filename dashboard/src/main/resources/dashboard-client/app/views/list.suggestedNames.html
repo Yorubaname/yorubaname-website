@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <h2><strong>Suggested Entries:</strong></h2>
+            <h2><strong>Suggested Entries</strong></h2>
               <!--<a ui-sref="entry.single" class="btn btn-primary btn-lg pull-right">+ CREATE NEW ENTRY</a></h2>-->
         </div>
     </div>
@@ -42,21 +42,11 @@
                     <td>{{ entry.geoLocation.place }}</td>
                     <td>{{ entry.email }}</td>
                     <td>
-                        <a class="btn btn-primary btn-xs">Accept Entry</a>
-                        <a class="btn btn-danger btn-xs">Delete Entry</a>
+                        <a ng-click="acceptSuggestedName(entry.name)" class="btn btn-primary btn-xs">Accept Entry</a>
+                        <a ng-click="deleteSuggestedName(entry.name)" class="btn btn-danger btn-xs">Delete Entry</a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-
-
-    <!--<div class="row text-right">-->
-        <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
-            <!--<div class="btn-group" role="group">-->
-                <!--<button class="btn btn-default" ng-click="previous()">Previous</button>-->
-                <!--<button class="btn btn-default" ng-click="next()">Next</button>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
 </div>

@@ -27,8 +27,8 @@ var listSuggestedNamesController = function($scope, $location, nameEntryService,
    * Get all suggested names and put in scope
    */
   var getSuggestedNamesAndPutOnScope = function() {
-    var names = nameEntryService.getSuggestedNames();
-    names.then(function (response) {
+    var result = nameEntryService.getSuggestedNames();
+    result.then(function (response) {
       $scope.suggestedNames = response.data;
 
     }, function (error) {
@@ -45,17 +45,19 @@ var listSuggestedNamesController = function($scope, $location, nameEntryService,
   /**
    * Adds the suggested name to the list of names eligible to be added to search index
    */
-  var acceptSuggestedName = function(suggestedName) {
-
+  $scope.acceptSuggestedName = function(suggestedName) {
+      console.log(suggestedName);
   };
 
   /**
-   * Delets the suggested name
+   * Deletes the suggested name
    */
-  var deleteSuggestedName = function(suggestedName) {
-
+  $scope.deleteSuggestedName = function(suggestedName) {
+    var result = nameEntryService.deleteSuggestedName(suggestedName);
+    result.success(function(){
+      getSuggestedNamesAndPutOnScope();
+    });
   };
-
 };
 
 angular.module('dashboardappApp').controller("listSuggestedNamesController", listSuggestedNamesController);

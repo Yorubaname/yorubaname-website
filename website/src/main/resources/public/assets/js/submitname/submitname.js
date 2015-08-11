@@ -13,7 +13,7 @@ $('form#suggest-form').on('submit', function(event) {
     };
 
     $.ajax({
-        url: '/v1/suggest/name',
+        url: '/v1/suggest',
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify(suggestedName),
