@@ -26,7 +26,8 @@ public class SuggestedName {
 
     @Column
     private String name;
-    @Column
+
+    @Column(length = 2000)
     private String details;
     @OneToOne
     private  GeoLocation geoLocation;

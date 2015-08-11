@@ -5,6 +5,16 @@
  */
 // TODO refactor endpoint raw strings to global variables
 var nameEntryService = function ($http, endpointService) {
+
+  /**
+   * Adds a name to the database;
+   * @param nameEntry
+   */
+  this.addName = function (nameToAdd) {
+    var request = endpointService.postJson("/v1/names", nameToAdd);
+    return request;
+  };
+
   /**
    * Get a name
    * returns the one or zero result

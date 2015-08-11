@@ -82,10 +82,10 @@ angular.module('dashboardappApp').controller('indexLogin', function($scope, $coo
     $scope.logoutUser = function() {
         $cookies.isAuthenticated = false;
         $cookies.isAdmin = false;
+        $cookies.token = '';
         $rootScope.isAuthenticated = false;
         $rootScope.isAdmin = false;
     };
-    console.log($cookies.isAuthenticated)
 
     if ($cookies.isAuthenticated && $cookies.isAuthenticated === 'true') {
         $rootScope.isAuthenticated = true;
@@ -103,8 +103,7 @@ dashboardappApp.run(function($rootScope, $cookies, $http) {
     $rootScope.currentState;
     $rootScope.state
 
-    // Commenting this out as it was leading to 401 on login page. Needs further looking into
-    //$http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
+    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
 
     $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
         $rootScope.previousState = from.name;

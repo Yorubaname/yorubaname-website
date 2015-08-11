@@ -120,15 +120,34 @@ public class NameApi {
 
     /**
      * Returns all the suggested names
-     * @return all suggested names
+     * @return a {@link ResponseEntity} with all suggested names
      */
     @RequestMapping(value = "/v1/suggest", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SuggestedName> getAllSuggestedNames() {
         return entryService.loadAllSuggestedNames();
     }
 
+    /**
+     * End point for deleting suggested name
+     * @param name suggested name to delete
+     * @return
+     */
     @RequestMapping(value = "/v1/suggest/{name}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable String name) {
+        boolean deleted = entryService.deleteSuggestedName(name);
+        if (!deleted) {
+            return new ResponseEntity<>(response(name + " not found as a suggested name"), HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * End point for approving suggested name
+     * @param name suggested name to approve
+     * @return a {@link ResponseEntity} with the response message
+     */
+    @RequestMapping(value = "/v1/suggest/{name}", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, String>> approveSuggestedName(@PathVariable String name) {
         boolean deleted = entryService.deleteSuggestedName(name);
         if (!deleted) {
             return new ResponseEntity<>(response(name + " not found as a suggested name"), HttpStatus.NO_CONTENT);

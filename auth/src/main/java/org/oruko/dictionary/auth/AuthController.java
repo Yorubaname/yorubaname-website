@@ -49,9 +49,8 @@ public class AuthController {
         Map<String, Object> userDetails = new HashMap<>();
         Collection<GrantedAuthority> authorities = ((UsernamePasswordAuthenticationToken) principal).getAuthorities();
 
-        ArrayList<String> roles = authorities.stream().map(auth -> {
-            return auth.getAuthority();
-        }).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<String> roles = authorities.stream().map(auth -> auth.getAuthority())
+                                             .collect(Collectors.toCollection(ArrayList::new));
 
         userDetails.put("roles", roles);
         userDetails.put("username", principal.getName());

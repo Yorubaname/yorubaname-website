@@ -37,11 +37,11 @@
             <tbody>
                 <tr ng-repeat="entry in suggestedNames">
                     <th scope="row">{{ $index + 1 }}</th>
-                    <td>{{ entry.name }}</td>
-                    <td>{{ entry.details }}</td>
-                    <td>{{ entry.geoLocation.place }}</td>
-                    <td>{{ entry.email }}</td>
-                    <td>
+                    <td class="col-md-2">{{ entry.name }}</td>
+                    <td class="col-md-4">{{ entry.details }}</td>
+                    <td class="col-md-2">{{ entry.geoLocation.place }}</td>
+                    <td class="col-md-2">{{ entry.email }}</td>
+                    <td class="col-md-2">
                         <a ng-click="acceptSuggestedName(entry.name)" class="btn btn-primary btn-xs">Accept Entry</a>
                         <a ng-click="deleteSuggestedName(entry.name)" class="btn btn-danger btn-xs">Delete Entry</a>
                     </td>

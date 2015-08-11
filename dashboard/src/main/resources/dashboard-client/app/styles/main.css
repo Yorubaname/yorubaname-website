@@ -112,8 +112,7 @@ body {
         line-height: 20px;
     }
     .container {
-        padding-right: 15px;
-        padding-left: 15px;
+        padding: 15px;
     }
     .container #sidebar {
         float: left;
