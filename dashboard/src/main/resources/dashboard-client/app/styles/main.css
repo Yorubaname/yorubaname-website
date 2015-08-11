@@ -90,8 +90,9 @@ body {
 @media screen and (min-width: 768px) {
     .container {
         max-width: 100%;
-        margin-right: 5px;
-        margin-left: 5px;
+         /* Margin was causing css issues on server...commenting for now*/
+        /*margin-right: 5px;*/
+        /*margin-left: 5px;*/
         /*min-height: 600px;*/
     }
     /* Remove the padding we set earlier */
