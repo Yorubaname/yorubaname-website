@@ -1,27 +1,8 @@
 <div class="container">
+  <div ng-if="suggestedNames.length > 0">
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <h2><strong>Suggested Entries</strong></h2>
-              <!--<a ui-sref="entry.single" class="btn btn-primary btn-lg pull-right">+ CREATE NEW ENTRY</a></h2>-->
-        </div>
     </div>
-    <div class="row rowClearance">
-        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 pull-right">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Find Entry</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="input-group " ng-controller="search" ng-show="isAuthenticated">
-                        <input type="text" class="form-control" ng-model="searchTerm">
-                        <span ng-click="search()" class="input-group-addon">Go!</span>
-                    </div>
-                    <h6><input type="checkbox" ng-model="filter" value="{{profile.id}}">Only search my entries</h6>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="row page-content">
         <table class="table table-bordered table-striped">
             <thead>
@@ -48,5 +29,10 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+      </div>
+  </div>
+
+  <div ng-if="suggestedNames.length === 0">
+    No suggested name at the moment...
+  </div>
 </div>
