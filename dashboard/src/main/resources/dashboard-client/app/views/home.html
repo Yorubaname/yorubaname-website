@@ -58,7 +58,7 @@
                 <span><input type="checkbox" ng-model="filter" class="input-control" name="searchfilter" value="{{profile.id}}"><label for="searchfilter">Only search my entries</label></span>
                 <hr>
                 <h5><a href="#/list/all" ng-if="isAdmin">List all entries</a></h5>
-                <h5><a href="#/list/suggestedNames" ng-if="isAdmin">List Suggested entries</a></h5>
+                <h5><a href="#/list/suggestedNames" ng-if="isAdmin">List Suggested entries</a> ({{info.suggestedNamesCount}})</h5>
                 <h5 ng-if="profile.username.length > 0"><a ui-sref="list.all({submittedBy: profile.username})">List only my entries</a></h5>
             </div>
         </div>
