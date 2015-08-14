@@ -17,6 +17,9 @@
             <h3>{{message "lang.submitname.heading"}}</h3>
             <hr/>
 
+            <div style="display: none" id="error-msg" class="alert alert-danger" role="alert">{{message "lang.submitname.nameexists"}}.
+                <a id="view-entry">{{message "lang.submitname.viewentry"}}</a></div>
+
             <form id="suggest-form">
                 <div class="form-group">
                     <h5>{{message "lang.submitname.entername"}}: (required)</h5>
@@ -47,7 +50,7 @@
                     <input type="email" name="suggestedEmail" class="form-control" id="suggestedEmail" placeholder="Your email">
                 </div>
 
-                <button type="submit" id="submitName" class="btn btn-info btn-lg">Submit new name</button>
+                <button type="submit" id="submit-name" class="btn btn-info btn-lg">Submit new name</button>
             </form>
         </div>
     </div>

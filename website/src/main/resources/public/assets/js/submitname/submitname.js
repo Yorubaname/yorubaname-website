@@ -1,5 +1,40 @@
 $(document).ready(function () {
 
+ $('#suggestedName').blur(function() {
+     var name = ($(this).val());
+
+     $.ajax({
+         url: '/v1/names/' + name.toLowerCase(),
+         type: 'GET',
+         contentType: "application/json",
+     }).success(function(response) {
+         disableSending()
+     }).error(function() {
+         enableSending();
+     });
+
+
+     var enableSending = function() {
+         // update link in error message
+         $("#view-entry").attr("href", "");
+         // hide error message
+         $("#error-msg").hide();
+         // enable submit button
+         $("#submit-name").prop("disabled", false);
+
+     };
+
+     var disableSending = function() {
+         // update link in error message
+         $("#view-entry").attr("href", "/entries/"+name);
+         // show error message
+         $("#error-msg").show();
+         // disable submit button
+         $("#submit-name").prop("disabled", true);
+     };
+
+ });
+
 $('form#suggest-form').on('submit', function(event) {
     event.preventDefault();
 
