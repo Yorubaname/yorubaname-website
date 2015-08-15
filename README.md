@@ -60,15 +60,22 @@ reflected and no need to restart (or recompile the application: the popular bane
 
 ### Running the Core Application with ElasticSearch
 
-The application's search functionality is powered by ElasticSearch, thus the application expects to have an ElasticSearch
-cluster it can connect to.
+The ElasticSearch module will run with an embedded ElasticSearch instance. So no need to have a standalone ElasticSearch
+running in other to have the search functionality working.
 
-To run the application and have the search functionality working you would have to download ElasticSearch and have it
-running on your local machine. Follow the instructions on how to do this here: http://www.elastic.co/guide/en/elasticsearch/reference/1.4/setup.html
+Different aspect of the embedded ElasticSearch be configured via application properties. The available configuration keys
+and their defaults are
 
-The only configuration needed is to update the cluster name to `yoruba_name_dictionary`. This you can do by editing the
-ElasticSearch configuration file found in `/path/to/elasticsearc/elasticsearch/config/elasticsearch.yml` and edit the
-`cluster.name` key to `yoruba_name_dictionary`
+es.clustername=yoruba_name_dictionary
+es.indexname=dictionary
+es.documenttype=nameentry
+es.hostname=localhost
+es.portnumber=9300
+es.data.path=
+
+The embedded ElasticSearch module will by default create a "data" directory in the root directory where the application 
+runs from and use this as the location to store data. This directory location can be configured to somewhere else 
+by supplying the preferred directory through the es.data.path= in the application.properties
 
 ### Running the dashboard app
 

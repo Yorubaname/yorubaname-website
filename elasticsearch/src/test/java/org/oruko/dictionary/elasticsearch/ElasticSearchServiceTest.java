@@ -1,5 +1,7 @@
 package org.oruko.dictionary.elasticsearch;
 
+import org.elasticsearch.client.Client;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.test.ElasticsearchIntegrationTest;
 import org.junit.*;
@@ -24,6 +26,39 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
     private ESConfig esConfig;
     ElasticSearchService elasticSearchService;
 
+    private class TestNode implements org.elasticsearch.node.Node {
+
+        @Override
+        public Settings settings() {
+            return null;
+        }
+
+        @Override
+        public Client client() {
+            return org.elasticsearch.test.ElasticsearchIntegrationTest.client();
+        }
+
+        @Override
+        public org.elasticsearch.node.Node start() {
+            return null;
+        }
+
+        @Override
+        public org.elasticsearch.node.Node stop() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+
+        }
+
+        @Override
+        public boolean isClosed() {
+            return false;
+        }
+    }
+
     @Before
     public void setup() throws IOException {
 
@@ -39,7 +74,7 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
         flushAndRefresh();
 
         eventPubService = mock(EventPubService.class);
-        elasticSearchService = new ElasticSearchService(client(), eventPubService, esConfig);
+        elasticSearchService = new ElasticSearchService(new TestNode(), eventPubService, esConfig);
     }
 
     @Test

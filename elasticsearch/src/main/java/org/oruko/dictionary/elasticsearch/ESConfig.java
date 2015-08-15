@@ -15,6 +15,7 @@ public class ESConfig {
     private String indexName;
     private String documentType;
     private Integer port;
+    private String dataPath;
 
     @Value("${es.clustername:yoruba_name_dictionary}")
     public void setClusterName(String clusterName) {
@@ -41,6 +42,14 @@ public class ESConfig {
         this.documentType = documentType;
     }
 
+    @Value("${es.data.path}")
+    public void setDataPath(String dataPath) {
+        this.dataPath = dataPath;
+    }
+
+    public String getDataPath() {
+        return dataPath;
+    }
 
     public String getClusterName() {
         return clusterName;

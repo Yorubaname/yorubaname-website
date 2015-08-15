@@ -6,11 +6,9 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.cluster.node.DiscoveryNode;
-import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameIndexedEvent;
@@ -37,8 +35,10 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class ElasticSearchService {
+
     private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
 
+    private Node node;
     private Client client;
     private ESConfig esConfig;
     private ResourceLoader resourceLoader;
@@ -47,12 +47,14 @@ public class ElasticSearchService {
 
     /**
      * Public constructor for {@link ElasticSearchService}
+     *
      * @param eventPubService for publishing events
      */
     @Autowired
-    public ElasticSearchService(Client client, EventPubService eventPubService, ESConfig esConfig) {
+    public ElasticSearchService(Node node, EventPubService eventPubService, ESConfig esConfig) {
         this.eventPubService = eventPubService;
-        this.client = client;
+        this.node = node;
+        this.client = node.client();
         this.esConfig = esConfig;
     }
 
@@ -65,16 +67,12 @@ public class ElasticSearchService {
     }
 
     public boolean isElasticSearchNodeAvailable() {
-        //TODO revisit and examine performance consequence
-        ImmutableList<DiscoveryNode> nodes = ((TransportClient) client).connectedNodes();
-        if (nodes.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !node.isClosed();
     }
 
     /**
      * For getting an entry from the search index by name
+     *
      * @param nameQuery the name
      * @return the nameEntry as a Map or null if name not found
      */
@@ -91,6 +89,7 @@ public class ElasticSearchService {
 
     /**
      * For searching the index for a name
+     *
      * @param searchTerm the search term
      * @return the list of entries found
      */
@@ -120,12 +119,12 @@ public class ElasticSearchService {
 
         // TODO update to implement search behaviour needed
         SearchResponse tempSearchAll = client.prepareSearch(esConfig.getIndexName())
-                                              .setQuery(QueryBuilders.matchAllQuery())
-                                              .execute()
-                                              .actionGet();
+                                             .setQuery(QueryBuilders.matchAllQuery())
+                                             .execute()
+                                             .actionGet();
 
         Stream.of(tempSearchAll.getHits().getHits()).forEach(hit -> {
-                result.add(hit.getSource());
+            result.add(hit.getSource());
         });
 
         return result;
@@ -133,6 +132,7 @@ public class ElasticSearchService {
 
     /**
      * For getting the list of partial matches for autocomplete
+     *
      * @param query the query
      * @return the list of partial matches
      */
@@ -159,19 +159,18 @@ public class ElasticSearchService {
 
         if (!isElasticSearchNodeAvailable()) {
             return new IndexOperationStatus(false,
-                                     "Index attempt unsuccessful. You do not have an elasticsearch node running");
-
+                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
         }
 
         try {
             String entryAsJson = mapper.writeValueAsString(entry);
             String name = entry.getName();
             client.prepareIndex(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
-                                                .setSource(entryAsJson)
-                                                .execute()
-                                                .actionGet();
+                  .setSource(entryAsJson)
+                  .execute()
+                  .actionGet();
 
-                eventPubService.publish(new NameIndexedEvent(name));
+            eventPubService.publish(new NameIndexedEvent(name));
 
             return new IndexOperationStatus(true, name + " indexed successfully");
         } catch (JsonProcessingException e) {
@@ -192,15 +191,14 @@ public class ElasticSearchService {
 
             return new IndexOperationStatus(false,
                                             "Delete unsuccessful. You do not have an elasticsearch node running");
-
         }
 
         DeleteResponse response = client
-                                .prepareDelete(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
-                                .execute()
-                                .actionGet();
+                .prepareDelete(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
+                .execute()
+                .actionGet();
 
-        return new IndexOperationStatus(response.isFound(),name + " deleted from index");
+        return new IndexOperationStatus(response.isFound(), name + " deleted from index");
     }
 
 
@@ -235,39 +233,28 @@ public class ElasticSearchService {
             logger.info("Failed to read ES mapping");
         }
 
+        try {
+            boolean exists = this.client.admin().indices()
+                                        .prepareExists(esConfig.getIndexName())
+                                        .execute()
+                                        .actionGet()
+                                        .isExists();
 
-        ImmutableList<DiscoveryNode> nodes = ((TransportClient) this.client).connectedNodes();
+            if (!exists) {
 
-        if (nodes.isEmpty()) {
-            this.client.close();
-        } else {
-            try {
-                boolean exists = this.client.admin().indices()
-                                            .prepareExists(esConfig.getIndexName())
-                                            .execute()
-                                            .actionGet()
-                                            .isExists();
+                CreateIndexResponse createIndexResponse = this.client.admin().indices()
+                                                                     .prepareCreate(esConfig.getIndexName())
+                                                                     .setSettings(indexSettings)
+                                                                     .addMapping(esConfig.getDocumentType(),
+                                                                                 mapping).execute()
+                                                                     .actionGet();
 
-                if (!exists) {
-
-                    CreateIndexResponse createIndexResponse = this.client.admin().indices()
-                                                              .prepareCreate(esConfig.getIndexName())
-                                                              .setSettings(indexSettings)
-                                                                         .addMapping(esConfig.getDocumentType(),
-                                                                                     mapping).execute()
-                                                                         .actionGet();
-
-                    logger.info("Created {} and added {} to type {} status was {} at startup",
-                                esConfig.getIndexName(), mapping, esConfig.getDocumentType(),
-                                createIndexResponse.isAcknowledged());
-
-                }
-
-            } catch (Exception e) {
-                logger.error("ElasticSearch not running", e);
+                logger.info("Created {} and added {} to type {} status was {} at startup",
+                            esConfig.getIndexName(), mapping, esConfig.getDocumentType(),
+                            createIndexResponse.isAcknowledged());
             }
+        } catch (Exception e) {
+            logger.error("ElasticSearch not running", e);
         }
     }
-
-
 }
