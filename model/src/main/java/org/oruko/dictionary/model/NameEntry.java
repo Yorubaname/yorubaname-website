@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "name_entry")
-public class NameEntry extends AbstractNameEntry {
+public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry> {
 
     @Column(unique=true)
     @NotNull
@@ -87,4 +87,15 @@ public class NameEntry extends AbstractNameEntry {
         BeanUtils.copyProperties(nameEntry, this);
     }
 
+    /**
+     * Implements the sorting algorithm for {@link NameEntry}
+     *
+     * @param nameToCompare the instance of {@link NameEntry} to
+     *                      compare with.
+     * @return -1, 0 or 1.
+     */
+    @Override
+    public int compareTo(NameEntry nameToCompare) {
+        return this.name.compareTo(nameToCompare.getName());
+    }
 }
