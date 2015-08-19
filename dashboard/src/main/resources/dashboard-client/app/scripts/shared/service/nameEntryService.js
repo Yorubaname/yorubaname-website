@@ -28,9 +28,9 @@ var nameEntryService = function ($http, endpointService) {
   };
 
   this.getNames = function getNames(page, count, filter) {
-    filter = !isEmptyObj(filter) ? filter : {}
-    filter.page = page
-    filter.count = count
+    filter = !isEmptyObj(filter) ? filter : {};
+    filter.page = page;
+    filter.count = count;
     var request = endpointService.get('/v1/names/', filter);
     return request;
 
@@ -55,6 +55,19 @@ var nameEntryService = function ($http, endpointService) {
     var request = endpointService.deleteJson('/v1/search/indexes/' + name);
     return request;
   }
+
+
+  this.getFeedback = function(name) {
+    var request = endpointService.get('/v1/names/'+name+'/', {
+      feedback: true
+    });
+    return request;
+  };
+
+  this.deleteFeedback = function(name) {
+    var request = endpointService.deleteJson('/v1/'+name+'/feedback');
+    return request;
+  };
 
 };
 
