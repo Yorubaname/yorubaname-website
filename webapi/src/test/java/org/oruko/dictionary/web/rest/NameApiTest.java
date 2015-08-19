@@ -380,6 +380,28 @@ public class NameApiTest {
     }
 
     @Test
+    public void test_delete_feedback() throws Exception{
+        String testName = "lagbaja";
+        NameEntry nameEntry = mock(NameEntry.class);
+        when(entryService.loadName(testName)).thenReturn(nameEntry);
+
+        mockMvc.perform(delete("/v1/{name}/feedback", testName)
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isOk());
+
+        verify(entryService).deleteFeedback(testName);
+    }
+
+    @Test
+    public void test_delete_feedback_but_name_not_found() throws Exception{
+        String testName = "lagbaja";
+        when(entryService.loadName(testName)).thenReturn(null); // test condition
+        mockMvc.perform(delete("/v1/{name}/feedback", testName)
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isBadRequest()).andExpect(jsonPath("$.error", is(true)));
+    }
+
+    @Test
     public void test_get_names_with_feedback() throws Exception {
         NameEntry nameEntry = mock(NameEntry.class);
         when(entryService.loadName("test")).thenReturn(nameEntry);

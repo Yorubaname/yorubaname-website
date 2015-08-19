@@ -89,6 +89,18 @@ public class NameEntryService {
     }
 
     /**
+     * Deletes all feedback for a name
+     * @param name
+     */
+    public void deleteFeedback(String name) {
+        List<NameEntryFeedback> feedbacks = nameEntryFeedbackRepository.findByName(name);
+        feedbacks.stream().forEach(feedback -> {
+            nameEntryFeedbackRepository.delete(feedback);
+        });
+    }
+
+    /**
+     *
      * Returns the feedback for a name
      * @param entry the {@link NameEntry} to get feedbacks for
      * @return the feedback as a list of {@link NameEntryFeedback}

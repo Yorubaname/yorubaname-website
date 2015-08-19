@@ -123,6 +123,23 @@ public class NameApi {
         return new ResponseEntity<>(response("Feedback added"), HttpStatus.CREATED);
     }
 
+
+    /**
+     * Endpoint for deleting a feedback for a name
+     *
+     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
+     */
+    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> deleteFeedback(@PathVariable("name") String name) {
+
+        if (entryService.loadName(name) == null) {
+            throw new GenericApiCallException(name + " does not exist. Cannot delete feedback");
+        }
+        entryService.deleteFeedback(name);
+        return new ResponseEntity<>(response("Feedback messages deleted for "+ name), HttpStatus.OK);
+    }
+
+
     /**
      * End point for receiving suggested names into the database. The names
      * suggested won't be added to the main database or search index until
