@@ -11,5 +11,5 @@ import javax.transaction.Transactional;
  */
 @Transactional
 public interface GeoLocationRepository extends JpaRepository<GeoLocation, Long> {
-    public GeoLocation findByPlace(String place);
+    GeoLocation findByPlace(String place);
 }

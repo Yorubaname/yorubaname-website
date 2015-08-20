@@ -1,0 +1,7 @@
+<strong>Feedback Messages</strong>
+
+<ul style="list-style: none">
+  <li ng-repeat="feedbackObj in feedbacks"> {{feedbackObj.feedback}}</li>
+</ul>
+
+<button ng-if="showDeleteButton" id="deleteFeedback" ng-click="deleteFeedback()">Delete All Feedback</button>

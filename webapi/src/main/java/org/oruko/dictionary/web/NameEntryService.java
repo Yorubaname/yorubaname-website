@@ -2,9 +2,11 @@ package org.oruko.dictionary.web;
 
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.NameEntryFeedback;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
+import org.oruko.dictionary.model.repository.NameEntryFeedbackRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 import org.oruko.dictionary.model.repository.SuggestedNameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class NameEntryService {
     private NameEntryRepository nameEntryRepository;
     private DuplicateNameEntryRepository duplicateEntryRepository;
     private SuggestedNameRepository suggestedNameRepository;
+    private NameEntryFeedbackRepository nameEntryFeedbackRepository;
 
     /**
      * Public constructor for {@link NameEntryService} depends on instances of
@@ -40,10 +43,12 @@ public class NameEntryService {
     @Autowired
     public NameEntryService(NameEntryRepository nameEntryRepository,
                             DuplicateNameEntryRepository duplicateEntryRepository,
-                            SuggestedNameRepository suggestedNameRepository) {
+                            SuggestedNameRepository suggestedNameRepository,
+                            NameEntryFeedbackRepository nameEntryFeedbackRepository) {
         this.nameEntryRepository = nameEntryRepository;
         this.duplicateEntryRepository = duplicateEntryRepository;
         this.suggestedNameRepository = suggestedNameRepository;
+        this.nameEntryFeedbackRepository = nameEntryFeedbackRepository;
     }
 
     /**
@@ -71,6 +76,37 @@ public class NameEntryService {
      */
     public void addSuggestedName(SuggestedName suggestedName) {
         suggestedNameRepository.save(suggestedName);
+    }
+
+
+    /**
+     * Persist the feedback
+     *
+     * @param feedback the feedback as an instance of {@link NameEntryFeedback}
+     */
+    public void addFeedback(NameEntryFeedback feedback) {
+        nameEntryFeedbackRepository.save(feedback);
+    }
+
+    /**
+     * Deletes all feedback for a name
+     * @param name
+     */
+    public void deleteFeedback(String name) {
+        List<NameEntryFeedback> feedbacks = nameEntryFeedbackRepository.findByName(name);
+        feedbacks.stream().forEach(feedback -> {
+            nameEntryFeedbackRepository.delete(feedback);
+        });
+    }
+
+    /**
+     *
+     * Returns the feedback for a name
+     * @param entry the {@link NameEntry} to get feedbacks for
+     * @return the feedback as a list of {@link NameEntryFeedback}
+     */
+    public List<NameEntryFeedback> getFeedback(NameEntry entry) {
+        return nameEntryFeedbackRepository.findByName(entry.getName());
     }
 
     /**

@@ -7,6 +7,7 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.NameEntryFeedback;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
@@ -101,6 +102,45 @@ public class NameApi {
     }
 
     /**
+     * Endpoint for adding a feedback for a name
+     *
+     * @param postFeedback a map with key of "feedback" for the feedback
+     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
+     */
+    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> addFeedback(@PathVariable("name") String name, @RequestBody Map<String, String> postFeedback) {
+        String feedback = postFeedback.get("feedback");
+
+        if (feedback.isEmpty()) {
+            throw new GenericApiCallException("Cannot give an empty feedback");
+        }
+
+        if (entryService.loadName(name) == null) {
+            throw new GenericApiCallException(name + " does not exist. Cannot add feedback");
+        }
+
+        entryService.addFeedback(new NameEntryFeedback(name, feedback));
+        return new ResponseEntity<>(response("Feedback added"), HttpStatus.CREATED);
+    }
+
+
+    /**
+     * Endpoint for deleting a feedback for a name
+     *
+     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
+     */
+    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> deleteFeedback(@PathVariable("name") String name) {
+
+        if (entryService.loadName(name) == null) {
+            throw new GenericApiCallException(name + " does not exist. Cannot delete feedback");
+        }
+        entryService.deleteFeedback(name);
+        return new ResponseEntity<>(response("Feedback messages deleted for "+ name), HttpStatus.OK);
+    }
+
+
+    /**
      * End point for receiving suggested names into the database. The names
      * suggested won't be added to the main database or search index until
      * approved by admin of the system.
@@ -108,6 +148,7 @@ public class NameApi {
      * @param bindingResult the {@link BindingResult}
      * @return {@link org.springframework.http.ResponseEntity} with message if successful or not
      */
+    //TODO change to /v1/suggestion
     @RequestMapping(value = "/v1/suggest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> suggestName(@Valid @RequestBody SuggestedName suggestedName,
                                                            BindingResult bindingResult) {
@@ -210,7 +251,8 @@ public class NameApi {
      * @throws JsonProcessingException json processing exception
      */
     @RequestMapping(value = "/v1/names/{name}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object getName(@RequestParam(value = "duplicates", required = false) boolean withDuplicates,
+    public Object getName(@RequestParam("duplicates") final Optional<Boolean> withDuplicates,
+                          @RequestParam("feedback") final Optional<Boolean> feedback,
                           @PathVariable String name) throws JsonProcessingException {
         NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
@@ -218,16 +260,23 @@ public class NameApi {
             throw new GenericApiCallException(errorMsg);
         }
 
-        if (withDuplicates) {
+        HashMap<String, Object> nameEntries = new HashMap<>();
+        nameEntries.put("mainEntry", nameEntry.toNameDto());
+
+        if (withDuplicates.isPresent() && (withDuplicates.get() == true)) {
             List<DuplicateNameEntry> duplicates = entryService.loadNameDuplicates(name);
-            HashMap<String, Object> duplicateEntries = new HashMap<>();
-
-            duplicateEntries.put("mainEntry", nameEntry.toNameDto());
-            duplicateEntries.put("duplicates", duplicates);
-
-            return duplicateEntries;
+            nameEntries.put("duplicates", duplicates);
         }
-        return nameEntry.toNameDto();
+
+        if (feedback.isPresent() && (feedback.get() == true)) {
+            nameEntries.put("feedback", entryService.getFeedback(nameEntry));
+        }
+
+        if (nameEntries.size() == 1 && nameEntries.get("mainEntry") != null) {
+            return nameEntries.get("mainEntry");
+        }
+
+        return nameEntries;
     }
 
 

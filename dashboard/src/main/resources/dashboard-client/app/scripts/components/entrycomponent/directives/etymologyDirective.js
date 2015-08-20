@@ -9,7 +9,6 @@ var etymology = function() {
         restrict: 'E',
         templateUrl: 'views/addEtymologyComponent.html',
         link: function(scope, element, iAttrs) {
-            console.log(scope.formEntry.etymology)
             scope.addEtymology = function() {
                 var etyObj = {
                     part: '',
