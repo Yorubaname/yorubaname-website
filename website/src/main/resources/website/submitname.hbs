@@ -1,34 +1,40 @@
 <!-- Header -->
 {{> header }}
 
-<!-- main-content -->
-
-<div class="search jumbotron" id="home-banner">
-    <div class="container" align="center">
-        <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
-        {{> searchcomponent }}
-    </div>
-</div>
-
-<div class="container">
-    <div class="col-md-8">
-
-        <div class="well">
-            <h3>{{message "lang.submitname.heading"}}</h3>
-            <hr/>
-
-            <div style="display: none" id="error-msg" class="alert alert-danger" role="alert">{{message "lang.submitname.nameexists"}}.
-                <a id="view-entry">{{message "lang.submitname.viewentry"}}</a></div>
-
-            {{> submitnameform }}
+<section id="searchform">
+    <div class="search jumbotron" id="home-banner">
+        <div class="container" align="center">
+            <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
+            {{> searchcomponent }}
         </div>
     </div>
+</section>
 
-    <!-- sidebar -->
-    <div class="col-md-4">
+<!-- main-content -->
+<section id="content">
+    <div class="container">
+        <main>
+            <div class="col-md-8">
+                <div class="well">
+                    <h3>{{message "lang.submitname.heading"}}</h3>
+                    <hr/>
+
+                    <div style="display: none" id="error-msg" class="alert alert-danger" role="alert">{{message "lang.submitname.nameexists"}}.
+                        <a id="view-entry">{{message "lang.submitname.viewentry"}}</a></div>
+
+                    {{> submitnameform }}
+                </div>
+            </div>
+        </main>
+
+        <!-- sidebar -->
+        <aside>
+            <div class="col-md-4">
+            </div>
+        </aside>
+        <!-- /sidebar -->
     </div>
-    <!-- /sidebar -->
-</div>
+</section>
 
 <script src="/assets/js/submitname/submitname.js" defer></script>
 <!-- footer -->

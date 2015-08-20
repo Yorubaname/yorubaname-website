@@ -1,42 +1,46 @@
 <!-- Header -->
 {{> header }}
 
-<!-- main-content -->
-
-<div class="search jumbotron" id="home-banner">
+<section id="searchform">
+    <div class="search jumbotron" id="home-banner">
         <div class="container" align="center">
             <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
             {{> searchcomponent }} 
         </div>
-</div>
+    </div>
+</section>
 <!-- /Search -->
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8">
+<!-- main-content -->
+<section id="content">
+    <div class="container">
+        <div class="row">
+            <main>
+                <div class="col-md-8">
 
-            <h4>{{message "lang.entryfoundfor"}}<span class="name">{{query}}</span></h4>
+                    <h4>{{message "lang.entryfoundfor"}}<span class="name">{{query}}</span></h4>
 
-                {{#each names}}
-                <div class="well">
-                    <h4 class="name">name: <a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
-                    <p><i>Brief meaning: </i> {{this.meaning}} </p>
-                    <p class="small">{{message "lang.submitby"}} {{ this.submittedBy }} </p>       
-                    <hr>
+                        {{#each names}}
+                        <div class="well">
+                            <h4 class="name">name: <a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
+                            <p><i>Brief meaning: </i> {{this.meaning}} </p>
+                            <p class="small">{{message "lang.submitby"}} {{ this.submittedBy }} </p>       
+                            <hr>
+                        </div>
+                        {{/each}}
                 </div>
-                {{/each}}
-
+            </main>
+            <!-- sidebar -->
+            <aside>
+                <div class="col-md-4">
+                    {{> rsidebar }}
+                </div>
+            </aside>
+            <!-- /sidebar -->
 
         </div>
-
-        <!-- sidebar -->
-        <div class="col-md-4">
-            {{> rsidebar }}
-        </div>
-        <!-- /sidebar -->
-
     </div>
-</div>
+</section>
 
 <!-- /main-content -->
 
