@@ -1,0 +1,32 @@
+
+<form id="suggest-form">
+	<h5>{{message "lang.submitname.entername"}}: (required)</h5>
+	<p class="small sec-color">{{message "lang.entry-not-found.minikeyb-text"}}        
+	{{> minisearchcomponent }}<br>
+
+    <div class="form-group">
+        <h5>{{message "lang.submitname.entermeaning"}}: (optional)</h5>
+        <textarea name="suggestedMeaning" id="suggestedMeaning" class="form-control" rows="3"></textarea>
+    </div><br>
+
+    <div class="form-group">
+        <h5>{{message "lang.submitname.enterlocation"}}: (optional)</h5>
+        <select name="suggestedGeoLocation" id="suggestedGeoLocation" class="form-control">
+            {{#each geoLocations}}
+                <option>{{this.place}}</option>
+            {{/each}}
+        </select>
+    </div><br>
+
+    <!--Uncomment when TTS is implemented<div class="form-group">-->
+    <!--<h5>Please help us pronounce the new name:(optional)</h5>-->
+    <!--<input type="file" id="pronunciation">-->
+    <!--</div>-->
+
+    <div class="form-group">
+        <h5>{{message "lang.submitname.enteremail"}}: (required)</h5>
+        <input type="email" name="suggestedEmail" class="form-control" id="suggestedEmail" placeholder="Your email">
+    </div>
+
+    <button type="submit" id="submit-name" class="btn btn-info btn-lg">Submit new name</button>
+</form>

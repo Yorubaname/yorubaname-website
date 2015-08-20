@@ -1,0 +1,32 @@
+<!-- Header -->
+{{> header }}
+
+<!-- main-content -->
+
+<div class="search jumbotron" id="home-banner">
+		<div class="container" align="center">
+			<p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
+	        {{> searchcomponent }} 
+	    </div>
+</div>
+<!-- /Search -->
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-8">			
+			<div class="well">
+				<h3 class="name sec-color">{{message "lang.entry-not-found.no-match"}} "{{ name.name }}"</h3>
+				<p class="pri-color">{{message "lang.entry-not-found.suggest-text"}}</p>
+				<hr />
+
+				{{> submitnameform }}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- /main-content -->
+
+<!-- footer -->
+{{> footer }}

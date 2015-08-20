@@ -82,8 +82,9 @@ body { background: #FFFFFF; }
 	border: none 0px;
 	box-shadow: none;
 }
-.search-input { position: relative;
-	width:70%;
+.form-control { height: 45px; }
+.search-input { 
+	position: relative;
   	display: inline-block;
   	margin: 0px 0px 20px 0px;
 }
@@ -129,11 +130,16 @@ box-shadow: 0px 0px 0px 4px rgba(222,218,222,1);
 }
 .search-input .fa-keyboard-o {
   	position: absolute;
-	top: 15px;
+	top: 20px;
 	right: 60px;
 	font-size: 15px;
 }
 #keyboardp {
+	cursor: pointer;
+	color: #075265;
+}
+
+#miniKeyboardp {
 	cursor: pointer;
 	color: #075265;
 }

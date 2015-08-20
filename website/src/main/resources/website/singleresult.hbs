@@ -33,7 +33,7 @@
 							</a>
 						</div>
 						<div class="name-s-col">
-							<a href="/improve-entry">
+							<a href="#/improve-entry" data-toggle="modal" data-target="#improveEntryModal">
 								{{message "lang.improve-entry"}} <i class="fa fa-pencil"></i>
 							</a>
 						</div>
@@ -44,7 +44,7 @@
 			</div>
 
 			<div class="well">
-				<h4 class="name">{{message "lang.meaningof"}}{{ name.name }}</h4>
+				<h4 class="name">{{message "lang.meaningof"}} {{ name.name }}</h4>
 				<hr>
 				<p class="meaning">{{ name.meaning }}</p><br><br>
 				<h5 class="name">{{message "lang.extendedmeaningof"}}</h5>
@@ -90,6 +90,24 @@
 			</div>
 			<!-- /see also -->
 		</div>
+
+	<!--Improve Entry Modal -->
+		<div class="modal fade" id="improveEntryModal" role="dialog">
+			<div class="modal-dialog">
+				<div class="well">
+					<form id="improveEntry">
+						<div class="form-group">
+	                		<h3 class="name">{{message "lang.improve-entry.help-us"}} "{{ name.name }}"</h3>
+	                		<p class="small">{{message "lang.improve-entry.sub-text"}}</p>
+	                		<textarea name="improveEntry" id="improveEntry" class="form-control" rows="5"></textarea>                		
+	            		</div>
+	            		<button type="submit" id="submitEntry" class="btn btn-info btn-lg">Submit Entry</button>
+	            		&nbsp;&nbsp;&nbsp;&nbsp;<a href="#/entries/{nameEntry}" data-dismiss="modal">Cancel</a>
+					</form>
+				</div>
+			</div>
+		</div>
+	<!--/Improve Entry Modal -->
 
 		
 

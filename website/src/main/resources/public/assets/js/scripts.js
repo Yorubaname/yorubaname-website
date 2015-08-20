@@ -79,6 +79,43 @@ $('#keyboard').bind('visible', function(e, keyboard, el){
 
 });
 
+<!-- initialize mini-keyboard (required) -->
+$(function(){
+	$('#miniKeyboard').keyboard({
+		openOn   : null,
+		stayOpen : false,
+		layout: 'custom',
+		customLayout: {
+			'normal': [
+				'á à é ẹ́ è ẹ̀ í ì',
+				'ó ò ọ́  ọ̀ ú ù',
+			],
+			'shift': [
+				'Ň W Ĕ R T Ž Ú Å S D Í Ò',
+				'Ý J Ŵ P Ț X Ç V Õ',
+			]
+		},
+		repeatRate : 0
+	});
+
+//--------------------------------------------------------------------------------//
+$('#miniKeyboardp').click(function(){
+	var kb = $('#miniKeyboard').getkeyboard();
+	// close the keyboard if the keyboard is visible and the button is clicked a second time
+	if ( kb.isOpen ) {
+		kb.close();
+	} else {
+		kb.reveal();
+	}
+});
+// since IE adds an overlay behind the input to prevent clicking in other inputs (the keyboard may not automatically open on focus... silly IE bug)
+// We can remove the overlay (transparent) if desired using this code:
+$('#miniKeyboard').bind('visible', function(e, keyboard, el){
+ $('.ui-keyboard-overlay').remove(); // remove overlay because clicking on it will close the keyboard... we set "openOn" to null to prevent closing.
+});
+
+});
+
 <!-- Enable all the tooltip -->
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
