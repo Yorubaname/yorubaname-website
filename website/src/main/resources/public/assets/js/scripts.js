@@ -151,7 +151,8 @@ $(document).ready(function () {
 });
 
 <!-- Triggers the search -->
-$('.btn-search').on("click", function() {
+$('.btn-search').on("click", function(event) {
+	event.preventDefault();
     var q = $('#keyboard').val() || "";
     var hostOrigin = window.location.origin;
     window.location.href = hostOrigin + '/entries/?q='+ q;
