@@ -46,7 +46,7 @@ public class ElasticSearchNodeFactoryBean implements FactoryBean<Node> {
         String dataPath = esConfig.getDataPath();
         ImmutableSettings.Builder settingsBuilder = ImmutableSettings.settingsBuilder()
                 .put("cluster.name", esConfig.getClusterName())
-                .put("http.enabled", false);
+                .put("http.enabled", true);
 
         if (!dataPath.isEmpty()) {
             settingsBuilder.put("path.data", dataPath);
@@ -56,7 +56,7 @@ public class ElasticSearchNodeFactoryBean implements FactoryBean<Node> {
         node = NodeBuilder.nodeBuilder()
                                .settings(settings)
                                .clusterName(esConfig.getClusterName())
-                               .data(true).local(true).node();
+                               .data(true).local(false).node();
         return node;
     }
 
