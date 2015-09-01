@@ -101,9 +101,11 @@ dashboardappApp.run(function($rootScope, $cookies, $http) {
     $rootScope.previousState;
     $rootScope.previousParams;
     $rootScope.currentState;
-    $rootScope.state
+    $rootScope.state;
 
-    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
+    if ($cookies.token !== undefined) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
+    }
 
     $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
         $rootScope.previousState = from.name;
