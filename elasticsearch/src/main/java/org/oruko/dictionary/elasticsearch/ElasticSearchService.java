@@ -7,6 +7,7 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
@@ -23,8 +24,10 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
@@ -93,7 +96,7 @@ public class ElasticSearchService {
      * @param searchTerm the search term
      * @return the list of entries found
      */
-    public List<Map<String, Object>> search(String searchTerm) {
+    public Set<Map<String, Object>> search(String searchTerm) {
         /**
          * 1. First do a exact search. If found return result. If not go to 2.
          * 2. Do a search based on partial match. Irrespective of outcome, proceed to 3
@@ -104,7 +107,7 @@ public class ElasticSearchService {
          * 5. Do a full text search against extendedMeaning
          */
 
-        final List<Map<String, Object>> result = new ArrayList();
+        final Set<Map<String, Object>> result = new LinkedHashSet<>();
 
         // 1. exact search
         SearchResponse searchResponse = exactSearchByName(searchTerm);
@@ -113,13 +116,27 @@ public class ElasticSearchService {
                 result.add(hit.getSource());
             });
 
-            return result;
+            if (result.size() == 1) {
+                return result;
+            }
         }
 
+        /**
+         * Does a full text search on
+         * name,
+         * meaning,
+         * extendedMeaning
+         * variants
+         * TODO Should revisit
+         */
+        MultiMatchQueryBuilder searchSpec = QueryBuilders.multiMatchQuery(searchTerm,
+                                                                                      "name",
+                                                                                      "meaning",
+                                                                                      "extendedMeaning",
+                                                                                      "variants");
 
-        // TODO update to implement search behaviour needed
         SearchResponse tempSearchAll = client.prepareSearch(esConfig.getIndexName())
-                                             .setQuery(QueryBuilders.matchAllQuery())
+                                             .setQuery(searchSpec)
                                              .execute()
                                              .actionGet();
 
@@ -202,6 +219,7 @@ public class ElasticSearchService {
     }
 
 
+    //TODO revisit. Omo returns Omowunmi and Owolabi. Ideal this should return just one result
     private SearchResponse exactSearchByName(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
                      .setPostFilter(FilterBuilders.termFilter("name", nameQuery.toLowerCase()))

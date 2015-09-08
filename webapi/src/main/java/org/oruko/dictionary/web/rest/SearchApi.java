@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -69,10 +70,10 @@ public class SearchApi {
 
     @RequestMapping(value = "/", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
-                                            HttpServletRequest request) {
+    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
+                                           HttpServletRequest request) {
 
-        List<Map<String, Object>> name = elasticSearchService.search(searchTerm);
+        Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
         return name;
     }
 
