@@ -42,8 +42,12 @@ public class SearchResultController {
         }
 
         map.addAttribute("title", "Search results for query");
-
         List<Map<String, Object>> names = ApiService.searchName(nameQuery);
+
+        if (names.size() == 1) {
+            return "redirect:/entries/"+nameQuery;
+        }
+
         map.addAttribute("query", nameQuery);
         map.addAttribute("names", names);
 
