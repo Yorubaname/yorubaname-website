@@ -31,6 +31,10 @@ public class TtsApi {
                                                                  new SimpleFileSystemAudioSegmentMapper());
         AudioInputStream audioInputStream = ttsService.convertToSpeech(name);
 
+        if (audioInputStream == null) {
+            return;
+        }
+
         try {
             response.setContentType("audio/wav");
             AudioSystem.write(audioInputStream,
