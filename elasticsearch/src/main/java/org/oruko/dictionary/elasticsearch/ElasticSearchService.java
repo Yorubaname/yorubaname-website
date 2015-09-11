@@ -130,7 +130,7 @@ public class ElasticSearchService {
          * TODO Should revisit
          */
         MultiMatchQueryBuilder searchSpec = QueryBuilders.multiMatchQuery(searchTerm,
-                                                                                      "name",
+                                                                                      "name.autocomplete",
                                                                                       "meaning",
                                                                                       "extendedMeaning",
                                                                                       "variants");
@@ -229,7 +229,7 @@ public class ElasticSearchService {
 
     private SearchResponse partialSearchByName(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
-                     .setQuery(QueryBuilders.matchQuery("name", nameQuery.toLowerCase()))
+                     .setQuery(QueryBuilders.matchQuery("name.autocomplete", nameQuery.toLowerCase()))
                      .execute()
                      .actionGet();
     }

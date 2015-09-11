@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +38,8 @@ public class SearchResultController {
      * @return returns the view name
      */
     @RequestMapping("/entries")
-    public String searchNameQuery(@RequestParam(value = "q",required = false) String nameQuery, Model map) {
+    public String searchNameQuery(@RequestParam(value = "q",required = false) String nameQuery, Model map)
+            throws UnsupportedEncodingException {
         if (nameQuery == null || nameQuery.isEmpty()) {
             return "redirect:/entries/all";
         }
@@ -44,7 +47,8 @@ public class SearchResultController {
         map.addAttribute("title", "Search results for query");
         List<Map<String, Object>> names = ApiService.searchName(nameQuery);
 
-        if (names.size() == 1) {
+        if (names.size() == 1 && names.get(0).get("name").equals(nameQuery)) {
+            nameQuery = URLEncoder.encode(nameQuery, "UTF-8");
             return "redirect:/entries/"+nameQuery;
         }
 

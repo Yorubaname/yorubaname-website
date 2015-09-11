@@ -2,10 +2,20 @@
   "properties": {
     "name": {
       "type": "string",
-      "store": "yes",
-      "index": "analyzed",
-      "analyzer": "autocomplete_analyzer",
-      "boost": "10"
+      "fields": {
+        "name": {
+          "type": "string",
+          "store": "yes",
+          "index": "not_analyzed"
+        },
+        "autocomplete": {
+          "type": "string",
+          "store": "yes",
+          "index": "analyzed",
+          "analyzer": "autocomplete_analyzer",
+          "boost": "10"
+        }
+      }
     },
     "pronunciation": {
       "type": "string",
@@ -34,7 +44,7 @@
     },
     "etymology": {
       "type": "object",
-      "properties" : {
+      "properties": {
         "part": {
           "type": "string",
           "store": "yes",
@@ -49,8 +59,8 @@
     },
     "geoLocation": {
       "type": "object",
-      "properties" : {
-        "place" : {
+      "properties": {
+        "place": {
           "type": "string",
           "store": "yes",
           "index": "analyzed"
