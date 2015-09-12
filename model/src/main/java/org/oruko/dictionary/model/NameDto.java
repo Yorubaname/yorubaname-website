@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class NameDto {
 
     private String name;
-    private Tone tone;
+    private Diction diction;
     private String meaning;
     private GeoLocation geoLocation;
     private String morphology;
@@ -37,12 +37,12 @@ public class NameDto {
         this.name = name;
     }
 
-    public NameDto(String name, Tone tone, String meaning, GeoLocation geoLocation, String morphology, String submittedBy,
+    public NameDto(String name, Diction diction, String meaning, GeoLocation geoLocation, String morphology, String submittedBy,
                    String pronunciation, String ipaNotation, String syllables, String extendedMeaning,
                    String etymology, String variants, String famousPeople, String inOtherLanguages, String media,
                    String tags, Boolean isIndexed) {
         this.name = name;
-        this.tone = tone;
+        this.diction = diction;
         this.meaning = meaning;
         this.geoLocation = geoLocation;
         this.morphology = morphology;
@@ -77,20 +77,20 @@ public class NameDto {
     }
 
     /**
-     * Get the {@link org.oruko.dictionary.model.Tone} that represents
+     * Get the {@link Diction} that represents
      * the tone mark
      * @return
      */
-    public Tone getTone() {
-        return tone;
+    public Diction getDiction() {
+        return diction;
     }
 
     /**
-     * Set the {@link org.oruko.dictionary.model.Tone}
-     * @param tone the tone
+     * Set the {@link Diction}
+     * @param diction the tone
      */
-    public void setTone(Tone tone) {
-        this.tone = tone;
+    public void setDiction(Diction diction) {
+        this.diction = diction;
     }
 
     /**

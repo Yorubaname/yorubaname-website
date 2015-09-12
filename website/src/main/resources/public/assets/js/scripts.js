@@ -1,8 +1,7 @@
 $(document).ready(function () {
 
-	var audio = new Audio("http://localhost:8081/v1/tts/" + $("#name-entry").html());
-
 	$("#tts-button").on("click", function() {
+		var audio = new Audio("http://localhost:8081/v1/tts/" + $("#name-entry").html());
 		audio.play();
 	});
 
