@@ -1,5 +1,6 @@
 package org.oruko.dictionary.website;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,8 @@ import java.util.Map;
 @Controller
 public class SearchResultController {
 
+    @Value("${server.address}")
+    private String host;
     /**
      * Displays the result for a single entry
      * @param nameEntry the {@link org.oruko.dictionary.model.NameEntry}
@@ -29,6 +32,7 @@ public class SearchResultController {
         Map<String, Object> name = ApiService.getName(nameEntry);
         map.addAttribute("title", "Name Entry");
         map.addAttribute("name", name);
+        map.addAttribute("host", host);
         return "singleresult";
     }
 
