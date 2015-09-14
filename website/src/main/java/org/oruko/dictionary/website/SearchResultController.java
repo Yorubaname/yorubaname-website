@@ -19,7 +19,7 @@ import java.util.Map;
 @Controller
 public class SearchResultController {
 
-    @Value("${server.address}")
+    @Value("${app.host}")
     private String host;
     /**
      * Displays the result for a single entry
