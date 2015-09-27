@@ -11,10 +11,13 @@ import static org.junit.Assert.assertEquals;
 public class RecentSearchesTest {
 
     RecentSearches recentSearches = new RecentSearches();
+    private int recentLimit = 5;
+    private int recentPopularListLimit = 5;
 
     @Before
     public void setUp() {
-        recentSearches.setRecencyLimit(5);
+        recentSearches.setRecencyLimit(recentLimit);
+        recentSearches.setPopularListLimit(recentPopularListLimit);
     }
 
     @Test
@@ -27,8 +30,30 @@ public class RecentSearchesTest {
         recentSearches.stack("6down");
         recentSearches.stack("7down");
 
-        assertEquals(5, recentSearches.get().length);
+        assertEquals(recentLimit, recentSearches.get().length);
     }
+
+    @Test
+    public void test_most_popular_is_always_the_limit_set() throws Exception {
+        recentSearches.stack("1down");
+        recentSearches.stack("2down");
+        recentSearches.stack("2down");
+        recentSearches.stack("3down");
+        recentSearches.stack("3down");
+        recentSearches.stack("3down");
+        recentSearches.stack("4down");
+        recentSearches.stack("4down");
+        recentSearches.stack("5down");
+        recentSearches.stack("5down");
+        recentSearches.stack("5down");
+        recentSearches.stack("5down");
+        recentSearches.stack("6down");
+        recentSearches.stack("7down");
+        recentSearches.stack("8down");
+
+        assertEquals(recentPopularListLimit, recentSearches.getMostPopular().length);
+    }
+
 
     @Test
     public void test_first_in_is_last_out() throws Exception {
@@ -86,7 +111,6 @@ public class RecentSearchesTest {
         assertEquals("2down", recentSearches.getMostPopular()[1]);
         assertEquals("1down", recentSearches.getMostPopular()[2]);
     }
-
 
 
 

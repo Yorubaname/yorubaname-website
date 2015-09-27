@@ -1,5 +1,6 @@
 package org.oruko.dictionary.events;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;
@@ -13,8 +14,9 @@ import java.util.Deque;
 @Component
 public class RecentIndexes {
 
-    //TODO extract this to a property file
+    @Value("${app.search.recentIndexLimit:5}")
     private int limit = 5;
+
     public void setLimit(int limit) {
         this.limit = limit;
     }
