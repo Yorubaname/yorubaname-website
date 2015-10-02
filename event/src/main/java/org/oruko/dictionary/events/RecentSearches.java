@@ -1,5 +1,6 @@
 package org.oruko.dictionary.events;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;
@@ -17,8 +18,15 @@ import java.util.stream.Collectors;
 @Component
 public class RecentSearches {
 
-    //TODO extract this to a property file
-    private int recencyLimit = 5;
+    @Value("${app.search.recencyLimit:5}")
+    private int recencyLimit;
+    @Value("${app.search.popularListLimit:5}")
+    private int popularListLimit;
+
+    public void setPopularListLimit(int popularListLimit) {
+        this.popularListLimit = popularListLimit;
+    }
+
     public void setRecencyLimit(int recencyLimit) {
         this.recencyLimit = recencyLimit;
     }
@@ -67,7 +75,10 @@ public class RecentSearches {
             mostPopular.add((String) name.keySet().toArray()[0]);
         });
 
-        return mostPopular.toArray(new String[mostPopular.size()]);
+        if (mostPopular.size() > popularListLimit) {
+            return mostPopular.subList(0, popularListLimit).toArray(new String[popularListLimit]);
+        }
+        return mostPopular.toArray(new String[popularListLimit]);
     }
 
     private void insert(String name) {
