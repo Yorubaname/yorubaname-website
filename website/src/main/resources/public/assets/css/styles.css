@@ -50,10 +50,7 @@ h1,h2,h3,h4,h5,h6 {
     height: 24px;
     line-height: 24px;
     background: #CDA463;
-}
-
-.social-links a + a {
-    margin-left: 15px;
+    margin-left: 10px;
 }
 
 header {
