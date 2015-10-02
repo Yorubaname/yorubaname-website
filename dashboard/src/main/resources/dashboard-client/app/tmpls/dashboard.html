@@ -1,0 +1,162 @@
+<div class="row">
+    <div class="col-sm-6">
+        <img class="user_profile_img" src="http://placehold.it/80x80" alt="" width="76" height="76" />
+        <h1 class="user_profile_name">Yemi Agbetunsin <a class="btn btn-xs btn-primary pull-right" ui-sref="auth.profile.edit">Edit</a></h1>
+        <p class="user_profile_info">Chief Lexicographer (Volunteer)</p>
+        <p class="user_profile_info"> <a href="mailto:kt@htravula.com">kt@ktravula.com</a></p>
+    </div>
+    <div class="col-sm-6 text-right-sm">
+        <a class="btn btn-lg btn-success" ui-sref="auth.names.add_entries">Add Name Entry</a>
+    </div>
+</div>
+
+<div class="row row_full">
+    <div class="col-sm-12">
+       <h5>Your Stats</h5>
+    </div>
+     <div class="col-sm-3 col-xs-4">
+        <div class="info_box_var_1 box_bg_b">
+            <div class="info_box_body">
+                
+                <span class="countUpMe" data-endVal="1342">1,342</span>
+            </div>
+            <a class="info_box_footer"  ui-sref="auth.names.list_entries({status:'all'})">
+                Name Entries
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-3 col-xs-4">
+        <div class="info_box_var_1 box_bg_a">
+            <div class="info_box_body">
+                <span class="countUpMe" data-endVal="88">88</span>%
+            </div>
+            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'published'})">
+                Published Entries
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-2 col-xs-4">
+        <div class="info_box_var_1 box_bg_d">
+            <div class="info_box_body">
+                <span class="countUpMe" data-endVal="531">531</span>
+            </div>
+            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'pending'})">
+                Pending Reviews
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-2 col-xs-4">
+        <div class="info_box_var_1 box_bg_c">
+            <div class="info_box_body">
+                <span class="countUpMe" data-endVal="13">13</span>
+            </div>
+            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'correct'})">
+                Needs Attention
+            </a>
+        </div>
+    </div>
+
+    <div class="col-sm-2 col-xs-4">
+        <div class="info_box_var_1">
+            <div class="info_box_body">
+                <span class="countUpMe" data-endVal="6">6</span>
+            </div>
+            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'draft'})">
+                Draft Entries
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row mHeight">
+    <div class="col-sm-8">
+        <div class="heading_a"><span class="heading_text">Find Entry</span></div>
+        <form>
+            <div class="input-group sepH_b">
+                    <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text">
+                    <span class="input-group-btn">
+                        <a class="btn btn-default btn-lg"><i class="icon icon_puzzle_alt"></i> </a>
+                    </span>
+                </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="">
+                    Only search my entries
+                </label>
+            </div>
+            <button class="btn btn-success btn-lg" type="button"><i class="icon icon_search"></i> Search</button>
+        </form>
+
+    </div>
+    
+</div>
+<div class="row">
+    <div class="col-sm-7">
+        <div class="heading_a"><span class="heading_text">Your Latest Entries</span></div>
+        
+        <table class="table table-yuk">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a ui-sref="auth.names.edit_entries({entry:'Gbolahan'})">Gbolahan</a></td>
+                    <td>Pending</td>
+                    <td>22/10/14</td>
+                </tr>
+                <tr>
+                    <td><a ui-sref="auth.names.edit_entries({entry:'Yeside'})">Yeside</a></td>
+                    <td>Pending</td>
+                    <td>22/10/14</td>
+                </tr>
+                <tr>
+                    <td><a ui-sref="auth.names.edit_entries({entry:'Omoseindemi'})">Omoseindemi</a></td>
+                    <td>Correction</td>
+                    <td>30/08/14</td>
+                </tr>
+                <tr>
+                    <td><a ui-sref="auth.names.edit_entries({entry:'Agboola'})">Agboola</a></td>
+                    <td>Approved</td>
+                    <td>15/08/14</td>
+                </tr>
+                <tr>
+                    <td><a ui-sref="auth.names.edit_entries({entry:'Akingbade'})">Akingbade</a></td>
+                    <td>Approved</td>
+                    <td>12/07/14</td>
+                </tr>
+            </tbody>
+        </table>
+            
+    </div>
+    <div class="col-sm-5">
+        <div class="heading_a"><span class="heading_text">Notifications</span></div>
+        <ul class="notifications">
+            <li>
+                <div class="clearfix">
+                    <small class="text-muted">24.07.2014</small>
+                </div>
+                <p>Lorem ipsum dolor sit amet&hellip;</p>
+            </li>
+            <li>
+                <div class="clearfix">
+                    <div class="pull-right text-warning"><a href="">Review</a></div>
+                    <small class="text-muted">26.07.2014</small>
+                </div>
+                <p>Lorem ipsum dolor sit amet&hellip;</p>
+            </li>
+            <li>
+                <div class="clearfix">
+                    <small class="text-muted">25.07.2014</small>
+                </div>
+                <p>Lorem ipsum dolor sit amet&hellip;</p>
+            </li>
+            <li>
+                <a href="#" class="btn btn-xs btn-link btn-block">All notifications</a>
+            </li>
+        </ul>
+        
+    </div>
+</div>

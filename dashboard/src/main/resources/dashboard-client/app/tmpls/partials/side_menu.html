@@ -1,0 +1,26 @@
+<!-- main menu -->
+<nav id="main_menu" ng-controller="sideMenuCtrl">
+    <div class="menu_wrapper">
+        <ul>
+            <li ng-repeat="section in sections" ng-switch="section.link.length > 0" class="first_level" ng-class="{'has_submenu': section.submenu.length > 0}">
+                <a ng-switch-when="true" ui-sref="{{section.link}}">
+                    <span class="{{section.icon}}"></span>
+                    <span class="menu-title">{{section.title}}</span>
+                    <span class="label label-danger" ng-if="section.badge">{{section.submenu.length}}</span>
+                </a>
+                <a ng-switch-when="false" href="javascript:void(0)">
+                    <span class="{{section.icon}}"></span>
+                    <span class="menu-title">{{section.title}}</span>
+                    <span class="label label-danger" ng-if="section.badge">{{section.submenu.length}}</span>
+                </a>
+                <ul ng-if="section.submenu">
+                    <li ng-if="section.submenu_title" class="submenu-title">{{section.submenu_title}}</li>
+                    <li ng-repeat="item in section.submenu">
+                        <a ui-sref="{{item.link}}" ng-class="{ act_nav: $state.includes(item.link) }">{{item.title}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <menu-toggle></menu-toggle>
+</nav>

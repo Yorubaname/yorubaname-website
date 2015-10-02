@@ -1,0 +1,208 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="heading_a"><span class="heading_text">Edit Name Entry</span></div>
+        <a href="" class="btn btn-sm btn-default" ui-sref="auth.names.edit_entries({entry:'Ade'})">Previous Name: Ade</a>
+        <a href="" class="btn btn-sm btn-default pull-right"  ui-sref="auth.names.edit_entries({entry:'Yemi'})">Next Name: Yemi</a>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label for="reg_input" class="required">Entry</label>
+            <input type="text" id="reg_input" class="form-control" ng-model="entry.name">
+        </div>
+        <div class="form-group">
+            <label for="reg_textarea" class="required">Meaning</label>
+            <textarea name="reg_textarea" id="reg_textarea" cols="10" rows="3" class="form-control" ng-model="entry.meaning"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="reg_textarea">Extra information about this name</label>
+            <textarea name="reg_textarea" id="reg_textarea" cols="10" rows="3" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="reg_input">Syllable breakdown</label>
+            <input type="text" id="reg_input" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="reg_input">IPA Pronounciation</label>
+            <input type="text" id="reg_input" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="reg_input">American Pronounciation</label>
+            <input type="text" id="reg_input" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="reg_input">Morphology</label>
+            <input type="text" id="reg_input" class="form-control" ng-model="entry.morphology">
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12"><label>Etymology</label></div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Word</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Meaning</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+            </div>
+            <p class="text-right"><a>Add a new word and meaning pair</a></p>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12"><label>Variant</label></div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Word</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Note (e.g. Geography)</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+            </div>
+            <p class="text-right"><a>Add a new variant</a></p>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12"><label>Media Links</label></div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Title</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Link</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+            </div>
+            <p class="text-right"><a>Add a new link</a></p>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12"><label>Personalities</label></div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Name</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+                <div class="col-sm-6">
+                    <label for="reg_input">Profession</label>
+                    <input type="text" id="reg_input" class="form-control">
+                </div>
+                <div class="col-sm-8">
+                    <label for="reg_input" class="optional">Picture</label>
+                    <input type="file" id="reg_input" class="form-control">
+                </div>
+            </div>
+            <p class="text-right"><a>Add a new personality</a></p>
+        </div>
+
+        
+
+    </div>
+    <div class="col-lg-6">
+
+        <div class="form-group">
+            <label class="required">Gender</label>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="">
+                    Female
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="">
+                    Male
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Usage</label>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="">
+                    Firstname
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="">
+                    Surname
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Religious</label>
+            <select multiple="multiple" rel="reg_select_multiple" class="form-control">
+                <option>Yoruba Traditional Religion</option>
+                <option>Muslim</option>
+                <option>Christain</option>
+                <option>Name brought from heaven</option>
+            </select>
+            <span class="help-block">Hold Ctrl and click to select multiple</span>
+        </div>
+
+        <div class="form-group">
+            <label>Social</label>
+            <select multiple="multiple" rel="reg_select_multiple" class="form-control">
+                <option>Nickname, abbreviation</option>
+                <option>Title, royalty, chieftaincy</option>
+                <option>Pet name</option>
+                <option>Praise name (oriki)</option>
+            </select>
+            <span class="help-block">Hold Ctrl and click to select multiple</span>
+        </div>
+
+        <div class="form-group">
+            <label>Temporal and Geographic</label>
+            <select multiple="multiple" rel="reg_select_multiple" class="form-control">
+                <option>Dates, events</option>
+                <option>Town, village, neighbourhood</option>
+                <option>Foreign (English)</option>
+                <option>Foreign (French)</option>
+                <option>Foreign (Arabic)</option>
+                <option>Neologism</option>
+            </select>
+            <span class="help-block">Hold Ctrl and click to select multiple</span>
+        </div>
+
+        <div class="form-group">
+            <label>Geolocation</label>
+            <select id="slz_optgroups" multiple placeholder="Select geolocation...">
+                <option value="">Select geolocation</option>
+                <optgroup label="Nigeria">
+                    <option value="north-west yoruba">North-West Yoruba (Abeokuta, Ibadan, Oyo, Ogun, Lagos)</option>
+                    <option value="central yoruba">Central Yoruba (Igbomina, Yagba, Ilesa, Ife, Ekiti, Akure, Efon, Ijebu)</option>
+                    <option value="south-east yoruba">South-East Yoruba (Okitipupa, Ilaje, Ondo, Owo, Ikare, Sagamu, Ijebu)</option>
+                </optgroup>
+                <optgroup label="Africa and Diaspora">
+                    <option value="benin">Benin</option>
+                    <option value="ghana">Ghana</option>
+                    <option value="other african">Other African Country</option>
+                    <option value="outside africa">Outside Africa/Diaspora</option>
+                </optgroup>
+            </select>
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <hr>
+        <button type="submit" class="btn btn-lg btn-success">Submit for Review</button>
+        <button type="submit" class="btn btn-lg btn-info">Submit for Later</button>
+        <button type="submit" class="btn btn-lg btn-default">Preview Entry</button>
+        <a class="btn btn-lg btn-link" ng-click="delete()">Delete Entry</a>
+    </div>
+</div>
