@@ -36,6 +36,26 @@ h1,h2,h3,h4,h5,h6 {
 	color: #0E5264;
 }
 
+.social-links {
+  font-size: 16px;
+  display: inline-block;
+  color: #fff;
+}
+
+.social-links a {
+    display: inline-block;
+    text-align: center;
+    border-radius: 24px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    background: #CDA463;
+}
+
+.social-links a + a {
+    margin-left: 15px;
+}
+
 header {
 	background-color: #f2f2f2;
 	color: #0E5264;
