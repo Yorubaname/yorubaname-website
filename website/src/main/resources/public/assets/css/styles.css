@@ -16,6 +16,35 @@
 	text-decoration: none;
 }
 
+.thumbnail {
+	padding: 0;
+}
+
+.thumbail img {
+	padding: 0;
+	border: 0;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+}
+label.required:after, 
+label.optional:after {
+  font-style: oblique;
+  font-weight: normal;
+  opacity: 0.8;
+  font-size: smaller;
+  float: right;
+}
+label.optional:after {
+  content:" (optional)";
+}
+label.required:after {
+  content:" (required)";
+  color:red;
+}
+
 a,a:hover,a:active,a:visited, a:visited:hover {
   color: inherit;
   text-decoration: none;
