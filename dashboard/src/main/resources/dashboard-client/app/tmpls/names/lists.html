@@ -4,7 +4,7 @@
         <span class="help-block">Filter</span>
     </div>
     <div class="col-md-3">
-        <select class="form-control input-sm" ng-change="filterTable(userStatus)" ng-model="userStatus">
+        <select class="form-control input-sm" ng-change="filterTable(status)" ng-model="status">
             <option></option>
             <option value="approved">Approved/Published</option>
             <option value="pending">Pending Review</option>
@@ -18,7 +18,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-yuk2 toggle-arrow-tiny" id="footable_demo" data-filter="#textFilter" data-page-size="5">
+        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="5">
             <thead>
                 <tr>
                     <th data-toggle="true">Name</th>
@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="entry in entries">
+                <tr ng-repeat="entry in namesList">
                     <td><a href="#">{{entry.name}}</a></td>
                     <td>{{entry.gender}}</td>
                     <td>{{entry.syllables}}</td>

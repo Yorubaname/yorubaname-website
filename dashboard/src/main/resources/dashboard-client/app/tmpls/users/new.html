@@ -7,49 +7,58 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="form-group">
-            <label for="reg_input" class="required">First name</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="user_username" class="required">Username</label>
+            <input type="text" id="user_username" class="form-control" ng-model="user.username">
         </div>
         <div class="form-group">
-            <label for="reg_input" class="required">Last name</label>
-            <input type="text" id="reg_input" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label for="reg_textarea" class="required">Bio</label>
-            <textarea name="reg_textarea" id="reg_textarea" cols="10" rows="3" class="form-control"></textarea>
+            <label for="user_name" class="optional">Name</label>
+            <input type="text" id="user_name" class="form-control" ng-model="user.name">
         </div>
 
         <div class="form-group">
-            <label for="reg_input" class="required">Email</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="user_email" class="required">Email</label>
+            <input type="text" id="uaer_email" class="form-control" ng-model="user.email">
         </div>
 
         <div class="form-group">
-            <label for="reg_input" class="required">Location</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="user_bio" class="optional">Bio</label>
+            <textarea id="user_bio" cols="10" rows="3" class="form-control"  ng-model="user.bio"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="user_location" class="optional">Location</label>
+            <input type="text" id="user_location" class="form-control" ng-model="user.location">
         </div>
         
         <div class="form-group">
             <label class="required">Priviledges</label>
-
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" value="">
+                    <input ng-model="user.roles" type="checkbox" value="ROLE_BASIC">
                     Volunteer
                 </label>
             </div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" value="">
+                    <input ng-model="user.roles" type="checkbox" value="ROLE_LEXICOGRAPHER">
                     Chief Lexicographer
                 </label>
             </div>
+            <div class="checkbox">
+                <label>
+                    <input ng-model="user.roles" type="checkbox" value="ROLE_DASHBOARD">
+                    Dashboard
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input ng-model="user.roles" type="checkbox" value="ROLE_ADMIN">
+                    Admin
+                </label>
+            </div>
+            
         </div>
 
-        
-
-        
 
     </div>
 </div>
@@ -57,8 +66,6 @@
 <div class="row">
     <div class="col-sm-12">
         <hr>
-        <button type="submit" class="btn btn-lg btn-success">Submit for Review</button>
-        <button type="submit" class="btn btn-lg btn-info">Submit for Later</button>
-        <button type="submit" class="btn btn-lg btn-default">Preview Entry</button>
+        <button type="submit" class="btn btn-lg btn-success">Create Account</button>
     </div>
 </div>
