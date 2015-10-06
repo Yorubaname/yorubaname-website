@@ -1,7 +1,66 @@
 <!-- Header -->
 {{> header }}
 
+<section id="searchform">
+    <div class="jumbotron" id="home-banner">
+       <div class="container">
+       		<h1>{{message "lang.jumbotron1"}} <span>10,000</span> {{message "lang.jumbotron2"}}</h1>
+       		
+            {{> searchcomponent }}
+            
+            <h3>{{message "lang.jumboh31"}}</h3>
+            <a href="/submitname" class="btn btn-lg btn-link">{{message "lang.jumboh32"}}</a>
+       </div>
+    </div>
+</section>
+
 <!-- main-content -->
+
+<section>
+   <div class="container">
+       <div class="col-sm-3">
+       	  
+       </div>
+       <div class="col-sm-6">
+       	  <h3>Contact Information</h3>
+
+       	  <p class="lead">Nulla vitae elit libero, a pharetra augue. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+       	  
+       	  <form class="contact">
+
+       	  	  <div class="form-group">
+       	  	  	<label class="required">Name</label>
+       	  	  	<input class="form-control" type="text" placeholder="Enter your name" name="name">
+       	  	  </div>
+
+       	  	  <div class="form-group">
+       	  	  	<label class="required">Email</label>
+       	  	  	<input class="form-control" type="text" placeholder="Enter your email address" name="email">
+       	  	  </div>
+
+       	  	  <div class="form-group">
+       	  	  	<label class="required">Subject</label>
+       	  	  	<input class="form-control" type="text" placeholder="Enter the subject of your enquiry here" name="subject">
+       	  	  </div>
+
+       	  	  <div class="form-group">
+       	  	  	<label class="required">Message</label>
+       	  	  	<textarea class="form-control" placeholder="Enter your message here" name="message"></textarea>
+       	  	  </div>
+
+       	  	  <div class="form-group">
+       	  	  	<button type="submit" class="btn btn-sm btn-success">Submit Message</button>
+       	  	  </div>
+
+       	  </form>
+
+       	  <hr>
+
+       	  <h4>Alternatively</h4>
+       	  <p>You may send an email to <a href="mailto:info@yorubaname.com">info@yorubaname.com</a></p>
+       </div>
+   </div>
+</section>
 
 
 <!-- /main-content -->
