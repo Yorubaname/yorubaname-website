@@ -1,6 +1,69 @@
 "use strict";
 var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'angular-growl', 'NgSwitchery', 'textAngular', 'angularFileUpload']);
 
+
+/* Config Block */
+
+dashboardappApp.config(
+    [ '$provide', '$httpProvider',
+
+        function ($provide, $httpProvider) {
+
+          var baseUrl = '';
+          
+          if (/10|localhost/.test(location.hostname))
+             baseUrl = 'http://localhost:8081';
+          
+          // Intercept http calls.
+          $provide.factory('MyHttpInterceptor', function ($q) {
+            return {
+              // On request success
+              request: function (config) {
+                // console.log(config); // Contains the data about the request before it is sent.
+                if (/^\/v1\//.test(config.url)){
+                  config.crossOrigin = true;
+                  //config.xhrFields || (config.xhrFields = { withCredentials: false });
+                  //config.headers['EduSocial-Admin'] = true;
+                  //config.headers['requesting-client-id'] = 'admin';
+                  config.url = baseUrl + config.url;
+                }
+                // Return the config or wrap it in a promise if blank.
+                return config || $q.when(config);
+              },
+
+              // On request failure
+              requestError: function (rejection) {
+                //console.log('request failure', rejection); // Contains the data about the error on the request.
+
+                // Return the promise rejection.
+                return $q.reject(rejection);
+              },
+
+              // On response success
+              response: function (response) {
+                if (/\/v1\//.test(response.config.url)){
+                  //console.log(response.config);
+                  return response || $q.when(response);
+                }
+                // Return the response or promise.
+                return response || $q.when(response);
+              },
+
+              // On response failure
+              responseError: function (rejection) {
+                //console.log('response failure', rejection); // Contains the data about the error.
+
+                // Return the promise rejection.
+                return $q.reject(rejection);
+              }
+            }
+          })
+
+          // Add the interceptor to the $httpProvider.
+          $httpProvider.interceptors.push('MyHttpInterceptor')
+
+}]);
+
 /* Run Block */
 dashboardappApp.run(
     [ '$rootScope', '$state', '$stateParams',
