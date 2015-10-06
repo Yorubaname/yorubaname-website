@@ -112,9 +112,22 @@ dashboardappApp
 
     .controller('loginCtrl', [
         '$scope',
+        'authApi',
         '$timeout',
-        function ($scope,$timeout) {
-            $scope.loginForm = true;
+        function ($scope, api, $timeout) {
+            $scope.login = {}
+            $scope.submit = function (){
+                api.authenticate($scope.login, $scope)
+            }
+            
+        }
+    ])
+
+    .controller('logoutCtrl', [
+        '$scope',
+        '$timeout',
+        function ($scope, $timeout) {
+            
             
         }
     ])
@@ -122,7 +135,8 @@ dashboardappApp
     .controller('dashboardCtrl', [
         '$scope',
         'files',
-        function ($scope, files) {
+        'namesApi',
+        function ($scope, files, namesApi) {
             // run scripts after state load
             $scope.$on('$stateChangeSuccess', function () {
                 $('.countUpMe').each(function() {
@@ -130,6 +144,14 @@ dashboardappApp
                     endVal = parseInt($(this).attr('data-endVal')),
                     theAnimation = new countUp(target, 0, endVal, 0, 2.6, { useEasing : true, useGrouping : true, separator: ' ' });
                     theAnimation.start()
+                })
+            })
+
+            $scope.names = []
+
+            namesApi.getNames(1,5).success(function(responseData){
+                responseData.forEach(function(name) {
+                    $scope.names.push(name)
                 })
             })
 
@@ -224,9 +246,30 @@ dashboardappApp
         }
     ])
 
-     .controller('namesListEntriesCtrl', [
+    .controller('namesListEntriesCtrl', [
         '$scope',
-        function($scope) {
+        'namesApi',
+        '$stateParams',
+        '$window',
+        function($scope, api, $stateParams, $window) {
+
+            $scope.namesList = []
+
+            $scope.status = $stateParams.status;
+
+            api.getNames(1,3,$stateParams).success(function(responseData) {
+                //console.log(responseData)
+                $scope.namesListItems = responseData.length;
+                responseData.forEach(function(name) {
+                    $scope.namesList.push(name)
+                })
+            }).error(function(response) {
+                console.log(response);
+                // Notification.error(responseData.message)
+            })
+
+
+
             $('#footable_demo').footable({
                 toggleSelector: " > tbody > tr > td > span.footable-toggle"
             }).on({
@@ -237,15 +280,13 @@ dashboardappApp
                         e.clear = !e.filter;
                     }
                 }
-            });
-
+            })
             $scope.clearFilters = function() {
-                $('.filter-status').val('');
-                $('#footable_demo').trigger('footable_clear_filter');
+                $('.filter-status').val('')
+                $('#footable_demo').trigger('footable_clear_filter')
             }
-
             $scope.filterTable = function(userStatus) {
-                $('#footable_demo').data('footable-filter').filter( $('#textFilter').val() );
+                $('#footable_demo').data('footable-filter').filter( $('#textFilter').val() )
             }
         }
     ])
@@ -261,11 +302,24 @@ dashboardappApp
 
     .controller('userListCtrl', [
         '$scope',
-        'userLists',
+        'api',
+        //'Notification',
         '$window',
-        function ($scope, userLists, $window) {
-            $scope.userList = userLists;
-            $scope.userListItems = $scope.userList.length;
+        function ($scope, api, $window) {
+
+            $scope.userList = []
+            
+            api.get("/v1/auth/users").success(function(responseData) {
+                console.log(responseData)
+                $scope.userListItems = responseData.length;
+                responseData.forEach(function(user) {
+                    $scope.userList.push(user)
+                })
+            }).error(function(response) {
+                console.log(response);
+                // Notification.error(response.message)
+            })
+
             $scope.$on('onRepeatLast', function (scope, element, attrs) {
                 $('#user_list').listnav({
                     filterSelector: '.ul_lastName',
@@ -274,13 +328,36 @@ dashboardappApp
                     showCounts: false,
                     onClick: function(letter) {
                         $scope.userListItems = $window.document.getElementsByClassName("listNavShow").length;
-                        $scope.$apply();
+                        $scope.$apply()
                     }
-                });
-            });
+                })
+            })
         }
     ])
 
+    .controller('userAddCtrl', [
+        '$scope',
+        'api',
+        // 'Notification',
+        '$window',
+        function ($scope, api, /* Notification, */ $window) {
+
+            $scope.submit = function () {
+                api.postJson("/v1/auth/create", $scope.user)
+                   .success(function(responseData) {
+                      console.log(responseData)
+                      // clear form
+                      // show notification, with option to add another
+                      // Notification.success('')
+                   })
+                   .error(function(response) {
+                     console.log(response)
+                     // Notification.error('Can not create user due to:' + response.message)
+                   })
+            }
+        }
+    ])
+    
     .controller('profileIndexCtrl', [
         '$scope',
         function ($scope) {
@@ -295,13 +372,7 @@ dashboardappApp
         }
     ])
 
-    .controller('userAddCtrl', [
-        '$scope',
-        function ($scope) {
-            
-        }
-    ])
-    
+
     .controller('topSearchCtrl', [
         '$scope',
         function ($scope) {
