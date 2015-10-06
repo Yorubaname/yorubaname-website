@@ -71,3 +71,174 @@ angular.module('ui.load', [])
             };
         }
     ]);
+
+
+/* API Endpoint Service for API requests: Adapted from code base */
+
+angular.module('dashboardappApp')
+  .service('api', ['$http','$rootScope', function($http, $rootScope) {
+
+    this.get = function(endpoint, data, headers) {
+        return $http({
+            method: 'GET',
+            url: endpoint,
+            params: data ? data : '',
+            headers: headers ? headers : ''
+        })
+    }
+    this.post = function(endpoint, data) {
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+        return $http({
+            method: 'POST',
+            url: endpoint,
+            data: $.param(data)
+        })
+    }
+    this.postJson = function(endpoint, data) {
+        return $http({
+            method: 'POST',
+            url: endpoint,
+            data: data ? data : ''
+        })
+    }
+    this.put = function(endpoint, data) {
+        $http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
+        return $http({
+            method: 'PUT',
+            url: endpoint,
+            data: data ? data : ''
+        })
+    }
+    this.putJson = function(endpoint, data) {
+        return $http({
+            method: 'PUT',
+            url: endpoint,
+            data: data ? data : ''
+        })
+    }
+    this.delete = function(endpoint, data) {
+      $http.defaults.headers.put["Content-Type"] = "application/x-www-form-urlencoded";
+      return $http({
+        method: 'DELETE',
+        url: endpoint,
+        data: data ? data : ''
+      })
+    }
+    this.deleteJson = function(endpoint, data) {
+        // had to explicitly set the content-type for the delete request to work, Why? I do not know yet
+        $http.defaults.headers.common['Content-Type'] = "application/json";
+        return $http({
+            method: 'DELETE',
+            url: endpoint,
+            data: data ? data : ''
+        })
+    }
+    this.authenticate = function(authData) {
+        var endpoint = "/v1/auth/login";
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + authData;
+        return $http({
+            method: 'POST',
+            url: endpoint
+        })
+    }
+}])
+
+
+/* Authentication API Endpoint Service, Extension for API requests for Signing In, Out, and Session validation. Adapted from code base */
+
+angular.module('dashboardappApp')
+  .service('authApi', ['api','$cookies','$state', function(api, $cookies, $state){
+
+    this.getUser = function getUser(callback) {
+        return api.get("/v1/auth/user").then(function(response) {
+            return response
+        })
+    }
+
+    // Authenticates clients.
+    // authData is the base64 encoding of username and password
+    // currentScope is the angular scope.
+    // on authentication the currentScope and cookie is updated as necessary
+    this.authenticate = function(authData, currentScope) {
+        authData = btoa(authData.email + ":" + authData.password)
+        return api.authenticate(authData).success(function(response) {
+            $cookies.isAuthenticated = true;
+            currentScope.isAuthenticated = true;
+            $cookies.username = response.username;
+            currentScope.username = $cookies.username;
+            // TODO maybe not. This is a security loop hole
+            $cookies.token = authData;
+            response.roles.some(function(role) {
+                if (role === "ROLE_ADMIN") {
+                    $cookies.isAdmin = true;
+                    currentScope.isAdmin = true;
+                    return true
+                }
+            })
+            currentScope.msg = {};
+            $state.go('auth.home')
+        }).error(function(response) {
+            console.log(response);
+            $cookies.isAuthenticated = false;
+            $cookies.isAdmin = false;
+            currentScope.isAuthenticated = false;
+            currentScope.isAdmin = false;
+            // currentScope.msg.type = "msg-error";
+            // currentScope.msg.text = "Can not login with the credentials provided";
+        })
+    }
+}])
+
+/* Names API Endpoint Service, Extension for API requests for Name Entries resources only. Adapted from code base */
+
+angular.module('dashboardappApp')
+  .service('namesApi', ['api', function(api) {
+
+      /**
+      * Adds a name to the database;
+      * @param nameEntry
+      */
+      this.addName = function (nameToAdd) {
+        return api.postJson("/v1/names", nameToAdd)
+      }
+
+      /**
+       * Get a name
+       * returns the one or zero result
+       */
+      this.getName = function getName(name, duplicate) {
+        return api.get('/v1/names/' + name, { duplicates: duplicate })
+      }
+
+      this.getNames = function getNames(page, count, filter) {
+        filter = !isEmptyObj(filter) ? filter : {};
+        filter.page = page;
+        filter.count = count;
+        return api.get('/v1/names/', filter)
+      }
+
+      this.getSuggestedNames = function() {
+        return api.get('/v1/suggest')
+      }
+
+      this.deleteSuggestedName = function(suggestedName) {
+        return api.delete("/v1/suggest/" + suggestedName)
+      }
+
+      this.indexName = function (name) {
+        return api.postJson('/v1/search/indexes/' + name)
+      }
+
+      this.removeNameFromIndex = function (name) {
+        return api.deleteJson('/v1/search/indexes/' + name)
+      }
+
+      this.getFeedback = function(name) {
+        return api.get('/v1/names/'+name+'/', { feedback: true })
+      }
+
+      this.deleteFeedback = function(name) {
+        return api.deleteJson('/v1/'+name+'/feedback')
+      }
+
+}])
