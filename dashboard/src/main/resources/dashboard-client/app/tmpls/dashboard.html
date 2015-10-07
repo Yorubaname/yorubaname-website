@@ -122,11 +122,12 @@
                     <td>Approved</td>
                     <td>15/08/14</td>
                 </tr>
-                <tr>
-                    <td><a ui-sref="auth.names.edit_entries({entry:'Akingbade'})">Akingbade</a></td>
-                    <td>Approved</td>
-                    <td>12/07/14</td>
+                <tr ng-repeat="entry in names">
+                    <td><a ui-sref="auth.names.edit_entries({entry:name.name})">{{entry.name}}</a></td>
+                    <td>{{entry.status}}</td>
+                    <td>{{entry.created_at|date}}</td>
                 </tr>
+
             </tbody>
         </table>
             
