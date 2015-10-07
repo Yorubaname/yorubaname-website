@@ -6,7 +6,7 @@ dashboardappApp
             // Use $urlRouterProvider to configure any redirects (when) and invalid urls (otherwise).
             $urlRouterProvider
                 .when('/home', '/')
-                .otherwise('/');
+                .otherwise('/login');
 
             // State Configurations
             $stateProvider
@@ -16,7 +16,10 @@ dashboardappApp
                     page_title: 'Yoruba Names - Admin - Login',
                     url: "/login",
                     templateUrl: 'tmpls/login.html',
-                    controller: 'loginCtrl'
+                    controller: 'loginCtrl',
+                    data:{
+                      requiresLogout:true
+                    }
                 })
                 // Errors
                 .state("error", {
@@ -35,7 +38,11 @@ dashboardappApp
                     abstract: true,
                     // this state url
                     url: "",
-                    templateUrl: 'tmpls/authenticated.html'
+                    templateUrl: 'tmpls/authenticated.html',
+                    data:{
+                      requiresLogin:true,
+                      requiresAdminPriviledge:true
+                    }
                 })
                 // Dashboard
                 .state("auth.home", {

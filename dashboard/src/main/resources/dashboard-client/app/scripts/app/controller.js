@@ -113,13 +113,12 @@ dashboardappApp
     .controller('loginCtrl', [
         '$scope',
         'authApi',
-        '$timeout',
-        function ($scope, api, $timeout) {
+        function ($scope, api) {
             $scope.login = {}
             $scope.submit = function (){
-                api.authenticate($scope.login, $scope)
+                //console.log($scope.login)
+                return api.authenticate($scope.login, $scope)
             }
-            
         }
     ])
 

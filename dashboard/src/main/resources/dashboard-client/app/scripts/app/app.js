@@ -23,8 +23,6 @@ dashboardappApp.config(
                 if (/^\/v1\//.test(config.url)){
                   config.crossOrigin = true;
                   //config.xhrFields || (config.xhrFields = { withCredentials: false });
-                  //config.headers['EduSocial-Admin'] = true;
-                  //config.headers['requesting-client-id'] = 'admin';
                   config.url = baseUrl + config.url;
                 }
                 // Return the config or wrap it in a promise if blank.
@@ -66,46 +64,68 @@ dashboardappApp.config(
 
 /* Run Block */
 dashboardappApp.run(
-    [ '$rootScope', '$state', '$stateParams',
-        function ($rootScope, $state, $stateParams) {
+    [ '$rootScope', '$state', '$stateParams', '$cookies',
+        function ($rootScope, $state, $stateParams, $cookies) {
 
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
 
+            var is_logged_in = function(){
+              return !!$cookies.token && !!$cookies.username;
+            }
+
             $rootScope.$on('$stateChangeSuccess', function () {
                 // scroll view to top
-                $("html, body").animate({ scrollTop: 0 }, 200);
+                $("html, body").animate({ scrollTop: 0 }, 200)
                 // fastclick (eliminate the 300ms delay between a physical tap and the firing of a click event on mobile browsers)
-                FastClick.attach(document.body);
-            });
+                FastClick.attach(document.body)
+            })
 
-            $rootScope.$on('$stateChangeStart', function () {
+            $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+
+                var requiresLogin = toState.data.requiresLogin,
+                    requiresAdminPriviledge = toState.data.requiresAdminPriviledge,
+                    requiresLogout = toState.data.requiresLogout;
+
+                if (requiresLogin === true && !is_logged_in()) {
+                    event.preventDefault()
+                    //console.log('you need to login')
+                    $state.go('login')
+                }
+                
+                else if (requiresLogout === true && is_logged_in()) {
+                    event.preventDefault()
+                    //console.log('you are already logged in')
+                    $state.go('auth.home')
+                }
+
                 // remove datatables fixedHeader from DOM
                 if($(".FixedHeader_Cloned").length) {
-                    $(".FixedHeader_Cloned").remove();
+                    $(".FixedHeader_Cloned").remove()
                 }
                 // remove daterangepicker element from DOM
                 if($(".daterangepicker").length) {
-                    $(".daterangepicker").remove();
+                    $(".daterangepicker").remove()
                 }
                 // remove autosize element from DOM
                 if($("#autosizejs").length) {
-                    $("#autosizejs").remove();
+                    $("#autosizejs").remove()
                 }
                 // remove select2-hidden-accessible
                 if($(".select2-hidden-accessible").length) {
-                    $('.select2-hidden-accessible').remove();
+                    $('.select2-hidden-accessible').remove()
                 }
-            });
+
+            })
 
             $rootScope.isTouchDevice = !!('ontouchstart' in window);
             $rootScope.isHighDensity = function () {
-                return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3));
+                return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 124dpi), only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 48.8dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (min-device-pixel-ratio: 1.3)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 1.3))
             }
 
             $rootScope.appVer = 'v1.0';
 
-            // main menu
+            // Main menu
             $rootScope.sideMenuAct = false;
             $rootScope.topMenuAct = true;
             $rootScope.fixedLayout = true;

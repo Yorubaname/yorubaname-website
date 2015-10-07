@@ -76,7 +76,11 @@ angular.module('ui.load', [])
 /* API Endpoint Service for API requests: Adapted from code base */
 
 angular.module('dashboardappApp')
-  .service('api', ['$http','$rootScope', function($http, $rootScope) {
+  .service('api', ['$http','$rootScope', '$cookies', function($http, $rootScope, $cookies) {
+
+    if ($cookies.token !== undefined) {
+      $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
+    }
 
     this.get = function(endpoint, data, headers) {
         return $http({
@@ -134,11 +138,10 @@ angular.module('dashboardappApp')
         })
     }
     this.authenticate = function(authData) {
-        var endpoint = "/v1/auth/login";
         $http.defaults.headers.common['Authorization'] = 'Basic ' + authData;
         return $http({
             method: 'POST',
-            url: endpoint
+            url: "/v1/auth/login"
         })
     }
 }])
@@ -147,7 +150,7 @@ angular.module('dashboardappApp')
 /* Authentication API Endpoint Service, Extension for API requests for Signing In, Out, and Session validation. Adapted from code base */
 
 angular.module('dashboardappApp')
-  .service('authApi', ['api','$cookies','$state', function(api, $cookies, $state){
+  .service('authApi', ['api','$cookies','$state','$rootScope','$timeout','growl', function(api, $cookies, $state, $rootScope, $timeout, growl){
 
     this.getUser = function getUser(callback) {
         return api.get("/v1/auth/user").then(function(response) {
@@ -157,36 +160,56 @@ angular.module('dashboardappApp')
 
     // Authenticates clients.
     // authData is the base64 encoding of username and password
-    // currentScope is the angular scope.
-    // on authentication the currentScope and cookie is updated as necessary
-    this.authenticate = function(authData, currentScope) {
+    // on authentication the $rootScope and $cookie is updated as necessary
+    this.authenticate = function(authData) {
+        // encode authData to base64 here, instead
         authData = btoa(authData.email + ":" + authData.password)
+        //console.log(authData)
         return api.authenticate(authData).success(function(response) {
             $cookies.isAuthenticated = true;
-            currentScope.isAuthenticated = true;
+            $rootScope.isAuthenticated = true;
             $cookies.username = response.username;
-            currentScope.username = $cookies.username;
+            $rootScope.username = $cookies.username;
             // TODO maybe not. This is a security loop hole
             $cookies.token = authData;
             response.roles.some(function(role) {
                 if (role === "ROLE_ADMIN") {
                     $cookies.isAdmin = true;
-                    currentScope.isAdmin = true;
+                    $rootScope.isAdmin = true;
                     return true
                 }
             })
-            currentScope.msg = {};
-            $state.go('auth.home')
+            $rootScope.msg = {}
+            $timeout(function(){
+              growl.success("Hey " + $rootScope.username + ", you are now successfully logged in.", {})
+              $state.go('auth.home')
+            }, 200)
         }).error(function(response) {
-            console.log(response);
+            console.log(growl)
+            console.log(response)
             $cookies.isAuthenticated = false;
             $cookies.isAdmin = false;
-            currentScope.isAuthenticated = false;
-            currentScope.isAdmin = false;
+            $rootScope.isAuthenticated = false;
+            $rootScope.isAdmin = false;
+            growl.error(response.message, {})
             // currentScope.msg.type = "msg-error";
             // currentScope.msg.text = "Can not login with the credentials provided";
         })
     }
+
+    // Logs out
+    this.signout = function(){
+        return api.delete('/v1/sessions/'+$scope.app.session._id).success(function(){
+          // $scope.app.session = {};
+          $cookies.isAuthenticated = false;
+          $cookies.isAdmin = false;
+          currentScope.isAuthenticated = false;
+          currentScope.isAdmin = false;
+          $timeout(function(){
+            $state.go('index.signin')
+          }, 200)
+        })
+      }
 }])
 
 /* Names API Endpoint Service, Extension for API requests for Name Entries resources only. Adapted from code base */
