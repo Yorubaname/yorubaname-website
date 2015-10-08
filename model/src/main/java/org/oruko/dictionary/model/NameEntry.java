@@ -4,10 +4,10 @@ package org.oruko.dictionary.model;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.BeanUtils;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -24,10 +24,14 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
     private String name;
 
     public NameEntry() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
     }
 
     public NameEntry(String name) {
         this.name = name;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
     }
 
     /**
@@ -54,37 +58,13 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
         this.name = name;
     }
 
-
-    /**
-     * Gets the name entry represented as {@link NameDto}
-     * @return the {@link NameDto}
-     */
-    @Transient
-    public NameDto toNameDto() {
-        NameDto asName = new NameDto(name);
-        asName.setEtymology(etymology.toString());
-        asName.setExtendedMeaning(extendedMeaning);
-        asName.setFamousPeople(famousPeople);
-        asName.setGeoLocation(geoLocation);
-        asName.setInOtherLanguages(inOtherLanguages);
-        asName.setIpaNotation(ipaNotation);
-        asName.setMeaning(meaning);
-        asName.setMedia(media);
-        asName.setMorphology(morphology);
-        asName.setPronunciation(pronunciation);
-        asName.setSubmittedBy(submittedBy);
-        asName.setSyllables(syllables);
-        asName.setTags(tags);
-        asName.setVariants(variants);
-        asName.isIndexed(isIndexed);
-        return asName;
-    }
-
     /**
      * Updates properties using another instance of {@link org.oruko.dictionary.model.NameEntry}
      */
     public void update(NameEntry nameEntry) {
         BeanUtils.copyProperties(nameEntry, this);
+        // TODO revisit how to get this done on the entity level: how to get @Temporary working with LocalDateTime
+        this.setUpdatedAt(LocalDateTime.now());
     }
 
     /**

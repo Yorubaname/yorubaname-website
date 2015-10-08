@@ -1,7 +1,12 @@
 package org.oruko.dictionary.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.oruko.dictionary.model.repository.Etymology;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -87,6 +92,16 @@ public abstract class AbstractNameEntry {
 
     @Column
     protected Boolean isIndexed = false;
+
+    @Column
+    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
+    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    protected LocalDateTime createdAt;
+
+    @Column
+    @JsonDeserialize(using= LocalDateTimeDeserializer.class)
+    @JsonSerialize(using= LocalDateTimeSerializer.class)
+    protected LocalDateTime updatedAt;
 
     public String getSubmittedBy() {
         return submittedBy;
@@ -238,5 +253,21 @@ public abstract class AbstractNameEntry {
 
     public void isIndexed(Boolean published) {
         this.isIndexed = published;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

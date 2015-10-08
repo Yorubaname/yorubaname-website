@@ -11,14 +11,12 @@ import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
-import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.ApiExceptionHandler;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -63,25 +61,23 @@ public class NameApiTest {
     MockMvc mockMvc;
 
     NameEntry testNameEntry;
-    NameEntry faultNameEntry;
+    NameEntry anotherTestNameEntry;
 
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(nameApi).setHandlerExceptionResolvers(createExceptionResolver()).build();
-        testNameEntry = new NameEntry("test");
+        testNameEntry = new NameEntry("test-entry");
         testNameEntry.setMeaning("test_meaning");
         testNameEntry.setExtendedMeaning("test_extended_meaning");
 
-        faultNameEntry = new NameEntry();
+        anotherTestNameEntry = new NameEntry();
     }
 
     @Test
     public void test_get_all_names_via_get() throws Exception {
-        NameEntry firstNameEntry = mock(NameEntry.class);
-        NameEntry secondNameEntry = mock(NameEntry.class);
-        when(firstNameEntry.toNameDto()).thenReturn(new NameDto("firstname"));
-        when(secondNameEntry.toNameDto()).thenReturn(new NameDto("secondname"));
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(firstNameEntry, secondNameEntry));
+        testNameEntry.setName("firstname");
+        anotherTestNameEntry.setName("secondname");
+        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
              mockMvc.perform(get("/v1/names"))
                     .andExpect(jsonPath("$", hasSize(2)))
                     .andExpect(jsonPath("$[0].name", is("firstname")))
@@ -91,57 +87,35 @@ public class NameApiTest {
 
     @Test
     public void test_get_all_names_filtered_by_is_indexed() throws Exception {
-        NameEntry indexedEntry = mock(NameEntry.class);
-        NameEntry notIndexedEntry = mock(NameEntry.class);
-
-        NameDto indexedDto = new NameDto("indexed");
-        NameDto notIndexedDto = new NameDto("not-indexed");
-
-        ReflectionTestUtils.setField(indexedDto, "isIndexed", true);
-        ReflectionTestUtils.setField(notIndexedDto, "isIndexed", false);
-
-        when(indexedEntry.toNameDto()).thenReturn(indexedDto);
-        when(notIndexedEntry.toNameDto()).thenReturn(notIndexedDto);
-
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(indexedEntry, notIndexedEntry));
+        testNameEntry.isIndexed(true);
+        anotherTestNameEntry.isIndexed(false);
+        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
 
         mockMvc.perform(get("/v1/names?indexed=true"))
                .andExpect(jsonPath("$", hasSize(1)))
-               .andExpect(jsonPath("$[0].name", is("indexed")))
+               .andExpect(jsonPath("$[0].name", is("test-entry")))
                .andExpect(status().isOk());
     }
 
     @Test
     public void test_get_all_names_filtered_by_is_submitted_by() throws Exception {
-        NameEntry firstEntry = mock(NameEntry.class);
-        NameEntry secondEntry = mock(NameEntry.class);
-
-        NameDto firstDto = new NameDto("first-entry");
-        NameDto secondDto = new NameDto("second-entry");
-
-        ReflectionTestUtils.setField(firstDto, "submittedBy", "test");
-        ReflectionTestUtils.setField(secondDto, "submittedBy", "Not Available");
-
-        when(firstEntry.toNameDto()).thenReturn(firstDto);
-        when(secondEntry.toNameDto()).thenReturn(secondDto);
-
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(firstEntry, secondEntry));
+        testNameEntry.setSubmittedBy("test");
+        NameEntry secondEntry = new NameEntry("secondEntry");
+        secondEntry.setSubmittedBy("Not Available");
+        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, secondEntry));
 
         mockMvc.perform(get("/v1/names?submittedBy=test"))
                .andExpect(jsonPath("$", hasSize(1)))
-               .andExpect(jsonPath("$[0].name", is("first-entry")))
+               .andExpect(jsonPath("$[0].name", is("test-entry")))
                .andExpect(status().isOk());
     }
 
 
     @Test
     public void test_get_a_name() throws Exception {
-        NameEntry nameEntry = mock(NameEntry.class);
-        when(entryService.loadName("test")).thenReturn(nameEntry);
-        when(nameEntry.toNameDto()).thenReturn(new NameDto("test"));
-
-        mockMvc.perform(get("/v1/names/test"))
-               .andExpect(jsonPath("$.name", is("test")))
+        when(entryService.loadName("test-entry")).thenReturn(testNameEntry);
+        mockMvc.perform(get("/v1/names/test-entry"))
+               .andExpect(jsonPath("$.name", is("test-entry")))
                .andExpect(status().isOk());
     }
 
@@ -155,16 +129,12 @@ public class NameApiTest {
 
     @Test
     public void test_get_all_a_name_that_has_duplicates() throws Exception {
-        NameEntry nameEntry = mock(NameEntry.class);
-        DuplicateNameEntry duplicateNameEntry = new DuplicateNameEntry(nameEntry);
-
-        when(entryService.loadName("test")).thenReturn(nameEntry);
+        DuplicateNameEntry duplicateNameEntry = new DuplicateNameEntry(testNameEntry);
+        when(entryService.loadName("test")).thenReturn(testNameEntry);
         when(entryService.loadNameDuplicates("test")).thenReturn(Arrays.asList(duplicateNameEntry));
-        when(nameEntry.toNameDto()).thenReturn(new NameDto("test"));
-
         mockMvc.perform(get("/v1/names/test?duplicates=true"))
                .andExpect(jsonPath("$.duplicates", hasSize(1)))
-               .andExpect(jsonPath("$.mainEntry.name", is("test")))
+               .andExpect(jsonPath("$.mainEntry.name", is("test-entry")))
                .andExpect(status().isOk());
     }
 
@@ -183,7 +153,7 @@ public class NameApiTest {
 
     @Test
     public void test_add_name_via_get_but_faulty_request() throws Exception {
-        String requestJson = new ObjectMapper().writeValueAsString(faultNameEntry);
+        String requestJson = new ObjectMapper().writeValueAsString(anotherTestNameEntry);
         mockMvc.perform(post("/v1/names")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
                                 .content(requestJson))
@@ -192,7 +162,7 @@ public class NameApiTest {
 
     @Test
     public void test_modifying_name_via_put_request_but_faulty_request() throws Exception {
-        String requestJson = new ObjectMapper().writeValueAsString(faultNameEntry);
+        String requestJson = new ObjectMapper().writeValueAsString(anotherTestNameEntry);
         mockMvc.perform(put("/v1/names/jaja")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
                                 .content(requestJson))
@@ -403,33 +373,26 @@ public class NameApiTest {
 
     @Test
     public void test_get_names_with_feedback() throws Exception {
-        NameEntry nameEntry = mock(NameEntry.class);
-        when(entryService.loadName("test")).thenReturn(nameEntry);
-        when(nameEntry.toNameDto()).thenReturn(new NameDto("test"));
-
+        when(entryService.loadName("test")).thenReturn(testNameEntry);
         mockMvc.perform(get("/v1/names/{name}?feedback=true", "test"))
                .andExpect(status().isOk()).andExpect(jsonPath("$.feedback", notNullValue()));
     }
 
     @Test
     public void test_get_names_without_feedback() throws Exception {
-        NameEntry nameEntry = mock(NameEntry.class);
-        when(entryService.loadName("test")).thenReturn(nameEntry);
-        when(nameEntry.toNameDto()).thenReturn(new NameDto("test"));
-
+        when(entryService.loadName("test")).thenReturn(testNameEntry);
         mockMvc.perform(get("/v1/names/{name}?feedback=false", "test"))
                .andExpect(status().isOk()).andExpect(jsonPath("$.feedback", CoreMatchers.nullValue()));
     }
 
     @Test
     public void test_load_suggested_name() throws Exception {
-
         mockMvc.perform(get("/v1/suggest"))
                .andExpect(status().isOk());
         verify(entryService).loadAllSuggestedNames();
     }
 
-        // ==================================================== Helpers ====================================================
+// ==================================================== Helpers ====================================================
 
     //TODO seems to be doing nothing. Either remove or make it work!
     private ExceptionHandlerExceptionResolver createExceptionResolver() {
