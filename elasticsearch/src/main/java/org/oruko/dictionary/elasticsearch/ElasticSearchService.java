@@ -167,9 +167,9 @@ public class ElasticSearchService {
 
 
     /**
-     * Add a {@link org.oruko.dictionary.model.NameDto} into ElasticSearch index
+     * Add a {@link org.oruko.dictionary.model.NameEntry} into ElasticSearch index
      *
-     * @param entry the {@link org.oruko.dictionary.model.NameDto} to index
+     * @param entry the {@link org.oruko.dictionary.model.NameEntry} to index
      * @return returns true | false depending on if the indexing operation was successful.
      */
     public IndexOperationStatus indexName(NameEntry entry) {

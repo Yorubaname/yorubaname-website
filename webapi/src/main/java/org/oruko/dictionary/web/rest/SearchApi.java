@@ -146,10 +146,16 @@ public class SearchApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> indexEntry(@Valid NameEntry entry) {
+        Map<String, Object> response = new HashMap<>();
+
+        if (entryService.loadName(entry.getName()) == null) {
+            response.put("message", "Cannot index entry. Name " + entry.getName() + " not in the database");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
         IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(entry);
         boolean isIndexed = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
-        Map<String, Object> response = new HashMap<>();
         if (isIndexed) {
             response.put("message", message);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
