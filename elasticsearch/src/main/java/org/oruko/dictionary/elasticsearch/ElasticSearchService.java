@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -206,6 +207,7 @@ public class ElasticSearchService {
         if (entries.size() == 0) {
             return new IndexOperationStatus(false, "Cannot index an empty list");
         }
+
         if (!isElasticSearchNodeAvailable()) {
             return new IndexOperationStatus(false,
                                             "Index attempt unsuccessful. You do not have an elasticsearch node running");
@@ -255,6 +257,36 @@ public class ElasticSearchService {
                 .actionGet();
 
         return new IndexOperationStatus(response.isFound(), name + " deleted from index");
+    }
+
+
+    public IndexOperationStatus bulkDeleteFromIndex(List<String> entries) {
+        if (entries.size() == 0) {
+            return new IndexOperationStatus(false, "Cannot index an empty list");
+        }
+
+        if (!isElasticSearchNodeAvailable()) {
+            return new IndexOperationStatus(false,
+                                            "Delete unsuccessful. You do not have an elasticsearch node running");
+        }
+
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+
+        entries.forEach(entry -> {
+            DeleteRequestBuilder request = client.prepareDelete(esConfig.getIndexName(),
+                                                                esConfig.getDocumentType(),
+                                                                entry.toLowerCase());
+            bulkRequest.add(request);
+        });
+
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if (bulkResponse.hasFailures()) {
+            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
+        }
+
+        return new IndexOperationStatus(true, "Bulk deleting successfully. "
+                + "Removed the following names from search index "
+                + String.join(",", entries));
     }
 
 

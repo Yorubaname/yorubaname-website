@@ -274,37 +274,10 @@ public class SearchApi {
         }
 
         IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
-        updateIsIndexFlag(nameEntries, indexOperationStatus);
+        updateIsIndexFlag(nameEntries, true, indexOperationStatus);
         return returnStatusMessage(notFound, indexOperationStatus);
     }
 
-    private void updateIsIndexFlag(List<NameEntry> nameEntries, IndexOperationStatus indexOperationStatus) {
-        if (indexOperationStatus.getStatus()) {
-            List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
-                entry.isIndexed(true);
-                return entry;
-            }).collect(Collectors.toList());
-
-            entryService.saveNames(updatedNames);
-        }
-    }
-
-    private ResponseEntity<Map<String, Object>> returnStatusMessage(List<String> notFound,
-                                                                    IndexOperationStatus indexOperationStatus) {
-        Map<String, Object> response = new HashMap<>();
-        boolean isIndexed = indexOperationStatus.getStatus();
-        String responseMessage = indexOperationStatus.getMessage();
-
-        if (notFound.size() != 0) {
-            responseMessage += " Names not found and not indexed: "+ String.join(",", notFound);
-        }
-
-        response.put("message", responseMessage);
-        if (isIndexed) {
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
 
     /**
      * Endpoint used to remove a name from the index.
@@ -328,6 +301,71 @@ public class SearchApi {
                 entryService.saveName(nameEntry);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
+     * Endpoint used to remove a list of names from the index.
+     *
+     * @param names the names to remove from the index.
+     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     */
+    @RequestMapping(value = "/indexes/batch", method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> batchDeleteFromIndex(@RequestBody String[] names) {
+        Map<String, Object> response = new HashMap<>();
+        List<String> found = new ArrayList<>();
+        List<NameEntry> nameEntries = new ArrayList<>();
+        List<String> notFound = new ArrayList<>();
+
+        Arrays.stream(names).forEach(name -> {
+            NameEntry entry = entryService.loadName(name);
+            if (entry == null) {
+                notFound.add(name);
+            } else {
+                found.add(name);
+                nameEntries.add(entry);
+            }
+        });
+
+        if (found.size() == 0) {
+            response.put("message", "none of the names was found in the repository so not attempting to remove");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkDeleteFromIndex(found);
+        updateIsIndexFlag(nameEntries, false, indexOperationStatus);
+        return returnStatusMessage(notFound, indexOperationStatus);
+    }
+
+    private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag, IndexOperationStatus indexOperationStatus) {
+        if (indexOperationStatus.getStatus()) {
+            List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
+                entry.isIndexed(flag);
+                return entry;
+            }).collect(Collectors.toList());
+
+            entryService.saveNames(updatedNames);
+        }
+    }
+
+    private ResponseEntity<Map<String, Object>> returnStatusMessage(List<String> notFound,
+                                                                    IndexOperationStatus indexOperationStatus) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isIndexed = indexOperationStatus.getStatus();
+        String responseMessage = indexOperationStatus.getMessage();
+
+        if (notFound.size() != 0) {
+            responseMessage += " following names ignored as they were not found in the database: "
+                    + String.join(",", notFound);
+        }
+
+        response.put("message", responseMessage);
+        if (isIndexed) {
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
