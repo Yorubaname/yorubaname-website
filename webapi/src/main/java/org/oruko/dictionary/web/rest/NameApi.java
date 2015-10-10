@@ -374,15 +374,9 @@ public class NameApi {
     @RequestMapping(value = "/v1/names/batch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< Map<String, String>> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
         if (!bindingResult.hasErrors() && nameEntries.length != 0) {
-
-            Arrays.stream(nameEntries).forEach(entry -> {
-                entry.setName(entry.getName().trim().toLowerCase());
-                entryService.insertTakingCareOfDuplicates(entry);
-            });
-
+            entryService.bulkInsertTakingCareOfDuplicates(Arrays.asList(nameEntries));
             return new ResponseEntity<>(response("Names successfully imported"), HttpStatus.CREATED);
         }
-
         throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
     }
 

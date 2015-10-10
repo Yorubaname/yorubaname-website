@@ -26,6 +26,7 @@ import java.util.Optional;
 @Service
 public class NameEntryService {
 
+    private Integer BULK_SIZE = 50;
     private Integer PAGE = 0;
     private Integer COUNT_SIZE = 50;
 
@@ -67,6 +68,25 @@ public class NameEntryService {
             }
         } else {
             throw new RepositoryAccessError("Given name already exists as a variant entry");
+        }
+    }
+
+
+    /**
+     * Adds a list of names in bulk if not present. If any of the name is already present, adds the name to the
+     * duplicate table.
+     * @param entries the list of names
+     */
+    public void bulkInsertTakingCareOfDuplicates(List<NameEntry> entries) {
+        int i = 0;
+        for (NameEntry entry : entries) {
+            this.insertTakingCareOfDuplicates(entry);
+            i++;
+
+            if (i == BULK_SIZE) {
+                nameEntryRepository.flush();
+                i = 0;
+            }
         }
     }
 
@@ -138,6 +158,23 @@ public class NameEntryService {
         return nameEntryRepository.save(entry);
     }
 
+    /**
+     * Saves a list {@link org.oruko.dictionary.model.NameEntry}
+     * @param entries the list of name entries to be saved
+     */
+    public List<NameEntry> saveNames(List<NameEntry> entries) {
+        int i = 0;
+        List<NameEntry> savedNames = new ArrayList<>();
+        for (NameEntry entry: entries) {
+            savedNames.add(this.saveName(entry));
+            i++;
+            if (i == BULK_SIZE) {
+                nameEntryRepository.flush();
+                i = 0;
+            }
+        }
+        return savedNames;
+    }
     /**
      * Updates the properties with values from another {@link org.oruko.dictionary.model.NameEntry}
      * @param newEntry the nameEntry to take values used for updating

@@ -3,7 +3,10 @@ package org.oruko.dictionary.elasticsearch;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -28,6 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 
@@ -130,10 +134,10 @@ public class ElasticSearchService {
          * TODO Should revisit
          */
         MultiMatchQueryBuilder searchSpec = QueryBuilders.multiMatchQuery(searchTerm,
-                                                                                      "name.autocomplete",
-                                                                                      "meaning",
-                                                                                      "extendedMeaning",
-                                                                                      "variants");
+                                                                          "name.autocomplete",
+                                                                          "meaning",
+                                                                          "extendedMeaning",
+                                                                          "variants");
 
         SearchResponse tempSearchAll = client.prepareSearch(esConfig.getIndexName())
                                              .setQuery(searchSpec)
@@ -194,6 +198,41 @@ public class ElasticSearchService {
             logger.info("Failed to parse NameEntry into Json", e);
             return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
         }
+    }
+
+
+    public IndexOperationStatus bulkIndexName(List<NameEntry> entries) {
+
+        if (entries.size() == 0) {
+            return new IndexOperationStatus(false, "Cannot index an empty list");
+        }
+        if (!isElasticSearchNodeAvailable()) {
+            return new IndexOperationStatus(false,
+                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
+        }
+
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        entries.forEach(entry -> {
+            try {
+                String entryAsJson = mapper.writeValueAsString(entry);
+                String name = entry.getName();
+                IndexRequestBuilder request = client.prepareIndex(esConfig.getIndexName(),
+                                                                              esConfig.getDocumentType(),
+                                                                              name.toLowerCase())
+                                                                .setSource(entryAsJson);
+                bulkRequest.add(request);
+            } catch (JsonProcessingException e) {
+                logger.debug("Error while building bulk indexing operation", e);
+            }
+        });
+
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if (bulkResponse.hasFailures()) {
+            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
+        }
+
+        return new IndexOperationStatus(true, "Bulk indexing successfully. Indexed the following names "
+                + String.join(",", entries.stream().map(entry -> entry.getName()).collect(Collectors.toList())));
     }
 
     /**

@@ -229,7 +229,7 @@ public class NameApiTest {
                .andExpect(status().isCreated())
                .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
 
-        verify(entryService, times(2)).insertTakingCareOfDuplicates(any(NameEntry.class));
+        verify(entryService, times(1)).bulkInsertTakingCareOfDuplicates(anyListOf(NameEntry.class));
     }
 
     @Test
@@ -394,7 +394,6 @@ public class NameApiTest {
 
 // ==================================================== Helpers ====================================================
 
-    //TODO seems to be doing nothing. Either remove or make it work!
     private ExceptionHandlerExceptionResolver createExceptionResolver() {
         ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
             protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
