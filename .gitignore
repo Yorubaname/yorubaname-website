@@ -7,3 +7,6 @@
 # Maven
 log/
 target/
+*.sublime*
+*/data/*
+website/*.log
