@@ -391,7 +391,7 @@ public class NameApi {
      * Endpoint for batch updating  of names. Names are sent as array of json from the client
      * @param nameEntries the array of {@link org.oruko.dictionary.model.NameEntry}
      * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
-     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * @return {@link org.springframework.http.ResponseEntity} with string containing error message.
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names/batch", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -432,7 +432,11 @@ public class NameApi {
         throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
     }
 
-
+    /**
+     * End points for deleting ALL names (and their duplicates) from the database
+     * @return {@link org.springframework.http.ResponseEntity} with string containing error message.
+     * "success" is returned if no error
+     */
     @RequestMapping(value = "/v1/names",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -441,6 +445,11 @@ public class NameApi {
         return new ResponseEntity<>(response("Names deleted"), HttpStatus.OK);
     }
 
+    /**
+     * End point for deleting a name (and its duplicates) from the database.
+     * @param name the name to delete
+     * @return {@link org.springframework.http.ResponseEntity} with string containing status message
+     */
     @RequestMapping(value = "/v1/names/{name}",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -449,6 +458,12 @@ public class NameApi {
         return new ResponseEntity<>(response(name + " Deleted"), HttpStatus.OK);
     }
 
+    /**
+     * Endpoint for deleting a list of names
+     *
+     * @param names the list of names to delete
+     * @return {@link org.springframework.http.ResponseEntity} with string containing status message
+     */
     @RequestMapping(value = "/v1/names/batch",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
