@@ -28,23 +28,27 @@
     </div>
 </div>
 
+
+
+<form class="name-entry-form" name="form">
+
 <div class="row">
     <div class="col-lg-6">
         <div class="form-group">
-            <label for="reg_input" class="required">Entry</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="entry" class="required">Entry</label>
+            <input type="text" id="entry" class="form-control" ng-model="name.entry">
         </div>
         <div class="form-group">
-            <label for="reg_textarea" class="required">Meaning</label>
-            <textarea name="reg_textarea" id="reg_textarea" cols="10" rows="3" class="form-control"></textarea>
+            <label for="meaning" class="required">Meaning</label>
+            <textarea id="meaning" cols="10" rows="3" class="form-control" ng-model="name.meaning"></textarea>
         </div>
         <div class="form-group">
-            <label for="reg_textarea">Extra information about this name</label>
-            <textarea name="reg_textarea" id="reg_textarea" cols="10" rows="3" class="form-control"></textarea>
+            <label for="extra_info">Extra information about this name</label>
+            <textarea id="extra_info" cols="10" rows="3" class="form-control" ng-model="name.extra_info"></textarea>
         </div>
         <div class="form-group">
-            <label for="reg_input">Syllable breakdown</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="syllables">Syllable breakdown</label>
+            <input type="text" id="syllables" class="form-control" ng-model="name.syllables">
         </div>
         <div class="form-group">
             <label for="reg_input">IPA Pronounciation</label>
@@ -222,8 +226,10 @@
 <div class="row">
     <div class="col-sm-12">
         <hr>
-        <button type="submit" class="btn btn-lg btn-success">Submit for Review</button>
-        <button type="submit" class="btn btn-lg btn-info">Submit for Later</button>
-        <button type="submit" class="btn btn-lg btn-default">Preview Entry</button>
+        <button type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Submit for Review</button>
+        <button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button>
+        <button type="submit" class="btn btn-lg btn-default" ng-click="preview()" ng-disabled="form.$invalid || !form.$dirty">Preview Entry</button>
     </div>
 </div>
+
+</form>
