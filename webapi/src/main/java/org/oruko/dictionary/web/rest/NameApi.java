@@ -44,6 +44,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.validation.Valid;
 
 /**
@@ -91,7 +92,8 @@ public class NameApi {
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> addName(@Valid @RequestBody NameEntry entry, BindingResult bindingResult) {
+    public ResponseEntity<Map<String, String>> addName(@Valid @RequestBody NameEntry entry,
+                                                       BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entry.setName(entry.getName().trim().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
@@ -106,8 +108,10 @@ public class NameApi {
      * @param postFeedback a map with key of "feedback" for the feedback
      * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
      */
-    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> addFeedback(@PathVariable("name") String name, @RequestBody Map<String, String> postFeedback) {
+    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> addFeedback(@PathVariable("name") String name,
+                                                           @RequestBody Map<String, String> postFeedback) {
         String feedback = postFeedback.get("feedback");
 
         if (feedback.isEmpty()) {
@@ -128,7 +132,8 @@ public class NameApi {
      *
      * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
      */
-    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> deleteFeedback(@PathVariable("name") String name) {
 
         if (entryService.loadName(name) == null) {
@@ -200,7 +205,7 @@ public class NameApi {
      * @param pageParam a {@link Integer} representing the page (offset) to start the
      *                  result set from. 0 if none is given
      * @param countParam a {@link Integer} the number of names to return. 50 is none is given
-     * @return the list of {@link org.oruko.dictionary.model.NameDto}
+     * @return the list of {@link org.oruko.dictionary.model.NameEntry}
      * @throws JsonProcessingException JSON processing exception
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -372,13 +377,61 @@ public class NameApi {
      * "success" is returned if no error
      */
     @RequestMapping(value = "/v1/names/batch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity< Map<String, String>> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
+    public ResponseEntity< Map<String, String>> addName(@Valid @RequestBody NameEntry[] nameEntries,
+                                                        BindingResult bindingResult) {
         if (!bindingResult.hasErrors() && nameEntries.length != 0) {
             entryService.bulkInsertTakingCareOfDuplicates(Arrays.asList(nameEntries));
             return new ResponseEntity<>(response("Names successfully imported"), HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
     }
+
+
+    /**
+     * Endpoint for batch updating  of names. Names are sent as array of json from the client
+     * @param nameEntries the array of {@link org.oruko.dictionary.model.NameEntry}
+     * @param bindingResult {@link org.springframework.validation.BindingResult} used to capture result of validation
+     * @return {@link org.springframework.http.ResponseEntity} with string containting error message.
+     * "success" is returned if no error
+     */
+    @RequestMapping(value = "/v1/names/batch", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity< Map<String, String>> updateNames(@Valid @RequestBody NameEntry[] nameEntries,
+                                                         BindingResult bindingResult) {
+        if (!bindingResult.hasErrors() && nameEntries.length != 0) {
+
+            //TODO refactor into a method
+            List<NameEntry> notFoundNames = Stream.of(nameEntries)
+                                             .filter(entry -> entryService.loadName(entry.getName()) == null)
+                                            .collect(Collectors.toList());
+
+            List<NameEntry> foundNames = new ArrayList<>(Arrays.asList(nameEntries));
+            foundNames.removeAll(notFoundNames);
+
+            if (foundNames.size() == 0) {
+                return new ResponseEntity<>(response("none of the names was found in the repository so not indexed"),
+                                            HttpStatus.BAD_REQUEST);
+            }
+            entryService.bulkUpdateNames(foundNames);
+
+            List<String> notFound = notFoundNames.stream()
+                                                 .map(notFoundName -> notFoundName.getName())
+                                                 .collect(Collectors.toList());
+            List<String> found = foundNames.stream()
+                                             .map(foundName -> foundName.getName())
+                                             .collect(Collectors.toList());
+
+            String responseMessage = String.join(",", found) + " updated. ";
+
+            if (notFound.size() > 0) {
+                responseMessage += String.join(",",notFound) + " not updated as they were not found in the database";
+            }
+
+            return new ResponseEntity<>(response(responseMessage), HttpStatus.CREATED);
+        }
+
+        throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
+    }
+
 
     @RequestMapping(value = "/v1/names",
             method = RequestMethod.DELETE,
@@ -393,8 +446,35 @@ public class NameApi {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< Map<String, String>> deleteName(@PathVariable String name) {
         entryService.deleteNameEntryAndDuplicates(name);
-        return new ResponseEntity<>(response(name + "Deleted"), HttpStatus.OK);
+        return new ResponseEntity<>(response(name + " Deleted"), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/v1/names/batch",
+            method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity< Map<String, String>> batchDeleteName(@RequestBody String[] names) {
+
+        List<String> notFoundNames = Stream.of(names)
+                                     .filter(entry -> entryService.loadName(entry) == null)
+                                     .collect(Collectors.toCollection(ArrayList::new));
+
+        List<String> foundNames = new ArrayList<>(Arrays.asList(names));
+        foundNames.removeAll(notFoundNames);
+
+        if (foundNames.size() == 0) {
+            return new ResponseEntity<>(response("No deletion as none of the names were found in the database."),
+                                        HttpStatus.BAD_REQUEST);
+        }
+
+        entryService.batchDeleteNameEntryAndDuplicates(foundNames);
+
+        String responseMessage = String.join(",",foundNames) + " deleted. ";
+        if (foundNames.size() > 0) {
+            responseMessage += String.join(",",notFoundNames) + " not deleted as they were not found in the database";
+        }
+        return new ResponseEntity<>(response(responseMessage), HttpStatus.OK);
+    }
+
 
     //=====================================Helpers=========================================================//
 
