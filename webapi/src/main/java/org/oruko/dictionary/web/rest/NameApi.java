@@ -5,7 +5,6 @@ import org.oruko.dictionary.events.NameUploadStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
-import org.oruko.dictionary.model.NameDto;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryFeedback;
 import org.oruko.dictionary.model.SuggestedName;
@@ -205,21 +204,21 @@ public class NameApi {
      * @throws JsonProcessingException JSON processing exception
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<NameDto> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
+    public List<NameEntry> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
                                   @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
             throws JsonProcessingException {
 
-        List<NameDto> names = new ArrayList<>();
+        List<NameEntry> names = new ArrayList<>();
         Iterable<NameEntry> allNameEntries = entryService.loadAllNames(pageParam, countParam);;
 
         allNameEntries.forEach(nameEntry -> {
-            names.add(nameEntry.toNameDto());
+            names.add(nameEntry);
         });
 
         // for filtering based on whether entry has been indexed
-        Predicate<NameDto> filterBasedOnIndex = (name) -> {
+        Predicate<NameEntry> filterBasedOnIndex = (name) -> {
             if (indexed.isPresent()) {
                 return name.isIndexed().equals(indexed.get());
             } else {
@@ -228,7 +227,7 @@ public class NameApi {
         };
 
         // for filtering based on value of submitBy
-        Predicate<NameDto> filterBasedOnSubmitBy = (name) -> {
+        Predicate<NameEntry> filterBasedOnSubmitBy = (name) -> {
             if (submittedBy.isPresent()) {
                 return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().toString().trim());
             } else {
@@ -261,7 +260,7 @@ public class NameApi {
         }
 
         HashMap<String, Object> nameEntries = new HashMap<>();
-        nameEntries.put("mainEntry", nameEntry.toNameDto());
+        nameEntries.put("mainEntry", nameEntry);
 
         if (withDuplicates.isPresent() && (withDuplicates.get() == true)) {
             List<DuplicateNameEntry> duplicates = entryService.loadNameDuplicates(name);
@@ -375,15 +374,9 @@ public class NameApi {
     @RequestMapping(value = "/v1/names/batch", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< Map<String, String>> addName(@Valid @RequestBody NameEntry[] nameEntries, BindingResult bindingResult) {
         if (!bindingResult.hasErrors() && nameEntries.length != 0) {
-
-            Arrays.stream(nameEntries).forEach(entry -> {
-                entry.setName(entry.getName().trim().toLowerCase());
-                entryService.insertTakingCareOfDuplicates(entry);
-            });
-
+            entryService.bulkInsertTakingCareOfDuplicates(Arrays.asList(nameEntries));
             return new ResponseEntity<>(response("Names successfully imported"), HttpStatus.CREATED);
         }
-
         throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
     }
 

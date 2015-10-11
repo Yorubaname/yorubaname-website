@@ -1,5 +1,6 @@
 package org.oruko.dictionary;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -75,6 +76,19 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
         return lci;
+    }
+
+//    @Bean
+//    @Primary
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.registerModule(new JavaTimeModule());
+//        return mapper;
+//    }
+
+    @Bean
+    public JavaTimeModule javaTimeModule() {
+        return new JavaTimeModule();
     }
 
     @Override

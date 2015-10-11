@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -68,7 +71,7 @@ public class SearchApi {
         this.recentIndexes = recentIndexes;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET,
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
                                            HttpServletRequest request) {
@@ -95,7 +98,7 @@ public class SearchApi {
 
         Map<String, Object> name = elasticSearchService.getByName(searchTerm);
 
-        if (name != null) {
+        if (name != null && name.size() != 0) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
             return name;
         }
@@ -146,11 +149,19 @@ public class SearchApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> indexEntry(@Valid NameEntry entry) {
+        Map<String, Object> response = new HashMap<>();
+        NameEntry nameEntry = entryService.loadName(entry.getName());
+        if (nameEntry == null) {
+            response.put("message", "Cannot index entry. Name " + entry.getName() + " not in the database");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
         IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(entry);
         boolean isIndexed = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
-        Map<String, Object> response = new HashMap<>();
         if (isIndexed) {
+            nameEntry.isIndexed(true);
+            entryService.saveName(nameEntry);
             response.put("message", message);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
@@ -191,6 +202,83 @@ public class SearchApi {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+//      Commenting this endpoint out for now as there seems to be no real need for it "except it being a nice to have"
+//      the endpoint that takes a list of names should suffice
+//      /**
+//     * Endpoint that takes an array of {@link NameEntry},
+//     * look them up in the repository and index the entries found
+//     * It allows for batch indexing of names
+//     *
+//     * @param entries the array of {@link NameEntry}
+//     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
+//     */
+//    @RequestMapping(value = "/indexes/batch", method = RequestMethod.POST,
+//            consumes = MediaType.APPLICATION_JSON_VALUE,
+//            produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Map<String, Object>> batchIndexEntries(@Valid NameEntry[] entries) {
+//        Map<String, Object> response = new HashMap<>();
+//        List<NameEntry> nameEntries = new ArrayList<>();
+//        List<String> notFound = new ArrayList<>();
+//
+//        Stream.of(entries).forEach(entry -> {
+//            String name = entry.getName();
+//            NameEntry nameEntry = entryService.loadName(name);
+//            if (nameEntry != null) {
+//                nameEntries.add(nameEntry);
+//            } else {
+//                notFound.add(name);
+//            }
+//        });
+//
+//        if (nameEntries.size() == 0) {
+//            // none of the names requested to be indexed in the database
+//            response.put("message", "none of the names was found in the repository so not indexed");
+//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
+//        updateIsIndexFlag(nameEntries, indexOperationStatus);
+//        return returnStatusMessage(notFound, indexOperationStatus);
+//
+//    }
+
+    /**
+     * Endpoint that takes an array of names, look them up in the repository and index the entries found
+     *
+     * It allows for batch indexing of names
+     *
+     * @param names the array of names
+     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
+     */
+    @RequestMapping(value = "/indexes/batch", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> batchIndexEntriesByName(@RequestBody String[] names) {
+        Map<String, Object> response = new HashMap<>();
+        List<NameEntry> nameEntries = new ArrayList<>();
+        List<String> notFound = new ArrayList<>();
+
+        Arrays.stream(names).forEach(name -> {
+            NameEntry entry = entryService.loadName(name);
+            if (entry == null) {
+                notFound.add(name);
+            } else {
+            nameEntries.add(entry);
+            }
+        });
+
+        if (nameEntries.size() == 0) {
+            // none of the names requested to be indexed in the database
+            response.put("message", "none of the names was found in the repository so not indexed");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
+        updateIsIndexFlag(nameEntries, true, indexOperationStatus);
+        return returnStatusMessage(notFound, indexOperationStatus);
+    }
+
+
     /**
      * Endpoint used to remove a name from the index.
      *
@@ -213,6 +301,71 @@ public class SearchApi {
                 entryService.saveName(nameEntry);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
+     * Endpoint used to remove a list of names from the index.
+     *
+     * @param names the names to remove from the index.
+     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     */
+    @RequestMapping(value = "/indexes/batch", method = RequestMethod.DELETE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> batchDeleteFromIndex(@RequestBody String[] names) {
+        Map<String, Object> response = new HashMap<>();
+        List<String> found = new ArrayList<>();
+        List<NameEntry> nameEntries = new ArrayList<>();
+        List<String> notFound = new ArrayList<>();
+
+        Arrays.stream(names).forEach(name -> {
+            NameEntry entry = entryService.loadName(name);
+            if (entry == null) {
+                notFound.add(name);
+            } else {
+                found.add(name);
+                nameEntries.add(entry);
+            }
+        });
+
+        if (found.size() == 0) {
+            response.put("message", "none of the names was found in the repository so not attempting to remove");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkDeleteFromIndex(found);
+        updateIsIndexFlag(nameEntries, false, indexOperationStatus);
+        return returnStatusMessage(notFound, indexOperationStatus);
+    }
+
+    private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag, IndexOperationStatus indexOperationStatus) {
+        if (indexOperationStatus.getStatus()) {
+            List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
+                entry.isIndexed(flag);
+                return entry;
+            }).collect(Collectors.toList());
+
+            entryService.saveNames(updatedNames);
+        }
+    }
+
+    private ResponseEntity<Map<String, Object>> returnStatusMessage(List<String> notFound,
+                                                                    IndexOperationStatus indexOperationStatus) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isIndexed = indexOperationStatus.getStatus();
+        String responseMessage = indexOperationStatus.getMessage();
+
+        if (notFound.size() != 0) {
+            responseMessage += " following names ignored as they were not found in the database: "
+                    + String.join(",", notFound);
+        }
+
+        response.put("message", responseMessage);
+        if (isIndexed) {
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
