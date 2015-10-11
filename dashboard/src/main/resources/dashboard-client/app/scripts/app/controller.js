@@ -3,7 +3,11 @@ dashboardappApp
 
     .controller('mainCtrl', [
         '$scope',
-        function ($scope) {
+        'authApi',
+        function ($scope, api) {
+            $scope.logout = function(){
+                return api.logout()
+            }
         }
     ])
     
@@ -116,18 +120,8 @@ dashboardappApp
         function ($scope, api) {
             $scope.login = {}
             $scope.submit = function (){
-                //console.log($scope.login)
                 return api.authenticate($scope.login, $scope)
             }
-        }
-    ])
-
-    .controller('logoutCtrl', [
-        '$scope',
-        '$timeout',
-        function ($scope, $timeout) {
-            
-            
         }
     ])
 
@@ -160,62 +154,10 @@ dashboardappApp
     .controller('namesAddEntriesCtrl', [
         '$scope',
         'files',
-        'FileUploader',
-        function($scope, files, FileUploader) {
+        'uploader',
+        function($scope, files, Uploader) {
 
-            var uploader = $scope.uploader = new FileUploader({
-                url: 'js/controllers/upload.php'
-            });
-
-            // FILTERS
-
-            uploader.filters.push({
-                name: 'customFilter',
-                fn: function(item /*{File|FileLikeObject}*/, options) {
-                    return this.queue.length < 10;
-                }
-            });
-
-            // CALLBACKS
-
-            uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-                console.info('onWhenAddingFileFailed', item, filter, options);
-            };
-            uploader.onAfterAddingFile = function(fileItem) {
-                console.info('onAfterAddingFile', fileItem);
-            };
-            uploader.onAfterAddingAll = function(addedFileItems) {
-                console.info('onAfterAddingAll', addedFileItems);
-            };
-            uploader.onBeforeUploadItem = function(item) {
-                console.info('onBeforeUploadItem', item);
-            };
-            uploader.onProgressItem = function(fileItem, progress) {
-                console.info('onProgressItem', fileItem, progress);
-            };
-            uploader.onProgressAll = function(progress) {
-                console.info('onProgressAll', progress);
-            };
-            uploader.onSuccessItem = function(fileItem, response, status, headers) {
-                console.info('onSuccessItem', fileItem, response, status, headers);
-            };
-            uploader.onErrorItem = function(fileItem, response, status, headers) {
-                console.info('onErrorItem', fileItem, response, status, headers);
-            };
-            uploader.onCancelItem = function(fileItem, response, status, headers) {
-                console.info('onCancelItem', fileItem, response, status, headers);
-            };
-            uploader.onCompleteItem = function(fileItem, response, status, headers) {
-                console.info('onCompleteItem', fileItem, response, status, headers);
-            };
-            uploader.onCompleteAll = function() {
-                console.info('onCompleteAll');
-            };
-
-            console.info('uploader', uploader);
-
-
-
+            $scope.uploader = Uploader('/v1/names/upload')
 
             $scope.$on('$stateChangeSuccess', function(){
                 $('#slz_optgroups').selectize({
@@ -257,19 +199,15 @@ dashboardappApp
             $scope.status = $stateParams.status;
 
             api.getNames(1,3,$stateParams).success(function(responseData) {
-                //console.log(responseData)
                 $scope.namesListItems = responseData.length;
                 responseData.forEach(function(name) {
                     $scope.namesList.push(name)
                 })
             }).error(function(response) {
-                console.log(response);
-                // Notification.error(responseData.message)
+                console.log(response)
             })
 
-
-
-            $('#footable_demo').footable({
+            $('#names_table').footable({
                 toggleSelector: " > tbody > tr > td > span.footable-toggle"
             }).on({
                 'footable_filtering': function (e) {
@@ -280,13 +218,16 @@ dashboardappApp
                     }
                 }
             })
+
             $scope.clearFilters = function() {
                 $('.filter-status').val('')
-                $('#footable_demo').trigger('footable_clear_filter')
+                $('#names_table').trigger('footable_clear_filter')
             }
+
             $scope.filterTable = function(userStatus) {
-                $('#footable_demo').data('footable-filter').filter( $('#textFilter').val() )
+                $('#names_table').data('footable-filter').filter( $('#textFilter').val() )
             }
+
         }
     ])
 
@@ -302,21 +243,19 @@ dashboardappApp
     .controller('userListCtrl', [
         '$scope',
         'api',
-        //'Notification',
         '$window',
         function ($scope, api, $window) {
 
             $scope.userList = []
             
             api.get("/v1/auth/users").success(function(responseData) {
-                console.log(responseData)
+                //console.log(responseData)
                 $scope.userListItems = responseData.length;
                 responseData.forEach(function(user) {
                     $scope.userList.push(user)
                 })
             }).error(function(response) {
-                console.log(response);
-                // Notification.error(response.message)
+                console.log(response)
             })
 
             $scope.$on('onRepeatLast', function (scope, element, attrs) {
@@ -337,37 +276,98 @@ dashboardappApp
     .controller('userAddCtrl', [
         '$scope',
         'api',
-        // 'Notification',
+        'toastr',
         '$window',
-        function ($scope, api, /* Notification, */ $window) {
+        function ($scope, api, toastr, $window) {
+
+            $scope.user = {}
+
+            $scope.roles = {
+                BASIC: 'ROLE_BASIC',
+                LEXICOGRAPHER: 'ROLE_LEXICOGRAPHER',
+                DASHBOARD: 'ROLE_DASHBOARD',
+                ADMIN: 'ROLE_ADMIN'
+            }
 
             $scope.submit = function () {
+
+                //console.log($scope.roles)
+
+                $scope.user.roles = $.map( $scope.roles, function( value, key ) {
+                  if (value != false) return value
+                })
+
+                //console.log($scope.user.roles)
+
                 api.postJson("/v1/auth/create", $scope.user)
                    .success(function(responseData) {
-                      console.log(responseData)
-                      // clear form
-                      // show notification, with option to add another
-                      // Notification.success('')
+                      toastr.success('User account with email '+$scope.user.email+' successfully created.')
+                      $scope.form.reset()
                    })
                    .error(function(response) {
                      console.log(response)
-                     // Notification.error('Can not create user due to:' + response.message)
+                     toastr.error('User account could not be created. Try again.')
                    })
             }
         }
     ])
-    
+
+    .controller('userEditCtrl', [
+        '$scope',
+        'api',
+        'toastr',
+        '$state',
+        '$stateParams',
+        '$window',
+        function ($scope, api, toastr, $state, $stateParams, $window) {
+
+            $scope.user = api.get('/v1/users/')
+
+            $scope.roles = {
+                BASIC: 'ROLE_BASIC',
+                LEXICOGRAPHER: 'ROLE_LEXICOGRAPHER',
+                DASHBOARD: 'ROLE_DASHBOARD',
+                ADMIN: 'ROLE_ADMIN'
+            }
+
+            $scope.submit = function () {
+
+                //console.log($scope.roles)
+
+                $scope.user.roles = $.map( $scope.roles, function( value, key ) {
+                  if (value != false) return value
+                })
+
+                //console.log($scope.user.roles)
+
+                api.putJson("/v1/auth/users", $scope.user)
+                   .success(function(responseData) {
+                      toastr.success('User account with email '+$scope.user.email+' successfully updated.')
+                      //$scope.form.reset()
+                      $state.go('auth.users.list_users')
+                   })
+                   .error(function(response) {
+                     console.log(response)
+                     toastr.error('User account could not be updated. Try again.')
+                   })
+            }
+        }
+    ])
+
     .controller('profileIndexCtrl', [
         '$scope',
-        function ($scope) {
-            
+        '$cookies',
+        function ($scope, $cookies) {
+            console.log($cookies.username)
         }
     ])
 
     .controller('profileEditCtrl', [
         '$scope',
-        function ($scope) {
-            
+        '$cookies',
+        'api',
+        function ($scope, $cookies, api) {
+            console.log($cookies.username)
         }
     ])
 

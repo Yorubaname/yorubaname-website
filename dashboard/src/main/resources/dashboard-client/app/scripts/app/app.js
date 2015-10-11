@@ -1,5 +1,5 @@
 "use strict";
-var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'angular-growl', 'NgSwitchery', 'textAngular', 'angularFileUpload']);
+var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'toastr', 'NgSwitchery', 'textAngular', 'angularFileUpload']);
 
 
 /* Config Block */
@@ -71,6 +71,8 @@ dashboardappApp.run(
             $rootScope.$stateParams = $stateParams;
 
             var is_logged_in = function(){
+                //console.log($cookies)
+              console.log($cookies.username)
               return !!$cookies.token && !!$cookies.username;
             }
 
@@ -140,24 +142,14 @@ dashboardappApp
         $breadcrumbProvider.setOptions({
             prefixStateName: 'auth.home',
             templateUrl: 'tmpls/partials/breadcrumbs.html'
-        });
+        })
     })
     /* bootstrap-ui tooltips */
     .config(function($tooltipProvider ) {
         $tooltipProvider.options({
             appendToBody: true
-        });
-    })
-    .config([
-        'growlProvider',
-        '$httpProvider',
-        function (growlProvider, $httpProvider) {
-            growlProvider.globalReversedOrder(true);
-            growlProvider.globalDisableIcons(true);
-            growlProvider.globalTimeToLive(5000);
-            $httpProvider.interceptors.push(growlProvider.serverMessagesInterceptor);
-        }
-    ]);
+        })
+    });
 
 /* filters */
 dashboardappApp

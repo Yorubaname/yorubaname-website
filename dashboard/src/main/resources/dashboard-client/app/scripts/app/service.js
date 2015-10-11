@@ -150,7 +150,7 @@ angular.module('dashboardappApp')
 /* Authentication API Endpoint Service, Extension for API requests for Signing In, Out, and Session validation. Adapted from code base */
 
 angular.module('dashboardappApp')
-  .service('authApi', ['api','$cookies','$state','$rootScope','$timeout','growl', function(api, $cookies, $state, $rootScope, $timeout, growl){
+  .service('authApi', ['api','$cookies','$state','$rootScope','$timeout','toastr', function(api, $cookies, $state, $rootScope, $timeout, toastr){
 
     this.getUser = function getUser(callback) {
         return api.get("/v1/auth/user").then(function(response) {
@@ -166,6 +166,7 @@ angular.module('dashboardappApp')
         authData = btoa(authData.email + ":" + authData.password)
         //console.log(authData)
         return api.authenticate(authData).success(function(response) {
+            //console.log(response)
             $cookies.isAuthenticated = true;
             $rootScope.isAuthenticated = true;
             $cookies.username = response.username;
@@ -181,35 +182,28 @@ angular.module('dashboardappApp')
             })
             $rootScope.msg = {}
             $timeout(function(){
-              growl.success("Hey " + $rootScope.username + ", you are now successfully logged in.", {})
               $state.go('auth.home')
+              toastr.success( "Hey " + $rootScope.username + ", you are now successfully logged in.", 'Login Successful!')
             }, 200)
         }).error(function(response) {
-            console.log(growl)
-            console.log(response)
             $cookies.isAuthenticated = false;
             $cookies.isAdmin = false;
             $rootScope.isAuthenticated = false;
             $rootScope.isAdmin = false;
-            growl.error(response.message, {})
-            // currentScope.msg.type = "msg-error";
-            // currentScope.msg.text = "Can not login with the credentials provided";
+            toastr.error(response.message, 'Authentication Error')
         })
     }
 
     // Logs out
     this.signout = function(){
-        return api.delete('/v1/sessions/'+$scope.app.session._id).success(function(){
-          // $scope.app.session = {};
-          $cookies.isAuthenticated = false;
-          $cookies.isAdmin = false;
-          currentScope.isAuthenticated = false;
-          currentScope.isAdmin = false;
-          $timeout(function(){
-            $state.go('index.signin')
-          }, 200)
-        })
-      }
+      $cookies.isAuthenticated = false;
+      $cookies.isAdmin = false;
+      currentScope.isAuthenticated = false;
+      currentScope.isAdmin = false;
+      $timeout(function(){
+        $state.go('login')
+      }, 200)
+    }
 }])
 
 /* Names API Endpoint Service, Extension for API requests for Name Entries resources only. Adapted from code base */
@@ -265,3 +259,89 @@ angular.module('dashboardappApp')
       }
 
 }])
+
+
+angular.module('dashboardappApp')
+  .service('uploader', ['api', 'FileUploader', 'toastr', function(api, FileUploader, toastr) {
+
+    FileUploader.prototype.setEndpoint = function setEndpoint(endpoint){
+      this.url = endpoint
+    }
+
+    var options = options || {},
+        fileType = options.fileType || ['text/csv'],
+        maxUpload = options.maxUpload || 1,
+        invalidFileMsg = options.invalidFileMsg || 'File type is not supported',
+        uploadLimitMsg = options.uploadLimitMsg || 'You may only upload one file at a time',
+        onError = options.onErrorMsg || 'An error occur while uploading the file, please retry',
+        onComplete = options.onCompleteMsg || 'File upload completed successfully',
+        errorCallback = options.errorCallback || function(){},
+        successCallback = options.successCallback || function(){}
+
+    return function(endpoint, options) {
+
+      var uploader = new FileUploader({
+          url: endpoint
+      })
+
+    // FILTERS
+
+    uploader.filters.push({
+        name: 'customFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+            return (fileType.indexOf(item.type) >= 0 && this.queue.length < maxUpload)
+        }
+    })
+
+    // CALLBACKS
+    uploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
+      console.info('onWhenAddingFileFailed', item, filter, options);
+      if (fileType.indexOf(item.type) < 0) return toastr.warning('Invalid File' + invalidFileMsg);
+      if (this.queue.length == maxUpload) return toastr.warning('Single upload' + uploadLimitMsg);
+    }
+    uploader.onAfterAddingFile = function (fileItem) {
+      console.info('onAfterAddingFile', fileItem);
+    }
+    uploader.onAfterAddingAll = function (addedFileItems) {
+      console.info('onAfterAddingAll', addedFileItems);
+      if (!options.manualTrigger) addedFileItems[0].upload();
+    }
+    uploader.onBeforeUploadItem = function (item) {
+      console.info('onBeforeUploadItem', item);
+    }
+    uploader.onProgressItem = function (fileItem, progress) {
+      console.info('onProgressItem', fileItem, progress);
+    }
+    uploader.onProgressAll = function (progress) {
+      console.info('onProgressAll', progress);
+    }
+    uploader.onSuccessItem = function (fileItem, response, status, headers) {
+      console.info('onSuccessItem', fileItem, response, status, headers);
+    }
+    uploader.onErrorItem = function (fileItem, response, status, headers) {
+      console.info('onErrorItem', fileItem, response, status, headers);
+      toastr.error('Upload Error' + onError);
+      fileItem.remove();
+      errorCallback(response);
+    }
+    uploader.onCancelItem = function (fileItem, response, status, headers) {
+      console.info('onCancelItem', fileItem, response, status, headers);
+    }
+    uploader.onCompleteItem = function (fileItem, response, status, headers) {
+      console.info('onCompleteItem', fileItem, response, status, headers);
+      toastr.success('Upload Complete' + onComplete);
+      console.log('before running cb');
+      successCallback(response);
+      console.log('after running cb');
+      fileItem.remove();
+    }
+    uploader.onCompleteAll = function () {
+      console.info('onCompleteAll');
+    }
+
+    return uploader
+
+    }
+
+  }
+])

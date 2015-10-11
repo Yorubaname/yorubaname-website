@@ -113,7 +113,6 @@ dashboardappApp
                     },
                     url: '/edit/:entry',
                     templateUrl: 'tmpls/names/edit.html',
-                    
                     resolve: {
                         files: [
                            'uiLoad',
@@ -207,17 +206,27 @@ dashboardappApp
 
                 // Pages > Faq/Help > Categories
                 .state('auth.users.add_user', {
-                    page_title: 'Yoruba Names Admin - Admin Users (All)',
+                    page_title: 'Yoruba Names Admin - Add User',
                     data: {
-                        ncyBreadcrumbLabel: 'Add New User'
+                        ncyBreadcrumbLabel: 'Add User'
                     },
                     url: '/new',
                     templateUrl: 'tmpls/users/new.html',
                     controller: 'userAddCtrl'
                 })
 
+                .state('auth.users.edit_user', {
+                    page_title: 'Yoruba Names Admin - Edit User',
+                    data: {
+                        ncyBreadcrumbLabel: 'Edit User Info'
+                    },
+                    url: '/edit/:id',
+                    templateUrl: 'tmpls/users/edit.html',
+                    controller: 'userEditCtrl'
+                })
+
                 .state('auth.users.list_users', {
-                    page_title: 'Yoruba Names Admin - Volunteers',
+                    page_title: 'Yoruba Names Admin - All Users',
                     data: {
                         ncyBreadcrumbLabel: 'All Users'
                     },
