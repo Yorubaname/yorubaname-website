@@ -86,8 +86,8 @@ public class DatabaseImporter {
             tamedo.setEtymology(etymology);
 
             NameEntry koko = new NameEntry("koko");
-            koko.setMeaning("This is dummy meaning for tamedo");
-            koko.setExtendedMeaning("This is extended dummy meaning for tamedo");
+            koko.setMeaning("This is dummy meaning for koko");
+            koko.setExtendedMeaning("This is extended dummy meaning for koko");
             koko.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             koko.setEtymology(etymology);
 

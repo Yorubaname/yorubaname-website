@@ -45,7 +45,7 @@
         <guava.version>18.0</guava.version>
         <es.version>1.5.0</es.version>
         <commons-io.version>2.4</commons-io.version>
-        <springfox-swagger>2.0.0</springfox-swagger>
+        <springfox-swagger>2.2.2</springfox-swagger>
         <spring-handlebars.version>0.1.1</spring-handlebars.version>
         <json-path-assert.version>2.0.0</json-path-assert.version>
         <lucene.version>4.10.4</lucene.version>

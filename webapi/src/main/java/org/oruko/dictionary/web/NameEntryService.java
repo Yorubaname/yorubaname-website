@@ -21,12 +21,13 @@ import java.util.Optional;
 
 /**
  * The service for managing name entries
+ *
  * @author Dadepo Aderemi.
  */
 @Service
 public class NameEntryService {
 
-    private Integer BULK_SIZE = 50;
+    private Integer BATCH_SIZE = 50;
     private Integer PAGE = 0;
     private Integer COUNT_SIZE = 50;
 
@@ -38,7 +39,8 @@ public class NameEntryService {
     /**
      * Public constructor for {@link NameEntryService} depends on instances of
      * {@link NameEntryRepository} and {@link DuplicateNameEntryRepository}
-     * @param nameEntryRepository Repository responsible for persisting {@link NameEntry}
+     *
+     * @param nameEntryRepository      Repository responsible for persisting {@link NameEntry}
      * @param duplicateEntryRepository Repository responsoble for persisting {@link DuplicateNameEntry}
      */
     @Autowired
@@ -55,6 +57,7 @@ public class NameEntryService {
     /**
      * Adds a new name if not present. If already present, adds the name to the
      * duplicate table.
+     *
      * @param entry
      */
     public void insertTakingCareOfDuplicates(NameEntry entry) {
@@ -75,6 +78,7 @@ public class NameEntryService {
     /**
      * Adds a list of names in bulk if not present. If any of the name is already present, adds the name to the
      * duplicate table.
+     *
      * @param entries the list of names
      */
     public void bulkInsertTakingCareOfDuplicates(List<NameEntry> entries) {
@@ -83,7 +87,7 @@ public class NameEntryService {
             this.insertTakingCareOfDuplicates(entry);
             i++;
 
-            if (i == BULK_SIZE) {
+            if (i == BATCH_SIZE) {
                 nameEntryRepository.flush();
                 i = 0;
             }
@@ -92,6 +96,7 @@ public class NameEntryService {
 
     /**
      * Persist the suggested name
+     *
      * @param suggestedName
      */
     public void addSuggestedName(SuggestedName suggestedName) {
@@ -110,6 +115,7 @@ public class NameEntryService {
 
     /**
      * Deletes all feedback for a name
+     *
      * @param name
      */
     public void deleteFeedback(String name) {
@@ -120,8 +126,8 @@ public class NameEntryService {
     }
 
     /**
-     *
      * Returns the feedback for a name
+     *
      * @param entry the {@link NameEntry} to get feedbacks for
      * @return the feedback as a list of {@link NameEntryFeedback}
      */
@@ -131,6 +137,7 @@ public class NameEntryService {
 
     /**
      * Delete the suggested name
+     *
      * @param name the name to delete
      */
     public boolean deleteSuggestedName(String name) {
@@ -144,6 +151,7 @@ public class NameEntryService {
 
     /**
      * Returns all the suggested names
+     *
      * @return List of {@link SuggestedName}
      */
     public List<SuggestedName> loadAllSuggestedNames() {
@@ -152,6 +160,7 @@ public class NameEntryService {
 
     /**
      * Saves {@link org.oruko.dictionary.model.NameEntry}
+     *
      * @param entry the entry to be saved
      */
     public NameEntry saveName(NameEntry entry) {
@@ -160,24 +169,31 @@ public class NameEntryService {
 
     /**
      * Saves a list {@link org.oruko.dictionary.model.NameEntry}
+     *
      * @param entries the list of name entries to be saved
      */
     public List<NameEntry> saveNames(List<NameEntry> entries) {
         int i = 0;
         List<NameEntry> savedNames = new ArrayList<>();
-        for (NameEntry entry: entries) {
+        for (NameEntry entry : entries) {
             savedNames.add(this.saveName(entry));
             i++;
-            if (i == BULK_SIZE) {
+            if (i == BATCH_SIZE) {
                 nameEntryRepository.flush();
                 i = 0;
             }
         }
         return savedNames;
     }
+
+
     /**
+     *     /**
      * Updates the properties with values from another {@link org.oruko.dictionary.model.NameEntry}
-     * @param newEntry the nameEntry to take values used for updating
+     *
+     * @param oldEntry the entry to be updated
+     * @param newEntry the entry with the new value
+     * @return the updated entry
      */
     public NameEntry updateName(NameEntry oldEntry, NameEntry newEntry) {
         String oldEntryName = oldEntry.getName();
@@ -195,11 +211,37 @@ public class NameEntryService {
         return nameEntryRepository.save(oldEntry);
     }
 
+
+    /**
+     * Updates the properties of a list of names with values from another list of name entries
+     *
+     * @param nameEntries the new entries
+     * @return the updated entries
+     */
+    public List<NameEntry> bulkUpdateNames(List<NameEntry> nameEntries) {
+        List<NameEntry> updated = new ArrayList<>();
+
+        int i = 0;
+        for (NameEntry nameEntry : nameEntries) {
+            NameEntry oldEntry = this.loadName(nameEntry.getName());
+            updated.add(this.updateName(oldEntry, nameEntry));
+            i++;
+
+            if (i == BATCH_SIZE) {
+                nameEntryRepository.flush();
+                duplicateEntryRepository.flush();
+                i = 0;
+            }
+        }
+        return updated;
+    }
+
     /**
      * Used to retrieve {@link org.oruko.dictionary.model.NameEntry} from the repository. Supports ability to
      * specify how many to retrieve and pagination.
+     *
      * @param pageNumberParam specifies page number
-     * @param countParam specifies the count of result
+     * @param countParam      specifies the count of result
      * @return a list of {@link org.oruko.dictionary.model.NameEntry}
      */
     public List<NameEntry> loadAllNames(Optional<Integer> pageNumberParam, Optional<Integer> countParam) {
@@ -212,7 +254,7 @@ public class NameEntryService {
                 new PageRequest(pageNumber == 0 ? 0 : pageNumber - 1, count, Sort.Direction.ASC, "id");
 
         Page<NameEntry> pages = nameEntryRepository.findAll(request);
-        pages.forEach(page->{
+        pages.forEach(page -> {
             nameEntries.add(page);
         });
 
@@ -221,6 +263,7 @@ public class NameEntryService {
 
     /**
      * Used to retrieve a {@link org.oruko.dictionary.model.NameEntry} from the repository using its known name
+     *
      * @param name the name
      * @return the NameEntry
      */
@@ -230,6 +273,7 @@ public class NameEntryService {
 
     /**
      * Used to retrieve the duplicate entries for the given name string
+     *
      * @param name the name
      * @return a list of {@link org.oruko.dictionary.model.DuplicateNameEntry}
      */
@@ -261,14 +305,31 @@ public class NameEntryService {
         duplicateEntryRepository.delete(new DuplicateNameEntry(nameEntry));
     }
 
+    // TODO Method level security should be added here
+    public void batchDeleteNameEntryAndDuplicates(List<String> names) {
+        int i = 0;
+        for (String name: names ) {
+            this.deleteNameEntryAndDuplicates(name);
+            i++;
+
+            if (i == BATCH_SIZE) {
+                nameEntryRepository.flush();
+                duplicateEntryRepository.flush();
+                i = 0;
+            }
+        }
+    }
+
     /**
      * Deletes a duplicated entry
+     *
      * @param duplicateNameEntry the duplicated entry to delete
      */
     // TODO Method level security should be added here
     public void deleteInDuplicateEntry(DuplicateNameEntry duplicateNameEntry) {
         duplicateEntryRepository.delete(duplicateNameEntry);
     }
+
 
     // ==================================================== Helpers ====================================================
     private boolean alreadyExists(String name) {
@@ -289,4 +350,5 @@ public class NameEntryService {
             return false;
         });
     }
+
 }
