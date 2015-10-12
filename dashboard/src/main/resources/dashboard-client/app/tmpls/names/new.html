@@ -33,201 +33,128 @@
 <form class="name-entry-form" name="form">
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-6 col-sm-7 col-sm-8 col-xs-12">
+
         <div class="form-group">
-            <label for="entry" class="required">Entry</label>
-            <input type="text" id="entry" class="form-control" ng-model="name.entry">
+            <label for="name" class="required">Name</label>
+            <input type="text" id="name" class="form-control" ng-model="name.name" required>
         </div>
         <div class="form-group">
             <label for="meaning" class="required">Meaning</label>
-            <textarea id="meaning" cols="10" rows="3" class="form-control" ng-model="name.meaning"></textarea>
+            <textarea id="meaning" cols="10" rows="3" class="form-control" ng-model="name.meaning" required></textarea>
         </div>
         <div class="form-group">
             <label for="extra_info">Extra information about this name</label>
-            <textarea id="extra_info" cols="10" rows="3" class="form-control" ng-model="name.extra_info"></textarea>
+            <textarea id="extra_info" cols="10" rows="3" class="form-control" ng-model="name.extendedMeaning"></textarea>
         </div>
         <div class="form-group">
             <label for="syllables">Syllable breakdown</label>
-            <input type="text" id="syllables" class="form-control" ng-model="name.syllables">
+            <input type="text" id="syllables" class="form-control" ng-model="name.syllables" required>
         </div>
         <div class="form-group">
-            <label for="reg_input">IPA Pronounciation</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="ipa">IPA Notation</label>
+            <input type="text" id="ipa" class="form-control" ng-model="name.ipaNotation">
         </div>
         <div class="form-group">
-            <label for="reg_input">American Pronounciation</label>
-            <input type="text" id="reg_input" class="form-control">
+            <label for="pronounciation">Pronunciation</label>
+            <input type="text" id="pronounciation" class="form-control" ng-model="name.pronunciation">
         </div>
         <div class="form-group">
-            <label for="reg_input">Morphology</label>
-            <input type="text" id="reg_input" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-12"><label>Etymology</label></div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Word</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Meaning</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-            </div>
-            <p class="text-right"><a>Add a new word and meaning pair</a></p>
+            <label for="morphology">Morphology</label>
+            <input type="text" id="morphology" class="form-control" ng-model="name.morphology">
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-sm-12"><label>Variant</label></div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Word</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Note (e.g. Geography)</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-            </div>
-            <p class="text-right"><a>Add a new variant</a></p>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-12"><label>Media Links</label></div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Title</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Link</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-            </div>
-            <p class="text-right"><a>Add a new link</a></p>
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-12"><label>Personalities</label></div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Name</label>
-                    <input type="text" id="reg_input" class="form-control">
-                </div>
-                <div class="col-sm-6">
-                    <label for="reg_input">Profession</label>
-                    <input type="text" id="reg_input" class="form-control">
+            <h5>Etymology</h5>
+            <div class="row etymology">
+                <div class="col-sm-4">
+                    <label for="etymology_part">Part</label>
+                    <input type="text" id="etymology_part" class="form-control" ng-model="etymology[0].part">
                 </div>
                 <div class="col-sm-8">
-                    <label for="reg_input" class="optional">Picture</label>
-                    <input type="file" id="reg_input" class="form-control">
+                    <label for="etymology_meaning">Meaning</label>
+                    <input type="text" id="etymology_meaning" class="form-control" ng-model="etymology[0].meaning">
                 </div>
             </div>
-            <p class="text-right"><a>Add a new personality</a></p>
+            <p class="text-right"><a ng-click="clone_etymology()">Add a new part and meaning pair</a></p>
         </div>
 
-        
-
-    </div>
-    <div class="col-lg-6">
-
         <div class="form-group">
-            <h4>Tags</h4>
-            <label class="required">Gender</label>
-
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="">
-                    Female
-                </label>
+            <label for="name_variants">Variants</label>
+            <span class="help-block">Enter other known variations for this name. Use comma to separate the different variations.</span>
+            <textarea id="name_variants" class="form-control" ng-model="name.variants"></textarea>
+            <!--div class="row">
+                <div class="col-sm-12"><label>Variants</label></div>
+                <div class="col-sm-6">
+                    <label for="variant_word">Word</label>
+                    <input type="text" id="variant_word" class="form-control" ng-model="etymology.meaning">
+                </div>
+                <div class="col-sm-6">
+                    <label for="variant_geography">Note (e.g. Geography)</label>
+                    <input type="text" id="variant_geography" class="form-control" ng-model="etymology.meaning">
+                </div>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="">
-                    Male
-                </label>
+            <p class="text-right"><a ng-click="clone_variant()">Add a new variant</a></p-->
+        </div>
+
+        <div class="form-group">
+            <label for="media">Media Link</label>
+            <span class="help-block">Enter links to resources that can be found online for this name. Use comma to separate links.</span>
+            <textarea id="media" class="form-control" ng-model="name.media"></textarea>
+            <!--div class="row">
+                <div class="col-sm-12"><label>Media Links</label></div>
+                <div class="col-sm-6">
+                    <label for="media_title">Title</label>
+                    <input type="text" id="media_title" class="form-control" ng-model="media.title">
+                </div>
+                <div class="col-sm-6">
+                    <label for="media_link">Link</label>
+                    <input type="text" id="media_link" class="form-control" ng-model="media.link">
+                </div>
             </div>
+            <p class="text-right"><a ng-click="clone_link()">Add a new link</a></p-->
         </div>
 
         <div class="form-group">
-            <label>Usage</label>
-
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="">
-                    Firstname
-                </label>
+            <label for="person_name">Famous People</label>
+            <span class="help-block">Enter names of famous people bearing this name. Use comma to separate names.</span>
+            <textarea id="person_name" class="form-control" ng-model="name.famousPeople"></textarea>
+            <!--div class="row">
+                <div class="col-sm-12"><label>Personalities</label></div>
+                <div class="col-sm-6">
+                    <label for="person_name">Name</label>
+                    <input type="text" id="person_name" class="form-control" ng-model="name.famousPeople">
+                </div>
+                <div class="col-sm-6">
+                    <label for="person_profession">Profession</label>
+                    <input type="text" id="person_profession" class="form-control" ng-model="persons.profession">
+                </div>
+                <div class="col-sm-8">
+                    <label for="person_picture" class="optional">Picture</label>
+                    <input type="text" id="person_picture" class="form-control" ng-model="persons.picture">
+                </div>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="">
-                    Surname
-                </label>
-            </div>
+            <p class="text-right"><a ng-click="clone_person()">Add a new personality</a></p-->
         </div>
 
-        <div class="form-group">
-            <label>Religious</label>
-            <select multiple="multiple" rel="reg_select_multiple" class="form-control">
-                <option>Yoruba Traditional Religion</option>
-                <option>Muslim</option>
-                <option>Christain</option>
-                <option>Name brought from heaven</option>
-            </select>
-            <span class="help-block">Hold Ctrl and click to select multiple</span>
-        </div>
 
         <div class="form-group">
-            <label>Social</label>
-            <select multiple="multiple" rel="reg_select_multiple" class="form-control">
-                <option>Nickname, abbreviation</option>
-                <option>Title, royalty, chieftaincy</option>
-                <option>Pet name</option>
-                <option>Praise name (oriki)</option>
-            </select>
-            <span class="help-block">Hold Ctrl and click to select multiple</span>
-        </div>
-
-        <div class="form-group">
-            <label>Temporal and Geographic</label>
-            <select multiple="multiple" rel="reg_select_multiple" class="form-control">
-                <option>Dates, events</option>
-                <option>Town, village, neighbourhood</option>
-                <option>Foreign (English)</option>
-                <option>Foreign (French)</option>
-                <option>Foreign (Arabic)</option>
-                <option>Neologism</option>
-            </select>
-            <span class="help-block">Hold Ctrl and click to select multiple</span>
-        </div>
-
-        <div class="form-group">
-            <label>Geolocation</label>
-            <select id="slz_optgroups" multiple placeholder="Select geolocation...">
-                <option value="">Select geolocation</option>
-                <optgroup label="Nigeria">
-                    <option value="north-west yoruba">North-West Yoruba (Abeokuta, Ibadan, Oyo, Ogun, Lagos)</option>
-                    <option value="central yoruba">Central Yoruba (Igbomina, Yagba, Ilesa, Ife, Ekiti, Akure, Efon, Ijebu)</option>
-                    <option value="south-east yoruba">South-East Yoruba (Okitipupa, Ilaje, Ondo, Owo, Ikare, Sagamu, Ijebu)</option>
-                </optgroup>
-                <optgroup label="Africa and Diaspora">
-                    <option value="benin">Benin</option>
-                    <option value="ghana">Ghana</option>
-                    <option value="other african">Other African Country</option>
-                    <option value="outside africa">Outside Africa/Diaspora</option>
-                </optgroup>
+            <label for="geolocation">Geolocation</label>
+            <span class="help-block">Where is this name most commonly used?</span>
+            <select id="geolocation" class="form-control" placeholder="Select geolocation..." ng-model="geoLocation">
+                <option ng-repeat="location in geoLocations" value="{{location}}">{{location.place}}</option>
             </select>
         </div>
 
     </div>
+    
 </div>
 
 <div class="row">
     <div class="col-sm-12">
         <hr>
         <button type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Submit for Review</button>
-        <button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button>
+        <!--button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button-->
         <button type="submit" class="btn btn-lg btn-default" ng-click="preview()" ng-disabled="form.$invalid || !form.$dirty">Preview Entry</button>
     </div>
 </div>

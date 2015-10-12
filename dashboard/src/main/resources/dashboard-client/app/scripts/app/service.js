@@ -173,6 +173,10 @@ angular.module('dashboardappApp')
             $rootScope.username = $cookies.username;
             // TODO maybe not. This is a security loop hole
             $cookies.token = authData;
+            $rootScope.user = {
+              username: $cookies.username,
+              email: $cookies.email
+            }
             response.roles.some(function(role) {
                 if (role === "ROLE_ADMIN") {
                     $cookies.isAdmin = true;
@@ -188,22 +192,25 @@ angular.module('dashboardappApp')
         }).error(function(response) {
             $cookies.isAuthenticated = false;
             $cookies.isAdmin = false;
+            $rootScope.user = null;
             $rootScope.isAuthenticated = false;
             $rootScope.isAdmin = false;
             toastr.error(response.message, 'Authentication Error')
         })
     }
 
-    // Logs out
-    this.signout = function(){
+    // Log out function
+    this.logout = function(){
+      console.log('running service.logout')
       $cookies.isAuthenticated = false;
       $cookies.isAdmin = false;
-      currentScope.isAuthenticated = false;
-      currentScope.isAdmin = false;
+      $rootScope.isAuthenticated = false;
+      $rootScope.isAdmin = false;
       $timeout(function(){
         $state.go('login')
       }, 200)
     }
+
 }])
 
 /* Names API Endpoint Service, Extension for API requests for Name Entries resources only. Adapted from code base */
@@ -215,8 +222,11 @@ angular.module('dashboardappApp')
       * Adds a name to the database;
       * @param nameEntry
       */
-      this.addName = function (nameToAdd) {
-        return api.postJson("/v1/names", nameToAdd)
+      this.addName = function (name) {
+        return api.postJson("/v1/names", name)
+      }
+      this.deleteName = function (name) {
+        return api.deleteJson("/v1/names/" + name, name)
       }
 
       /**
@@ -237,25 +247,33 @@ angular.module('dashboardappApp')
       this.getSuggestedNames = function() {
         return api.get('/v1/suggest')
       }
-
-      this.deleteSuggestedName = function(suggestedName) {
-        return api.delete("/v1/suggest/" + suggestedName)
+      this.deleteSuggestedName = function(name) {
+        return api.delete("/v1/suggest/" + name)
       }
 
-      this.indexName = function (name) {
+      this.addNameToIndex = function (name) {
         return api.postJson('/v1/search/indexes/' + name)
       }
-
       this.removeNameFromIndex = function (name) {
         return api.deleteJson('/v1/search/indexes/' + name)
+      }
+
+      this.addNamesToIndex = function (namesJson) {
+        return api.postJson('/v1/search/indexes/batch', namesJson)
+      }
+      this.removeNamesFromIndex = function (namesJson) {
+        return api.deleteJson('/v1/search/indexes/batch', namesJson)
       }
 
       this.getFeedback = function(name) {
         return api.get('/v1/names/'+name+'/', { feedback: true })
       }
-
       this.deleteFeedback = function(name) {
-        return api.deleteJson('/v1/'+name+'/feedback')
+        return api.deleteJson('/v1/names/'+name+'/feedback')
+      }
+
+      this.getGeoLocations = function(){
+        return api.get('/v1/admin/geolocations')
       }
 
 }])
@@ -269,7 +287,7 @@ angular.module('dashboardappApp')
     }
 
     var options = options || {},
-        fileType = options.fileType || ['text/csv'],
+        fileType = options.fileType || ['text/csv','text/xslx'],
         maxUpload = options.maxUpload || 1,
         invalidFileMsg = options.invalidFileMsg || 'File type is not supported',
         uploadLimitMsg = options.uploadLimitMsg || 'You may only upload one file at a time',

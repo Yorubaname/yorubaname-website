@@ -6,6 +6,7 @@ dashboardappApp
         'authApi',
         function ($scope, api) {
             $scope.logout = function(){
+                console.log('running controller.logout')
                 return api.logout()
             }
         }
@@ -39,7 +40,6 @@ dashboardappApp
                             title: 'List Entries',
                             link: "auth.names.list_entries({status:'all'})"
                         },
-                        
                         {
                             title: 'Search',
                             link: 'auth.names.search'
@@ -87,13 +87,13 @@ dashboardappApp
                         $submenu_parent.removeClass('submenu_active').children('ul').slideUp('200');
                     }
                 }
-            });
+            })
 
             $rootScope.createScrollbar = function() {
                 $("#main_menu .menu_wrapper").mCustomScrollbar({
                     theme: "minimal-dark",
                     scrollbarPosition: "outside"
-                });
+                })
             }
 
             $rootScope.destroyScrollbar = function() {
@@ -108,9 +108,9 @@ dashboardappApp
                         $('#main_menu .has_submenu.section_active').children('ul').show();
                     }
                     // init scrollbar
-                    $rootScope.createScrollbar();
+                    $rootScope.createScrollbar()
                 }
-            });
+            })
         }
     ])
 
@@ -129,9 +129,11 @@ dashboardappApp
         '$scope',
         'files',
         'namesApi',
-        function ($scope, files, namesApi) {
+        '$cookies',
+        function ($scope, files, namesApi, $cookies) {
             // run scripts after state load
             $scope.$on('$stateChangeSuccess', function () {
+                
                 $('.countUpMe').each(function() {
                     var target = this,
                     endVal = parseInt($(this).attr('data-endVal')),
@@ -155,18 +157,45 @@ dashboardappApp
         '$scope',
         'files',
         'uploader',
-        function($scope, files, Uploader) {
+        'namesApi',
+        function($scope, files, Uploader, api) {
 
             $scope.uploader = Uploader('/v1/names/upload')
 
-            $scope.$on('$stateChangeSuccess', function(){
+            $scope.name = {}
+            $scope.etymology = []
+
+            api.getGeoLocations().success(function(response) {
+                $scope.geoLocations = response
+            })
+
+            $scope.submit = function(){
+                
+                $scope.name.etymology = $scope.etymology
+
+                $scope.name.geoLocation = JSON.parse( $scope.geoLocation )
+
+                //console.log($scope.name)
+                
+                return api.addName($scope.name)
+            }
+
+            $scope.save = function(){
+
+            }
+
+            $scope.preview = function(){
+
+            }
+
+            /*$scope.$on('$stateChangeSuccess', function(){
                 $('#slz_optgroups').selectize({
                     sortField: 'text'
                 })
-                $("select[rel='reg_select_multiple']").select2({
+                /*$("select[rel='reg_select_multiple']").select2({
                     placeholder: "Select..."
                 })
-            })
+            })*/
         }
     ])
 

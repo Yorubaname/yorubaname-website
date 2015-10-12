@@ -25,7 +25,7 @@
                     <th>Gender</th>
                     <th data-hide="phone,tablet">Syllables</th>
                     <th data-hide="phone,tablet">Morphology</th>
-                    <th data-hide="phone">Status</th>
+                    <th data-hide="phone" colspan="2">Status</th>
                     <th data-hide="phone,tablet" data-name="Date Of Submission">Submitted</th>
                 </tr>
             </thead>
@@ -35,6 +35,7 @@
                     <td>{{entry.gender}}</td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.morphology}}</td>
+                    <td><a class="btn btn-xs btn-success">Index</a> <a class="btn btn-xs btn-default">De-index</a> </td>
                     <td data-value="1"><span class="label label-success status-active" title="Active">{{entry.status}}</span></td>
                 </tr>
             </tbody>

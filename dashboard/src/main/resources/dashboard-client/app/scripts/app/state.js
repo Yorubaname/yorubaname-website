@@ -51,8 +51,8 @@ dashboardappApp
                     // this state url
                     url: "/",
                     templateUrl: 'tmpls/dashboard.html',
-                    data: {
-                        ncyBreadcrumbLabel: 'Home'
+                    ncyBreadcrumb: {
+                        label: 'Home'
                     },
                     // load state specific js/css
                     resolve: {
@@ -81,8 +81,8 @@ dashboardappApp
                 // Names > New Entries
                 .state('auth.names.add_entries', {
                     page_title: 'Yoruba Names - Admin - Add Name Entries',
-                    data: {
-                        ncyBreadcrumbLabel: 'Add Name Entries'
+                    ncyBreadcrumb: {
+                        label: 'Add Name Entries'
                     },
                     url: '/new',
                     templateUrl: 'tmpls/names/new.html',
@@ -108,8 +108,8 @@ dashboardappApp
                 // edit Name Entry
                 .state('auth.names.edit_entries', {
                     page_title: 'Yoruba Names - Admin - Edit Entry',
-                    data: {
-                        ncyBreadcrumbLabel: 'Edit Entry'
+                    ncyBreadcrumb: {
+                        label: 'Edit Entry'
                     },
                     url: '/edit/:entry',
                     templateUrl: 'tmpls/names/edit.html',
@@ -135,8 +135,8 @@ dashboardappApp
                 // Names > Published Names
                 .state('auth.names.list_entries', {
                     page_title: 'Yoruba Names - Admin - Names',
-                    data: {
-                        ncyBreadcrumbLabel: 'Names Entries'
+                    ncyBreadcrumb: {
+                        label: 'Names Entries'
                     },
                     url: '/lists/:status',
                     templateUrl: 'tmpls/names/lists.html',
@@ -159,8 +159,8 @@ dashboardappApp
                 // Names > Name Search
                 .state('auth.names.search', {
                     page_title: 'Yoruba Names - Admin - Name Search',
-                    data: {
-                        ncyBreadcrumbLabel: 'Search'
+                    ncyBreadcrumb: {
+                        label: 'Search'
                     },
                     url: '/search',
                     templateUrl: 'tmpls/names/search.html',
@@ -177,8 +177,8 @@ dashboardappApp
                 // Pages > Contact List
                 .state('auth.profile.index', {
                     page_title: 'Yourba Names Admin - User Profile',
-                    data: {
-                        ncyBreadcrumbLabel: 'User Profile'
+                    ncyBreadcrumb: {
+                        label: 'User Profile'
                     },
                     url: '/',
                     templateUrl: 'tmpls/profile/index.html',
@@ -188,10 +188,9 @@ dashboardappApp
                 // Pages > Faq/Help
                 .state('auth.profile.edit', {
                     page_title: 'Yoruba Names Admin - Update User Profile',
-                    data: {
-                        ncyBreadcrumbLabel: 'Update Profile'
+                    ncyBreadcrumb: {
+                        label: 'Update Profile'
                     },
-                    abstract: true,
                     url: '/edit',
                     templateUrl: 'tmpls/profile/edit.html',
                     controller: 'profileEditCtrl'
@@ -207,8 +206,8 @@ dashboardappApp
                 // Pages > Faq/Help > Categories
                 .state('auth.users.add_user', {
                     page_title: 'Yoruba Names Admin - Add User',
-                    data: {
-                        ncyBreadcrumbLabel: 'Add User'
+                    ncyBreadcrumb: {
+                        label: 'Add User'
                     },
                     url: '/new',
                     templateUrl: 'tmpls/users/new.html',
@@ -217,8 +216,8 @@ dashboardappApp
 
                 .state('auth.users.edit_user', {
                     page_title: 'Yoruba Names Admin - Edit User',
-                    data: {
-                        ncyBreadcrumbLabel: 'Edit User Info'
+                    ncyBreadcrumb: {
+                        label: 'Edit User Info'
                     },
                     url: '/edit/:id',
                     templateUrl: 'tmpls/users/edit.html',
@@ -227,8 +226,8 @@ dashboardappApp
 
                 .state('auth.users.list_users', {
                     page_title: 'Yoruba Names Admin - All Users',
-                    data: {
-                        ncyBreadcrumbLabel: 'All Users'
+                    ncyBreadcrumb: {
+                        label: 'All Users'
                     },
                     url: '/lists/:role',
                     templateUrl: 'tmpls/users/lists.html',
@@ -249,4 +248,4 @@ dashboardappApp
                 })
 
         }
-    ]);
+    ])

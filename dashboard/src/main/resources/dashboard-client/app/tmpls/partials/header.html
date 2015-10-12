@@ -2,23 +2,23 @@
 <header id="main_header" class="{{topBarColor}}">
 	<div class="container-fluid">
 		<div class="brand_section">
-			<a ui-sref="auth.home"><img src="http://blog.yorubaname.com/wp-content/uploads/2015/04/yd-logo-brown-black.png" alt="Yoruba Dictionary" width="63" height="26"></a>
+			<a ui-sref="auth.home"><img src="http://blog.yorubaname.com/wp-content/uploads/2015/04/yd-logo-brown-black.png" alt="Yoruba Names" width="63" height="26"></a>
 		</div>
 		
         <div class="header_user_actions dropdown" on-toggle="toggled(open)" dropdown>
             <div class="dropdown-toggle user_dropdown" dropdown-toggle>
                 <div class="user_avatar">
-                    <img src="http://placehold.it/40x40" alt="" title="Yemi Agbetunsin (admin@example.com)" width="38" height="38">
+                    <img src="http://placehold.it/40x40" alt="" ng-title="{{user.username}} ({{user.email}})" width="38" height="38">
                 </div>
                 <span class="caret"></span>
             </div>
             <ul class="dropdown-menu dropdown-menu-right">
-                <li><a ui-sref="auth.profile.index">Yemi Agbetunsin</a></li>
+                <li><a ui-sref="auth.profile.index">{{user.username}}</a></li>
                 <li><a ng-click="logout()">Log Out</a></li>
             </ul>
         </div>
         <div class="search_section hidden-sm hidden-xs" ng-controller="topSearchCtrl">
-            <input type="text" class="form-control input-sm" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8">
+            <input type="text" class="form-control input-sm" ng-model="selected" typeahead="state for name in names | filter:$viewValue | limitTo:8">
             <button class="btn btn-link btn-sm" type="button"><span class="icon_search"></span></button>
         </div>
 	</div>

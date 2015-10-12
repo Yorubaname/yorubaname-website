@@ -71,8 +71,6 @@ dashboardappApp.run(
             $rootScope.$stateParams = $stateParams;
 
             var is_logged_in = function(){
-                //console.log($cookies)
-              console.log($cookies.username)
               return !!$cookies.token && !!$cookies.username;
             }
 
@@ -91,13 +89,11 @@ dashboardappApp.run(
 
                 if (requiresLogin === true && !is_logged_in()) {
                     event.preventDefault()
-                    //console.log('you need to login')
                     $state.go('login')
                 }
                 
                 else if (requiresLogout === true && is_logged_in()) {
                     event.preventDefault()
-                    //console.log('you are already logged in')
                     $state.go('auth.home')
                 }
 
