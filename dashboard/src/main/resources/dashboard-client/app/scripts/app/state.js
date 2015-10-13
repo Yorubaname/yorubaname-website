@@ -155,6 +155,29 @@ dashboardappApp
                     },
                     controller: 'namesListEntriesCtrl'
                 })
+
+                .state('auth.names.suggested_names', {
+                    page_title: 'Yoruba Names - Suggested Names',
+                    ncyBreadcrumb: {
+                        label: 'Suggested Names'
+                    },
+                    url: '/suggested',
+                    templateUrl: 'tmpls/names/suggested.html',
+                    resolve: {
+                        files: [
+                            'uiLoad',
+                            function (uiLoad) {
+                                return uiLoad.load([
+                                    'bower_components/footable/css/footable.core.min.css',
+                                    'bower_components/footable/dist/footable.min.js',
+                                    'bower_components/footable/dist/footable.paginate.min.js',
+                                    'bower_components/footable/dist/footable.filter.min.js'
+                                ]);
+                            }
+                        ]
+                    },
+                    controller: 'namesSuggestedEntriesCtrl'
+                })
                 
                 // Names > Name Search
                 .state('auth.names.search', {

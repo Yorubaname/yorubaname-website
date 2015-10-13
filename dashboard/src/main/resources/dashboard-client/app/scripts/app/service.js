@@ -269,7 +269,7 @@ angular.module('dashboardappApp')
         return api.get('/v1/names/'+name+'/', { feedback: true })
       }
       this.deleteFeedback = function(name) {
-        return api.deleteJson('/v1/names/'+name+'/feedback')
+        return api.deleteJson('/v1/'+name+'/feedback')
       }
 
       this.getGeoLocations = function(){
@@ -302,62 +302,62 @@ angular.module('dashboardappApp')
           url: endpoint
       })
 
-    // FILTERS
+      // FILTERS
 
-    uploader.filters.push({
-        name: 'customFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
-            return (fileType.indexOf(item.type) >= 0 && this.queue.length < maxUpload)
-        }
-    })
+      uploader.filters.push({
+          name: 'customFilter',
+          fn: function(item /*{File|FileLikeObject}*/, options) {
+              return (fileType.indexOf(item.type) >= 0 && this.queue.length < maxUpload)
+          }
+      })
 
-    // CALLBACKS
-    uploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
-      console.info('onWhenAddingFileFailed', item, filter, options);
-      if (fileType.indexOf(item.type) < 0) return toastr.warning('Invalid File' + invalidFileMsg);
-      if (this.queue.length == maxUpload) return toastr.warning('Single upload' + uploadLimitMsg);
-    }
-    uploader.onAfterAddingFile = function (fileItem) {
-      console.info('onAfterAddingFile', fileItem);
-    }
-    uploader.onAfterAddingAll = function (addedFileItems) {
-      console.info('onAfterAddingAll', addedFileItems);
-      if (!options.manualTrigger) addedFileItems[0].upload();
-    }
-    uploader.onBeforeUploadItem = function (item) {
-      console.info('onBeforeUploadItem', item);
-    }
-    uploader.onProgressItem = function (fileItem, progress) {
-      console.info('onProgressItem', fileItem, progress);
-    }
-    uploader.onProgressAll = function (progress) {
-      console.info('onProgressAll', progress);
-    }
-    uploader.onSuccessItem = function (fileItem, response, status, headers) {
-      console.info('onSuccessItem', fileItem, response, status, headers);
-    }
-    uploader.onErrorItem = function (fileItem, response, status, headers) {
-      console.info('onErrorItem', fileItem, response, status, headers);
-      toastr.error('Upload Error' + onError);
-      fileItem.remove();
-      errorCallback(response);
-    }
-    uploader.onCancelItem = function (fileItem, response, status, headers) {
-      console.info('onCancelItem', fileItem, response, status, headers);
-    }
-    uploader.onCompleteItem = function (fileItem, response, status, headers) {
-      console.info('onCompleteItem', fileItem, response, status, headers);
-      toastr.success('Upload Complete' + onComplete);
-      console.log('before running cb');
-      successCallback(response);
-      console.log('after running cb');
-      fileItem.remove();
-    }
-    uploader.onCompleteAll = function () {
-      console.info('onCompleteAll');
-    }
+      // CALLBACKS
+      uploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
+        console.info('onWhenAddingFileFailed', item, filter, options);
+        if (fileType.indexOf(item.type) < 0) return toastr.warning('Invalid File' + invalidFileMsg);
+        if (this.queue.length == maxUpload) return toastr.warning('Single upload' + uploadLimitMsg);
+      }
+      uploader.onAfterAddingFile = function (fileItem) {
+        console.info('onAfterAddingFile', fileItem);
+      }
+      uploader.onAfterAddingAll = function (addedFileItems) {
+        console.info('onAfterAddingAll', addedFileItems);
+        if (!options.manualTrigger) addedFileItems[0].upload();
+      }
+      uploader.onBeforeUploadItem = function (item) {
+        console.info('onBeforeUploadItem', item);
+      }
+      uploader.onProgressItem = function (fileItem, progress) {
+        console.info('onProgressItem', fileItem, progress);
+      }
+      uploader.onProgressAll = function (progress) {
+        console.info('onProgressAll', progress);
+      }
+      uploader.onSuccessItem = function (fileItem, response, status, headers) {
+        console.info('onSuccessItem', fileItem, response, status, headers);
+      }
+      uploader.onErrorItem = function (fileItem, response, status, headers) {
+        console.info('onErrorItem', fileItem, response, status, headers);
+        toastr.error('Upload Error' + onError);
+        fileItem.remove();
+        errorCallback(response);
+      }
+      uploader.onCancelItem = function (fileItem, response, status, headers) {
+        console.info('onCancelItem', fileItem, response, status, headers);
+      }
+      uploader.onCompleteItem = function (fileItem, response, status, headers) {
+        console.info('onCompleteItem', fileItem, response, status, headers);
+        toastr.success('Upload Complete' + onComplete);
+        console.log('before running cb');
+        successCallback(response);
+        console.log('after running cb');
+        fileItem.remove();
+      }
+      uploader.onCompleteAll = function () {
+        console.info('onCompleteAll');
+      }
 
-    return uploader
+      return uploader
 
     }
 

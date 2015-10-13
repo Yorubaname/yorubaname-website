@@ -34,17 +34,17 @@
             </a>
         </div>
     </div>
-    <div class="col-sm-2 col-xs-4">
+    <div class="col-sm-3 col-xs-4">
         <div class="info_box_var_1 box_bg_d">
             <div class="info_box_body">
                 <span class="countUpMe" data-endVal="531">531</span>
             </div>
-            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'pending'})">
-                Pending Reviews
+            <a class="info_box_footer" ui-sref="auth.names.suggested_names">
+                Suggested Names
             </a>
         </div>
     </div>
-    <div class="col-sm-2 col-xs-4">
+    <!--div class="col-sm-2 col-xs-4">
         <div class="info_box_var_1 box_bg_c">
             <div class="info_box_body">
                 <span class="countUpMe" data-endVal="13">13</span>
@@ -64,7 +64,7 @@
                 Draft Entries
             </a>
         </div>
-    </div>
+    </div-->
 </div>
 <div class="row mHeight">
     <div class="col-sm-8">
@@ -73,7 +73,7 @@
             <div class="input-group sepH_b">
                     <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text">
                     <span class="input-group-btn">
-                        <a class="btn btn-default btn-lg"><i class="icon icon_puzzle_alt"></i> </a>
+                        <a class="btn btn-default btn-lg"><i class="icon icon_puzzle_alt"></i> Search</a>
                     </span>
                 </div>
             <div class="checkbox">
@@ -101,32 +101,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><a ui-sref="auth.names.edit_entries({entry:'Gbolahan'})">Gbolahan</a></td>
-                    <td>Pending</td>
-                    <td>22/10/14</td>
-                </tr>
-                <tr>
-                    <td><a ui-sref="auth.names.edit_entries({entry:'Yeside'})">Yeside</a></td>
-                    <td>Pending</td>
-                    <td>22/10/14</td>
-                </tr>
-                <tr>
-                    <td><a ui-sref="auth.names.edit_entries({entry:'Omoseindemi'})">Omoseindemi</a></td>
-                    <td>Correction</td>
-                    <td>30/08/14</td>
-                </tr>
-                <tr>
-                    <td><a ui-sref="auth.names.edit_entries({entry:'Agboola'})">Agboola</a></td>
-                    <td>Approved</td>
-                    <td>15/08/14</td>
-                </tr>
                 <tr ng-repeat="entry in names">
-                    <td><a ui-sref="auth.names.edit_entries({entry:name.name})">{{entry.name}}</a></td>
+                    <td><a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
                     <td>{{entry.status}}</td>
                     <td>{{entry.created_at|date}}</td>
                 </tr>
-
             </tbody>
         </table>
             

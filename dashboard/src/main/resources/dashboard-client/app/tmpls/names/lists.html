@@ -25,17 +25,17 @@
                     <th>Gender</th>
                     <th data-hide="phone,tablet">Syllables</th>
                     <th data-hide="phone,tablet">Morphology</th>
-                    <th data-hide="phone" colspan="2">Status</th>
+                    <th data-hide="phone">Status</th>
                     <th data-hide="phone,tablet" data-name="Date Of Submission">Submitted</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="entry in namesList">
-                    <td><a href="#">{{entry.name}}</a></td>
+                    <td><input type="checkbox" value="{{entry.name}}" name="selected_name"> <a href="#">{{entry.name}}</a></td>
                     <td>{{entry.gender}}</td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.morphology}}</td>
-                    <td><a class="btn btn-xs btn-success">Index</a> <a class="btn btn-xs btn-default">De-index</a> </td>
+                    <td><a class="btn btn-xs btn-success" ng-click="indexName(entry)" ng-hide="entry.indexed">Index</a> <a class="btn btn-xs btn-default" ng-click="deIndexName(entry)" ng-show="entry.indexed">Deindex</a> </td>
                     <td data-value="1"><span class="label label-success status-active" title="Active">{{entry.status}}</span></td>
                 </tr>
             </tbody>
@@ -47,5 +47,8 @@
                 </tr>
             </tfoot>
         </table>
+
+        <a ng-click="indexNames()" class="btn btn-success btn-sm">Index Selected</a>
+        <a ng-click="deIndexNames()" class="btn btn-default btn-sm">Remove Selected from Index</a>
     </div>
 </div>

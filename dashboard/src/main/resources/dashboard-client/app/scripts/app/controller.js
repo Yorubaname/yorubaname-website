@@ -37,8 +37,12 @@ dashboardappApp
                             link: 'auth.names.add_entries'
                         },
                         {
-                            title: 'List Entries',
+                            title: 'Name Entries',
                             link: "auth.names.list_entries({status:'all'})"
+                        },
+                        {
+                            title: 'Suggested Names',
+                            link: "auth.names.suggested_names"
                         },
                         {
                             title: 'Search',
@@ -221,17 +225,21 @@ dashboardappApp
         'namesApi',
         '$stateParams',
         '$window',
-        function($scope, api, $stateParams, $window) {
+        'toastr',
+        function($scope, api, $stateParams, $window, toastr) {
 
             $scope.namesList = []
 
             $scope.status = $stateParams.status;
 
-            api.getNames(1,3,$stateParams).success(function(responseData) {
+            $scope.selection = {}
+
+            api.getNames(1,10,$stateParams).success(function(responseData) {
                 $scope.namesListItems = responseData.length;
                 responseData.forEach(function(name) {
                     $scope.namesList.push(name)
                 })
+                $('#names_table').trigger('footable_clear_filter')
             }).error(function(response) {
                 console.log(response)
             })
@@ -256,6 +264,99 @@ dashboardappApp
             $scope.filterTable = function(userStatus) {
                 $('#names_table').data('footable-filter').filter( $('#textFilter').val() )
             }
+
+            $scope.selectedNames = []
+
+            $scope.select = function(entry){
+                console.log(entry.name)
+                var index = $scope.selectedNames.indexOf(entry.name)
+                if (index > -1) $scope.selectedNames.splice(index, 1);
+                else $scope.selectedNames.push(entry.name)
+            }
+
+            $scope.indexName = function(entry){
+                return api.addNameToIndex(entry.name).success(function(response){
+                    return entry.indexed = true
+                })
+            }
+
+            $scope.indexNames = function(){
+                var entries = $.map( $('input[name="selected_name"]:checked') , function(elem){
+                    return $(elem).val()
+                })
+                if (entries.length > 0) return api.addNamesToIndex(entries).success(function(response){
+                    
+                    entry.indexed = true
+                    toastr.success(entries.length + 'selected names have been added to index')
+                }).error(function(){
+                    toastr.error('Selected names could not be added to index')
+                })
+                else toastr.warning('No names selected to add to index')
+            }
+
+            $scope.deIndexName = function(entry){
+                return api.removeNameFromIndex(entry.name).success(function(response){
+                    entry.indexed = false
+                })
+            }
+
+            $scope.deIndexNames = function(entries){
+                var entries = $.map( $('input[name="selected_name"]:checked') , function(elem){
+                    return $(elem).val()
+                })
+                if (entries.length > 0) return api.removeNamesFromIndex(entries).success(function(response){
+                    
+                    entry.indexed = false
+
+                    toastr.success(entries.length + 'selected names have been removed from index')
+                }).error(function(){
+                    toastr.error('Selected names could not be removed from index')
+                })
+                else toastr.warning('No names selected to remove from index')
+            }
+
+        }
+    ])
+
+    .controller('namesSuggestedEntriesCtrl', [
+        '$scope',
+        'namesApi',
+        '$window',
+        'toastr',
+        function($scope, api, $window, toastr) {
+
+            $scope.namesList = []
+
+            api.getSuggestedNames(1,10).success(function(responseData) {
+                $scope.namesListItems = responseData.length;
+                responseData.forEach(function(name) {
+                    $scope.namesList.push(name)
+                })
+                $('#names_table').trigger('footable_clear_filter')
+            }).error(function(response) {
+                console.log(response)
+            })
+
+            $('#names_table').footable({
+                toggleSelector: " > tbody > tr > td > span.footable-toggle"
+            }).on({
+                'footable_filtering': function (e) {
+                    var selected = $scope.userStatus;
+                    if (selected && selected.length > 0) {
+                        e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
+                        e.clear = !e.filter;
+                    }
+                }
+            })
+
+            $scope.clearFilters = function() {
+                $('.filter-status').val('')
+                $('#names_table').trigger('footable_clear_filter')
+            }
+
+            $scope.filterTable = function(userStatus) {
+                $('#names_table').data('footable-filter').filter( $('#textFilter').val() )
+            } 
 
         }
     ])
