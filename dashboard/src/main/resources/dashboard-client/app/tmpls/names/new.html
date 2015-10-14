@@ -48,7 +48,7 @@
             <textarea id="extra_info" cols="10" rows="3" class="form-control" ng-model="name.extendedMeaning"></textarea>
         </div>
         <div class="form-group">
-            <label for="syllables">Syllable breakdown</label>
+            <label for="syllables" class="required">Syllable breakdown</label>
             <input type="text" id="syllables" class="form-control" ng-model="name.syllables" required>
         </div>
         <div class="form-group">
@@ -68,15 +68,15 @@
             <h5>Etymology</h5>
             <div class="row etymology">
                 <div class="col-sm-4">
-                    <label for="etymology_part">Part</label>
-                    <input type="text" id="etymology_part" class="form-control" ng-model="etymology[0].part">
+                    <label>Part</label>
+                    <input type="text" class="form-control" name="part">
                 </div>
                 <div class="col-sm-8">
-                    <label for="etymology_meaning">Meaning</label>
-                    <input type="text" id="etymology_meaning" class="form-control" ng-model="etymology[0].meaning">
+                    <label>Meaning</label>
+                    <input type="text" class="form-control" name="meaning">
                 </div>
             </div>
-            <p class="text-right"><a ng-click="clone_etymology()">Add a new part and meaning pair</a></p>
+            <p class="text-right help-block"><a ng-click="clone_etymology()">Add a new part and meaning pair</a></p>
         </div>
 
         <div class="form-group">
@@ -139,9 +139,9 @@
 
 
         <div class="form-group">
-            <label for="geolocation">Geolocation</label>
+            <label for="geolocation" class="required">Geolocation</label>
             <span class="help-block">Where is this name most commonly used?</span>
-            <select id="geolocation" class="form-control" placeholder="Select geolocation..." ng-model="geoLocation">
+            <select id="geolocation" class="form-control" placeholder="Select geolocation..." ng-model="name.geoLocation" required>
                 <option ng-repeat="location in geoLocations" value="{{location}}">{{location.place}}</option>
             </select>
         </div>
@@ -154,8 +154,8 @@
     <div class="col-sm-12">
         <hr>
         <button type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Submit for Review</button>
-        <!--button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button-->
-        <button type="submit" class="btn btn-lg btn-default" ng-click="preview()" ng-disabled="form.$invalid || !form.$dirty">Preview Entry</button>
+        <!--button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button>
+        <button type="submit" class="btn btn-lg btn-default" ng-click="preview()" ng-disabled="form.$invalid || !form.$dirty">Preview Entry</button-->
     </div>
 </div>
 

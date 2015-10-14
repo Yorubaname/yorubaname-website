@@ -286,8 +286,11 @@ angular.module('dashboardappApp')
       this.url = endpoint
     }
 
-    var options = options || {},
-        fileType = options.fileType || ['text/csv','text/xslx'],
+    return function(endpoint, options) {
+
+      var uploader = new FileUploader({ url: endpoint }),
+        options = options || {},
+        fileType = options.fileType || ['text/csv','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         maxUpload = options.maxUpload || 1,
         invalidFileMsg = options.invalidFileMsg || 'File type is not supported',
         uploadLimitMsg = options.uploadLimitMsg || 'You may only upload one file at a time',
@@ -295,12 +298,6 @@ angular.module('dashboardappApp')
         onComplete = options.onCompleteMsg || 'File upload completed successfully',
         errorCallback = options.errorCallback || function(){},
         successCallback = options.successCallback || function(){}
-
-    return function(endpoint, options) {
-
-      var uploader = new FileUploader({
-          url: endpoint
-      })
 
       // FILTERS
 

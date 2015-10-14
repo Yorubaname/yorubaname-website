@@ -174,32 +174,50 @@ dashboardappApp
             })
 
             $scope.submit = function(){
-                
-                $scope.name.etymology = $scope.etymology
+                 
+                var parts = $.map( $('input[name="part"]') , function(elem){
+                    return $(elem).val()
+                }), 
 
-                $scope.name.geoLocation = JSON.parse( $scope.geoLocation )
+                meanings = $.map( $('input[name="meaning"]') , function(elem){
+                    return $(elem).val()
+                }) 
+
+                $scope.name.etymology = $.map( parts, function(part, index){
+                    return { 'part': part, 'meaning': meanings[index] }
+                })
+
+                $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || {} )
 
                 //console.log($scope.name)
                 
                 return api.addName($scope.name)
             }
 
-            $scope.save = function(){
+            $scope.clone_etymology = function(){
 
+                $('div.etymology:last-of-type').after( $('div.etymology:last-of-type').clone() )
+
+                if (! $('div.etymology:last-of-type .remove').length > 0 )
+
+                  $('div.etymology:last-of-type').append( '<button class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></button>' );
+                
             }
 
-            $scope.preview = function(){
+            $scope.$on('$stateChangeSuccess', function(){
 
-            }
+                $('form').on( 'click', '.etymology .remove', function(ev){
+                  ev.preventDefault()
+                  return $(ev.currentTarget).parents('.etymology').remove()
+                })
 
-            /*$scope.$on('$stateChangeSuccess', function(){
-                $('#slz_optgroups').selectize({
+                /*$('#slz_optgroups').selectize({
                     sortField: 'text'
                 })
-                /*$("select[rel='reg_select_multiple']").select2({
+                $("select[rel='reg_select_multiple']").select2({
                     placeholder: "Select..."
-                })
-            })*/
+                })*/
+            })
         }
     ])
 
