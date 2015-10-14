@@ -196,10 +196,14 @@ dashboardappApp
 
             $scope.clone_etymology = function(){
 
+                // Clone the last row
                 $('div.etymology:last-of-type').after( $('div.etymology:last-of-type').clone() )
 
-                if (! $('div.etymology:last-of-type .remove').length > 0 )
+                // Reset the form field values
+                $('div.etymology:last-of-type input').val('')
 
+                // If there's no remove button, let's add one to the new row, usually, this is just for the 1st clone
+                if (! $('div.etymology:last-of-type .remove').length > 0 )
                   $('div.etymology:last-of-type').append( '<button class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></button>' );
                 
             }
