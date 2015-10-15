@@ -188,8 +188,6 @@ dashboardappApp
                 })
 
                 $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || {} )
-
-                //console.log($scope.name)
                 
                 return api.addName($scope.name)
             }
@@ -215,7 +213,8 @@ dashboardappApp
                   return $(ev.currentTarget).parents('.etymology').remove()
                 })
 
-                /*$('#slz_optgroups').selectize({
+                /*
+                $('#slz_optgroups').selectize({
                     sortField: 'text'
                 })
                 $("select[rel='reg_select_multiple']").select2({

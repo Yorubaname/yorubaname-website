@@ -1,28 +1,29 @@
 "use strict";
 var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'toastr', 'NgSwitchery', 'textAngular', 'angularFileUpload']);
 
+dashboardappApp
+   
+    .constant('baseUrl', /10|localhost/.test(location.hostname) ? 'http://localhost:8081' : '')
 
-/* Config Block */
+    /* Config Block */
+    .config(
+    [ '$provide', '$httpProvider', 'baseUrl',
 
-dashboardappApp.config(
-    [ '$provide', '$httpProvider',
-
-        function ($provide, $httpProvider) {
-
-          var baseUrl = '';
-          
-          if (/10|localhost/.test(location.hostname))
-             baseUrl = 'http://localhost:8081';
+        function ($provide, $httpProvider, baseUrl) {
           
           // Intercept http calls.
-          $provide.factory('MyHttpInterceptor', function ($q) {
+          $provide.factory('MyHttpInterceptor', [ '$cookies', '$q', function ($cookies, $q) {
             return {
               // On request success
               request: function (config) {
+                if ($cookies.token !== undefined) {
+                  // console.log("cookiesProvides.token is ", $cookies.token)
+                  $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token
+                } 
                 // console.log(config); // Contains the data about the request before it is sent.
                 if (/^\/v1\//.test(config.url)){
                   config.crossOrigin = true;
-                  //config.xhrFields || (config.xhrFields = { withCredentials: false });
+                  // config.xhrFields || (config.xhrFields = { withCredentials: false });
                   config.url = baseUrl + config.url;
                 }
                 // Return the config or wrap it in a promise if blank.
@@ -55,16 +56,31 @@ dashboardappApp.config(
                 return $q.reject(rejection);
               }
             }
-          })
+          }])
 
           // Add the interceptor to the $httpProvider.
           $httpProvider.interceptors.push('MyHttpInterceptor')
 
-}]);
+    }])
 
-/* Run Block */
-dashboardappApp.run(
-    [ '$rootScope', '$state', '$stateParams', '$cookies',
+    /* Breadcrumbs options */
+    .config(function($breadcrumbProvider) {
+        $breadcrumbProvider.setOptions({
+            prefixStateName: 'auth.home',
+            templateUrl: 'tmpls/partials/breadcrumbs.html'
+        })
+    })
+
+    /* bootstrap-ui tooltips */
+    .config(function($tooltipProvider ) {
+        $tooltipProvider.options({
+            appendToBody: true
+        })
+    })
+
+    /* Run Block */
+    .run(
+    [ '$rootScope', '$state', '$stateParams', '$cookies', 
         function ($rootScope, $state, $stateParams, $cookies) {
 
             $rootScope.$state = $state;
@@ -129,26 +145,10 @@ dashboardappApp.run(
             $rootScope.fixedLayout = true;
             
         }
-    ]
-);
+    ])
 
-dashboardappApp
-    /* Breadcrumbs options */
-    .config(function($breadcrumbProvider) {
-        $breadcrumbProvider.setOptions({
-            prefixStateName: 'auth.home',
-            templateUrl: 'tmpls/partials/breadcrumbs.html'
-        })
-    })
-    /* bootstrap-ui tooltips */
-    .config(function($tooltipProvider ) {
-        $tooltipProvider.options({
-            appendToBody: true
-        })
-    });
 
-/* filters */
-dashboardappApp
+    /* filters */
     // https://github.com/angular-ui/ui-utils
     .filter('unique', ['$parse', function ($parse) {
         return function (items, filterOn) {

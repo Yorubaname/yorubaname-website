@@ -75,12 +75,9 @@ angular.module('ui.load', [])
 
 /* API Endpoint Service for API requests: Adapted from code base */
 
-angular.module('dashboardappApp')
-  .service('api', ['$http','$rootScope', '$cookies', function($http, $rootScope, $cookies) {
+dashboardappApp
 
-    if ($cookies.token !== undefined) {
-      $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token;
-    }
+  .service('api', ['$http', '$rootScope', function($http, $rootScope) {
 
     this.get = function(endpoint, data, headers) {
         return $http({
@@ -280,15 +277,17 @@ angular.module('dashboardappApp')
 
 
 angular.module('dashboardappApp')
-  .service('uploader', ['api', 'FileUploader', 'toastr', function(api, FileUploader, toastr) {
+  .service('uploader', ['FileUploader', 'baseUrl', 'toastr', function(FileUploader, baseUrl, toastr) {
 
     FileUploader.prototype.setEndpoint = function setEndpoint(endpoint){
-      this.url = endpoint
+      this.url = baseUrl + endpoint
     }
 
     return function(endpoint, options) {
 
-      var uploader = new FileUploader({ url: endpoint }),
+
+
+      var uploader = new FileUploader({ url: baseUrl + endpoint, alias:'nameFiles' }),
         options = options || {},
         fileType = options.fileType || ['text/csv','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         maxUpload = options.maxUpload || 1,

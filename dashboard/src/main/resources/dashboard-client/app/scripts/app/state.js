@@ -1,5 +1,6 @@
 /* States */
 dashboardappApp
+
     .config(['$stateProvider', '$urlRouterProvider',
         function ($stateProvider, $urlRouterProvider) {
 
