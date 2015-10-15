@@ -146,7 +146,8 @@ dashboardappApp
 
 /* Authentication API Endpoint Service, Extension for API requests for Signing In, Out, and Session validation. Adapted from code base */
 
-angular.module('dashboardappApp')
+dashboardappApp
+
   .service('authApi', ['api','$cookies','$state','$rootScope','$timeout','toastr', function(api, $cookies, $state, $rootScope, $timeout, toastr){
 
     this.getUser = function getUser(callback) {
@@ -212,7 +213,8 @@ angular.module('dashboardappApp')
 
 /* Names API Endpoint Service, Extension for API requests for Name Entries resources only. Adapted from code base */
 
-angular.module('dashboardappApp')
+dashboardappApp
+
   .service('namesApi', ['api', function(api) {
 
       /**
@@ -276,7 +278,8 @@ angular.module('dashboardappApp')
 }])
 
 
-angular.module('dashboardappApp')
+dashboardappApp
+
   .service('uploader', ['FileUploader', 'baseUrl', 'toastr', function(FileUploader, baseUrl, toastr) {
 
     FileUploader.prototype.setEndpoint = function setEndpoint(endpoint){
