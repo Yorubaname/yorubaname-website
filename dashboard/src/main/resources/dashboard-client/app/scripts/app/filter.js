@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('dashboardappApp')
+dashboardappApp
 
 /**
  * Filter to parse delimated string to arrays
