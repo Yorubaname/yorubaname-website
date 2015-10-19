@@ -27,7 +27,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.DELETE, "/v1/suggest/*").hasAnyRole("ADMIN", "LEXICOGRAPHER")
                 // feedback auth
             .antMatchers(HttpMethod.POST, "/v1/*/feedback").permitAll()
-            .antMatchers(HttpMethod.DELETE, "/v1/*/feedback").hasAnyRole("ADMIN")
+            .antMatchers(HttpMethod.DELETE, "/v1/*/feedback").hasAnyRole("ADMIN", "LEXICOGRAPHER")
                 // auth auth
             .antMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
                 // names endpoint auth
