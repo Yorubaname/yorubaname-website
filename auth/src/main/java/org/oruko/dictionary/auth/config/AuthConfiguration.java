@@ -36,6 +36,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                 // search endpoint auth
             .antMatchers(HttpMethod.POST, "/v1/search/*").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/v1/search/*").hasRole("ADMIN")
+            .antMatchers(HttpMethod.DELETE, "/v1/search/*").hasRole("ADMIN")
                 // if none of the pattern above matches then stick to the rule
                 // that only Admin and Lexicographer can post and put
             .antMatchers(HttpMethod.POST, "/v1/**").hasAnyRole("ADMIN", "LEXICOGRAPHER")
