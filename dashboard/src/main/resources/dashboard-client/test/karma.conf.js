@@ -19,12 +19,10 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // bower:js
-      'bower_components/es5-shim/es5-shim.js',
       'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/bootstrap/dist/js/bootstrap.js',
       'bower_components/angular-animate/angular-animate.js',
-      'bower_components/angular-cookies/angular-cookies.js',
       'bower_components/angular-resource/angular-resource.js',
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-sanitize/angular-sanitize.js',
@@ -37,7 +35,7 @@ module.exports = function(config) {
       'bower_components/papaparse/papaparse.js',
       'bower_components/ng-file-upload/ng-file-upload.js',
       'bower_components/ng-file-upload-shim/ng-file-upload-shim.js',
-      'bower_components/angular-file-upload/angular-file-upload.js',
+      'bower_components/angular-file-upload/angular-file-upload.min.js',
       'bower_components/angular-loader/angular-loader.js',
       'bower_components/angular-scenario/angular-scenario.js',
       'bower_components/ui-router/release/angular-ui-router.js',
@@ -65,7 +63,9 @@ module.exports = function(config) {
       'bower_components/ng-switchery/src/ng-switchery.js',
       'bower_components/multiselect/js/jquery.multi-select.js',
       'bower_components/select2/dist/js/select2.js',
-      'bower_components/angular-growl-2/build/angular-growl.js',
+      'bower_components/angular-cookies/angular-cookies.js',
+      'bower_components/angular-toastr/dist/angular-toastr.tpls.js',
+      'bower_components/angular-md5/angular-md5.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
