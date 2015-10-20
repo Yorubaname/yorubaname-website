@@ -5,7 +5,7 @@
           <!-- 3. nv-file-over uploader="link" over-class="className" -->
           <div class="my-drop-zone" nv-file-over="nv-file-over" over-class="" uploader="uploader">
               <span ng-show="!uploader.queue.length">Drag and drop a properly formated CSV or XSLX file here to add multiple entries at a time.<br><br>
-                <b>Note:</b> Download our XSLX template for how to format your entries. <br><a class="btn btn-sm btn-default" href="">Download Template (.xslx)</a>
+                <b>Note:</b> Download our XSLX template for how to format your entries. <br><br><a class="btn btn-sm btn-primary" href="{{baseUrl}}/name_entry_template.xlsx" download>Download Template (.xslx)</a>
                 </span>
                 <div ng-repeat="item in uploader.queue">
                   <p>Uploading: <strong>{{ item.file.name }}</strong>

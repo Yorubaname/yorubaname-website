@@ -17,17 +17,15 @@ dashboardappApp
               // On request success
               request: function (config) {
                 if ($cookies.token !== undefined) {
-                  // console.log("cookiesProvides.token is ", $cookies.token)
                   $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token
                 } 
-                // console.log(config); // Contains the data about the request before it is sent.
                 if (/^\/v1\//.test(config.url)){
                   config.crossOrigin = true;
                   // config.xhrFields || (config.xhrFields = { withCredentials: false });
                   config.url = baseUrl + config.url;
                 }
                 // Return the config or wrap it in a promise if blank.
-                return config || $q.when(config);
+                return config || $q.when(config)
               },
 
               // On request failure
@@ -35,25 +33,22 @@ dashboardappApp
                 //console.log('request failure', rejection); // Contains the data about the error on the request.
 
                 // Return the promise rejection.
-                return $q.reject(rejection);
+                return $q.reject(rejection)
               },
 
               // On response success
               response: function (response) {
                 if (/\/v1\//.test(response.config.url)){
-                  //console.log(response.config);
-                  return response || $q.when(response);
+                  return response || $q.when(response)
                 }
                 // Return the response or promise.
-                return response || $q.when(response);
+                return response || $q.when(response)
               },
 
               // On response failure
               responseError: function (rejection) {
-                //console.log('response failure', rejection); // Contains the data about the error.
-
                 // Return the promise rejection.
-                return $q.reject(rejection);
+                return $q.reject(rejection)
               }
             }
           }])

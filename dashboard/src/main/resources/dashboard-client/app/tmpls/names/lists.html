@@ -18,30 +18,38 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="5">
+        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="10">
             <thead>
                 <tr>
-                    <th data-toggle="true">Name</th>
-                    <th>Gender</th>
-                    <th data-hide="phone,tablet">Syllables</th>
-                    <th data-hide="phone,tablet">Morphology</th>
-                    <th ng-show="isAdmin || isLexicographer" data-hide="phone">Status</th>
-                    <th data-hide="phone,tablet" data-name="Date Of Submission">Submitted</th>
+                    <th>Name</th>
+                    <th>Syllables</th>
+                    <th>Morphology</th>
+                    <th ng-show="isAdmin">Status</th>
+                    <th>Submitted By</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="entry in namesList">
+                <tr ng-repeat="entry in namesList" on-last-repeat>
                     <td><input type="checkbox" value="{{entry.name}}" name="selected_name"> <a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
-                    <td>{{entry.gender}}</td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.morphology}}</td>
-                    <td><a class="btn btn-xs btn-success" ng-click="indexName(entry)" ng-hide="entry.indexed">Index</a> <a class="btn btn-xs btn-default" ng-click="deIndexName(entry)" ng-show="entry.indexed">Deindex</a> </td>
-                    <td data-value="1"><span class="label label-success status-active" title="Active">{{entry.status}}</span></td>
+                    <td ng-hide="!isAdmin"><a class="btn btn-xs btn-success" ng-click="indexName(entry)" ng-hide="entry.indexed">Index</a> <a class="btn btn-xs btn-default" ng-click="deIndexName(entry)" ng-show="entry.indexed">Deindex</a> </td>
+                    <td>{{entry.submittedBy}}</td>
+                    <td>{{entry.createdAt|date}}</td>
+                </tr>
+                <tr class="text-center" ng-show="!namesList.length">
+                    <td colspan="5">
+                        <h1><i class="fa fa-lg fa-smile-o text-muted"></i></h1>
+                        <h3 class="text-muted">Nice, there's something to do.</h3>
+                        <p class="lead">Get started by adding names either in bulk or one at a time to populate the names database.</p>
+                        <a class="btn btn-success btn-lg" ui-sref="auth.names.add_entries">Add Name Entries</a>
+                    </td>
                 </tr>
             </tbody>
             <tfoot class="hide-if-no-paging">
                 <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                         <ul class="pagination pagination-sm"></ul>
                     </td>
                 </tr>

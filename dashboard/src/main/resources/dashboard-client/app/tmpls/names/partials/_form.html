@@ -114,6 +114,11 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label>Submitted By</label>
+            <input type="email" class="form-control" name="submittedBy" ng-model="name.submittedBy">
+        </div>
+
     </div>
     
 </div>
@@ -124,7 +129,7 @@
         <button type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Submit for Review</button>
         <!--button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button>
         <button type="submit" class="btn btn-lg btn-default" ng-click="preview()" ng-disabled="form.$invalid || !form.$dirty">Preview Entry</button-->
-        <a ng-click="delete()" class="btn btn-link btn-lg" ng-hide="new">Delete {{name.name}}</a>
+        <a ng-click="delete()" class="btn btn-link btn-lg" ng-hide="new || !isAdmin">Delete {{name.name}}</a>
     </div>
 </div>
 

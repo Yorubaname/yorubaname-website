@@ -120,11 +120,27 @@ dashboardappApp
     // ng-repeat after render callback
     .directive('onLastRepeat', function ($timeout) {
         return function (scope, element, attrs) {
-            if (scope.$last) {
+
+            console.log("running lastRepeat directive")
+
+            if (!scope.$last) return false;
+
+            var footableTable = element.parents('table')
+
+            scope.$evalAsync(function(){
+
+                if (! footableTable.hasClass('footable-loaded')) {
+                    footableTable.footable()
+                }
+                footableTable.trigger('footable_initialized')
+                footableTable.trigger('footable_resize')
+                footableTable.data('footable').redraw()
+            })
+            /*if (scope.$last) {
                 $timeout(function () {
                     scope.$emit('onRepeatLast', element, attrs);
                 })
-            }
+            }*/
         };
     })
     // add width/height properities to Image

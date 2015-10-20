@@ -3,7 +3,7 @@ dashboardappApp
 
     .controller('mainCtrl', [
         '$scope',
-        function ($scope){ 
+        function ($scope){
         }
     ])
     
@@ -56,7 +56,7 @@ dashboardappApp
                             link: 'auth.users.add_user'
                         },
                         {
-                            title: 'Volunteers',
+                            title: 'Users',
                             link: "auth.users.list_users({role:'all'})"
                         }
                     ]
@@ -142,7 +142,7 @@ dashboardappApp
 
             $scope.names = []
 
-            namesApi.getNames(1,5).success(function(responseData){
+            namesApi.getRecentNames(1,5).success(function(responseData){
                 responseData.forEach(function(name) {
                     $scope.names.push(name)
                 })
@@ -223,9 +223,27 @@ dashboardappApp
         '$stateParams',
         'namesApi',
         'files',
-        function($scope, $stateParams, api, files) {
+        '$timeout',
+        function($scope, $stateParams, api, files, $timeout) {
 
             console.log($stateParams.entry)
+
+            var names = api.readAllNames()
+
+            if (!names.length) {
+                api.getAllNames()
+                $timeout(function(){
+                    names = api.readAllNames()
+                }, 200)
+            }
+           // else 
+
+            var setPrevOrNextLinks = function(){
+                names.some(function(name){
+                    //if ($scope.name.name == name.name)
+
+                })
+            }
 
             api.getGeoLocations().success(function(response) {
                 $scope.geoLocations = response
@@ -309,22 +327,26 @@ dashboardappApp
                 responseData.forEach(function(name) {
                     $scope.namesList.push(name)
                 })
-                $('#names_table').trigger('footable_clear_filter')
+
+                /*$('#names_table').footable({
+                    toggleSelector: " > tbody > tr > td > span.footable-toggle"
+                }).on({
+                    'footable_filtering': function (e) {
+                        var selected = $scope.userStatus;
+                        if (selected && selected.length > 0) {
+                            e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
+                            e.clear = !e.filter;
+                        }
+                    }
+                })*/
+
             }).error(function(response) {
                 console.log(response)
             })
 
-            $('#names_table').footable({
-                toggleSelector: " > tbody > tr > td > span.footable-toggle"
-            }).on({
-                'footable_filtering': function (e) {
-                    var selected = $scope.userStatus;
-                    if (selected && selected.length > 0) {
-                        e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
-                        e.clear = !e.filter;
-                    }
-                }
-            })
+            
+
+            //$("#names_table").on("onRepeatLast", function(){ $(this).trigger('footable_clear_filter') })
 
             $scope.clearFilters = function() {
                 $('.filter-status').val('')
@@ -355,7 +377,6 @@ dashboardappApp
                     return $(elem).val()
                 })
                 if (entries.length > 0) return api.addNamesToIndex(entries).success(function(response){
-                    
                     entry.indexed = true
                     toastr.success(entries.length + 'selected names have been added to index')
                 }).error(function(){
@@ -402,12 +423,12 @@ dashboardappApp
                 responseData.forEach(function(name) {
                     $scope.namesList.push(name)
                 })
-                $('#names_table').trigger('footable_clear_filter')
+                //$('#names_table').trigger('footable_clear_filter')
             }).error(function(response) {
                 console.log(response)
             })
 
-            $('#names_table').footable({
+            /*$('#names_table').footable({
                 toggleSelector: " > tbody > tr > td > span.footable-toggle"
             }).on({
                 'footable_filtering': function (e) {
@@ -417,7 +438,7 @@ dashboardappApp
                         e.clear = !e.filter;
                     }
                 }
-            })
+            })*/
 
             $scope.clearFilters = function() {
                 $('.filter-status').val('')
@@ -529,7 +550,7 @@ dashboardappApp
         '$cookies',
         'usersApi',
         function ($scope, $cookies, api) {
-            console.log($cookies.username)
+            //console.log($cookies.username)
             api.getUser($cookies.id).success(function(user){
                 $scope.user = user
             }).error(function(resp){
@@ -543,7 +564,7 @@ dashboardappApp
         '$cookies',
         'usersApi',
         function ($scope, $cookies, api) {
-            console.log($cookies.username)
+            //console.log($cookies.username)
             api.getUser($cookies.id).success(function(user){
                 $scope.user = user
             }).error(function(resp){
@@ -556,7 +577,7 @@ dashboardappApp
         '$scope',
         function ($scope) {
             $scope.selected = undefined;
-            //$scope.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Dakota', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+            // $scope.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Dakota', 'North Carolina', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
         }
     ])
 ;

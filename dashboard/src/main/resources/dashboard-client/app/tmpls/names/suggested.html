@@ -1,7 +1,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="5">
+        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="10">
             <thead>
                 <tr>
                     <th data-toggle="true">Name</th>
@@ -12,12 +12,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="entry in namesList">
+                <tr ng-repeat="entry in namesList" on-last-repeat>
                     <td><input type="checkbox" value="{{entry.name}}" name="selected_name"> <a>{{entry.name}}</a></td>
                     <td>{{entry.details}}</td>
                     <td>{{entry.geoLocation.place}}</td>
                     <td>{{entry.submittedBy}}</td>
-                    <td>{{entry.ctreatedAt|date('d/m/Y')}}</td>
+                    <td>{{entry.createdAt|date}}</td>
+                </tr>
+                <tr class="text-center" ng-show="!namesList.length">
+                    <td colspan="5">
+                        <h1><i class="fa fa-lg fa-smile-o text-muted"></i></h1>
+                        <h3 class="text-muted">Not a thing to do.</h3>
+                        <p class="lead">Great! It seems you've processed all suggested names by the community. Enjoy your day!</p>
+                    </td>
                 </tr>
             </tbody>
             <tfoot class="hide-if-no-paging">

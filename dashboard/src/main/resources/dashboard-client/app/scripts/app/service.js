@@ -148,7 +148,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('authApi', ['api', 'usersApi', '$cookies', '$state', '$rootScope', '$timeout', 'toastr', 'md5', function(api, usersApi, $cookies, $state, $rootScope, $timeout, toastr, md5){
+  .service('authApi', ['api', 'usersApi', '$cookies', '$state', '$rootScope', '$timeout', 'toastr', 'md5', 'baseUrl', function(api, usersApi, $cookies, $state, $rootScope, $timeout, toastr, md5, baseUrl){
 
     this.getUser = function(callback) {
       return api.get("/v1/auth/user").then(function(response) {
@@ -162,7 +162,7 @@ dashboardappApp
       var email = user ? user.email : $cookies.username;
 
       return $.get("http://www.gravatar.com/avatar/"+ md5.createHash(email || ''), function(img){
-        console.log(img)
+        //console.log(img)
         $rootScope.user.photo = img || "http://placehold.it/80x80"
       })
       
@@ -190,6 +190,8 @@ dashboardappApp
               email: $cookies.email,
               id: $cookies.id
             }
+
+            $rootScope.baseUrl = baseUrl;
 
             getProfilePhoto()
 
@@ -278,7 +280,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('namesApi', ['api', 'toastr', '$state', function(api, toastr, $state) {
+  .service('namesApi', ['api', 'toastr', '$state', '$window', function(api, toastr, $state, $window) {
 
       /**
       * Adds a name to the database;
@@ -291,6 +293,16 @@ dashboardappApp
         }).error(function(resp){
           toastr.error(name.name + ' could not be added. Please try again.')
         })
+      }
+
+      this.getAllNames = function(){
+        return api.get('/v1/names').success(function(resp){
+          $window.localStorage.setItem('yoruba-names:entries', JSON.stringify(resp))
+        })
+      }
+
+      this.readAllNames = function(){
+        return JSON.parse( $window.localStorage.getItem('yoruba-names:entries') || '[]' ) 
       }
 
       /**
@@ -322,15 +334,22 @@ dashboardappApp
        * Get a name
        * returns the one or zero result
        */
-      this.getName = function getName(name, duplicate) {
+      this.getName = function (name, duplicate) {
         return api.get('/v1/names/' + name, { duplicates: duplicate })
       }
 
-      this.getNames = function getNames(page, count, filter) {
+      this.getRecentNames = function(page, count, filter){
         filter = !isEmptyObj(filter) ? filter : {};
         filter.page = page;
         filter.count = count;
-        return api.get('/v1/names/', filter)
+        return api.get('/v1/names', filter)
+      }
+
+      this.getNames = function (page, count, filter) {
+        //filter = !isEmptyObj(filter) ? filter : {};
+        //filter.page = page;
+        //filter.count = count;
+        return api.get('/v1/names')
       }
 
       this.getSuggestedNames = function() {
@@ -375,7 +394,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('uploader', ['FileUploader', 'baseUrl', 'toastr', function(FileUploader, baseUrl, toastr) {
+  .service('uploader', ['FileUploader', 'baseUrl', 'toastr', '$cookies', '$state', function(FileUploader, baseUrl, toastr, $cookies, $state) {
 
     FileUploader.prototype.setEndpoint = function setEndpoint(endpoint){
       this.url = baseUrl + endpoint
@@ -383,9 +402,13 @@ dashboardappApp
 
     return function(endpoint, options) {
 
-
-
-      var uploader = new FileUploader({ url: baseUrl + endpoint, alias:'nameFiles' }),
+      var uploader = new FileUploader({ 
+          url: baseUrl + endpoint, 
+          alias:'nameFiles',
+          headers:{
+            Authorization: 'Basic ' + $cookies.token
+          }
+        }),
         options = options || {},
         fileType = options.fileType || ['text/csv','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         maxUpload = options.maxUpload || 1,
@@ -431,7 +454,7 @@ dashboardappApp
         console.info('onSuccessItem', fileItem, response, status, headers);
       }
       uploader.onErrorItem = function (fileItem, response, status, headers) {
-        console.info('onErrorItem', fileItem, response, status, headers);
+        //console.info('onErrorItem', fileItem, response, status, headers);
         toastr.error('Upload Error' + onError);
         fileItem.remove();
         errorCallback(response);
@@ -440,12 +463,13 @@ dashboardappApp
         console.info('onCancelItem', fileItem, response, status, headers);
       }
       uploader.onCompleteItem = function (fileItem, response, status, headers) {
-        console.info('onCompleteItem', fileItem, response, status, headers);
+        //console.info('onCompleteItem', fileItem, response, status, headers);
         toastr.success('Upload Complete' + onComplete);
-        console.log('before running cb');
-        successCallback(response);
-        console.log('after running cb');
-        fileItem.remove();
+        //console.log('before running cb');
+        successCallback(response)
+        //console.log('after running cb');
+        fileItem.remove()
+        $state.go("auth.names.list_entries", {status:'all'})
       }
       uploader.onCompleteAll = function () {
         console.info('onCompleteAll');

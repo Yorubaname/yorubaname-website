@@ -90,12 +90,13 @@
 </div>
 <div class="row">
     <div class="col-sm-7">
-        <div class="heading_a"><span class="heading_text">Your Latest Entries</span></div>
+        <div class="heading_a"><span class="heading_text">Latest Entries</span></div>
         
         <table class="table table-yuk">
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Syllable</th>
                     <th>Status</th>
                     <th>Date</th>
                 </tr>
@@ -103,8 +104,9 @@
             <tbody>
                 <tr ng-repeat="entry in names">
                     <td><a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
-                    <td>{{entry.status}}</td>
-                    <td>{{entry.created_at|date}}</td>
+                    <td>{{entry.syllable}}</td>
+                    <td>{{entry.indexed ? 'Indexed' : 'Not indexed'}}</td>
+                    <td>{{entry.createdAt|date}}</td>
                 </tr>
             </tbody>
         </table>
