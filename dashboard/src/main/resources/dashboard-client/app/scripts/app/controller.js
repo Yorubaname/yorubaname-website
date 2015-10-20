@@ -3,12 +3,7 @@ dashboardappApp
 
     .controller('mainCtrl', [
         '$scope',
-        'authApi',
-        function ($scope, api) {
-            $scope.logout = function(){
-                console.log('running controller.logout')
-                return api.logout()
-            }
+        function ($scope){ 
         }
     ])
     
@@ -136,8 +131,7 @@ dashboardappApp
         '$cookies',
         function ($scope, files, namesApi, $cookies) {
             // run scripts after state load
-            $scope.$on('$stateChangeSuccess', function () {
-                
+            $scope.$on('$stateChangeSuccess', function () {                
                 $('.countUpMe').each(function() {
                     var target = this,
                     endVal = parseInt($(this).attr('data-endVal')),
@@ -166,9 +160,9 @@ dashboardappApp
 
             $scope.uploader = Uploader('/v1/names/upload')
 
+            $scope.new = true
             $scope.name = {}
-            $scope.etymology = []
-
+            
             api.getGeoLocations().success(function(response) {
                 $scope.geoLocations = response
             })
@@ -187,9 +181,82 @@ dashboardappApp
                     return { 'part': part, 'meaning': meanings[index] }
                 })
 
-                $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || {} )
+                $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || '{}' )
                 
                 return api.addName($scope.name)
+            }
+
+            $scope.clone_etymology = function(){
+
+                // Clone the last row
+                $('div.etymology:last-of-type').after( $('div.etymology:last-of-type').clone() )
+
+                // Reset the form field values
+                $('div.etymology:last-of-type input').val('')
+
+                // If there's no remove button, let's add one to the new row, usually, this is just for the 1st clone
+                if (! $('div.etymology:last-of-type .remove').length > 0 )
+                  $('div.etymology:last-of-type').append( '<button class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></button>' )
+                
+            }
+
+            $scope.$on('$stateChangeSuccess', function(){
+
+                $('form').on( 'click', '.etymology .remove', function(ev){
+                  ev.preventDefault()
+                  return $(ev.currentTarget).parents('.etymology').remove()
+                })
+
+                /*
+                $('#slz_optgroups').selectize({
+                    sortField: 'text'
+                })
+                $("select[rel='reg_select_multiple']").select2({
+                    placeholder: "Select..."
+                })*/
+            })
+        }
+    ])
+
+    .controller('namesEditEntryCtrl', [
+        '$scope',
+        '$stateParams',
+        'namesApi',
+        'files',
+        function($scope, $stateParams, api, files) {
+
+            console.log($stateParams.entry)
+
+            api.getGeoLocations().success(function(response) {
+                $scope.geoLocations = response
+            })
+
+            api.getName($stateParams.entry).success(function(resp){
+                $scope.name = resp
+            })
+
+            $scope.submit = function(){
+                var parts = $.map( $('input[name="part"]') , function(elem){
+                    return $(elem).val()
+                }), 
+
+                meanings = $.map( $('input[name="meaning"]') , function(elem){
+                    return $(elem).val()
+                }) 
+
+                $scope.name.etymology = $.map( parts, function(part, index){
+                    return { 'part': part, 'meaning': meanings[index] }
+                })
+
+                $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || '{}' )
+
+                return api.updateName($scope.name)
+            }
+
+            $scope.delete = function(){
+                if (confirm("Are you sure you want to delete " + $scope.name.name + "?")) {
+                    return api.deleteName($scope.name)
+                }
             }
 
             $scope.clone_etymology = function(){
@@ -213,30 +280,12 @@ dashboardappApp
                   return $(ev.currentTarget).parents('.etymology').remove()
                 })
 
-                /*
-                $('#slz_optgroups').selectize({
+                /*$('#slz_optgroups').selectize({
                     sortField: 'text'
                 })
                 $("select[rel='reg_select_multiple']").select2({
                     placeholder: "Select..."
                 })*/
-            })
-        }
-    ])
-
-
-    .controller('namesEditEntryCtrl', [
-        '$scope',
-        'files',
-        function($scope, files) {
-
-            $scope.$on('$stateChangeSuccess', function(){
-                $('#slz_optgroups').selectize({
-                    sortField: 'text'
-                })
-                $("select[rel='reg_select_multiple']").select2({
-                    placeholder: "Select..."
-                })
             })
         }
     ])
@@ -396,13 +445,11 @@ dashboardappApp
         'api',
         '$window',
         function ($scope, api, $window) {
-
             $scope.userList = []
-            
-            api.get("/v1/auth/users").success(function(responseData) {
-                //console.log(responseData)
-                $scope.userListItems = responseData.length;
-                responseData.forEach(function(user) {
+
+            api.get("/v1/auth/users").success(function(response) {
+                $scope.userListItems = response.length;
+                response.forEach(function(user) {
                     $scope.userList.push(user)
                 })
             }).error(function(response) {
@@ -426,53 +473,40 @@ dashboardappApp
 
     .controller('userAddCtrl', [
         '$scope',
-        'api',
+        'usersApi',
         'toastr',
         '$window',
         function ($scope, api, toastr, $window) {
-
             $scope.user = {}
-
             $scope.roles = {
                 BASIC: 'ROLE_BASIC',
                 LEXICOGRAPHER: 'ROLE_LEXICOGRAPHER',
                 DASHBOARD: 'ROLE_DASHBOARD',
                 ADMIN: 'ROLE_ADMIN'
             }
-
             $scope.submit = function () {
-
-                //console.log($scope.roles)
-
                 $scope.user.roles = $.map( $scope.roles, function( value, key ) {
                   if (value != false) return value
                 })
-
-                //console.log($scope.user.roles)
-
-                api.postJson("/v1/auth/create", $scope.user)
-                   .success(function(responseData) {
-                      toastr.success('User account with email '+$scope.user.email+' successfully created.')
-                      $scope.form.reset()
-                   })
-                   .error(function(response) {
-                     console.log(response)
-                     toastr.error('User account could not be created. Try again.')
-                   })
+                return api.addUser($scope.user)
             }
         }
     ])
 
     .controller('userEditCtrl', [
         '$scope',
-        'api',
+        'usersApi',
         'toastr',
         '$state',
         '$stateParams',
         '$window',
         function ($scope, api, toastr, $state, $stateParams, $window) {
-
-            $scope.user = api.get('/v1/users/')
+            
+            api.getUser($stateParams.id).success(function(user){
+                $scope.user = user
+            }).failure(function(resp){
+                console.log(resp)
+            })
 
             $scope.roles = {
                 BASIC: 'ROLE_BASIC',
@@ -482,25 +516,10 @@ dashboardappApp
             }
 
             $scope.submit = function () {
-
-                //console.log($scope.roles)
-
-                $scope.user.roles = $.map( $scope.roles, function( value, key ) {
-                  if (value != false) return value
-                })
-
-                //console.log($scope.user.roles)
-
-                api.putJson("/v1/auth/users", $scope.user)
-                   .success(function(responseData) {
-                      toastr.success('User account with email '+$scope.user.email+' successfully updated.')
-                      //$scope.form.reset()
-                      $state.go('auth.users.list_users')
-                   })
-                   .error(function(response) {
-                     console.log(response)
-                     toastr.error('User account could not be updated. Try again.')
-                   })
+              $scope.user.roles = $.map( $scope.roles, function( value, key ) {
+                if (value != false) return value
+              })
+              return api.updateUser($scope.user)
             }
         }
     ])
@@ -508,20 +527,30 @@ dashboardappApp
     .controller('profileIndexCtrl', [
         '$scope',
         '$cookies',
-        function ($scope, $cookies) {
+        'usersApi',
+        function ($scope, $cookies, api) {
             console.log($cookies.username)
+            api.getUser($cookies.id).success(function(user){
+                $scope.user = user
+            }).error(function(resp){
+                console.log(resp)
+            })
         }
     ])
 
     .controller('profileEditCtrl', [
         '$scope',
         '$cookies',
-        'api',
+        'usersApi',
         function ($scope, $cookies, api) {
             console.log($cookies.username)
+            api.getUser($cookies.id).success(function(user){
+                $scope.user = user
+            }).error(function(resp){
+                console.log(resp)
+            })
         }
     ])
-
 
     .controller('topSearchCtrl', [
         '$scope',
@@ -531,7 +560,3 @@ dashboardappApp
         }
     ])
 ;
-
-
-
-

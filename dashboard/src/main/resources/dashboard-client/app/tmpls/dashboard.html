@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-6">
-        <img class="user_profile_img" src="http://placehold.it/80x80" alt="" width="76" height="76" />
+        <img class="user_profile_img" src="http://placehold.it/80x80" ng-src="{{user.photo}}" alt="" width="76" height="76" />
         <h1 class="user_profile_name">{{user.username}} <a class="btn btn-xs btn-primary pull-right" ui-sref="auth.profile.edit">Edit</a></h1>
         <p class="user_profile_info">Chief Lexicographer (Volunteer)</p>
         <p class="user_profile_info"> <a ng-href="mailto:{{user.email}}">{{user.email}}</a></p>
@@ -19,7 +19,7 @@
             <div class="info_box_body">
                 <span class="countUpMe" data-endVal="1342">1,342</span>
             </div>
-            <a class="info_box_footer"  ui-sref="auth.names.list_entries({status:'all'})">
+            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'all'})">
                 Name Entries
             </a>
         </div>

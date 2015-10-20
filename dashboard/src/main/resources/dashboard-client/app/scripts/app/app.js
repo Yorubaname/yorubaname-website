@@ -1,5 +1,5 @@
 "use strict";
-var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'toastr', 'NgSwitchery', 'textAngular', 'angularFileUpload']);
+var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'toastr', 'NgSwitchery', 'textAngular', 'angularFileUpload', 'angular-md5']);
 
 dashboardappApp
    

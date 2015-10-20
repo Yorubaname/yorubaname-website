@@ -148,13 +148,27 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('authApi', ['api','$cookies','$state','$rootScope','$timeout','toastr', function(api, $cookies, $state, $rootScope, $timeout, toastr){
+  .service('authApi', ['api', 'usersApi', '$cookies', '$state', '$rootScope', '$timeout', 'toastr', 'md5', function(api, usersApi, $cookies, $state, $rootScope, $timeout, toastr, md5){
 
-    this.getUser = function getUser(callback) {
-        return api.get("/v1/auth/user").then(function(response) {
-            return response
-        })
+    this.getUser = function(callback) {
+      return api.get("/v1/auth/user").then(function(response) {
+          return response
+      })
     }
+
+    /* Get a User's Profile Photo */
+    var getProfilePhoto = function(user){
+
+      var email = user ? user.email : $cookies.username;
+
+      return $.get("http://www.gravatar.com/avatar/"+ md5.createHash(email || ''), function(img){
+        console.log(img)
+        $rootScope.user.photo = img || "http://placehold.it/80x80"
+      })
+      
+     }
+
+     this.getProfilePhoto = getProfilePhoto;
 
     // Authenticates clients.
     // authData is the base64 encoding of username and password
@@ -164,24 +178,35 @@ dashboardappApp
         authData = btoa(authData.email + ":" + authData.password)
         //console.log(authData)
         return api.authenticate(authData).success(function(response) {
-            //console.log(response)
             $cookies.isAuthenticated = true;
             $rootScope.isAuthenticated = true;
+            $cookies.id = response.id;
             $cookies.username = response.username;
             $rootScope.username = $cookies.username;
             // TODO maybe not. This is a security loop hole
             $cookies.token = authData;
             $rootScope.user = {
               username: $cookies.username,
-              email: $cookies.email
+              email: $cookies.email,
+              id: $cookies.id
             }
+
+            getProfilePhoto()
+
             response.roles.some(function(role) {
+                // Check ROLE_ADMIN first, since it supercedes all
                 if (role === "ROLE_ADMIN") {
                     $cookies.isAdmin = true;
                     $rootScope.isAdmin = true;
                     return true
                 }
+                else if (role === "ROLE_LEXICOGRAPHER") {
+                    $cookies.isLexicographer = true;
+                    $rootScope.isLexicographer = true;
+                    return true
+                }
             })
+            
             $rootScope.msg = {}
             $timeout(function(){
               $state.go('auth.home')
@@ -190,10 +215,12 @@ dashboardappApp
         }).error(function(response) {
             $cookies.isAuthenticated = false;
             $cookies.isAdmin = false;
+            $cookies.isLexicographer = false;
+            $cookies.id = null;
             $rootScope.user = null;
             $rootScope.isAuthenticated = false;
             $rootScope.isAdmin = false;
-            toastr.error(response.message, 'Authentication Error')
+            toastr.error(response.message, 'Sign In Error')
         })
     }
 
@@ -211,21 +238,84 @@ dashboardappApp
 
 }])
 
+/* Users API Endpoint Service */
+
+dashboardappApp
+
+  .service('usersApi', ['api', '$state', 'toastr', function(api, $state, toastr){
+
+    this.getUser = function(userId){
+      return api.get('/v1/users/'+userId)
+    }
+
+    this.addUser = function(user){
+      return api.postJson("/v1/auth/create", user)
+                   .success(function(resp) {
+                      toastr.success('User account with email '+user.email+' successfully created.')
+                   })
+                   .error(function(resp) {
+                     console.log(resp)
+                     toastr.error('User account could not be created. Try again.')
+                   })
+    }
+
+    /* Updated user information */
+    this.updateUser = function(user){
+      return api.putJson("/v1/auth/users", user)
+                 .success(function(resp) {
+                    toastr.success('User account with email '+user.email+' successfully updated.')
+                    $state.go('auth.users.list_users')
+                 })
+                 .error(function(resp) {
+                   console.log(resp)
+                   toastr.error('User account could not be updated. Try again.')
+                 })
+    }
+
+  }])
+
 /* Names API Endpoint Service, Extension for API requests for Name Entries resources only. Adapted from code base */
 
 dashboardappApp
 
-  .service('namesApi', ['api', function(api) {
+  .service('namesApi', ['api', 'toastr', '$state', function(api, toastr, $state) {
 
       /**
       * Adds a name to the database;
       * @param nameEntry
       */
       this.addName = function (name) {
-        return api.postJson("/v1/names", name)
+        return api.postJson("/v1/names", name).success(function(resp){
+          toastr.success(name.name + ' was successfully added.')
+          $state.go('auth.names.list_entries({status:"all"})')
+        }).error(function(resp){
+          toastr.error(name.name + ' could not be added. Please try again.')
+        })
       }
+
+      /**
+      * Updates an existing name in the database;
+      * @param nameEntry
+      */
+      this.updateName = function(nameEntry){
+        return api.putJson("/v1/names/" + nameEntry.name, nameEntry).success(function(resp){
+          toastr.success(nameEntry.name + ' was successfully updated.')
+        }).error(function(resp){
+          toastr.error(nameEntry.name + ' could not be updated. Please try again.')
+        })
+      }
+
+      /**
+      * Deletes a name from the database;
+      * @param nameEntry
+      */
       this.deleteName = function (name) {
-        return api.deleteJson("/v1/names/" + name, name)
+        return api.deleteJson("/v1/names/" + name, name).success(function(resp){
+          toastr.success(name + ' has been deleted successfully')
+          $state.go('auth.names.list_entries({status:"all"})')
+        }).error(function(resp){
+          toastr.error(name + ' could not be deleted. Please try again.')
+        })
       }
 
       /**
@@ -247,7 +337,12 @@ dashboardappApp
         return api.get('/v1/suggest')
       }
       this.deleteSuggestedName = function(name) {
-        return api.delete("/v1/suggest/" + name)
+        return api.delete("/v1/suggest/" + name).success(function(resp){
+          toastr.success(name + ' has been deleted successfully')
+          $state.go('auth.names.suggested')
+        }).error(function(resp){
+          toastr.error(name + ' could not be deleted. Please try again.')
+        })
       }
 
       this.addNameToIndex = function (name) {
