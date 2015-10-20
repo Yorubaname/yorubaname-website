@@ -327,26 +327,9 @@ dashboardappApp
                 responseData.forEach(function(name) {
                     $scope.namesList.push(name)
                 })
-
-                /*$('#names_table').footable({
-                    toggleSelector: " > tbody > tr > td > span.footable-toggle"
-                }).on({
-                    'footable_filtering': function (e) {
-                        var selected = $scope.userStatus;
-                        if (selected && selected.length > 0) {
-                            e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
-                            e.clear = !e.filter;
-                        }
-                    }
-                })*/
-
             }).error(function(response) {
                 console.log(response)
             })
-
-            
-
-            //$("#names_table").on("onRepeatLast", function(){ $(this).trigger('footable_clear_filter') })
 
             $scope.clearFilters = function() {
                 $('.filter-status').val('')
@@ -423,22 +406,9 @@ dashboardappApp
                 responseData.forEach(function(name) {
                     $scope.namesList.push(name)
                 })
-                //$('#names_table').trigger('footable_clear_filter')
             }).error(function(response) {
                 console.log(response)
             })
-
-            /*$('#names_table').footable({
-                toggleSelector: " > tbody > tr > td > span.footable-toggle"
-            }).on({
-                'footable_filtering': function (e) {
-                    var selected = $scope.userStatus;
-                    if (selected && selected.length > 0) {
-                        e.filter += (e.filter && e.filter.length > 0) ? ' ' + selected : selected;
-                        e.clear = !e.filter;
-                    }
-                }
-            })*/
 
             $scope.clearFilters = function() {
                 $('.filter-status').val('')
@@ -525,7 +495,7 @@ dashboardappApp
             
             api.getUser($stateParams.id).success(function(user){
                 $scope.user = user
-            }).failure(function(resp){
+            }).error(function(resp){
                 console.log(resp)
             })
 
