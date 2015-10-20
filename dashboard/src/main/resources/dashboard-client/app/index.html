@@ -27,13 +27,25 @@
   <!-- build:css(.tmp) styles/main.css -->
   <link href="styles/main.css" rel="stylesheet" media="screen" id="mainCss">
   <link href="styles/main-override.css" rel="stylesheet" media="screen" id="overrideCss">
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,latin-ext' rel='stylesheet' media="screen">
   <!-- endbuild -->
 
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,latin-ext' rel='stylesheet' media="screen">
+  <script id="template/accordion/accordion-group.html" type="text/ng-template">
+    <div class="panel panel-default" ng-class="{'panel-active': isOpen}">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a class="accordion-toggle" ng-click="toggleOpen()" accordion-transclude="heading"><span
+            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+        </h4>
+      </div>
+      <div class="panel-collapse" collapse="!isOpen">
+        <div class="panel-body" ng-transclude></div>
+      </div>
+    </div>
+  </script>
 
   <!-- build:js(.) scripts/vendor.js -->
   <!-- bower:js -->
-  <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
@@ -107,20 +119,6 @@
         'hide_breadcrumbs': hideBreadcrumbs && !$state.includes('error.404'),
         'top_menu_active': topMenuAct && !$state.includes('error.404')
     }">
-
-<script id="template/accordion/accordion-group.html" type="text/ng-template">
-  <div class="panel panel-default" ng-class="{'panel-active': isOpen}">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a class="accordion-toggle" ng-click="toggleOpen()" accordion-transclude="heading"><span
-          ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
-      </h4>
-    </div>
-    <div class="panel-collapse" collapse="!isOpen">
-      <div class="panel-body" ng-transclude></div>
-    </div>
-  </div>
-</script>
 
 <div ui-view autoscroll="false" class="mainView-animate"></div>
 
