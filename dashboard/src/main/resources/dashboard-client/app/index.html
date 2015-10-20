@@ -1,212 +1,103 @@
 <!DOCTYPE html>
 <html ng-app="dashboardappApp" controller="mainCtrl">
-    <head>
-		<meta charset="UTF-8">
-		<title update-title></title>
-		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<head>
+  <meta charset="UTF-8">
+  <title update-title></title>
+  <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="">
 
-    <!-- favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="">
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel='stylesheet' href='bower_components/ng-tags-input/ng-tags-input.min.css' />
+  <link rel='stylesheet' href='bower_components/angular-ui-notification/dist/angular-ui-notification.min.css' />
+  <link rel='stylesheet' href='bower_components/textAngular/dist/textAngular.css' />
+  <link rel='stylesheet' href='bower_components/selectize/dist/css/selectize.css' />
+  <link rel='stylesheet' href='bower_components/footable/css/footable.core.css' />
+  <link rel='stylesheet' href='bower_components/c3/c3.css' />
+  <link rel='stylesheet' href='bower_components/switchery/dist/switchery.css' />
+  <link rel='stylesheet' href='bower_components/multiselect/css/multi-select.css' />
+  <link rel='stylesheet' href='bower_components/select2/dist/css/select2.css' />
+  <link rel='stylesheet' href='bower_components/angular-toastr/dist/angular-toastr.css' />
+  <!-- endbower -->
+  <!-- endbuild -->
 
-	<!-- bootstrap framework -->
-		<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
-		
-	<!-- icon sets -->
-        <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen">
-
-	<!-- google webfonts -->
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,latin-ext' rel='stylesheet' media="screen">
-
-    <!-- moment.js (date library) -->
-        <!--script src="bower_components/js/moment-with-langs.min.js"></script-->
-    <!-- jQuery -->
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <!-- smart resize -->
-        <!--script src="bower_components/js/jquery.smartresize.min.js"></script-->
-
-    <!-- angularjs -->
-        <script src="bower_components/angular/angular.min.js"></script>
-        <script src="bower_components/angular-animate/angular-animate.js"></script>
-        <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
-        <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-
-    <!-- ui-router -->
-        <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-
-    <!-- breadcrumbs -->
-        <script src="bower_components/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
-        <script src="bower_components/angular-file-upload/angular-file-upload.min.js"></script>
-
-    <!-- ui-bootstrap -->
-        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-        <script id="template/accordion/accordion-group.html" type="text/ng-template">
-            <div class="panel panel-default" ng-class="{'panel-active': isOpen}">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a class="accordion-toggle" ng-click="toggleOpen()" accordion-transclude="heading"><span ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
-                    </h4>
-                </div>
-                <div class="panel-collapse" collapse="!isOpen">
-                    <div class="panel-body" ng-transclude></div>
-                </div>
-            </div>
-        </script>
-        
-    <!-- retina images -->
-        <script src="bower_components/angular-retina/build/angular-retina.min.js"></script>
-    
-    <!-- angular toastr -->
-        <link href="bower_components/angular-toastr/dist/angular-toastr.min.css" rel="stylesheet" media="screen">
-        <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.min.js"></script>
+  <!-- main stylesheet -->
+  <!-- build:css(.tmp) styles/main.css -->
+  <link href="styles/main.css" rel="stylesheet" media="screen" id="mainCss">
+  <link href="styles/main-override.css" rel="stylesheet" media="screen" id="overrideCss">
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,latin-ext' rel='stylesheet' media="screen">
+  <!-- endbuild -->
 
 
-    <!-- switchery -->
-        <script src="bower_components/switchery/dist/switchery.min.js"></script>
-        <script src="bower_components/ng-switchery/src/ng-switchery.js"></script>
-    <!-- fastclick -->
-        <script src="bower_components/fastclick/lib/fastclick.js"></script>
+  <!-- build:js(.) scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="bower_components/angular-touch/angular-touch.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/ng-tags-input/ng-tags-input.min.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="bower_components/angular-bootstrap-show-errors/src/showErrors.js"></script>
+  <script src="bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
+  <script src="bower_components/papaparse/papaparse.js"></script>
+  <script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
+  <script src="bower_components/ng-file-upload-shim/ng-file-upload-shim.js"></script>
+  <script src="bower_components/angular-file-upload/angular-file-upload.min.js"></script>
+  <script src="bower_components/angular-loader/angular-loader.js"></script>
+  <script src="bower_components/angular-scenario/angular-scenario.js"></script>
+  <script src="bower_components/ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/rangy/rangy-core.js"></script>
+  <script src="bower_components/rangy/rangy-classapplier.js"></script>
+  <script src="bower_components/rangy/rangy-highlighter.js"></script>
+  <script src="bower_components/rangy/rangy-selectionsaverestore.js"></script>
+  <script src="bower_components/rangy/rangy-serializer.js"></script>
+  <script src="bower_components/rangy/rangy-textrange.js"></script>
+  <script src="bower_components/textAngular/dist/textAngular.js"></script>
+  <script src="bower_components/textAngular/dist/textAngular-sanitize.js"></script>
+  <script src="bower_components/textAngular/dist/textAngularSetup.js"></script>
+  <script src="bower_components/sifter/sifter.js"></script>
+  <script src="bower_components/microplugin/src/microplugin.js"></script>
+  <script src="bower_components/selectize/dist/js/selectize.js"></script>
+  <script src="bower_components/footable/js/footable.js"></script>
+  <script src="bower_components/d3/d3.js"></script>
+  <script src="bower_components/c3/c3.js"></script>
+  <script src="bower_components/autosize/dist/autosize.js"></script>
+  <script src="bower_components/angular-breadcrumb/release/angular-breadcrumb.js"></script>
+  <script src="bower_components/angular-retina/build/angular-retina.js"></script>
+  <script src="bower_components/transitionize/dist/transitionize.js"></script>
+  <script src="bower_components/fastclick/lib/fastclick.js"></script>
+  <script src="bower_components/switchery/dist/switchery.js"></script>
+  <script src="bower_components/ng-switchery/src/ng-switchery.js"></script>
+  <script src="bower_components/multiselect/js/jquery.multi-select.js"></script>
+  <script src="bower_components/select2/dist/js/select2.js"></script>
+  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
+  <script src="bower_components/angular-md5/angular-md5.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:js({.tmp,app}) scripts/scripts.js -->
+  <script src="/scripts/env.js"></script>
+  <!-- env config. generated by grunt-ng-constant -->
+  <script src="scripts/libs/utilities.js"></script>
+  <!-- dashboardappApp -->
+  <script src="scripts/app/app.js"></script>
+  <script src="scripts/app/filter.js"></script>
+  <script src="scripts/app/factory.js"></script>
+  <script src="scripts/app/service.js"></script>
+  <script src="scripts/app/directive.js"></script>
+  <script src="scripts/app/state.js"></script>
+  <script src="scripts/app/controller.js"></script>
+  <!-- endbuild -->
 
-    <!-- match height -->
-        <!--script src="bower_components/lib/jquery-match-height/jquery.matchHeight-min.js"></script-->
-    <!-- scrollbar -->
-        <!--link rel="stylesheet" href="bower_components/lib/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css">
-        <script src="bower_components/lib/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script-->
-
-    <!-- textAngular -->
-        <script src="bower_components/rangy/rangy-core.min.js"></script>
-        <script src="bower_components/rangy/rangy-selectionsaverestore.min.js"></script>
-        <link href="bower_components/textAngular/dist/textAngular.css" rel="stylesheet" media="screen">
-        <script src="bower_components/textAngular/dist/textAngular-sanitize.min.js"></script>
-        <script src="bower_components/textAngular/dist/textAngular.min.js"></script>
-
-        <script src="bower_components/angular-md5/angular-md5.js"></script>
-
-        <script src="scripts/libs/utilities.js"></script>
-
-    <!-- dashboardappApp -->
-        <script src="scripts/app/app.js"></script>
-        <script src="scripts/app/filter.js"></script>
-        <script src="scripts/app/factory.js"></script>
-        <script src="scripts/app/service.js"></script>
-        <script src="scripts/app/directive.js"></script>
-        <script src="scripts/app/state.js"></script>
-        <script src="scripts/app/controller.js"></script>
-
-    <!-- google maps api-->
-        <!--script src="http://maps.google.com/maps/api/js?sensor=true"></script-->
-
-    <!-- main stylesheet -->
-		<link href="styles/main.css" rel="stylesheet" media="screen" id="mainCss">
-
-        <!-- main stylesheet override -->
-        <style type="text/css" media="screen">
-          label {
-            font-weight: bold;
-            display: block;
-          }
-          label.required:after, 
-          label.optional:after {
-            font-style: oblique;
-            font-weight: normal;
-            opacity: 0.8;
-            font-size: smaller;
-            float: right;
-          }
-          label.optional:after {
-            content:" (optional)";
-          }
-          label.required:after {
-            content:" (required)";
-            color:red;
-          }
-          .info_box_footer {
-            color:#fff;
-            display: block;
-          }
-          .btn {
-            border-radius: 0;
-          }
-
-
-          .my-drop-zone { border: dotted 1px lightgray; background-color: #f9f9f9; border-radius: 6px; padding:20px 30px; }
-          .nv-file-over { border: dotted 1px red; }
-
-          .progress {
-              background-color: #edf1f2;
-            }
-
-            .progress-xxs {
-              height: 2px;
-            }
-
-            .progress-xs {
-              height: 6px;
-            }
-
-            .progress-sm {
-              height: 12px;
-            }
-
-            .progress-sm .progress-bar {
-              font-size: 10px;
-              line-height: 1em;
-            }
-
-            .progress,
-            .progress-bar {
-              -webkit-box-shadow: none;
-                      box-shadow: none;
-            }
-
-            .progress-bar-primary {
-              background-color: #7266ba;
-            }
-
-            .progress-bar-info {
-              background-color: #23b7e5;
-            }
-
-            .progress-bar-success {
-              background-color: #27c24c;
-            }
-
-            .progress-bar-warning {
-              background-color: #fad733;
-            }
-
-            .progress-bar-danger {
-              background-color: #f05050;
-            }
-
-            .progress-bar-black {
-              background-color: #1c2b36;
-            }
-
-            .progress-bar-white {
-              background-color: #fff;
-            }
-
-            form .etymology {
-              position: relative;
-            }
-
-            form .etymology .remove {
-              display: none;
-              position: absolute;
-              right: 0;
-              top: 10px;
-            }
-
-            form .etymology:hover .remove {
-              display: block;
-            }
-
-
-        </style>
-
-    </head>
-    <body class="{{siteBg}}" ng-class="{
+</head>
+<body class="{{siteBg}}" ng-class="{
         'side_menu_active' : sideMenuAct && !$state.includes('error.404'),
         'side_menu_collapsed' : sideNavCollapsed && sideMenuAct,
         'side_menu_expanded' :  !sideNavCollapsed && sideMenuAct,
@@ -217,7 +108,21 @@
         'top_menu_active': topMenuAct && !$state.includes('error.404')
     }">
 
-        <div ui-view autoscroll="false" class="mainView-animate"></div>
-        
-    </body>
+<script id="template/accordion/accordion-group.html" type="text/ng-template">
+  <div class="panel panel-default" ng-class="{'panel-active': isOpen}">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" ng-click="toggleOpen()" accordion-transclude="heading"><span
+          ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+      </h4>
+    </div>
+    <div class="panel-collapse" collapse="!isOpen">
+      <div class="panel-body" ng-transclude></div>
+    </div>
+  </div>
+</script>
+
+<div ui-view autoscroll="false" class="mainView-animate"></div>
+
+</body>
 </html>

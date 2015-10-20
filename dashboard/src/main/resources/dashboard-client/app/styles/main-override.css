@@ -1,0 +1,112 @@
+label {
+  font-weight: bold;
+  display: block;
+}
+
+label.required:after,
+label.optional:after {
+  font-style: oblique;
+  font-weight: normal;
+  opacity: 0.8;
+  font-size: smaller;
+  float: right;
+}
+
+label.optional:after {
+  content: " (optional)";
+}
+
+label.required:after {
+  content: " (required)";
+  color: red;
+}
+
+.info_box_footer {
+  color: #fff;
+  display: block;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.my-drop-zone {
+  border: dotted 1px lightgray;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 20px 30px;
+}
+
+.nv-file-over {
+  border: dotted 1px red;
+}
+
+.progress {
+  background-color: #edf1f2;
+}
+
+.progress-xxs {
+  height: 2px;
+}
+
+.progress-xs {
+  height: 6px;
+}
+
+.progress-sm {
+  height: 12px;
+}
+
+.progress-sm .progress-bar {
+  font-size: 10px;
+  line-height: 1em;
+}
+
+.progress,
+.progress-bar {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.progress-bar-primary {
+  background-color: #7266ba;
+}
+
+.progress-bar-info {
+  background-color: #23b7e5;
+}
+
+.progress-bar-success {
+  background-color: #27c24c;
+}
+
+.progress-bar-warning {
+  background-color: #fad733;
+}
+
+.progress-bar-danger {
+  background-color: #f05050;
+}
+
+.progress-bar-black {
+  background-color: #1c2b36;
+}
+
+.progress-bar-white {
+  background-color: #fff;
+}
+
+form .etymology {
+  position: relative;
+}
+
+form .etymology .remove {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 10px;
+}
+
+form .etymology:hover .remove {
+  display: block;
+}
