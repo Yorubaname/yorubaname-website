@@ -102,17 +102,6 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>install node and npm</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>install-node-and-npm</goal>
-                                </goals>
-                                <configuration>
-                                    <nodeVersion>v0.10.18</nodeVersion>
-                                    <npmVersion>1.3.8</npmVersion>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>grunt build</id>
                                 <phase>generate-resources</phase>
                                 <goals>
