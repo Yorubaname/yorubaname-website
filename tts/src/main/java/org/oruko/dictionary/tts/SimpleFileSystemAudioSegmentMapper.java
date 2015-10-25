@@ -83,7 +83,11 @@ public class SimpleFileSystemAudioSegmentMapper implements AudioSegmentMapper {
         char[] chars = token.toCharArray();
 
         if (chars.length == 3) {
-            audioFile = String.valueOf((int) chars[0]) + "_" + String.valueOf((int) chars[1] + chars[2]);
+            if (isGb(chars)) {
+                audioFile = "gb_" + String.valueOf((int) chars[0] + chars[1]) + "_" + String.valueOf((int) chars[2]);
+            } else {
+                audioFile = String.valueOf((int) chars[0]) + "_" + String.valueOf((int) chars[1] + chars[2]);
+            }
             return audioFile + ".wav";
         }
 
@@ -92,5 +96,9 @@ public class SimpleFileSystemAudioSegmentMapper implements AudioSegmentMapper {
         }
         audioFile = audioFile.substring(0,audioFile.length()-1);
         return audioFile + ".wav";
+    }
+
+    private boolean isGb(char[] chars) {
+        return chars[0] == 'g' && chars[1] == 'b';
     }
 }

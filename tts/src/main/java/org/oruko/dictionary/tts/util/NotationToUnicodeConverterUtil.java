@@ -40,13 +40,13 @@ public class NotationToUnicodeConverterUtil {
                 for (Path audioFile : dirContents) {
                     String oldFileName = audioFile.getFileName().toString();
                     String newFileName = toNameWithUnicode(oldFileName);
-
-                    if (newFileName.equals("")) {
+                    if (!newFileName.equals("")) {
+                        Path newFile = destPath.resolve(newFileName);
+                        Files.copy(audioFile, newFile);
+                        System.out.format("Successfully converted %s to %s\n", oldFileName, newFileName);
+                    } else {
                         System.out.println("Error converting " + oldFileName);
                     }
-                    Path newFile = destPath.resolve(newFileName);
-                    Files.copy(audioFile, newFile);
-                    System.out.println("1");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
