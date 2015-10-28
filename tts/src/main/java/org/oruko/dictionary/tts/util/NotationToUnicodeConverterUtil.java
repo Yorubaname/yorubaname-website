@@ -5,6 +5,10 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * Utility class that converts from the audio segment notation to unicode
@@ -24,6 +28,27 @@ public class NotationToUnicodeConverterUtil {
         converter.performConversion();
     }
 
+
+    private static Map<String, Long> groupBySegmentCount(Path sourcePath, Path destPath) throws IOException {
+        return Files.walk(sourcePath)
+                    .map(Path::getFileName)
+                    .map(s -> s.toString())
+                    .filter(s -> {
+                        for (char c : s.toCharArray()) {
+                            if (Character.isDigit(c)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    })
+                    .map(s -> {
+                        int endIndex = s.indexOf("_");
+                        if (endIndex == -1) {
+                            return s;
+                        }
+                        return s.substring(0, endIndex);
+                    }).collect(groupingBy(s -> s, counting()));
+    }
 
     private static class Converter {
 
