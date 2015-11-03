@@ -101,9 +101,10 @@ footer {
 }
 
 header {
-	background-color: #0E5264;
+	/*background-color: #0E5264;*/
+	background-color: #f2f2f2;
     color: #CDA463;
-	border-bottom: 1px solid #C8AD75;
+	/*border-bottom: 1px solid #C8AD75;*/
 	padding-top: 15px;
 	padding-bottom: 25px;
 }
@@ -111,6 +112,11 @@ header {
 .navbar {
 	border-radius: 0;
     margin-bottom: 0px;
+}
+
+.navbar .nav-brand img {
+    width: 219px;
+    height: 70px;
 }
 
 .navbar li a {
@@ -127,7 +133,9 @@ header {
 
 .jumbotron {
 	background: #F2F2F2;
-	color: #FFF;
+	/*color: #FFF;
+	color: #B55217;*/
+	color: #000;
 	/*margin-bottom: -25px;*/
 	text-align: center;
 }
@@ -142,13 +150,13 @@ header {
 .jumbotron h3 {
 	font-size: 21px;
 	line-height: 1.3em;
-	text-shadow: 1px 1px 1px black;
+	/*text-shadow: 1px 1px 1px black;*/
 }
 
 .jumbotron .jtext a {
 	color: #FFFFFF;
 	font-size: 16px;
-	text-shadow: 1px 1px 2px black;
+	/*text-shadow: 1px 1px 2px black;*/
 	display: inline-block;
 	position: absolute;
 	top: 65px;
@@ -159,7 +167,8 @@ header {
 
 .jumbotron a, .jumbotron a:hover {
 	text-transform: uppercase;
-	border: solid 2px #fff;
+	color: #fff;
+	/*border: solid 2px #fff;*/
 }
 
 #home-banner {
