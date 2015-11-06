@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ContactUsController {
 
     @RequestMapping("/contact-us")
-    public String indexPage(Model map) {
+    public String contactUsIndexPage(Model map) {
         map.addAttribute("geoLocations", ApiService.getGeoLocations());
         map.addAttribute("title", "Contact Us");
         return "contactus";

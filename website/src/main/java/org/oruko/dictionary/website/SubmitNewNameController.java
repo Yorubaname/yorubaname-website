@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SubmitNewNameController {
     @RequestMapping("/submitname")
-    public String indexPage(Model map) {
+    public String submitNameIndexPage(Model map) {
         map.addAttribute("geoLocations", ApiService.getGeoLocations());
         map.addAttribute("title", "Submit Name");
         return "submitname";

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class NoEntryFoundController {
     @RequestMapping("/entry-not-found")
-    public String indexPage(Model map) {
+    public String noEntryFoundIndexPage(Model map) {
         map.addAttribute("geoLocations", ApiService.getGeoLocations());
         map.addAttribute("title", "Entry Not Found");
         return "entrynotfound";
