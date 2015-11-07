@@ -31,7 +31,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="entry in namesList" on-last-repeat>
-                    <td><input type="checkbox" value="{{entry}}" name="selected_name"> <a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
+                    <td><input type="checkbox" value="{{$index}}" name="selected_name"> <a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.morphology}}</td>
                     <td><a class="btn btn-xs" ng-class="entry.indexed ? 'btn-default' : 'btn-success'" ng-click="indexName(entry)">{{entry.indexed ? 'Remove Index' : 'Index'}}</a></td>
@@ -56,7 +56,7 @@
             </tfoot>
         </table>
 
-        <a ng-click="indexNames()" class="btn btn-success btn-sm">Index Selected</a>
-        <a ng-click="deIndexNames()" class="btn btn-default btn-sm">Remove Selected from Index</a>
+        <a ng-click="indexNames('add')" class="btn btn-success btn-sm">Index Selected</a>
+        <a ng-click="indexNames('remove')" class="btn btn-default btn-sm">Remove Selected from Index</a>
     </div>
 </div>

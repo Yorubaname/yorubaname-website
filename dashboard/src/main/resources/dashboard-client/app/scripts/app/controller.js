@@ -341,15 +341,6 @@ dashboardappApp
                 $('#names_table').data('footable-filter').filter( $('#textFilter').val() )
             }
 
-            $scope.selectedNames = []
-
-            $scope.select = function(entry){
-                console.log(entry.name)
-                var index = $scope.selectedNames.indexOf(entry.name)
-                if (index > -1) $scope.selectedNames.splice(index, 1);
-                else $scope.selectedNames.push(entry.name)
-            }
-
             $scope.indexName = function(entry){
                 return (!entry.indexed) ? api.addNameToIndex(entry.name).success(function(response){
                     return entry.indexed = true
@@ -358,32 +349,35 @@ dashboardappApp
                 })
             }
 
-            $scope.indexNames = function(){
+            $scope.indexNames = function(action){
                 var entries = $.map( $('input[name="selected_name"]:checked') , function(elem){
-                    return $(elem).val()
+                    return  $scope.namesList[ $(elem).val() ]
                 })
-                if (entries.length > 0) return api.addNamesToIndex(entries).success(function(response){
-                    $.map(entries, function(entry) { entry.indexed = true })
-                    toastr.success(entries.length + ' names have been added to index')
-                }).error(function(){
-                    toastr.error('Selected names could not be added to index')
-                })
-                else toastr.warning('No names selected to add to index')
-            }
 
-            
+                if (entries.length > 0) {
 
-            $scope.deIndexNames = function(entries){
-                var entries = $.map( $('input[name="selected_name"]:checked') , function(elem){
-                    return $(elem).val()
-                })
-                if (entries.length > 0) return api.removeNamesFromIndex(entries).success(function(response){
-                    $.map(entries, function(entry) { entry.indexed = false })
-                    toastr.success(entries.length + ' names have been removed from index')
-                }).error(function(){
-                    toastr.error('Selected names could not be removed from index')
-                })
-                else toastr.warning('No names selected to remove from index')
+                    (!action || action == 'add') ? api.addNamesToIndex(entries).success(function(response){
+                        $.map(entries, function(entry) { entry.indexed = true })
+                        toastr.success(entries.length + ' names have been added to index')
+                    }).error(function(){
+                        toastr.error('Selected names could not be added to index')
+                    })
+
+                    :
+
+                    api.removeNamesFromIndex(entries).success(function(response){
+                        $.map(entries, function(entry) { entry.indexed = false })
+                        toastr.success(entries.length + ' names have been removed from index')
+                    }).error(function(){
+                        toastr.error('Selected names could not be removed from index')
+                    })
+
+                    // then deselect all
+                    return $('input[name="selected_name"]:checked').removeAttr('checked')
+
+                }
+
+                else toastr.warning('No names selected')
             }
 
         }

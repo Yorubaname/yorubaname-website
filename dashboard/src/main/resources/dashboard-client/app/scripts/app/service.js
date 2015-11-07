@@ -280,7 +280,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('namesApi', ['api', 'toastr', '$state', '$localStorage', function(api, toastr, $state, $localStorage) {
+  .service('namesApi', ['api', 'toastr', '$state', '$localStorage', '_', function(api, toastr, $state, $localStorage, _) {
 
       /**
       * Adds a name to the database;
@@ -372,11 +372,13 @@ dashboardappApp
         return api.deleteJson('/v1/search/indexes/' + name)
       }
 
-      this.addNamesToIndex = function (namesJson) {
-        return api.postJson('/v1/search/indexes/batch', namesJson)
+      this.addNamesToIndex = function (namesJsonArray) {
+        var names = _.pluck(namesJsonArray, 'name')
+        return api.postJson('/v1/search/indexes/batch', names)
       }
-      this.removeNamesFromIndex = function (namesJson) {
-        return api.deleteJson('/v1/search/indexes/batch', namesJson)
+      this.removeNamesFromIndex = function (namesJsonArray) {
+        var names = _.pluck(namesJsonArray, 'name')
+        return api.deleteJson('/v1/search/indexes/batch', names)
       }
 
       this.getFeedback = function(name) {
