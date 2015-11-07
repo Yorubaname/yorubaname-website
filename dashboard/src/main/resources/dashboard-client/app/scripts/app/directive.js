@@ -46,10 +46,10 @@ dashboardappApp
     // show/hide side menu
     .directive('menuToggle', [
         '$rootScope',
-        '$cookieStore',
+        '$localStorage',
         '$window',
         '$timeout',
-        function ($rootScope, $cookieStore, $window, $timeout) {
+        function ($rootScope, $localStorage, $window, $timeout) {
             return {
                 restrict: 'E',
                 template: '<span class="menu_toggle" ng-click="toggleSidebar()"><span class="icon_menu_toggle" ><i class="arrow_carrot-2left" ng-class="sideNavCollapsed ? \'hide\' : \'\'"></i><i class="arrow_carrot-2right" ng-class="sideNavCollapsed ? \'\' : \'hide\'"></i></span></span>',
@@ -60,8 +60,8 @@ dashboardappApp
                     };
                     $rootScope.$watch($rootScope.getWidth, function (newValue, oldValue) {
                         if (newValue >= mobileView) {
-                            if (angular.isDefined($cookieStore.get('sideNavCollapsed'))) {
-                                if($cookieStore.get('sideNavCollapsed') == false) {
+                            if (angular.isDefined($localStorage.sideNavCollapsed)) {
+                                if($localStorage.sideNavCollapsed == false) {
                                     $rootScope.sideNavCollapsed = false;
                                 } else {
                                     $rootScope.sideNavCollapsed = true;
@@ -78,7 +78,7 @@ dashboardappApp
                     });
                     scope.toggleSidebar = function () {
                         $rootScope.sideNavCollapsed = !$rootScope.sideNavCollapsed;
-                        $cookieStore.put('sideNavCollapsed', $rootScope.sideNavCollapsed);
+                        $localStorage.sideNavCollapsed = $rootScope.sideNavCollapsed;
                         if(!$rootScope.fixedLayout) {
                             if(window.innerWidth > 991) {
                                 $timeout(function () {

@@ -31,10 +31,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="entry in namesList" on-last-repeat>
-                    <td><input type="checkbox" value="{{entry.name}}" name="selected_name"> <a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
+                    <td><input type="checkbox" value="{{entry}}" name="selected_name"> <a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.morphology}}</td>
-                    <td ng-hide="!isAdmin"><a class="btn btn-xs btn-success" ng-click="indexName(entry)" ng-hide="entry.indexed">Index</a> <a class="btn btn-xs btn-default" ng-click="deIndexName(entry)" ng-show="entry.indexed">Deindex</a> </td>
+                    <td><a class="btn btn-xs" ng-class="entry.indexed ? 'btn-default' : 'btn-success'" ng-click="indexName(entry)">{{entry.indexed ? 'Remove Index' : 'Index'}}</a></td>
                     <td>{{entry.submittedBy}}</td>
                     <td>{{entry.createdAt|date:'mediumDate'}}</td>
                 </tr>

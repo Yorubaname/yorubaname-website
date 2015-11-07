@@ -351,8 +351,10 @@ dashboardappApp
             }
 
             $scope.indexName = function(entry){
-                return api.addNameToIndex(entry.name).success(function(response){
+                return (!entry.indexed) ? api.addNameToIndex(entry.name).success(function(response){
                     return entry.indexed = true
+                }) : api.removeNameFromIndex(entry.name).success(function(response){
+                    entry.indexed = false
                 })
             }
 
@@ -361,29 +363,23 @@ dashboardappApp
                     return $(elem).val()
                 })
                 if (entries.length > 0) return api.addNamesToIndex(entries).success(function(response){
-                    entry.indexed = true
-                    toastr.success(entries.length + 'selected names have been added to index')
+                    $.map(entries, function(entry) { entry.indexed = true })
+                    toastr.success(entries.length + ' names have been added to index')
                 }).error(function(){
                     toastr.error('Selected names could not be added to index')
                 })
                 else toastr.warning('No names selected to add to index')
             }
 
-            $scope.deIndexName = function(entry){
-                return api.removeNameFromIndex(entry.name).success(function(response){
-                    entry.indexed = false
-                })
-            }
+            
 
             $scope.deIndexNames = function(entries){
                 var entries = $.map( $('input[name="selected_name"]:checked') , function(elem){
                     return $(elem).val()
                 })
                 if (entries.length > 0) return api.removeNamesFromIndex(entries).success(function(response){
-                    
-                    entry.indexed = false
-
-                    toastr.success(entries.length + 'selected names have been removed from index')
+                    $.map(entries, function(entry) { entry.indexed = false })
+                    toastr.success(entries.length + ' names have been removed from index')
                 }).error(function(){
                     toastr.error('Selected names could not be removed from index')
                 })
