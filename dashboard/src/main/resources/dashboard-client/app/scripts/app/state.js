@@ -55,18 +55,6 @@ dashboardappApp
                     ncyBreadcrumb: {
                         label: 'Home'
                     },
-                    // load state specific js/css
-                    resolve: {
-                        files: [
-                            'uiLoad',
-                            function (uiLoad) {
-                                return uiLoad.load([
-                                    // countUp animation
-                                    'scripts/libs/countUp.min.js'
-                                ]);
-                            }
-                        ]
-                    },
                     controller: 'dashboardCtrl'
                 })
                 // Names (parent state)
@@ -84,22 +72,6 @@ dashboardappApp
                     },
                     url: '/new',
                     templateUrl: 'tmpls/names/new.html',
-                    
-                    resolve: {
-                        files: [
-                           'uiLoad',
-                           function(uiLoad){
-                              return uiLoad.load([
-                                 // select2
-                                 'bower_components/select2/dist/css/select2.min.css',
-                                 'bower_components/select2/dist/js/select2.min.js',
-                                 // selectize.js
-                                 'bower_components/selectize/dist/css/selectize.css',
-                                 'bower_components/selectize/dist/js/standalone/selectize.min.js'
-                              ])
-                           }
-                        ]    
-                    },
                     controller:'namesAddEntriesCtrl'
                 })
 
@@ -111,21 +83,6 @@ dashboardappApp
                     },
                     url: '/edit/:entry',
                     templateUrl: 'tmpls/names/edit.html',
-                    resolve: {
-                        files: [
-                           'uiLoad',
-                           function(uiLoad){
-                              return uiLoad.load([
-                                 // select2
-                                 'bower_components/select2/dist/css/select2.min.css',
-                                 'bower_components/select2/dist/js/select2.min.js',
-                                 // selectize.js
-                                 'bower_components/selectize/dist/css/selectize.css',
-                                 'bower_components/selectize/dist/js/standalone/selectize.min.js'
-                              ])
-                           }
-                        ]    
-                    },
                     controller:'namesEditEntryCtrl'
                 })
 
@@ -138,19 +95,6 @@ dashboardappApp
                     },
                     url: '/lists/:status',
                     templateUrl: 'tmpls/names/lists.html',
-                    resolve: {
-                        files: [
-                            'uiLoad',
-                            function (uiLoad) {
-                                return uiLoad.load([
-                                    'bower_components/footable/css/footable.core.min.css',
-                                    'bower_components/footable/dist/footable.min.js',
-                                    'bower_components/footable/dist/footable.paginate.min.js',
-                                    'bower_components/footable/dist/footable.filter.min.js'
-                                ]);
-                            }
-                        ]
-                    },
                     controller: 'namesListEntriesCtrl'
                 })
 
@@ -161,19 +105,6 @@ dashboardappApp
                     },
                     url: '/suggested',
                     templateUrl: 'tmpls/names/suggested.html',
-                    resolve: {
-                        files: [
-                            'uiLoad',
-                            function (uiLoad) {
-                                return uiLoad.load([
-                                    'bower_components/footable/css/footable.core.min.css',
-                                    'bower_components/footable/dist/footable.min.js',
-                                    'bower_components/footable/dist/footable.paginate.min.js',
-                                    'bower_components/footable/dist/footable.filter.min.js'
-                                ]);
-                            }
-                        ]
-                    },
                     controller: 'namesSuggestedEntriesCtrl'
                 })
                 
@@ -252,19 +183,6 @@ dashboardappApp
                     },
                     url: '/lists/:role',
                     templateUrl: 'tmpls/users/lists.html',
-                    resolve: {
-                        files: [
-                            'uiLoad',
-                            function (uiLoad) {
-                                return uiLoad.load([
-                                    'bower_components/footable/css/footable.core.min.css',
-                                    'bower_components/footable/dist/footable.min.js',
-                                    'bower_components/footable/dist/footable.paginate.min.js',
-                                    'bower_components/footable/dist/footable.filter.min.js'
-                                ]);
-                            }
-                        ]
-                    },
                     controller: 'userListCtrl'
                 })
 

@@ -182,6 +182,7 @@ dashboardappApp
             $rootScope.isAuthenticated = true;
             $localStorage.id = response.id;
             $localStorage.username = response.username;
+            $localStorage.email = response.email;
             $rootScope.username = $localStorage.username;
             // TODO maybe not. This is a security loop hole
             $localStorage.token = authData;
@@ -287,6 +288,8 @@ dashboardappApp
       * @param nameEntry
       */
       this.addName = function (name) {
+        // include logged in user's details
+        name.submittedBy = $localStorage.email;
         return api.postJson("/v1/names", name).success(function(resp){
           toastr.success(name.name + ' was successfully added.')
           $state.go('auth.names.list_entries({status:"all"})')
@@ -297,13 +300,12 @@ dashboardappApp
 
       this.getAllNames = function(){
         return api.get('/v1/names').success(function(resp){
-          $localStorage.entries = resp// JSON.stringify(resp)
+          $localStorage.entries = resp
         })
       }
 
       this.readAllNames = function(){
-        return $localStorage.entries || [] 
-        //return JSON.parse( $window.localStorage.getItem('yoruba-names:entries') || '[]' ) 
+        return $localStorage.entries || []
       }
 
       /**

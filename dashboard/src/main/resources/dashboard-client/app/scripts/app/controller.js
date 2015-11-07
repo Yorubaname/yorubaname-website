@@ -136,9 +136,8 @@ dashboardappApp
 
     .controller('dashboardCtrl', [
         '$scope',
-        'files',
         'namesApi',
-        function ($scope, files, namesApi) {
+        function ($scope, namesApi) {
             // run scripts after state load
             $scope.$on('$stateChangeSuccess', function () {                
                 $('.countUpMe').each(function() {
@@ -161,10 +160,9 @@ dashboardappApp
 
     .controller('namesAddEntriesCtrl', [
         '$scope',
-        'files',
         'uploader',
         'namesApi',
-        function($scope, files, Uploader, api) {
+        function($scope, Uploader, api) {
 
             $scope.uploader = Uploader('/v1/names/upload')
 
@@ -230,9 +228,8 @@ dashboardappApp
         '$scope',
         '$stateParams',
         'namesApi',
-        'files',
         '$timeout',
-        function($scope, $stateParams, api, files, $timeout) {
+        function($scope, $stateParams, api, $timeout) {
 
             console.log($stateParams.entry)
 
