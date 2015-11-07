@@ -1,5 +1,5 @@
 "use strict";
-var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngCookies', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'toastr', 'NgSwitchery', 'textAngular', 'angularFileUpload', 'angular-md5']);
+var dashboardappApp = angular.module('dashboardappApp', [ 'ui.router', 'ngAnimate', 'ui.load', 'ngSanitize', 'ngStorage', 'ui.bootstrap', 'ncy-angular-breadcrumb', 'ngRetina', 'toastr', 'NgSwitchery', 'textAngular', 'angularFileUpload', 'angular-md5']);
 
 dashboardappApp
    
@@ -12,12 +12,12 @@ dashboardappApp
         function ($provide, $httpProvider, baseUrl) {
           
           // Intercept http calls.
-          $provide.factory('MyHttpInterceptor', [ '$cookies', '$q', function ($cookies, $q) {
+          $provide.factory('MyHttpInterceptor', [ '$localStorage', '$q', function ($localStorage, $q) {
             return {
               // On request success
               request: function (config) {
-                if ($cookies.token !== undefined) {
-                  $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.token
+                if ($localStorage.token !== undefined) {
+                  $httpProvider.defaults.headers.common['Authorization'] = 'Basic ' + $localStorage.token
                 } 
                 if (/^\/v1\//.test(config.url)){
                   config.crossOrigin = true;
@@ -75,14 +75,14 @@ dashboardappApp
 
     /* Run Block */
     .run(
-    [ '$rootScope', '$state', '$stateParams', '$cookies', 
-        function ($rootScope, $state, $stateParams, $cookies) {
+    [ '$rootScope', '$state', '$stateParams', '$localStorage', 
+        function ($rootScope, $state, $stateParams, $localStorage) {
 
             $rootScope.$state = $state;
             $rootScope.$stateParams = $stateParams;
 
             var is_logged_in = function(){
-              return !!$cookies.token && !!$cookies.username;
+              return ($localStorage.isAuthenticated == true)
             }
 
             $rootScope.$on('$stateChangeSuccess', function () {
@@ -105,7 +105,9 @@ dashboardappApp
                 
                 else if (requiresLogout === true && is_logged_in()) {
                     event.preventDefault()
-                    $state.go('auth.home')
+                    // log him out
+                    // then go to sign
+                    $state.go('login') // auth.home
                 }
 
                 // remove datatables fixedHeader from DOM

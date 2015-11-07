@@ -6,6 +6,16 @@ dashboardappApp
         function ($scope){
         }
     ])
+
+    .controller('headerCtrl', [
+        '$scope',
+        'authApi',
+        function ($scope, api){
+            $scope.logout = function (){
+                return api.logout()
+            }
+        }
+    ])
     
     .controller('sideMenuCtrl', [
         '$rootScope',
@@ -128,8 +138,7 @@ dashboardappApp
         '$scope',
         'files',
         'namesApi',
-        '$cookies',
-        function ($scope, files, namesApi, $cookies) {
+        function ($scope, files, namesApi) {
             // run scripts after state load
             $scope.$on('$stateChangeSuccess', function () {                
                 $('.countUpMe').each(function() {
@@ -147,7 +156,6 @@ dashboardappApp
                     $scope.names.push(name)
                 })
             })
-
         }
     ])
 
@@ -196,7 +204,7 @@ dashboardappApp
 
                 // If there's no remove button, let's add one to the new row, usually, this is just for the 1st clone
                 if (! $('div.etymology:last-of-type .remove').length > 0 )
-                  $('div.etymology:last-of-type').append( '<button class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></button>' )
+                  $('div.etymology:last-of-type').append( '<a class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></a>' )
                 
             }
 
@@ -237,13 +245,6 @@ dashboardappApp
                 }, 200)
             }
            // else 
-
-            var setPrevOrNextLinks = function(){
-                names.some(function(name){
-                    //if ($scope.name.name == name.name)
-
-                })
-            }
 
             api.getGeoLocations().success(function(response) {
                 $scope.geoLocations = response
@@ -287,7 +288,7 @@ dashboardappApp
 
                 // If there's no remove button, let's add one to the new row, usually, this is just for the 1st clone
                 if (! $('div.etymology:last-of-type .remove').length > 0 )
-                  $('div.etymology:last-of-type').append( '<button class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></button>' );
+                  $('div.etymology:last-of-type').append( '<a class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></a>' );
                 
             }
 
@@ -517,11 +518,11 @@ dashboardappApp
 
     .controller('profileIndexCtrl', [
         '$scope',
-        '$cookies',
+        '$localStorage',
         'usersApi',
-        function ($scope, $cookies, api) {
+        function ($scope, $localStorage, api) {
             //console.log($cookies.username)
-            api.getUser($cookies.id).success(function(user){
+            api.getUser($localStorage.id).success(function(user){
                 $scope.user = user
             }).error(function(resp){
                 console.log(resp)
@@ -531,11 +532,11 @@ dashboardappApp
 
     .controller('profileEditCtrl', [
         '$scope',
-        '$cookies',
+        '$localStorage',
         'usersApi',
-        function ($scope, $cookies, api) {
-            //console.log($cookies.username)
-            api.getUser($cookies.id).success(function(user){
+        function ($scope, $localStorage, api) {
+            // console.log($cookies.username)
+            api.getUser($localStorage.id).success(function(user){
                 $scope.user = user
             }).error(function(resp){
                 console.log(resp)

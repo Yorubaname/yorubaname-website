@@ -148,7 +148,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('authApi', ['api', 'usersApi', '$cookies', '$state', '$rootScope', '$timeout', 'toastr', 'md5', 'baseUrl', function(api, usersApi, $cookies, $state, $rootScope, $timeout, toastr, md5, baseUrl){
+  .service('authApi', ['api', 'usersApi', '$localStorage', '$state', '$rootScope', '$timeout', 'toastr', 'md5', 'baseUrl', function(api, usersApi, $localStorage, $state, $rootScope, $timeout, toastr, md5, baseUrl){
 
     this.getUser = function(callback) {
       return api.get("/v1/auth/user").then(function(response) {
@@ -159,7 +159,7 @@ dashboardappApp
     /* Get a User's Profile Photo */
     var getProfilePhoto = function(user){
 
-      var email = user ? user.email : $cookies.username;
+      var email = user ? user.email : $localStorage.username;
 
       return $.get("http://www.gravatar.com/avatar/"+ md5.createHash(email || ''), function(img){
         //console.log(img)
@@ -178,17 +178,17 @@ dashboardappApp
         authData = btoa(authData.email + ":" + authData.password)
         //console.log(authData)
         return api.authenticate(authData).success(function(response) {
-            $cookies.isAuthenticated = true;
+            $localStorage.isAuthenticated = true;
             $rootScope.isAuthenticated = true;
-            $cookies.id = response.id;
-            $cookies.username = response.username;
-            $rootScope.username = $cookies.username;
+            $localStorage.id = response.id;
+            $localStorage.username = response.username;
+            $rootScope.username = $localStorage.username;
             // TODO maybe not. This is a security loop hole
-            $cookies.token = authData;
+            $localStorage.token = authData;
             $rootScope.user = {
-              username: $cookies.username,
-              email: $cookies.email,
-              id: $cookies.id
+              username: $localStorage.username,
+              email: $localStorage.email,
+              id: $localStorage.id
             }
 
             $rootScope.baseUrl = baseUrl;
@@ -198,12 +198,12 @@ dashboardappApp
             response.roles.some(function(role) {
                 // Check ROLE_ADMIN first, since it supercedes all
                 if (role === "ROLE_ADMIN") {
-                    $cookies.isAdmin = true;
+                    $localStorage.isAdmin = true;
                     $rootScope.isAdmin = true;
                     return true
                 }
                 else if (role === "ROLE_LEXICOGRAPHER") {
-                    $cookies.isLexicographer = true;
+                    $localStorage.isLexicographer = true;
                     $rootScope.isLexicographer = true;
                     return true
                 }
@@ -215,10 +215,10 @@ dashboardappApp
               toastr.success( "Hey " + $rootScope.username + ", you are now successfully logged in.", 'Login Successful!')
             }, 200)
         }).error(function(response) {
-            $cookies.isAuthenticated = false;
-            $cookies.isAdmin = false;
-            $cookies.isLexicographer = false;
-            $cookies.id = null;
+            $localStorage.isAuthenticated = false;
+            $localStorage.isAdmin = false;
+            $localStorage.isLexicographer = false;
+            $localStorage.id = null;
             $rootScope.user = null;
             $rootScope.isAuthenticated = false;
             $rootScope.isAdmin = false;
@@ -229,8 +229,8 @@ dashboardappApp
     // Log out function
     this.logout = function(){
       console.log('running service.logout')
-      $cookies.isAuthenticated = false;
-      $cookies.isAdmin = false;
+      $localStorage.isAuthenticated = false;
+      $localStorage.isAdmin = false;
       $rootScope.isAuthenticated = false;
       $rootScope.isAdmin = false;
       $timeout(function(){
@@ -280,7 +280,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('namesApi', ['api', 'toastr', '$state', '$window', function(api, toastr, $state, $window) {
+  .service('namesApi', ['api', 'toastr', '$state', '$localStorage', function(api, toastr, $state, $localStorage) {
 
       /**
       * Adds a name to the database;
@@ -297,12 +297,13 @@ dashboardappApp
 
       this.getAllNames = function(){
         return api.get('/v1/names').success(function(resp){
-          $window.localStorage.setItem('yoruba-names:entries', JSON.stringify(resp))
+          $localStorage.entries = resp// JSON.stringify(resp)
         })
       }
 
       this.readAllNames = function(){
-        return JSON.parse( $window.localStorage.getItem('yoruba-names:entries') || '[]' ) 
+        return $localStorage.entries || [] 
+        //return JSON.parse( $window.localStorage.getItem('yoruba-names:entries') || '[]' ) 
       }
 
       /**
@@ -394,7 +395,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('uploader', ['FileUploader', 'baseUrl', 'toastr', '$cookies', '$state', function(FileUploader, baseUrl, toastr, $cookies, $state) {
+  .service('uploader', ['FileUploader', 'baseUrl', 'toastr', '$localStorage', '$state', function(FileUploader, baseUrl, toastr, $localStorage, $state) {
 
     FileUploader.prototype.setEndpoint = function setEndpoint(endpoint){
       this.url = baseUrl + endpoint
@@ -406,7 +407,7 @@ dashboardappApp
           url: baseUrl + endpoint, 
           alias:'nameFiles',
           headers:{
-            Authorization: 'Basic ' + $cookies.token
+            Authorization: 'Basic ' + $localStorage.token
           }
         }),
         options = options || {},

@@ -36,7 +36,7 @@
                     <td>{{entry.morphology}}</td>
                     <td ng-hide="!isAdmin"><a class="btn btn-xs btn-success" ng-click="indexName(entry)" ng-hide="entry.indexed">Index</a> <a class="btn btn-xs btn-default" ng-click="deIndexName(entry)" ng-show="entry.indexed">Deindex</a> </td>
                     <td>{{entry.submittedBy}}</td>
-                    <td>{{entry.createdAt|date}}</td>
+                    <td>{{entry.createdAt|date:'mediumDate'}}</td>
                 </tr>
                 <tr class="text-center" ng-show="!namesList.length">
                     <td colspan="5">

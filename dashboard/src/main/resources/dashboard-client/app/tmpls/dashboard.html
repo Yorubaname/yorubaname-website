@@ -104,39 +104,12 @@
             <tbody>
                 <tr ng-repeat="entry in names">
                     <td><a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
-                    <td>{{entry.syllable}}</td>
+                    <td>{{entry.syllables}}</td>
                     <td>{{entry.indexed ? 'Indexed' : 'Not indexed'}}</td>
-                    <td>{{entry.createdAt|date}}</td>
+                    <td>{{entry.createdAt|date:'mediumDate'}}</td>
                 </tr>
             </tbody>
         </table>
             
     </div>
-    <!--div class="col-sm-5">
-        <div class="heading_a"><span class="heading_text">Notifications</span></div>
-        <ul class="notifications">
-            <li>
-                <div class="clearfix">
-                    <small class="text-muted">24.07.2014</small>
-                </div>
-                <p>Lorem ipsum dolor sit amet&hellip;</p>
-            </li>
-            <li>
-                <div class="clearfix">
-                    <div class="pull-right text-warning"><a href="">Review</a></div>
-                    <small class="text-muted">26.07.2014</small>
-                </div>
-                <p>Lorem ipsum dolor sit amet&hellip;</p>
-            </li>
-            <li>
-                <div class="clearfix">
-                    <small class="text-muted">25.07.2014</small>
-                </div>
-                <p>Lorem ipsum dolor sit amet&hellip;</p>
-            </li>
-            <li>
-                <a href="#" class="btn btn-xs btn-link btn-block">All notifications</a>
-            </li>
-        </ul>
-    </div-->
 </div>

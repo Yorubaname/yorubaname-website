@@ -61,9 +61,6 @@ dashboardappApp
                             'uiLoad',
                             function (uiLoad) {
                                 return uiLoad.load([
-                                    // c3 charts
-                                    'bower_components/d3/d3.min.js',
-                                    'bower_components/c3/c3.min.js',
                                     // countUp animation
                                     'scripts/libs/countUp.min.js'
                                 ]);

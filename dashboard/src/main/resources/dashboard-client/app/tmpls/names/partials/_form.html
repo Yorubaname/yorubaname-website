@@ -1,7 +1,9 @@
+<p class="text-danger">* Kindly fill all required fields</p>
+
 <form class="name-entry-form" name="form">
 
 <div class="row">
-    <div class="col-lg-6 col-sm-7 col-sm-8 col-xs-12">
+    <div class="col-lg-6 col-sm-6 col-sm-6 col-xs-12">
 
         <div class="form-group">
             <label for="name" class="required">Name</label>
@@ -27,6 +29,11 @@
             <label for="pronounciation">Pronunciation</label>
             <input type="text" id="pronounciation" class="form-control" ng-model="name.pronunciation">
         </div>
+
+    </div>
+
+    <div class="col-lg-6 col-sm-6 col-sm-6 col-xs-12">
+
         <div class="form-group">
             <label for="morphology">Morphology</label>
             <input type="text" id="morphology" class="form-control" ng-model="name.morphology">
@@ -51,58 +58,18 @@
             <label for="name_variants">Variants</label>
             <span class="help-block">Enter other known variations for this name. Use comma to separate the different variations.</span>
             <textarea id="name_variants" class="form-control" ng-model="name.variants"></textarea>
-            <!--div class="row">
-                <div class="col-sm-12"><label>Variants</label></div>
-                <div class="col-sm-6">
-                    <label for="variant_word">Word</label>
-                    <input type="text" id="variant_word" class="form-control" ng-model="etymology.meaning">
-                </div>
-                <div class="col-sm-6">
-                    <label for="variant_geography">Note (e.g. Geography)</label>
-                    <input type="text" id="variant_geography" class="form-control" ng-model="etymology.meaning">
-                </div>
-            </div>
-            <p class="text-right"><a ng-click="clone_variant()">Add a new variant</a></p-->
         </div>
 
         <div class="form-group">
             <label for="media">Media Link</label>
             <span class="help-block">Enter links to resources that can be found online for this name. Use comma to separate links.</span>
             <textarea id="media" class="form-control" ng-model="name.media"></textarea>
-            <!--div class="row">
-                <div class="col-sm-12"><label>Media Links</label></div>
-                <div class="col-sm-6">
-                    <label for="media_title">Title</label>
-                    <input type="text" id="media_title" class="form-control" ng-model="media.title">
-                </div>
-                <div class="col-sm-6">
-                    <label for="media_link">Link</label>
-                    <input type="text" id="media_link" class="form-control" ng-model="media.link">
-                </div>
-            </div>
-            <p class="text-right"><a ng-click="clone_link()">Add a new link</a></p-->
         </div>
 
         <div class="form-group">
             <label for="person_name">Famous People</label>
             <span class="help-block">Enter names of famous people bearing this name. Use comma to separate names.</span>
             <textarea id="person_name" class="form-control" ng-model="name.famousPeople"></textarea>
-            <!--div class="row">
-                <div class="col-sm-12"><label>Personalities</label></div>
-                <div class="col-sm-6">
-                    <label for="person_name">Name</label>
-                    <input type="text" id="person_name" class="form-control" ng-model="name.famousPeople">
-                </div>
-                <div class="col-sm-6">
-                    <label for="person_profession">Profession</label>
-                    <input type="text" id="person_profession" class="form-control" ng-model="persons.profession">
-                </div>
-                <div class="col-sm-8">
-                    <label for="person_picture" class="optional">Picture</label>
-                    <input type="text" id="person_picture" class="form-control" ng-model="persons.picture">
-                </div>
-            </div>
-            <p class="text-right"><a ng-click="clone_person()">Add a new personality</a></p-->
         </div>
 
 
@@ -114,10 +81,10 @@
             </select>
         </div>
 
-        <div class="form-group">
+        <!--div class="form-group">
             <label>Submitted By</label>
             <input type="email" class="form-control" name="submittedBy" ng-model="name.submittedBy">
-        </div>
+        </div-->
 
     </div>
     
@@ -126,9 +93,8 @@
 <div class="row">
     <div class="col-sm-12">
         <hr>
-        <button type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Submit for Review</button>
-        <!--button type="submit" class="btn btn-lg btn-info" ng-click="save()" ng-disabled="form.$invalid || !form.$dirty">Save for Later</button>
-        <button type="submit" class="btn btn-lg btn-default" ng-click="preview()" ng-disabled="form.$invalid || !form.$dirty">Preview Entry</button-->
+        <button  ng-show="new" type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Submit for Review</button>
+        <button  ng-hide="new" type="submit" class="btn btn-lg btn-success" ng-click="submit()" ng-disabled="form.$invalid || !form.$dirty">Modify Entry</button>
         <a ng-click="delete()" class="btn btn-link btn-lg" ng-hide="new || !isAdmin">Delete {{name.name}}</a>
     </div>
 </div>

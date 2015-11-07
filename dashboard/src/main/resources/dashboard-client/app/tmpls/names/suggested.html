@@ -16,8 +16,8 @@
                     <td><input type="checkbox" value="{{entry.name}}" name="selected_name"> <a>{{entry.name}}</a></td>
                     <td>{{entry.details}}</td>
                     <td>{{entry.geoLocation.place}}</td>
-                    <td>{{entry.submittedBy}}</td>
-                    <td>{{entry.createdAt|date}}</td>
+                    <td>{{entry.email}}</td>
+                    <td>{{entry.createdAt|date:'mediumDate'}}</td>
                 </tr>
                 <tr class="text-center" ng-show="!namesList.length">
                     <td colspan="5">

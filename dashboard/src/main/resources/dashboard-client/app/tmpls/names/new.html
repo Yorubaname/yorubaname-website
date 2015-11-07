@@ -1,22 +1,25 @@
-<div class="row row_full">
-   <div class="col-sm-8 col-sm-offset-2 text-center" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
-       <h4>Upload Entries in Bulk</h4>
-       <div ng-show="uploader.isHTML5">
+<div class="row">
+   <div class="col-sm-4" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+       <h5>Upload Entries in Bulk</h5>
+       <div ng-show="uploader.isHTML5" class="text-center">
           <!-- 3. nv-file-over uploader="link" over-class="className" -->
           <div class="my-drop-zone" nv-file-over="nv-file-over" over-class="" uploader="uploader">
-              <span ng-show="!uploader.queue.length">Drag and drop a properly formated CSV or XSLX file here to add multiple entries at a time.<br><br>
-                <b>Note:</b> Download our XSLX template for how to format your entries. <br><br><a class="btn btn-sm btn-primary" href="{{baseUrl}}/name_entry_template.xlsx" download>Download Template (.xslx)</a>
-                </span>
+              <span ng-show="!uploader.queue.length">Drag and drop a properly formated CSV or XSLX file here to add multiple entries at a time.</span>
                 <div ng-repeat="item in uploader.queue">
                   <p>Uploading: <strong>{{ item.file.name }}</strong>
                     ({{ item.file.size/1024/1024|number:2 }} MB)</p>
-
                   <div class="progress progress-sm">
                     <div class="progress-bar bg-info" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
                   </div>
                 </div>
           </div>
       </div>
+   </div>
+   <div class="col-sm-8">
+      <h4>&nbsp;</h4>
+       <p>Download our Excel template to see how to properly prepare and input name entries. <br><br>
+       <a class="btn btn-sm btn-primary" href="{{baseUrl}}/name_entry_template.xlsx" download>Download Template (.xslx)</a>
+                </p>
    </div>
 </div>
 
