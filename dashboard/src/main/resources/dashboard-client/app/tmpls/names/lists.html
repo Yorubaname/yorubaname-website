@@ -34,7 +34,7 @@
                     <td><input type="checkbox" value="{{$index}}" name="selected_name"> <a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.morphology}}</td>
-                    <td><a class="btn btn-xs" ng-class="entry.indexed ? 'btn-default' : 'btn-success'" ng-click="indexName(entry)">{{entry.indexed ? 'Remove Index' : 'Index'}}</a></td>
+                    <td ng-hide="!isAdmin"><a class="btn btn-xs" ng-class="entry.indexed ? 'btn-default' : 'btn-success'" ng-click="indexName(entry)">{{entry.indexed ? 'Remove Index' : 'Index'}}</a></td>
                     <td>{{entry.submittedBy}}</td>
                     <td>{{entry.createdAt|date:'mediumDate'}}</td>
                 </tr>
