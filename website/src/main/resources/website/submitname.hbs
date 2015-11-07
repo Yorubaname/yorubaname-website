@@ -2,37 +2,32 @@
 {{> header }}
 
 <section id="searchform">
-    <div class="search jumbotron" id="home-banner">
-        <div class="container" align="center">
-            <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
+    <div class="jumbotron" id="home-banner">
+       <div class="container">
+            <h1>{{message "lang.jumbotron1"}} <span>10,000</span> {{message "lang.jumbotron2"}}</h1>
+            
             {{> searchcomponent }}
-        </div>
+            
+            <!--h3>{{message "lang.jumboh31"}}</h3>
+            <a href="/submitname" class="btn btn-lg btn-link">{{message "lang.jumboh32"}}</a-->
+       </div>
     </div>
 </section>
 
 <!-- main-content -->
-<section id="content">
-    <div class="container">
-        <main>
-            <div class="col-md-8">
-                <div class="well">
-                    <h3>{{message "lang.submitname.heading"}}</h3>
-                    <hr/>
+<section>
+   <div class="container">
+       <div class="row">
+           <div class="col-sm-3"></div>
+           <div class="col-sm-6">
+                <h3>{{message "lang.submitname.heading"}}</h3>
+                <hr/>
 
-                    <div style="display: none" id="error-msg" class="alert alert-danger" role="alert">{{message "lang.submitname.nameexists"}}.
-                        <a id="view-entry">{{message "lang.submitname.viewentry"}}</a></div>
-
-                    {{> submitnameform }}
-                </div>
+                <div style="display: none" id="error-msg" class="alert alert-danger" role="alert">{{message "lang.submitname.nameexists"}}.
+                    <a id="view-entry">{{message "lang.submitname.viewentry"}}</a></div>
+                {{> submitnameform }}
             </div>
-        </main>
-
-        <!-- sidebar -->
-        <aside>
-            <div class="col-md-4">
-            </div>
-        </aside>
-        <!-- /sidebar -->
+        </div>
     </div>
 </section>
 
