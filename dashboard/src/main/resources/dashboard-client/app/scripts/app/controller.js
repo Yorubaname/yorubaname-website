@@ -228,29 +228,19 @@ dashboardappApp
         '$scope',
         '$stateParams',
         'namesApi',
-        '$timeout',
-        function($scope, $stateParams, api, $timeout) {
+        function($scope, $stateParams, api) {
 
-            console.log($stateParams.entry)
-
-            var names = api.readAllNames()
-
-            if (!names.length) {
-                api.getAllNames()
-                $timeout(function(){
-                    names = api.readAllNames()
-                }, 200)
-            }
-           // else 
+            api.prevAndNextNames($stateParams.entry, function(prev, next){
+                $scope.prev = prev
+                $scope.next = next
+            })
 
             api.getGeoLocations().success(function(response) {
                 $scope.geoLocations = response
             })
 
             api.getName($stateParams.entry).success(function(resp){
-                $scope.name = resp;
-                // find the correct geolocale of the name and set it
-                console.log($scope.name.geoLocation)
+                $scope.name = resp
                 $scope.name.geoLocation = JSON.stringify($scope.name.geoLocation)
             })
 
@@ -418,7 +408,7 @@ dashboardappApp
         function($scope) {
 
             // 
-            
+
             $scope.$on('$stateChangeSuccess', function(){
                 // autocomplete
                 

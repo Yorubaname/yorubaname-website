@@ -281,7 +281,7 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('namesApi', ['api', 'toastr', '$state', '$localStorage', '_', function(api, toastr, $state, $localStorage, _) {
+  .service('namesApi', ['api', 'toastr', '$state', '$localStorage', '$timeout', '_', function(api, toastr, $state, $localStorage, $timeout, _) {
 
       /**
       * Adds a name to the database;
@@ -298,14 +298,21 @@ dashboardappApp
         })
       }
 
-      this.getAllNames = function(){
-        return api.get('/v1/names').success(function(resp){
-          $localStorage.entries = resp
-        })
-      }
+      this.prevAndNextNames = function(name, fn){
+        if(! $localStorage.entries.length )
+        {
+          api.get('/v1/names').success(function(resp){
+            $localStorage.entries = resp
+          })
+        }
 
-      this.readAllNames = function(){
-        return $localStorage.entries || []
+        return $timeout(function(){
+          // find the index of the current name in the names
+          var index = _.findIndex($localStorage.entries, { name: name }),
+             prev = $localStorage.entries[index - 1],
+             next = $localStorage.entries[index + 1]
+          return fn(prev, next)
+        }, 3000)
       }
 
       /**

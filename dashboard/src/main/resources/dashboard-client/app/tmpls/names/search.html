@@ -1,24 +1,30 @@
 <div class="row">
-
   <div class="col-sm-8 col-sm-offset-2">
   	
   	<div class="heading_a"><span class="heading_text">Find Entry</span></div>
+    
     <form>
         <div class="input-group sepH_b">
-                <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text">
-                <span class="input-group-btn">
-                    <a class="btn btn-default btn-lg"><i class="icon icon_puzzle_alt"></i> Search</a>
-                </span>
-            </div>
+            <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text" ng-model="search.entry">
+            <span class="input-group-btn">
+                <button class="btn btn-success btn-lg" ng-disabled="!search.entry" ng-click="doSearch()"><i class="fa fa-search"></i> Search</button>
+            </span>
+        </div>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="">
+              <input type="checkbox" ng-model="search.authorsEntries">
                 Only search my entries
             </label>
         </div>
-        <button class="btn btn-success btn-lg" type="button"><i class="icon icon_search"></i> Search</button>
     </form>
         
   </div>
+
+  <div class="col-sm-8 col-sm-offset-2">
+      <h4>Showing results for {{search.entry}}</h4>
+
+      <p></p>
+  </div>
+
 
 </div>
