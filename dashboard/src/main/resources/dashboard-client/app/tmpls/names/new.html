@@ -4,7 +4,8 @@
        <div ng-show="uploader.isHTML5" class="text-center">
           <!-- 3. nv-file-over uploader="link" over-class="className" -->
           <div class="my-drop-zone" nv-file-over="nv-file-over" over-class="" uploader="uploader">
-              <span ng-show="!uploader.queue.length">Drag and drop a properly formated CSV or XSLX file here to add multiple entries at a time.</span>
+              <span ng-show="!uploader.queue.length"><i class="fa fa-2x fa-cloud-upload text-muted"></i><br>
+              Drag and drop a properly formated Excel Sheet (.XSLX) file here to add multiple entries at a time.</span>
                 <div ng-repeat="item in uploader.queue">
                   <p>Uploading: <strong>{{ item.file.name }}</strong>
                     ({{ item.file.size/1024/1024|number:2 }} MB)</p>
@@ -18,7 +19,7 @@
    <div class="col-sm-8">
       <h4>&nbsp;</h4>
        <p>Download our Excel template to see how to properly prepare and input name entries. <br><br>
-       <a class="btn btn-sm btn-primary" ng-href="{{baseUrl}}/name_entry_template.xlsx" download>Download Template (.xslx)</a>
+       <a class="btn btn-sm btn-primary" ng-href="{{baseUrl}}/name_entry_template.xlsx" download><i class="fa fa-cloud-download"></i> Download Template (.xslx)</a>
                 </p>
    </div>
 </div>
