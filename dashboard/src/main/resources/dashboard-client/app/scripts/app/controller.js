@@ -248,7 +248,10 @@ dashboardappApp
             })
 
             api.getName($stateParams.entry).success(function(resp){
-                $scope.name = resp
+                $scope.name = resp;
+                // find the correct geolocale of the name and set it
+                console.log($scope.name.geoLocation)
+                $scope.name.geoLocation = JSON.stringify($scope.name.geoLocation)
             })
 
             $scope.submit = function(){
@@ -413,7 +416,11 @@ dashboardappApp
     .controller('namesSearchCtrl', [
         '$scope',
         function($scope) {
+
+            // 
+            
             $scope.$on('$stateChangeSuccess', function(){
+                // autocomplete
                 
             })
         }
