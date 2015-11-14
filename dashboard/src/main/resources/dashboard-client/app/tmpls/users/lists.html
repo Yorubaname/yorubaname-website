@@ -35,7 +35,7 @@
                     <td>{{user.username}}</td>
                     <td><a ui-sref="auth.users.edit_user({ id: user.id })">{{user.email}}</a></td>
                     <td>{{user.roles}}</td>
-                    <td>{{user.createdAt|date:'mediumDate'}}</td>
+                    <td>{{user.createdAt|toDateString}}</td>
                 </tr>
             </tbody>
             <tfoot class="hide-if-no-paging">

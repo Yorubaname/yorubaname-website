@@ -29,3 +29,17 @@ dashboardappApp
       return val
     }
   })
+
+ /**
+ * Filter to parse input value array to date string
+ */
+
+  .filter('toDateString', ['$filter', function($filter) {
+    return function(inputArray) {
+      // console.log(typeof inputArray)
+      if (typeof inputArray != 'object') return;
+      var date = $filter('limitTo')(inputArray, 3)
+         date = date.join('-')
+      return $filter('date')( date, 'mediumDate' )
+    }
+  }])

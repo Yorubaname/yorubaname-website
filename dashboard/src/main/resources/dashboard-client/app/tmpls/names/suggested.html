@@ -17,7 +17,7 @@
                     <td>{{entry.details}}</td>
                     <td>{{entry.geoLocation.place}}</td>
                     <td>{{entry.email}}</td>
-                    <td>{{entry.createdAt|date:'mediumDate'}}</td>
+                    <td>{{entry.createdAt|toDateString}}</td>
                 </tr>
                 <tr class="text-center" ng-show="!namesList.length">
                     <td colspan="5">

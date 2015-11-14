@@ -71,18 +71,17 @@
         <div class="heading_a"><span class="heading_text">Find Entry</span></div>
         <form>
             <div class="input-group sepH_b">
-                    <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text">
-                    <span class="input-group-btn">
-                        <a class="btn btn-default btn-lg"><i class="icon icon_puzzle_alt"></i> Search</a>
-                    </span>
-                </div>
+                <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text" ng-model="search.entry">
+                <span class="input-group-btn">
+                    <a class="btn btn-success btn-lg" ng-disabled="!search.entry" ng-click="do_search()"><i class="fa fa-search"></i> Search</a>
+                </span>
+            </div>
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" value="">
+                    <input type="checkbox" ng-model="search.authorsEntry">
                     Only search my entries
                 </label>
             </div>
-            <button class="btn btn-success btn-lg" type="button"><i class="icon icon_search"></i> Search</button>
         </form>
 
     </div>
@@ -106,7 +105,7 @@
                     <td><a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.indexed ? 'Indexed' : 'Not indexed'}}</td>
-                    <td>{{entry.createdAt|date:'mediumDate'}}</td>
+                    <td>{{entry.createdAt|toDateString}}</td>
                 </tr>
             </tbody>
         </table>
