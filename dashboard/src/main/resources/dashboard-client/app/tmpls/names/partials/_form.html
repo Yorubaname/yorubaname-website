@@ -20,7 +20,7 @@
         <div class="form-group">
             <label for="geolocation" class="required">Geolocation</label>
             <span class="help-block">Where is this name most commonly used?</span>
-            <select id="geolocation" class="form-control" placeholder="Select geolocation..." ng-model="name.geoLocation" required>
+            <select geolocation id="geolocation" class="form-control" placeholder="Select geolocation..." ng-model="name.geoLocation" required>
                 <option ng-repeat="location in geoLocations" value="{{location}}">{{location.place}}</option>
             </select>
         </div>
@@ -48,17 +48,7 @@
 
         <div class="form-group">
             <h5>Etymology</h5>
-            <div class="row etymology">
-                <div class="col-sm-4">
-                    <label>Part</label>
-                    <input type="text" class="form-control" name="part">
-                </div>
-                <div class="col-sm-8">
-                    <label>Meaning</label>
-                    <input type="text" class="form-control" name="meaning">
-                </div>
-            </div>
-            <p class="text-right help-block"><a ng-click="clone_etymology()">Add a new part and meaning pair</a></p>
+            <etymology></etymology>
         </div>
 
         <div class="form-group">

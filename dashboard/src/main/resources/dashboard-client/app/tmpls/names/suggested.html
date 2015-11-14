@@ -1,7 +1,13 @@
 
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="10">
+        <div class="well well-sm text-center" ng-show="!namesList.length">
+            <h1><i class="fa fa-3x fa-smile-o text-muted"></i></h1>
+                <h3 class="text-muted">Not a thing to do.</h3>
+                <p class="lead">Great! It seems you've processed all suggested names. Enjoy your day!</p>
+        </div>
+
+        <table class="table table-yuk2 toggle-arrow-tiny" id="names_table" data-filter="#textFilter" data-page-size="10" ng-show="namesList.length">
             <thead>
                 <tr>
                     <th data-toggle="true">Name</th>
@@ -19,13 +25,6 @@
                     <td>{{entry.email}}</td>
                     <td>{{entry.createdAt|toDateString}}</td>
                 </tr>
-                <tr class="text-center" ng-show="!namesList.length">
-                    <td colspan="5">
-                        <h1><i class="fa fa-lg fa-smile-o text-muted"></i></h1>
-                        <h3 class="text-muted">Not a thing to do.</h3>
-                        <p class="lead">Great! It seems you've processed all suggested names by the community. Enjoy your day!</p>
-                    </td>
-                </tr>
             </tbody>
             <tfoot class="hide-if-no-paging">
                 <tr>
@@ -36,5 +35,5 @@
             </tfoot>
         </table>
 
-        <a ng-click="deleteSuggestedNames()" class="btn btn-danger btn-sm">Delete Selected</a>
+        <a ng-click="deleteSuggestedNames()" ng-hide="!namesList.length" class="btn btn-danger btn-sm">Delete Selected</a>
 </div>

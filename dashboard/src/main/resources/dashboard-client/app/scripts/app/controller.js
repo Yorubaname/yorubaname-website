@@ -150,7 +150,7 @@ dashboardappApp
 
             $scope.names = []
 
-            namesApi.getRecentNames(1,5).success(function(responseData){
+            namesApi.getNames(1,5).success(function(responseData){
                 responseData.forEach(function(name) {
                     $scope.names.push(name)
                 })
@@ -168,59 +168,11 @@ dashboardappApp
 
             $scope.new = true
             $scope.name = {}
-            
-            api.getGeoLocations().success(function(response) {
-                $scope.geoLocations = response
-            })
 
             $scope.submit = function(){
-                 
-                var parts = $.map( $('input[name="part"]') , function(elem){
-                    return $(elem).val()
-                }), 
-
-                meanings = $.map( $('input[name="meaning"]') , function(elem){
-                    return $(elem).val()
-                }) 
-
-                $scope.name.etymology = $.map( parts, function(part, index){
-                    return { 'part': part, 'meaning': meanings[index] }
-                })
-
-                $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || '{}' )
-                
                 return api.addName($scope.name)
             }
 
-            $scope.clone_etymology = function(){
-
-                // Clone the last row
-                $('div.etymology:last-of-type').after( $('div.etymology:last-of-type').clone() )
-
-                // Reset the form field values
-                $('div.etymology:last-of-type input').val('')
-
-                // If there's no remove button, let's add one to the new row, usually, this is just for the 1st clone
-                if (! $('div.etymology:last-of-type .remove').length > 0 )
-                  $('div.etymology:last-of-type').append( '<a class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></a>' )
-                
-            }
-
-            $scope.$on('$stateChangeSuccess', function(){
-
-                $('form').on( 'click', '.etymology .remove', function(ev){
-                  ev.preventDefault()
-                  return $(ev.currentTarget).parents('.etymology').remove()
-                })
-
-                /*
-                $('#slz_optgroups').selectize({
-                    sortField: 'text'
-                })
-                $("select[rel='reg_select_multiple']").select2({
-                    placeholder: "Select..."
-                })*/
-            })
         }
     ])
 
@@ -235,30 +187,12 @@ dashboardappApp
                 $scope.next = next
             })
 
-            api.getGeoLocations().success(function(response) {
-                $scope.geoLocations = response
-            })
-
             api.getName($stateParams.entry).success(function(resp){
                 $scope.name = resp
-                $scope.name.geoLocation = JSON.stringify($scope.name.geoLocation)
+                $scope.name.geoLocation = JSON.stringify( $scope.name.geoLocation )
             })
 
             $scope.submit = function(){
-                var parts = $.map( $('input[name="part"]') , function(elem){
-                    return $(elem).val()
-                }), 
-
-                meanings = $.map( $('input[name="meaning"]') , function(elem){
-                    return $(elem).val()
-                }) 
-
-                $scope.name.etymology = $.map( parts, function(part, index){
-                    return { 'part': part, 'meaning': meanings[index] }
-                })
-
-                $scope.name.geoLocation = JSON.parse( $scope.name.geoLocation || '{}' )
-
                 return api.updateName($scope.name)
             }
 
@@ -267,35 +201,6 @@ dashboardappApp
                     return api.deleteName($scope.name)
                 }
             }
-
-            $scope.clone_etymology = function(){
-
-                // Clone the last row
-                $('div.etymology:last-of-type').after( $('div.etymology:last-of-type').clone() )
-
-                // Reset the form field values
-                $('div.etymology:last-of-type input').val('')
-
-                // If there's no remove button, let's add one to the new row, usually, this is just for the 1st clone
-                if (! $('div.etymology:last-of-type .remove').length > 0 )
-                  $('div.etymology:last-of-type').append( '<a class="btn btn-xs btn-danger remove"><i class="fa fa-times"></i></a>' );
-                
-            }
-
-            $scope.$on('$stateChangeSuccess', function(){
-
-                $('form').on( 'click', '.etymology .remove', function(ev){
-                  ev.preventDefault()
-                  return $(ev.currentTarget).parents('.etymology').remove()
-                })
-
-                /*$('#slz_optgroups').selectize({
-                    sortField: 'text'
-                })
-                $("select[rel='reg_select_multiple']").select2({
-                    placeholder: "Select..."
-                })*/
-            })
         }
     ])
 

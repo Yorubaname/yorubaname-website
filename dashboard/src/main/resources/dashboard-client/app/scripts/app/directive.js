@@ -157,4 +157,35 @@ dashboardappApp
         };
     })
 
+    // 
+    .directive('geolocation', ['namesApi', function(api) {
+        return {
+            link: function(scope, element, attrs) {
+              api.getGeoLocations().success(function(resp) {
+                scope.geoLocations = resp
+              })
+            }
+        }
+    }])
+
+    .directive('etymology', function() {
+        return {
+            restrict:'E',
+            templateUrl: 'tmpls/names/directives/etymology.html',
+            link: function(scope, element, attrs) {
+              if (!scope.name) return;
+              if (!scope.name.etymology) scope.name.etymology = [{ part:'', meaning:'' }]
+              scope.add_etymology = function() {
+                return scope.name.etymology.push({ part:'', meaning:'' })
+              }
+
+              scope.remove_etymology = function(index) {
+                if (scope.name.etymology.length > 1)
+                return scope.name.etymology.splice(index, 1)
+              }
+            }
+        }
+    })
+
+
 ;

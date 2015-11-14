@@ -290,6 +290,7 @@ dashboardappApp
       this.addName = function (name) {
         // include logged in user's details
         name.submittedBy = $localStorage.email;
+        nameEntry.geoLocation = JSON.parse( nameEntry.geoLocation || '{}' )
         return api.postJson("/v1/names", name).success(function(resp){
           toastr.success(name.name + ' was successfully added.')
           $state.go('auth.names.list_entries({status:"all"})')
@@ -312,7 +313,7 @@ dashboardappApp
              prev = $localStorage.entries[index - 1],
              next = $localStorage.entries[index + 1]
           return fn(prev, next)
-        }, 3000)
+        }, 2500)
       }
 
       /**
@@ -320,6 +321,7 @@ dashboardappApp
       * @param nameEntry
       */
       this.updateName = function(nameEntry){
+        nameEntry.geoLocation = JSON.parse( nameEntry.geoLocation || '{}' )
         return api.putJson("/v1/names/" + nameEntry.name, nameEntry).success(function(resp){
           toastr.success(nameEntry.name + ' was successfully updated.')
         }).error(function(resp){
@@ -348,18 +350,12 @@ dashboardappApp
         return api.get('/v1/names/' + name, { duplicates: duplicate })
       }
 
-      this.getRecentNames = function(page, count, filter){
-        filter = !isEmptyObj(filter) ? filter : {};
-        filter.page = page;
-        filter.count = count;
-        return api.get('/v1/names', filter)
-      }
-
       this.getNames = function (page, count, filter) {
-        //filter = !isEmptyObj(filter) ? filter : {};
-        //filter.page = page;
-        //filter.count = count;
-        return api.get('/v1/names')
+        filter = !isEmptyObj(filter) ? filter : {}
+        filter.page = page || 1
+        filter.count = count || 10
+        filter.orderBy = 'createdAt'
+        return api.get('/v1/names', filter)
       }
 
       this.getSuggestedNames = function() {
