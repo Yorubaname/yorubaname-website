@@ -39,7 +39,7 @@ $('form#suggest-form').on('submit', function(event) {
     event.preventDefault();
 
     var suggestedName = {
-        name: $('form#suggest-form #suggestedName').val(),
+        name: $('form#suggest-form #miniKeyboard').val(),
         details: $('form#suggest-form #suggestedMeaning').val(),
         geoLocation: {
             place: $('form#suggest-form #suggestedGeoLocation').val()
@@ -57,9 +57,11 @@ $('form#suggest-form').on('submit', function(event) {
         $('form#suggest-form').trigger("reset");
     }).success(function() {
         // TODO add ui for feedback
+        // TODO: Give user feedback so s/he knows name was submitted successfully.
         console.log("name successfully submitted");
     }).fail(function() {
         // TODO add ui for feedback
+        // TODO: Give user feedback so s/he knows name was submitted successfully.
         console.log("Error occured while submitting name");
     });
 })

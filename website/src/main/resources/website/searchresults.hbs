@@ -1,15 +1,7 @@
 <!-- Header -->
 {{> header }}
 
-<section id="searchform">
-    <div class="search jumbotron" id="home-banner">
-        <div class="container" align="center">
-            <p>{{message "lang.jumbotron1"}} <span class="pri-color">10,000</span> {{message "lang.jumbotron2"}}</p>
-            {{> searchcomponent }} 
-        </div>
-    </div>
-</section>
-<!-- /Search -->
+{{> searchform }}
 
 <!-- main-content -->
 <section id="content">
@@ -22,7 +14,7 @@
 
                         {{#each names}}
                         <div class="well">
-                            <h4 class="name">name: <a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
+                            <h4 class="name">Name: <a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
                             <p><i>Brief meaning: </i> {{this.meaning}} </p>
                             <p class="small">{{message "lang.submitby"}} {{ this.submittedBy }} </p>       
                             <hr>

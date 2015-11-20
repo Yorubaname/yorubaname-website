@@ -248,3 +248,16 @@ a.btn,.btn:focus {
 }
 
 
+.modal, .modal-dialog, .modal-content, .modal-header {
+  border-radius: 0 !important;
+}
+
+.modal-header {
+  background-color: #0E5264;
+  color: #CDA463;
+}
+
+.modal-body {
+  background-color: #f9f9f9;
+}
+

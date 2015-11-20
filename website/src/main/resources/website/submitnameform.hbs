@@ -9,12 +9,12 @@
 
     <div class="form-group">
         <label class="optional">{{message "lang.submitname.entermeaning"}}:</label>
-        <textarea name="suggestedMeaning" id="suggestedMeaning" class="form-control" rows="3"></textarea>
+        <textarea name="suggestedMeaning" id="suggestedMeaning" class="form-control" rows="3" required="true"></textarea>
     </div><br>
 
     <div class="form-group">
         <label class="optional">{{message "lang.submitname.enterlocation"}}:</label>
-        <select name="suggestedGeoLocation" id="suggestedGeoLocation" class="form-control">
+        <select name="suggestedGeoLocation" id="suggestedGeoLocation" class="form-control" required="true">
             {{#each geoLocations}}
                 <option>{{this.place}}</option>
             {{/each}}
@@ -28,7 +28,7 @@
 
     <div class="form-group">
         <label class="required">{{message "lang.submitname.enteremail"}}:</label>
-        <input type="email" name="suggestedEmail" class="form-control" id="suggestedEmail" placeholder="Your email" required>
+        <input type="email" name="suggestedEmail" class="form-control" id="suggestedEmail" placeholder="Your email" required="true">
     </div>
 
     <button type="submit" id="submit-name" class="btn btn-success">Submit new name</button>
