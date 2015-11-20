@@ -7,9 +7,7 @@
 		
         <div class="header_user_actions dropdown" on-toggle="toggled(open)" dropdown>
             <div class="dropdown-toggle user_dropdown" dropdown-toggle>
-                <div class="user_avatar">
-                    <img src="http://placehold.it/40x40" ng-src="{{user.photo}}" alt="" ng-title="{{user.username}} ({{user.email}})" width="38" height="38">
-                </div>
+                <avatar width="38" height="38" ng-model="user"></avatar>
                 <span class="caret"></span>
             </div>
             <ul class="dropdown-menu dropdown-menu-right">
@@ -17,9 +15,11 @@
                 <li><a ng-click="logout()">Log Out</a></li>
             </ul>
         </div>
-        <div class="search_section hidden-sm hidden-xs" ng-controller="topSearchCtrl">
-            <input type="text" class="form-control input-sm" ng-model="selected" typeahead="state for name in names | filter:$viewValue | limitTo:8">
-            <button class="btn btn-link btn-sm" type="button"><span class="icon_search"></span></button>
+        <div class="search_section hidden-sm hidden-xs" ng-controller="searchCtrl">
+            <form ng-submit="exec_search()">
+            <input type="text" class="form-control input-sm" ng-model="search.entry" typeahead="entry.name for entry in names | filter:$viewValue | limitTo:8">
+            <button class="btn btn-link btn-sm" type="button" ng-disabled="!search.entry" ng-click="exec_search()"><span class="icon_search"></span></button>
+            </form>
         </div>
 	</div>
 </header>

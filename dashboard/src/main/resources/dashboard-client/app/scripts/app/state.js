@@ -93,12 +93,22 @@ dashboardappApp
                     ncyBreadcrumb: {
                         label: 'Names Entries'
                     },
-                    url: '/lists/:status',
+                    url: '/lists/:status?:submmittedBy',
                     templateUrl: 'tmpls/names/lists.html',
                     controller: 'namesListEntriesCtrl'
                 })
 
-                .state('auth.names.suggested_names', {
+                .state('auth.names.own_entries', {
+                    page_title: 'Yoruba Names - Admin - Own Name Entries',
+                    ncyBreadcrumb: {
+                        label: 'Your Entries'
+                    },
+                    url: '/your_entries',
+                    templateUrl: 'tmpls/names/sorted_lists.html',
+                    controller: 'namesByUserListCtrl'
+                })
+
+                /*.state('auth.names.suggested_names', {
                     page_title: 'Yoruba Names - Suggested Names',
                     ncyBreadcrumb: {
                         label: 'Suggested Names'
@@ -106,7 +116,7 @@ dashboardappApp
                     url: '/suggested',
                     templateUrl: 'tmpls/names/suggested.html',
                     controller: 'namesSuggestedEntriesCtrl'
-                })
+                })*/
                 
                 // Names > Name Search
                 .state('auth.names.search', {
@@ -114,7 +124,7 @@ dashboardappApp
                     ncyBreadcrumb: {
                         label: 'Search'
                     },
-                    url: '/search',
+                    url: '/search/:entry',
                     templateUrl: 'tmpls/names/search.html',
                     controller: 'namesSearchCtrl'
                 })

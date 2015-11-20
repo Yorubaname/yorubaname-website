@@ -1,8 +1,9 @@
 /* Directives */
 
 dashboardappApp
+
     // change page title
-    .directive('updateTitle', function ($rootScope) {
+    .directive('updateTitle', ['$rootScope', function ($rootScope) {
         return {
             link: function (scope, element) {
                 var listener = function (event, toState, toParams, fromState, fromParams) {
@@ -19,7 +20,8 @@ dashboardappApp
                 $rootScope.$on('$stateChangeStart', listener);
             }
         }
-    })
+    }])
+
     // page preloader
     .directive('pageLoader', [
         '$timeout',
@@ -43,6 +45,7 @@ dashboardappApp
             };
         }
     ])
+
     // show/hide side menu
     .directive('menuToggle', [
         '$rootScope',
@@ -96,8 +99,9 @@ dashboardappApp
             };
         }
     ])
+
     // update datatables fixedHeader position
-    .directive('updateFixedHeaders', function ($window) {
+    .directive('updateFixedHeaders', ['$window', function ($window) {
         return function (scope, element) {
             var w = angular.element($window);
             scope.getElDimensions = function () {
@@ -116,19 +120,19 @@ dashboardappApp
                 scope.$apply();
             });
         };
-    })
-    // ng-repeat after render callback
-    .directive('onLastRepeat', function ($timeout) {
-        return function (scope, element, attrs) {
+    }])
 
-            console.log("running lastRepeat directive")
+    // ng-repeat after render callback
+    .directive('onLastRepeat', ['$timeout', function ($timeout) {
+        return function (scope, element, attrs) {
 
             if (!scope.$last) return false;
 
             var footableTable = element.parents('table')
 
+            if ( footableTable.length ) 
+                
             scope.$evalAsync(function(){
-
                 if (! footableTable.hasClass('footable-loaded')) {
                     footableTable.footable()
                 }
@@ -136,13 +140,15 @@ dashboardappApp
                 footableTable.trigger('footable_resize')
                 footableTable.data('footable').redraw()
             })
-            /*if (scope.$last) {
+
+            if (scope.$last) {
                 $timeout(function () {
-                    scope.$emit('onRepeatLast', element, attrs);
+                    scope.$emit('onRepeatLast', element, attrs)
                 })
-            }*/
-        };
-    })
+            }
+        }
+    }])
+
     // add width/height properities to Image
     .directive('addImageProp', function () {
         return {
@@ -187,5 +193,21 @@ dashboardappApp
         }
     })
 
+    .directive('avatar', ['$localStorage', function($localStorage) {
+        return {
+            restrict:'E',
+            template: '<div class="user_avatar"></div>',
+            link: function(scope, element, attrs) {
+              var user = attrs.ngModel ? scope.$eval(attrs.ngModel) : $localStorage.user,
+                  name = user.username || user.email,
+                  letter = name.substr(0,1).toUpperCase(),
+                  div = attrs.size == 'large' ? 
+                    $('<div style="width:80px; height:80px; color:#333; background:#c0c0c0; line-height:2; font-size:40px; display:inline-block; float:left; text-align:center; margin-right:15px;">' + letter + '</div>')
+                    :
+                    $('<div style="width:38px; height:auto; color:#fff; font-size:28px; float:left; display:inline-block; text-align:center;">' + letter + '</div>')
+              element.html( div )
+            }
+        }
+    }])
 
 ;

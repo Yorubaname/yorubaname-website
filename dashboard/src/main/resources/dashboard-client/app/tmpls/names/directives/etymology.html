@@ -1,12 +1,12 @@
 <div class="row etymology" ng-repeat="etymology in name.etymology track by $index">
     <div class="col-sm-4">
         <label>Part</label>
-        <input type="text" class="form-control" name="part[{{$index}}]" ng-model="etymology.part">
+        <input type="text" class="form-control" name="part[{{$index}}]" ng-model="etymology.part" required>
         <span ng-show="form.part[{{$index}}].$invalid && !form.part[{{$index}}].$pristine" class="help-block text-danger">This etymology part is required</span>
     </div>
     <div class="col-sm-8">
         <label>Meaning</label>
-        <input type="text" class="form-control" name="meaning[{{$index}}]" ng-model="etymology.meaning">
+        <input type="text" class="form-control" name="meaning[{{$index}}]" ng-model="etymology.meaning" required>
         <span ng-show="form.meaning[{{$index}}].$invalid && !form.meaning[{{$index}}].$pristine" class="help-block text-danger">This etymology meaning is required</span>
     </div>
     <a class="btn btn-xs btn-danger remove" ng-click="remove_etymology($index)"><i class="fa fa-times"></i></a>

@@ -85,7 +85,21 @@ dashboardappApp
             $rootScope.$stateParams = $stateParams;
 
             var is_logged_in = function(){
-              return ($localStorage.isAuthenticated == true)
+              if ($localStorage.isAuthenticated == true){
+                // read user info from $localStorage and set on $rootScope if it's not there 
+                if (!$rootScope.user) {
+                    $rootScope.user = {
+                      username: $localStorage.username,
+                      email: $localStorage.email,
+                      id: $localStorage.id
+                    }
+                    $rootScope.isAuthenticated = true;
+                    $rootScope.isAdmin = $localStorage.isAdmin;
+                    $rootScope.isLexicographer = $localStorage.isLexicographer;
+                    $rootScope.baseUrl = $localStorage.baseUrl;
+                }
+                return true;
+              }
             }
 
             $rootScope.$on('$stateChangeSuccess', function () {

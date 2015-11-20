@@ -99,6 +99,7 @@ dashboardappApp
         return $http({
             method: 'POST',
             url: endpoint,
+            //type: 'json',
             data: data ? data : ''
         })
     }
@@ -148,27 +149,13 @@ dashboardappApp
 
 dashboardappApp
 
-  .service('authApi', ['api', 'usersApi', '$localStorage', '$state', '$rootScope', '$timeout', 'toastr', 'md5', 'baseUrl', function(api, usersApi, $localStorage, $state, $rootScope, $timeout, toastr, md5, baseUrl){
+  .service('authApi', ['api', 'usersApi', '$localStorage', '$state', '$rootScope', '$timeout', 'toastr', 'baseUrl', function(api, usersApi, $localStorage, $state, $rootScope, $timeout, toastr, baseUrl){
 
     this.getUser = function(callback) {
       return api.get("/v1/auth/user").then(function(response) {
           return response
       })
     }
-
-    /* Get a User's Profile Photo */
-    var getProfilePhoto = function(user){
-
-      var email = user ? user.email : $localStorage.username;
-
-      return $.get("http://www.gravatar.com/avatar/"+ md5.createHash(email || ''), function(img){
-        //console.log(img)
-        $rootScope.user.photo = img || "http://placehold.it/80x80"
-      })
-      
-     }
-
-     this.getProfilePhoto = getProfilePhoto;
 
     // Authenticates clients.
     // authData is the base64 encoding of username and password
@@ -186,6 +173,7 @@ dashboardappApp
             $rootScope.username = $localStorage.username;
             // TODO maybe not. This is a security loop hole
             $localStorage.token = authData;
+
             $rootScope.user = {
               username: $localStorage.username,
               email: $localStorage.email,
@@ -193,8 +181,7 @@ dashboardappApp
             }
 
             $rootScope.baseUrl = baseUrl;
-
-            getProfilePhoto()
+            $localStorage.baseUrl = baseUrl;
 
             response.roles.some(function(role) {
                 // Check ROLE_ADMIN first, since it supercedes all
@@ -229,13 +216,15 @@ dashboardappApp
 
     // Log out function
     this.logout = function(){
-      console.log('running service.logout')
       $localStorage.isAuthenticated = false;
       $localStorage.isAdmin = false;
       $rootScope.isAuthenticated = false;
       $rootScope.isAdmin = false;
+      $rootScope.user = null;
+      $localStorage.user = null;
       $timeout(function(){
         $state.go('login')
+        toastr.info('You are now logged out.')
       }, 200)
     }
 
@@ -253,26 +242,26 @@ dashboardappApp
 
     this.addUser = function(user){
       return api.postJson("/v1/auth/create", user)
-                   .success(function(resp) {
-                      toastr.success('User account with email '+user.email+' successfully created.')
-                   })
-                   .error(function(resp) {
-                     console.log(resp)
-                     toastr.error('User account could not be created. Try again.')
-                   })
+               .success(function(resp) {
+                  toastr.success('User account with email '+user.email+' successfully created.')
+               })
+               .error(function(resp) {
+                 console.log(resp)
+                 toastr.error('User account could not be created. Try again.')
+               })
     }
 
-    /* Updated user information */
+    /* updated user information */
     this.updateUser = function(user){
       return api.putJson("/v1/auth/users", user)
-                 .success(function(resp) {
-                    toastr.success('User account with email '+user.email+' successfully updated.')
-                    $state.go('auth.users.list_users')
-                 })
-                 .error(function(resp) {
-                   console.log(resp)
-                   toastr.error('User account could not be updated. Try again.')
-                 })
+               .success(function(resp) {
+                  toastr.success('User account with email '+user.email+' successfully updated.')
+                  $state.go('auth.users.list_users')
+               })
+               .error(function(resp) {
+                 console.log(resp)
+                 toastr.error('User account could not be updated. Try again.')
+               })
     }
 
   }])
@@ -283,17 +272,20 @@ dashboardappApp
 
   .service('namesApi', ['api', 'toastr', '$state', '$localStorage', '$timeout', '_', function(api, toastr, $state, $localStorage, $timeout, _) {
 
+      var _this = this;
+
       /**
       * Adds a name to the database;
       * @param nameEntry
       */
-      this.addName = function (name) {
+      this.addName = function (name, fn) {
         // include logged in user's details
         name.submittedBy = $localStorage.email;
-        nameEntry.geoLocation = JSON.parse( nameEntry.geoLocation || '{}' )
+        name.geoLocation = JSON.parse( name.geoLocation || '{}' )
         return api.postJson("/v1/names", name).success(function(resp){
-          toastr.success(name.name + ' was successfully added.')
-          $state.go('auth.names.list_entries({status:"all"})')
+          toastr.success(name.name + ' was successfully added. <br>Add another name')
+          fn()
+          cacheNames()
         }).error(function(resp){
           toastr.error(name.name + ' could not be added. Please try again.')
         })
@@ -316,14 +308,34 @@ dashboardappApp
         }, 2500)
       }
 
+      var cacheNames = function(){
+        return api.get('/v1/names').success(function(resp){
+          $localStorage.entries = resp
+        })
+      }
+
+      this.getCachedNames = function(fn){
+        if(! $localStorage.entries.length )
+        {
+          api.get('/v1/names').success(function(resp){
+            $localStorage.entries = resp
+          })
+        }
+        return $timeout(function(){
+          return fn($localStorage.entries)
+        }, 500)
+      }
+
       /**
       * Updates an existing name in the database;
       * @param nameEntry
       */
-      this.updateName = function(nameEntry){
+      this.updateName = function(originalName, nameEntry){
+        nameEntry = angular.copy( nameEntry )
         nameEntry.geoLocation = JSON.parse( nameEntry.geoLocation || '{}' )
-        return api.putJson("/v1/names/" + nameEntry.name, nameEntry).success(function(resp){
+        return api.putJson("/v1/names/" + originalName, nameEntry).success(function(resp){
           toastr.success(nameEntry.name + ' was successfully updated.')
+          cacheNames()
         }).error(function(resp){
           toastr.error(nameEntry.name + ' could not be updated. Please try again.')
         })
@@ -334,11 +346,12 @@ dashboardappApp
       * @param nameEntry
       */
       this.deleteName = function (name) {
-        return api.deleteJson("/v1/names/" + name, name).success(function(resp){
-          toastr.success(name + ' has been deleted successfully')
-          $state.go('auth.names.list_entries({status:"all"})')
+        return api.deleteJson("/v1/names/" + name.name, name).success(function(resp){
+          toastr.success(name.name + ' has been deleted successfully')
+          $state.go('auth.names.list_entries', {status:"all"})
+          cacheNames()
         }).error(function(resp){
-          toastr.error(name + ' could not be deleted. Please try again.')
+          toastr.error(name.name + ' could not be deleted. Please try again.')
         })
       }
 
@@ -350,21 +363,27 @@ dashboardappApp
         return api.get('/v1/names/' + name, { duplicates: duplicate })
       }
 
-      this.getNames = function (page, count, filter) {
+      this.getNames = function (filter) {
         filter = !isEmptyObj(filter) ? filter : {}
-        filter.page = page || 1
-        filter.count = count || 10
+        if (filter.status == 'suggested') return api.get('/v1/suggest')
+        if (filter.status == 'published') filter.indexed = true;
+        // page, count, 
+        // filter.page = page || 1
+        // filter.count = count || 10
         filter.orderBy = 'createdAt'
         return api.get('/v1/names', filter)
       }
 
-      this.getSuggestedNames = function() {
-        return api.get('/v1/suggest')
+      this.countNames = function(status, fn){
+        return _this.getNames({ status: status }).success(function(resp){
+          return fn(resp.length)
+        })
       }
+
       this.deleteSuggestedName = function(name) {
         return api.delete("/v1/suggest/" + name).success(function(resp){
           toastr.success(name + ' has been deleted successfully')
-          $state.go('auth.names.suggested')
+          //$state.go('auth.names.suggested')
         }).error(function(resp){
           toastr.error(name + ' could not be deleted. Please try again.')
         })

@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="ul_main_info">
+            Showing <strong>{{namesListItems}}</strong> name(s)
+        </div>
+        <ul id="user_list">
+            <li ng-repeat="entry in namesList" on-last-repeat>
+                <h3 class="ul_userName"><span class="ul_name">{{entry.name|capitalize}}</span> <span>{{entry.status}}</span></h3>
+                <p class="ul_company"><small class="text-muted">Syllables:</small> {{entry.syllables}}</p>
+                <p><small class="text-muted">Geolocation:</small> <span class="ul_phone">{{entry.geoLocation.place}}</span>; <small class="text-muted">Meaning:</small> <span class="ul_email">{{entry.meaning}}</span></p>
+            </li>
+        </ul>
+    </div>
+</div>

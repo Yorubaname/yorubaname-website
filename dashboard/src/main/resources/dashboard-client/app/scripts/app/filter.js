@@ -48,6 +48,6 @@ dashboardappApp
     return function(input) {
       if (!input) return;
       // input will be the string we pass in if (input)
-      return input[0].toUpperCase() + input.slice(1);
+      return input[0].toUpperCase() + input.slice(1).toLowerCase()
     } 
   })

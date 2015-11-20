@@ -1,46 +1,44 @@
-<div class="row">
+<div class="row row_full">
     <div class="col-sm-6">
-        <img class="user_profile_img" src="http://placehold.it/80x80" ng-src="{{user.photo}}" alt="" width="76" height="76" />
-        <h1 class="user_profile_name">{{user.username}} <a class="btn btn-xs btn-primary pull-right" ui-sref="auth.profile.edit">Edit</a></h1>
+        <avatar width="80" height="80" ng-model="user" size="large"></avatar>
+        <h1 class="user_profile_name">{{user.username}} <!--a class="btn btn-xs btn-primary pull-right" ui-sref="auth.profile.edit">Edit</a--></h1>
         <p class="user_profile_info">Chief Lexicographer (Volunteer)</p>
         <p class="user_profile_info"> <a ng-href="mailto:{{user.email}}">{{user.email}}</a></p>
     </div>
     <div class="col-sm-6 text-right-sm">
         <a class="btn btn-lg btn-success" ui-sref="auth.names.add_entries">Add Name Entry</a>
     </div>
-</div>
 
-<div class="row row_full">
     <div class="col-sm-12">
        <h5>Site Statistics</h5>
     </div>
      <div class="col-sm-3 col-xs-4">
         <div class="info_box_var_1 box_bg_b">
             <div class="info_box_body">
-                <span class="countUpMe" data-endVal="1342">1,342</span>
+                <span class="countUpMe all_names" data-endVal="count_all_names">{{count_all_names || '0'}}</span>
             </div>
             <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'all'})">
-                Name Entries
+                <strong>Name Entries</strong>
             </a>
         </div>
     </div>
     <div class="col-sm-3 col-xs-4">
         <div class="info_box_var_1 box_bg_a">
             <div class="info_box_body">
-                <span class="countUpMe" data-endVal="88">88</span>%
+                <span class="countUpMe published_names" data-endVal="count_published_names">{{count_published_names || '0'}}</span>
             </div>
             <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'published'})">
-                Published Entries
+                <strong>Published Entries</strong>
             </a>
         </div>
     </div>
     <div class="col-sm-3 col-xs-4">
         <div class="info_box_var_1 box_bg_d">
             <div class="info_box_body">
-                <span class="countUpMe" data-endVal="531">531</span>
+                <span class="countUpMe suggested_names" data-endVal="count_suggested_names">{{count_suggested_names || '0'}}</span>
             </div>
-            <a class="info_box_footer" ui-sref="auth.names.suggested_names">
-                Suggested Names
+            <a class="info_box_footer" ui-sref="auth.names.list_entries({status:'suggested'})">
+                <strong>Suggested Names</strong>
             </a>
         </div>
     </div>
@@ -54,7 +52,6 @@
             </a>
         </div>
     </div>
-
     <div class="col-sm-2 col-xs-4">
         <div class="info_box_var_1">
             <div class="info_box_body">
@@ -66,14 +63,14 @@
         </div>
     </div-->
 </div>
-<div class="row mHeight">
+<div class="row mHeight" ng-controller="searchCtrl">
     <div class="col-sm-8">
         <div class="heading_a"><span class="heading_text">Find Entry</span></div>
-        <form>
+        <form ng-submit="exec_search()">
             <div class="input-group sepH_b">
-                <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text" ng-model="search.entry">
+                <input class="form-control input-lg" placeholder="Enter name" id="appendedInputButton" type="text" ng-model="search.entry" typeahead="entry.name for entry in names | filter:$viewValue | limitTo:8">
                 <span class="input-group-btn">
-                    <a class="btn btn-success btn-lg" ng-disabled="!search.entry" ng-click="do_search()"><i class="fa fa-search"></i> Search</a>
+                    <button class="btn btn-success btn-lg" ng-disabled="!search.entry" ng-click="exec_search()" type="button"><i class="fa fa-search"></i> Search</button>
                 </span>
             </div>
             <div class="checkbox">
@@ -95,13 +92,13 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Syllable</th>
+                    <th>Syllables</th>
                     <th>Status</th>
                     <th>Date</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="entry in names">
+                <tr ng-repeat="entry in latestNames">
                     <td><a ui-sref="auth.names.edit_entries({entry:entry.name})">{{entry.name}}</a></td>
                     <td>{{entry.syllables}}</td>
                     <td>{{entry.indexed ? 'Indexed' : 'Not indexed'}}</td>
