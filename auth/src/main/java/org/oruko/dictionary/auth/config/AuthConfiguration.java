@@ -20,8 +20,6 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                // dashboard
-            .antMatchers("/dashboardapp/**").permitAll()
                 // suggest auth
             .antMatchers(HttpMethod.POST, "/v1/suggest").permitAll()
             .antMatchers(HttpMethod.DELETE, "/v1/suggest/*").hasAnyRole("ADMIN", "LEXICOGRAPHER")
