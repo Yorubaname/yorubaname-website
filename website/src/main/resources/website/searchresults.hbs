@@ -7,34 +7,30 @@
 <section id="content">
     <div class="container">
         <div class="row">
-            <main>
-                <div class="col-md-8">
+            
+            <div class="col-sm-6 col-sm-offset-3 search-results">
 
-                    <h4>{{message "lang.entryfoundfor"}}<span class="name">{{query}}</span></h4>
+                <h4>{{message "lang.entryfoundfor"}} <strong><i>{{query}}</i></strong></h4>
 
-                        {{#each names}}
-                        <div class="well">
-                            <h4 class="name">Name: <a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
-                            <p><i>Brief meaning: </i> {{this.meaning}} </p>
-                            <p class="small">{{message "lang.submitby"}} {{ this.submittedBy }} </p>       
-                            <hr>
-                        </div>
-                        {{/each}}
-                </div>
-            </main>
-            <!-- sidebar -->
-            <aside>
-                <div class="col-md-4">
-                    {{> rsidebar }}
-                </div>
-            </aside>
-            <!-- /sidebar -->
-
+                {{#each names}}
+                   <hr>
+                    <h4 class="strong-text"><a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
+                    <p><strong>Brief Meaning: </strong> {{this.meaning}} </p>
+                    <p class="small text-muted"><strong>{{message "lang.submitby"}}</strong> {{ this.submittedBy }} </p>       
+                {{/each}}
+            </div>
+            
         </div>
     </div>
 </section>
 
 <!-- /main-content -->
+
+<!--aside>
+                <div class="col-md-4">
+                    {{> rsidebar }}
+                </div>
+            </aside-->
 
 <!-- footer -->
 {{> footer }}

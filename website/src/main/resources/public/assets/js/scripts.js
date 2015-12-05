@@ -118,8 +118,9 @@ $(document).ready(function(){
 
 <!-- Background image -->
  $(function() {
-  var images = ['0086.jpg', '0089.jpg', '0545.jpg', '2981.jpg', '2982.jpg', '6204.jpg'];
-  $('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_' + images[Math.floor(Math.random() * images.length)] + ')'});
+  //var images = ['0086.jpg', '0089.jpg', '0545.jpg', '2981.jpg', '2982.jpg', '6204.jpg'];
+  //$('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_' + images[Math.floor(Math.random() * images.length)] + ')'});
+  $('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_2982.jpg)'})
  });
  
 <!-- Typeahead -->
@@ -151,4 +152,23 @@ $('.btn-search').on("click", function(event) {
     var q = $('#keyboard').val() || "";
     var hostOrigin = window.location.origin;
     window.location.href = hostOrigin + '/entries/?q='+ q;
-});
+})
+
+$(function(){
+
+  if ( $(document).innerWidth() >= 768 ) {
+
+    $('.share a.btn-social').on('click', function(ev){
+      ev.preventDefault()
+      if ( /(facebook|twitter)/.test(ev.currentTarget.href) ) {
+        var c = 575,
+            d = 520,
+            e = ($(window).width() - c) / 2,
+            f = ($(window).height() - d) / 2,
+            g = "status=1,width=" + c + ",height=" + d + ",top=" + f + ",left=" + e;
+        window.open(ev.currentTarget.href, "Share Yoruba Names", g)
+      } else window.open(ev.currentTarget.href);
+    })
+  }
+
+})
