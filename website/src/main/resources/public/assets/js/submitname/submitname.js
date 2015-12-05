@@ -54,16 +54,14 @@ $('form#suggest-form').on('submit', function(event) {
         data: JSON.stringify(suggestedName),
         dataType: 'json'
     }).done(function() {
-        $('form#suggest-form').trigger("reset");
+        $('form#suggest-form').trigger("reset")
     }).success(function() {
-        // TODO add ui for feedback
-        // TODO: Give user feedback so s/he knows name was submitted successfully.
-        console.log("name successfully submitted");
-    }).fail(function() {
-        // TODO add ui for feedback
-        // TODO: Give user feedback so s/he knows name was submitted successfully.
-        console.log("Error occured while submitting name");
-    });
+        $('.response').html(alert_success("Name was submitted successfully. Thank you."))
+        $('.response').fadeIn()  
+    }).fail(function(jqXHR) {
+        $('.response').html(alert_error(jqXHR.responseJSON || jqXHR.responseText))
+        $('.response').fadeIn()
+    })
 })
 
 });

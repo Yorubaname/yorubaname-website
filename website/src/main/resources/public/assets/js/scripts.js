@@ -1,11 +1,44 @@
 $(document).ready(function () {
 
+	var alert_error = function (error) {
+	    return '<div class="alert alert-danger alert-dismissible" role="alert">' +
+	        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+	        error +
+	    '</div>';
+	}
+
+	var alert_success = function (message) {
+	    return '<div class="alert alert-success alert-dismissible" role="alert">' +
+	        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+	        message +
+	    '</div>';
+	}
+
 	$("#tts-button").on("click", function() {
 		var host = $("#host").html();
 		var audio = new Audio("http://" + host + ":8081/v1/tts/" + $("#name-entry").html());
 		audio.play();
 	});
 
+	// submit name feedback form
+	$('form[name="name_feedback"]').on('submit', function(e){
+		e.preventDefault()
+		return $.ajax({
+			url: e.currentTarget.action,
+			method: e.currentTarget.method,
+			contentType:'application/json',
+			data: JSON.stringify( { feedback: $('textarea[name="feedback"]').val() } ),
+			type:'json',
+			success: function(resp){
+				$('.response').html(alert_success("Feecback posted successfully. Thanks."))
+                $('.response').fadeIn()
+			},
+			error: function(jqXHR){
+				$('.response').html(alert_error(jqXHR.responseJSON || jqXHR.responseText))
+                $('.response').fadeIn()
+			}
+		})
+	})
 });
 
 (function ($) {
