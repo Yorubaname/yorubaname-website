@@ -80,14 +80,6 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return lci;
     }
 
-//    @Bean
-//    @Primary
-//    public ObjectMapper objectMapper() {
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.registerModule(new JavaTimeModule());
-//        return mapper;
-//    }
-
     @Bean
     public JavaTimeModule javaTimeModule() {
         return new JavaTimeModule();
