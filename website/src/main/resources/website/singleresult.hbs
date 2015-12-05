@@ -94,13 +94,13 @@
 		    <div class="modal-header">
 		    	<h3>{{message "lang.improve-entry.help-us"}} "{{ name.name }}"</h3>
 		    </div>
-			<form name="name_feedback" class="modal-body">
+			<form name="name_feedback" class="modal-body" action="/entries/{{name.name}}/feedbacks" method="post">
 				<div class="form-group">
             		<p class="lead">{{message "lang.improve-entry.sub-text"}}</p>
             		<textarea name="improveEntry" id="improveEntry" class="form-control" rows="5" required="true"></textarea>                		
         		</div>
         		<button type="submit" id="submitEntry" class="btn btn-success btn-lg">Submit Feedback</button>
-        		&nbsp;&nbsp;&nbsp;&nbsp;<a href="#/entries/{nameEntry}" data-dismiss="modal">Cancel</a>
+        		&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" data-dismiss="modal">Cancel</a>
 			</form>
 		</div>
 	</div>
