@@ -34,9 +34,6 @@ jQuery(function($) {
             location.href = this.href;
         });
 
-    }
-});
-
 <!-- initialize keyboard (required) -->
 $(function(){
 	$('#keyboard').keyboard({
@@ -111,16 +108,19 @@ $('#miniKeyboard').bind('visible', function(e, keyboard, el){
 
 });
 
+}
+});
+
 <!-- Enable all the tooltip -->
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
 
 <!-- Background image -->
- /*$(function() {
-  var images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg', 'pic4.jpg', 'pic5.jpg', 'pic6.jpg', 'pic7.jpg', 'pic8.jpg', 'pic9.jpg',];
-  $('#home-banner').css({'background-image': 'url(assets/img/backgrounds/' + images[Math.floor(Math.random() * images.length)] + ')'});
- });*/
+ $(function() {
+  var images = ['0086.jpg', '0089.jpg', '0545.jpg', '2981.jpg', '2982.jpg', '6204.jpg'];
+  $('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_' + images[Math.floor(Math.random() * images.length)] + ')'});
+ });
  
 <!-- Typeahead -->
 $(document).ready(function () {
