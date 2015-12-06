@@ -168,7 +168,7 @@ header {
 .jumbotron a, .jumbotron a:hover {
 	text-transform: uppercase;
 	color: #fff;
-	/*border: solid 2px #fff;*/
+	border: solid 2px #fff;
 }
 
 #home-banner {
