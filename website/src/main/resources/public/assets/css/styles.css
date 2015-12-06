@@ -287,10 +287,10 @@ header {
 	right: 5px;
 	height: 34px;
 	width: 40px;
-	background-color: transparent;
+	/*background-color: transparent;
 	border: none;
 	border-left: 1px solid #555;
-	color: #075265;
+	color: #075265;*/
 	border-radius: 0px;
 }
 
