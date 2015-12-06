@@ -12,7 +12,6 @@
         <module>tts</module>
         <module>webapi</module>
         <module>importer</module>
-        <module>dashboard</module>
         <module>auth</module>
         <module>elasticsearch</module>
         <module>website</module>
