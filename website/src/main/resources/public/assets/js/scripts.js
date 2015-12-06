@@ -152,8 +152,9 @@ $(document).ready(function(){
 <!-- Background image -->
  $(function() {
   //var images = ['0086.jpg', '0089.jpg', '0545.jpg', '2981.jpg', '2982.jpg', '6204.jpg'];
-  //$('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_' + images[Math.floor(Math.random() * images.length)] + ')'});
-  $('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_2982.jpg)'})
+  var images = ['0086.jpg', '2982.jpg'];
+  $('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_' + images[Math.floor(Math.random() * images.length)] + ')'});
+  //$('#home-banner').css({'background-image': 'url(assets/img/bg/IMG_2982.jpg)'})
  });
  
 <!-- Typeahead -->

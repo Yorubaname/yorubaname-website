@@ -386,12 +386,12 @@ header {
 	font-weight: bold;
 }
 footer {
-	background-color: #0e5264;
+	/*background-color: #0e5264;*/
 	padding-top: 25px;
 	padding-bottom: 30px;
 	margin-top: 50px;
-	color:#cda463;
-	font-size: 13px;
+	/*color:#cda463;*/
+	font-size: 14px;
 }
 
 footer a + a {
