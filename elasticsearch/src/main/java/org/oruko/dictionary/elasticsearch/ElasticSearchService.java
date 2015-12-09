@@ -223,6 +223,7 @@ public class ElasticSearchService {
                                                                               name.toLowerCase())
                                                                 .setSource(entryAsJson);
                 bulkRequest.add(request);
+                eventPubService.publish(new NameIndexedEvent(name));
             } catch (JsonProcessingException e) {
                 logger.debug("Error while building bulk indexing operation", e);
             }
