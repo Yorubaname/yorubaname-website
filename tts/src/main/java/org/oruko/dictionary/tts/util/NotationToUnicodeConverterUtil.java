@@ -60,6 +60,39 @@ public class NotationToUnicodeConverterUtil {
             destPath = dest;
         }
 
+        /**
+         * Files are saved in the following format: Consonant | Oral vowels  "_" intonation
+         *                                      or  Consonant | Nasal vowels "_" intonation
+         * For example da_h -> da (with M tonal mark)
+         * intonation could be HIGH -> _h
+         *                     LOW -> _l
+         *                     MID -> _m
+         *                     RISING -> _r
+         *                     FALLING -> _f
+         *
+         * The conversation takes the consonant portion and find its unicode value
+         * for example d ->
+         *             gb -> g + b ->
+         *
+         * It then takes the vowel portion and gets its unicode value.
+         *      for Unaccented (ie MID tone) the unicode is direct value of the vowel, for example
+         *              a ->
+         *      if accented, then the accented character is used to get the unicode so for example
+         *              for a_h, 'á' will be used to get the unicode
+         *
+         *      vowels with sub dots are saved with double vowels. for example ee_m is ẹ
+         *
+         *      At this point we have the unicode for the consonant plus the consonant for the vowels (which takes into
+         *      consideration the intonation)
+         *
+         *      The final step is stringing everything together in the format [premarker]_[consonant_in_unicode]_[vowel_in_unicode]_[r or f]
+         *      where premarker_ is only appended with "gb"
+         *
+         *      and [r or f] is used to qualify the vowel if it is rising or falling
+         *
+         *      if its a vowel, then the format is [vowel_in_unicode] _[r or f]
+         *
+         */
         public void performConversion() {
             try (DirectoryStream<Path> dirContents = Files.newDirectoryStream(sourcePath, "*.wav")) {
                 for (Path audioFile : dirContents) {
@@ -78,12 +111,16 @@ public class NotationToUnicodeConverterUtil {
             }
         }
 
+        private boolean isVowel(char character) {
+            return  "aieẹuọoáàéèíìóòúù".indexOf(character) != -1;
+        }
+
         private String toNameWithUnicode(String fullFileName) {
             String name = fullFileName.split("\\.")[0];
             String ext = fullFileName.split("\\.")[1];
             String risingOrFalling = "";
             String preMarker = "";
-            int consonantUnicode;
+            int consonantUnicode = -1;
             String vowel;
 
             String segment = name.split("_")[0];
@@ -100,8 +137,12 @@ public class NotationToUnicodeConverterUtil {
                 consonantUnicode = 'p';
                 vowel = segment.substring(2);
             } else {
-                consonantUnicode = segment.charAt(0);
-                vowel = segment.substring(1);
+                if (!isVowel(segment.charAt(0))) {
+                    consonantUnicode = segment.charAt(0);
+                    vowel = segment.substring(1);
+                } else {
+                    vowel = segment;
+                }
             }
 
             int vowelUnicode = getVowelUnicode(vowel, tone);
@@ -115,6 +156,10 @@ public class NotationToUnicodeConverterUtil {
 
             preMarker = preMarker != "" ? preMarker + "_" : "";
             risingOrFalling = risingOrFalling != "" ? "_" + risingOrFalling : "";
+
+            if (consonantUnicode == -1) {
+                return String.valueOf(vowelUnicode) + risingOrFalling + "." + ext;
+            }
 
             return preMarker + String.valueOf(consonantUnicode) + "_" + String.valueOf(vowelUnicode)
                     + risingOrFalling + "." + ext;
@@ -149,10 +194,12 @@ public class NotationToUnicodeConverterUtil {
                         return vowel.charAt(0);
                     }
 
+                    // TODO high and rising are currently returning same unicode, they should be different
                     if (tone.equals("h") || tone.equals("r")) {
                         return 'á';
                     }
 
+                    // TODO low and falling are currently returning same unicode, they should be different
                     if (tone.equals("l") || tone.equals("f")) {
                         return 'à';
                     }
