@@ -1,5 +1,6 @@
 package org.oruko.dictionary.website;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,13 @@ import java.util.Map;
 @Controller
 public class SearchResultController {
 
+    private ApiService apiService;
+
+    @Autowired
+    public SearchResultController(ApiService apiService) {
+        this.apiService = apiService;
+    }
+
     @Value("${app.host}")
     private String host;
     /**
@@ -29,7 +37,7 @@ public class SearchResultController {
      */
     @RequestMapping("/entries/{nameEntry}")
     public String showEntry(@PathVariable String nameEntry, Model map) {
-        Map<String, Object> name = ApiService.getName(nameEntry);
+        Map<String, Object> name = apiService.getName(nameEntry);
         map.addAttribute("title", "Name Entry");
         map.addAttribute("name", name);
         map.addAttribute("host", host);
@@ -49,7 +57,7 @@ public class SearchResultController {
         }
 
         map.addAttribute("title", "Search results for query");
-        List<Map<String, Object>> names = ApiService.searchName(nameQuery);
+        List<Map<String, Object>> names = apiService.searchName(nameQuery);
 
         if (names.size() == 1 && names.get(0).get("name").equals(nameQuery)) {
             nameQuery = URLEncoder.encode(nameQuery, "UTF-8");
