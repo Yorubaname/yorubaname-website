@@ -1,13 +1,12 @@
 package org.oruko.dictionary;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.servlet.LocaleResolver;
@@ -86,22 +85,8 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public net.sf.ehcache.CacheManager ecacheManager() {
-        CacheConfiguration cacheConfiguration = new CacheConfiguration();
-        cacheConfiguration.setName("dictionary");
-        cacheConfiguration.setMemoryStoreEvictionPolicy("LRU");
-        cacheConfiguration.setMaxEntriesLocalHeap(0);
-        cacheConfiguration.setTimeToIdleSeconds(86400);
-
-        net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-        config.addCache(cacheConfiguration);
-
-        return net.sf.ehcache.CacheManager.newInstance(config);
-    }
-
-    @Bean
     public CacheManager cacheManager() {
-        return new EhCacheCacheManager(ecacheManager());
+        return new ConcurrentMapCacheManager();
     }
 
     @Bean
