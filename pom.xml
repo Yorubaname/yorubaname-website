@@ -51,6 +51,7 @@
         <jackson-datatype-jsr310.version>2.6.1</jackson-datatype-jsr310.version>
         <jackson-databind.version>2.6.1</jackson-databind.version>
         <jackson-annotations.version>2.6.1</jackson-annotations.version>
+        <ehcache.version>2.10.1</ehcache.version>
     </properties>
 
     <dependencyManagement>
@@ -68,7 +69,6 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
@@ -84,6 +84,12 @@
                 <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
@@ -127,6 +133,11 @@
                 <version>${jackson-annotations.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>ch.qos.logback</groupId>

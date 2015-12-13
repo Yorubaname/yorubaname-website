@@ -1,5 +1,6 @@
 package org.oruko.dictionary.website;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ContactUsController {
 
+    private ApiService apiService;
+
+    @Autowired
+    public ContactUsController(ApiService apiService) {
+        this.apiService = apiService;
+    }
+
     @RequestMapping("/contact-us")
     public String contactUsIndexPage(Model map) {
-        map.addAttribute("geoLocations", ApiService.getGeoLocations());
+        map.addAttribute("geoLocations", apiService.getGeoLocations());
         map.addAttribute("title", "Contact Us");
         return "contactus";
     }

@@ -1,9 +1,13 @@
 package org.oruko.dictionary;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.servlet.LocaleResolver;
@@ -25,6 +29,7 @@ import java.util.Locale;
  * @author Dadepo Aderemi.
  */
 @SpringBootApplication
+@EnableCaching
 @EnableSwagger2
 @EnableWebSecurity //switches off auto configuration for spring security
 public class DictionaryApplication extends WebMvcConfigurerAdapter {
@@ -78,6 +83,25 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
         return lci;
+    }
+
+    @Bean
+    public net.sf.ehcache.CacheManager ecacheManager() {
+        CacheConfiguration cacheConfiguration = new CacheConfiguration();
+        cacheConfiguration.setName("dictionary");
+        cacheConfiguration.setMemoryStoreEvictionPolicy("LRU");
+        cacheConfiguration.setMaxEntriesLocalHeap(0);
+        cacheConfiguration.setTimeToIdleSeconds(86400);
+
+        net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
+        config.addCache(cacheConfiguration);
+
+        return net.sf.ehcache.CacheManager.newInstance(config);
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new EhCacheCacheManager(ecacheManager());
     }
 
     @Bean
