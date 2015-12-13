@@ -94,7 +94,7 @@ footer {
 /* SECTION 3: Layouts */
 
 .preheader {
-	background-color: #0E5264;
+	background-color: #ffffff;
 	padding-top:15px;
 	padding-bottom: 10px;
 	color: #CDA463;
@@ -114,9 +114,9 @@ header {
     margin-bottom: 0px;
 }
 
-.navbar .nav-brand img {
-    width: 219px;
-    height: 70px;
+.preheader .container img.logo {
+    width: 215px;
+    height: 60px;
 }
 
 .navbar li a {
