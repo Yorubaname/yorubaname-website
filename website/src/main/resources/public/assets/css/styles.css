@@ -136,6 +136,13 @@ header {
 	color: #000;
 	text-align: center;
 }
+
+.jumbotron.mini {
+	background: #F2F2F2;
+	color: #000;
+	text-align: left !important;
+}
+
 .jumbotron h1 {
 	font-size: 48px;
 	font-weight: 200;
