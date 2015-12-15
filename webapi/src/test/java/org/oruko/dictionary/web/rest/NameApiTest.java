@@ -1,12 +1,14 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.CoreMatchers;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hamcrest.core.IsNot;
 import org.junit.*;
-import org.junit.runner.*;
+import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.runners.*;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
@@ -16,6 +18,7 @@ import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.ApiExceptionHandler;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,6 +30,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExc
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +38,8 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,15 +63,25 @@ public class NameApiTest {
     private ImporterInterface importerInterface;
 
     MockMvc mockMvc;
-
     NameEntry testNameEntry;
     NameEntry anotherTestNameEntry;
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(nameApi).setHandlerExceptionResolvers(createExceptionResolver()).build();
+
+        LocalDateTimeDeserializer deserializer = LocalDateTimeDeserializer.INSTANCE;
+        LocalDateTimeSerializer serializer = LocalDateTimeSerializer.INSTANCE;
+        SimpleModule dateTimeSerializer = new SimpleModule("MyModule");
+        dateTimeSerializer.addSerializer(serializer);
+        dateTimeSerializer.addDeserializer(LocalDateTime.class, deserializer);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(dateTimeSerializer);
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(nameApi).setMessageConverters(converter).setHandlerExceptionResolvers(
+                createExceptionResolver()).build();
         testNameEntry = new NameEntry("test-entry");
-        testNameEntry.setMeaning("test_meaning");
+        testNameEntry.setMeaning("test_meaninyig");
         testNameEntry.setExtendedMeaning("test_extended_meaning");
 
         anotherTestNameEntry = new NameEntry();
@@ -87,8 +101,8 @@ public class NameApiTest {
 
     @Test
     public void test_get_all_names_filtered_by_is_indexed() throws Exception {
-        testNameEntry.isIndexed(true);
-        anotherTestNameEntry.isIndexed(false);
+        testNameEntry.setIndexed(true);
+        anotherTestNameEntry.setIndexed(false);
         when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
 
         mockMvc.perform(get("/v1/names?indexed=true"))
@@ -196,7 +210,7 @@ public class NameApiTest {
         when(entryService.loadName("test")).thenReturn(nameEntry);
         String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
         mockMvc.perform(put("/v1/names/test")
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                                 .content(requestJson))
                .andExpect(status().isCreated());
 
@@ -382,7 +396,7 @@ public class NameApiTest {
     public void test_get_names_without_feedback() throws Exception {
         when(entryService.loadName("test")).thenReturn(testNameEntry);
         mockMvc.perform(get("/v1/names/{name}?feedback=false", "test"))
-               .andExpect(status().isOk()).andExpect(jsonPath("$.feedback", CoreMatchers.nullValue()));
+               .andExpect(status().isOk()).andExpect(jsonPath("$.feedback").doesNotExist());
     }
 
     @Test

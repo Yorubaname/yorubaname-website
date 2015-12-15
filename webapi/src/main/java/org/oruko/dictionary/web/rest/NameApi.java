@@ -225,7 +225,7 @@ public class NameApi {
         // for filtering based on whether entry has been indexed
         Predicate<NameEntry> filterBasedOnIndex = (name) -> {
             if (indexed.isPresent()) {
-                return name.isIndexed().equals(indexed.get());
+                return name.getIndexed().equals(indexed.get());
             } else {
                 return true;
             }

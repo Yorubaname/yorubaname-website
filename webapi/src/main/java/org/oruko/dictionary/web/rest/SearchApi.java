@@ -160,7 +160,7 @@ public class SearchApi {
         boolean isIndexed = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
         if (isIndexed) {
-            nameEntry.isIndexed(true);
+            nameEntry.setIndexed(true);
             entryService.saveName(nameEntry);
             response.put("message", message);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -194,7 +194,7 @@ public class SearchApi {
         response.put("message", indexOperationStatus.getMessage());
 
         if (isIndexed) {
-            nameEntry.isIndexed(true);
+            nameEntry.setIndexed(true);
             entryService.saveName(nameEntry);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
@@ -297,7 +297,7 @@ public class SearchApi {
         if (deleted) {
             NameEntry nameEntry = entryService.loadName(name);
             if (nameEntry != null) {
-                nameEntry.isIndexed(false);
+                nameEntry.setIndexed(false);
                 entryService.saveName(nameEntry);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -344,7 +344,7 @@ public class SearchApi {
     private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag, IndexOperationStatus indexOperationStatus) {
         if (indexOperationStatus.getStatus()) {
             List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
-                entry.isIndexed(flag);
+                entry.setIndexed(flag);
                 return entry;
             }).collect(Collectors.toList());
 

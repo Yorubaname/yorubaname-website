@@ -247,11 +247,11 @@ public abstract class AbstractNameEntry {
         this.tags = tags;
     }
 
-    public Boolean isIndexed() {
+    public Boolean getIndexed() {
         return isIndexed;
     }
 
-    public void isIndexed(Boolean published) {
+    public void setIndexed(Boolean published) {
         this.isIndexed = published;
     }
 
