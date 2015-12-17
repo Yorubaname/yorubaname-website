@@ -262,6 +262,15 @@ public class NameEntryService {
     }
 
     /**
+     * Used to retrieve all {@link org.oruko.dictionary.model.NameEntry} from the repository.
+     *
+     * @return a list of all {@link org.oruko.dictionary.model.NameEntry}
+     */
+    public List<NameEntry> loadAllNames() {
+        return nameEntryRepository.findAll();
+    }
+
+    /**
      * Used to retrieve a {@link org.oruko.dictionary.model.NameEntry} from the repository using its known name
      *
      * @param name the name

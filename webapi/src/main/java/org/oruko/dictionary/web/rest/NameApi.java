@@ -211,12 +211,19 @@ public class NameApi {
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NameEntry> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
+                                  @RequestParam("all") Optional<Boolean> all,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
                                   @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
             throws JsonProcessingException {
 
         List<NameEntry> names = new ArrayList<>();
-        Iterable<NameEntry> allNameEntries = entryService.loadAllNames(pageParam, countParam);;
+        Iterable<NameEntry> allNameEntries;
+
+        if (all.isPresent() && all.get() == true) {
+            allNameEntries = entryService.loadAllNames();
+        } else {
+            allNameEntries = entryService.loadAllNames(pageParam, countParam);
+        }
 
         allNameEntries.forEach(nameEntry -> {
             names.add(nameEntry);

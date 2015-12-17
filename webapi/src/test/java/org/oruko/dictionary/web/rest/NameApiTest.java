@@ -134,6 +134,16 @@ public class NameApiTest {
     }
 
     @Test
+    public void test_get_all_names() throws Exception {
+        when(entryService.loadAllNames()).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
+        mockMvc.perform(get("/v1/names?all=true"))
+               .andExpect(jsonPath("$").isArray())
+               .andExpect(status().isOk());
+
+        verify(entryService).loadAllNames();
+    }
+
+    @Test
     public void test_get_a_name_not_found_in_db() throws Exception {
         when(entryService.loadName("test")).thenReturn(null);
 
