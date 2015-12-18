@@ -143,6 +143,27 @@ public class NameApiTest {
         verify(entryService).loadAllNames();
     }
 
+
+    @Test
+    public void test_get_name_count() throws Exception {
+        when(entryService.getNameCount()).thenReturn(Long.valueOf(2));
+        mockMvc.perform(get("/v1/names/meta/?count=true"))
+               .andExpect(jsonPath("$.count", is("2")))
+               .andExpect(status().isOk());
+
+        verify(entryService).getNameCount();
+    }
+
+    @Test
+    public void test_name_count_count_not_specified() throws Exception {
+        when(entryService.getNameCount()).thenReturn(Long.valueOf(2));
+        mockMvc.perform(get("/v1/names/meta/?count=false"))
+               .andExpect(jsonPath("$.count").doesNotExist())
+               .andExpect(status().isNoContent());
+
+        verify(entryService, never()).getNameCount();
+    }
+
     @Test
     public void test_get_a_name_not_found_in_db() throws Exception {
         when(entryService.loadName("test")).thenReturn(null);

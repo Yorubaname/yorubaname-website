@@ -271,6 +271,15 @@ public class NameEntryService {
     }
 
     /**
+     * Returns the number of names in the database
+     *
+     * @return number of names
+     */
+    public Long getNameCount() {
+        return nameEntryFeedbackRepository.count();
+    }
+
+    /**
      * Used to retrieve a {@link org.oruko.dictionary.model.NameEntry} from the repository using its known name
      *
      * @param name the name

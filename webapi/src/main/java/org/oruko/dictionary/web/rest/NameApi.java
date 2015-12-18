@@ -200,6 +200,27 @@ public class NameApi {
         return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
     }
 
+
+    /**
+     * Endpoint for retrieving metadata information
+     *
+     * @return a {@link ResponseEntity} with the response message
+     */
+    @RequestMapping(value = "/v1/names/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> getMetaData(@RequestParam("count") Optional<Boolean> count) {
+        Map<String, String> metaData = new HashMap<>();
+        if (count.isPresent() && count.get() == true) {
+            metaData.put("count", entryService.getNameCount().toString());
+        }
+
+        HttpStatus statusCode = HttpStatus.OK;
+        if (metaData.isEmpty()) {
+            statusCode = HttpStatus.NO_CONTENT;
+        }
+
+        return new ResponseEntity<>(metaData, statusCode);
+    }
+
     /**
      * Get names that has been persisted. Supports ability to specify the count of names to return and the offset
      * @param pageParam a {@link Integer} representing the page (offset) to start the
