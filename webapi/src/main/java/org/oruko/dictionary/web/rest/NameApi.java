@@ -200,6 +200,25 @@ public class NameApi {
         return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Endpoint for retrieving metadata information for suggested names
+     *
+     * @return a {@link ResponseEntity} with the response message
+     */
+    @RequestMapping(value = "/v1/suggest/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> getSuggestedMetaData(@RequestParam("count") Optional<Boolean> count) {
+        Map<String, String> metaData = new HashMap<>();
+        if (count.isPresent() && count.get() == true) {
+            metaData.put("count", entryService.getSuggestedNameCount().toString());
+        }
+
+        HttpStatus statusCode = HttpStatus.OK;
+        if (metaData.isEmpty()) {
+            statusCode = HttpStatus.NO_CONTENT;
+        }
+
+        return new ResponseEntity<>(metaData, statusCode);
+    }
 
     /**
      * Endpoint for retrieving metadata information

@@ -280,6 +280,15 @@ public class NameEntryService {
     }
 
     /**
+     * Returns the number of suggested names
+     *
+     * @return number of suggested names
+     */
+    public Long getSuggestedNameCount() {
+        return suggestedNameRepository.count();
+    }
+
+    /**
      * Used to retrieve a {@link org.oruko.dictionary.model.NameEntry} from the repository using its known name
      *
      * @param name the name
