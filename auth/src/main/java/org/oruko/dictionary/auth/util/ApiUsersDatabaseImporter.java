@@ -25,11 +25,7 @@ public class ApiUsersDatabaseImporter {
     @PostConstruct
     public void initApiUsers() {
 
-        /**
-         * Only initialize the database only when in dev
-         */
-        if (host.equalsIgnoreCase("localhost")) {
-
+        if (userRepository.count() == 0) {
             // demo admin
             ApiUser admin = new ApiUser();
             admin.setEmail("admin@example.com");
@@ -38,6 +34,12 @@ public class ApiUsersDatabaseImporter {
                            ApiUser.ROLE.DASHBOARD.getRole(),
                            ApiUser.ROLE.BASIC.getRole());
             userRepository.save(admin);
+        }
+
+        /**
+         * Only initialize the database only when in dev
+         */
+        if (host.equalsIgnoreCase("localhost")) {
 
             // dashboard user
             ApiUser dashboard = new ApiUser();
