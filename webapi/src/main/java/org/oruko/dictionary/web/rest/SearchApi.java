@@ -54,11 +54,12 @@ public class SearchApi {
 
     /**
      * Public constructor for {@link SearchApi}
-     * @param eventPubService instance of {@link EventPubService} for publishing events
-     * @param entryService service layer for interacting with name entries
+     *
+     * @param eventPubService      instance of {@link EventPubService} for publishing events
+     * @param entryService         service layer for interacting with name entries
      * @param elasticSearchService service layer for elastic search functions
-     * @param recentSearches object holding the recent searches in memory
-     * @param recentIndexes object holding the recent index names in memory
+     * @param recentSearches       object holding the recent searches in memory
+     * @param recentIndexes        object holding the recent index names in memory
      */
     @Autowired
     public SearchApi(EventPubService eventPubService, NameEntryService entryService,
@@ -81,9 +82,24 @@ public class SearchApi {
     }
 
 
+    /**
+     * Endpoint for retrieving metadata information
+     *
+     * @return a {@link ResponseEntity} with the response message
+     */
+    @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> getMetaData(@RequestParam("count") Optional<Boolean> count) {
+        Map<String, Object> response = new HashMap<>();
+        if (count.isPresent() && count.get() == true) {
+            response.put("message", elasticSearchService.getCount());
+        }
+        return response;
+    }
+
+
     @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public  List<String>  getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
+    public List<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
         if (!searchQuery.isPresent()) {
             return new ArrayList<>();
         }
@@ -93,7 +109,7 @@ public class SearchApi {
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> findByName(@PathVariable String searchTerm, HttpServletRequest request) {
 
         Map<String, Object> name = elasticSearchService.getByName(searchTerm);
@@ -108,7 +124,8 @@ public class SearchApi {
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String[] recentSearches(@RequestParam(value = "q", required = false) String activityType, HttpServletResponse response)
+    public String[] recentSearches(@RequestParam(value = "q", required = false) String activityType,
+                                   HttpServletResponse response)
             throws IOException {
         if (activityType == null || activityType.isEmpty()) {
             response.sendRedirect("/v1//search/activity/all");
@@ -244,7 +261,7 @@ public class SearchApi {
 
     /**
      * Endpoint that takes an array of names, look them up in the repository and index the entries found
-     *
+     * <p>
      * It allows for batch indexing of names
      *
      * @param names the array of names
@@ -263,7 +280,7 @@ public class SearchApi {
             if (entry == null) {
                 notFound.add(name);
             } else {
-            nameEntries.add(entry);
+                nameEntries.add(entry);
             }
         });
 
@@ -341,7 +358,8 @@ public class SearchApi {
         return returnStatusMessage(notFound, indexOperationStatus);
     }
 
-    private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag, IndexOperationStatus indexOperationStatus) {
+    private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag,
+                                   IndexOperationStatus indexOperationStatus) {
         if (indexOperationStatus.getStatus()) {
             List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
                 entry.setIndexed(flag);

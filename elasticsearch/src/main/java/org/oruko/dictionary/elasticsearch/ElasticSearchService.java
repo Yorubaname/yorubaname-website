@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -35,6 +36,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
+
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
 /**
  * Service to interact with ElasticSearch Index
@@ -219,9 +222,9 @@ public class ElasticSearchService {
                 String entryAsJson = mapper.writeValueAsString(entry);
                 String name = entry.getName();
                 IndexRequestBuilder request = client.prepareIndex(esConfig.getIndexName(),
-                                                                              esConfig.getDocumentType(),
-                                                                              name.toLowerCase())
-                                                                .setSource(entryAsJson);
+                                                                  esConfig.getDocumentType(),
+                                                                  name.toLowerCase())
+                                                    .setSource(entryAsJson);
                 bulkRequest.add(request);
                 eventPubService.publish(new NameIndexedEvent(name));
             } catch (JsonProcessingException e) {
@@ -345,6 +348,18 @@ public class ElasticSearchService {
             }
         } catch (Exception e) {
             logger.error("ElasticSearch not running", e);
+        }
+    }
+
+    public long getCount() {
+        try {
+            CountResponse response = client.prepareCount(esConfig.getIndexName())
+                                           .setQuery(matchAllQuery())
+                                           .execute()
+                                           .actionGet();
+            return response.getCount();
+        } catch (Exception e) {
+            return 0;
         }
     }
 }
