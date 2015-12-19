@@ -67,7 +67,7 @@ public class AuthController {
     @RequestMapping(value = "/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST)
-    public ResponseEntity<String> create(@Valid @RequestBody CreateUserRequest createUserRequest,
+    public ResponseEntity<Map<String, String>> create(@Valid @RequestBody CreateUserRequest createUserRequest,
                                          BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -76,7 +76,8 @@ public class AuthController {
                                                    .collect(Collectors.toCollection(ArrayList::new));
 
             String messages = String.join(",", errorMessages);
-            return new ResponseEntity<>(messages, HttpStatus.BAD_REQUEST);
+
+            return new ResponseEntity<>(response(messages), HttpStatus.BAD_REQUEST);
         }
 
         String username = createUserRequest.getUsername();
@@ -86,7 +87,8 @@ public class AuthController {
         roles = roles.stream().map(role -> role.toUpperCase()).collect(Collectors.toCollection(ArrayList::new));
 
         if (userRepository.findByEmail(email) != null) {
-            return new ResponseEntity<>("A user with email " + email + " already exists", HttpStatus.BAD_REQUEST);
+            final String messages = "A user with email " + email + " already exists";
+            return new ResponseEntity<>(response(messages), HttpStatus.BAD_REQUEST);
         }
 
         ApiUser apiUser = new ApiUser();
@@ -97,10 +99,10 @@ public class AuthController {
         ApiUser savedUser = userRepository.save(apiUser);
 
         if (savedUser == null) {
-            return new ResponseEntity<>("failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response("failed"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return new ResponseEntity<>(response("success"), HttpStatus.OK);
     }
 
     /**
@@ -114,5 +116,12 @@ public class AuthController {
         List<ApiUser> all = userRepository.findAll();
         all.forEach(user -> user.setPassword("xxx"));
         return all;
+    }
+
+
+    private HashMap<String, String> response(String value) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", value);
+        return response;
     }
 }
