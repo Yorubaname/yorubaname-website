@@ -276,7 +276,7 @@ public class NameEntryService {
      * @return number of names
      */
     public Long getNameCount() {
-        return nameEntryFeedbackRepository.count();
+        return nameEntryRepository.count();
     }
 
     /**
