@@ -91,7 +91,7 @@ public class SearchApi {
     public Map<String, Object> getMetaData(@RequestParam("count") Optional<Boolean> count) {
         Map<String, Object> response = new HashMap<>();
         if (count.isPresent() && count.get() == true) {
-            response.put("message", elasticSearchService.getCount());
+            response.put("count", elasticSearchService.getCount());
         }
         return response;
     }
