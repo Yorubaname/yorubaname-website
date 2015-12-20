@@ -1,11 +1,9 @@
-<!--Commenting out for now
-<div class="side-bar">-->
-    <!--<a href="#">-->
-        <!--<img src="/assets/img/volunteer.png" alt="Volunteer your time &amp; skills" title="Volunteer" />-->
-    <!--</a>-->
-<!--</div>-->
-<!--<div class="side-bar">-->
-    <!--<a href="#">-->
-        <!--<img src="/assets/img/submit-name.png" alt="Submit a name" title="Submit a name" />-->
-    <!--</a>-->
-<!--</div>-->
+<div class="side-bar">
+    <ul id="side_popular">
+        <li><h5>{{message "lang.most-popular-names"}}</h5></li>
+        <hr />
+        {{#each mostPopular}}
+            <li><a href="/entries/{{this}}">{{this}}</a></li>
+        {{/each}}
+    </ul>
+</div>

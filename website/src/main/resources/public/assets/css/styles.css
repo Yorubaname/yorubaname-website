@@ -338,19 +338,22 @@ header {
 	font-size: 18px;
 }
 
-/*
+
 .side-bar {
 	width: 100%;
-	background: #FFF;
-	margin-top: 10px;
-	margin-bottom: 5px;
+	background: #F9F9F9;
 	margin-right: 10px;
 	margin-left: 20px;
+	padding: 5px;
 	-webkit-box-shadow: 13px 14px 15px -16px rgba(0,0,0,0.15);
 	-moz-box-shadow: 13px 14px 15px -16px rgba(0,0,0,0.15);
 	box-shadow: 13px 14px 15px -16px rgba(0,0,0,0.15);
 }
-*/
+
+.side-bar li {
+	list-style: none;
+}
+
 
 .subscribe .form-group {
 	position: relative;
@@ -367,6 +370,10 @@ header {
 }
 .search-results h4 a {
   color:#0e5264;
+}
+
+.search-result .entry, .search-results {
+	background: #f9f9f9 !important;
 }
 
 .strong-text {
