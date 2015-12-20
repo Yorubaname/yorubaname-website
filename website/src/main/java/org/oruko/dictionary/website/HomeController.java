@@ -26,6 +26,7 @@ public class HomeController {
         map.addAttribute("title", "Home");
         Map<String, String[]> searchActivity = apiService.getSearchActivity();
 
+        map.addAttribute("nameCount", apiService.getIndexedNameCount());
         map.addAttribute("latestSearches", searchActivity.get("search"));
         map.addAttribute("latestAdditions", searchActivity.get("index"));
         map.addAttribute("mostPopular", searchActivity.get("popular"));

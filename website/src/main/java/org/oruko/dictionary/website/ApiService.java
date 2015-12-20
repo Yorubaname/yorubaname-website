@@ -36,6 +36,12 @@ public class ApiService {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/search/?q=" + nameQuery, Map[].class));
     }
 
+    @Cacheable("nameCount")
+    public Integer getIndexedNameCount() {
+        final Map<String, Integer> countMap = restTemplate.getForObject(APIPATH + "/search/meta?count=true", Map.class);
+        return countMap.get("count");
+    }
+
     public Map<String, String[]> getSearchActivity() {
         return restTemplate.getForObject(APIPATH + "/search/activity/all", Map.class);
     }
