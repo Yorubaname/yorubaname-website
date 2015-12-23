@@ -10,11 +10,11 @@
             
             <div class="col-sm-7 search-results">
 
-                <h4>{{message "lang.entryfoundfor"}} <strong><i>{{query}}</i></strong></h4>
+                <h4>{{message "lang.entryfoundfor"}} <strong class="intonation"><i>{{query}}</i></strong></h4>
 
                 {{#each names}}
                    <hr>
-                    <h4 class="strong-text"><a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
+                    <h4 class="strong-text intonation"><a href="/entries/{{this.name}}">{{ this.name }}</a></h4>
                     <p><strong>Brief Meaning: </strong> {{this.meaning}} </p>
                     <p class="small text-muted"><strong>{{message "lang.submitby"}}</strong> {{ this.submittedBy }} </p>       
                 {{/each}}

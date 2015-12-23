@@ -9,7 +9,7 @@
 		<div class="row search-result">
 				<div class="col-sm-7 entry">
 
-				   <h2 id="name-entry">{{ name.name }}</h2>
+				   <h2 class="intonation" id="name-entry">{{ name.name }}</h2>
 					
 					<p><strong>{{message "lang.pronounciation"}}</strong> /{{ name.pronunciation}}/ <button class="btn btn-default btn-sm" id="tts-button">
 							<i class="fa fa-volume-up" data-toggle="tooltip" data-placement="top" title="{{message "lang.play-sound"}}"></i>
@@ -33,7 +33,7 @@
 					
 						<br><br>
 						<h4>{{message "lang.meaningof"}} {{ name.name }}</h4>
-						<p>{{ name.meaning }}</p>
+						<p class="intonation">{{ name.meaning }}</p>
 
 						<br><br>
 						<h4>{{message "lang.extendedmeaningof"}}</h4>
@@ -65,7 +65,7 @@
 					
 						<br><br>
 						<h4>{{message "lang.variants"}}</h4>
-						<p>{{name.variants}}</p>
+						<p class="intonation">{{name.variants}}</p>
 					
 					<!-- /variants -->
 

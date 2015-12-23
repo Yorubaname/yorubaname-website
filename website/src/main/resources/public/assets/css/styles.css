@@ -54,6 +54,7 @@ a,a:hover,a:active,a:visited, a:visited:hover {
 /*  SECTION 2: Typography */
 
 /*
+Arial
 Brandon Grotesque W01 | 200,500
 FF Meta W01 | 200,300
 FF Meta W07 | 400,700
@@ -86,6 +87,9 @@ footer {
 	font-weight: 200;
 }
 
+.intonation {
+	font-family: Arial !important;
+}
 
 
 /* SECTION 3: Layouts */
