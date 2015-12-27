@@ -1,6 +1,5 @@
 package org.oruko.dictionary.website;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,22 +20,22 @@ public class ApiService {
     // TODO move to environment dependent configuration file
     public static String APIPATH = "http://127.0.0.1:8081/v1";
 
-    @Cacheable("allNames")
+//    @Cacheable("allNames")
     public List<Map<String, Object>> getAllNames() {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/names", Map[].class));
     }
 
-    @Cacheable("querySearchResult")
+//    @Cacheable("querySearchResult")
     public Map<String, Object> getName(String nameQuery) {
         return restTemplate.getForObject(APIPATH  + "/search/" + nameQuery, Map.class);
     }
 
-    @Cacheable("names")
+//    @Cacheable("names")
     public List<Map<String, Object>> searchName(String nameQuery) {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/search/?q=" + nameQuery, Map[].class));
     }
 
-    @Cacheable("nameCount")
+//    @Cacheable("nameCount")
     public Integer getIndexedNameCount() {
         final Map<String, Integer> countMap = restTemplate.getForObject(APIPATH + "/search/meta?count=true", Map.class);
         return countMap.get("count");

@@ -23,9 +23,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Created by Dadepo Aderemi.
@@ -74,8 +72,8 @@ public class SearchApiTest {
     public void testFindByName_NameNotFound() throws Exception {
         when(searchService.getByName("query")).thenReturn(Collections.emptyMap());
         mockMvc.perform(get("/v1/search/query"))
-               .andExpect(jsonPath("$.error", is(true)))
-               .andExpect(status().isBadRequest());
+               .andExpect(jsonPath("$").isEmpty())
+               .andExpect(status().isOk());
     }
 
     @Test

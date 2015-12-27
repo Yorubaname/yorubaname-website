@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -37,10 +38,15 @@ public class SearchResultController {
      */
     @RequestMapping("/entries/{nameEntry}")
     public String showEntry(@PathVariable String nameEntry, Model map) {
-        Map<String, Object> name = apiService.getName(nameEntry);
         map.addAttribute("title", "Name Entry");
-        map.addAttribute("name", name);
         map.addAttribute("host", host);
+        if (!map.containsAttribute("name")) {
+            final Map<String, Object> name = apiService.getName(nameEntry);
+            if (name == null) {
+                return "redirect:/entries?q=" + nameEntry;
+            }
+            map.addAttribute("name", name);
+        }
         return "singleresult";
     }
 
@@ -50,7 +56,9 @@ public class SearchResultController {
      * @return returns the view name
      */
     @RequestMapping("/entries")
-    public String searchNameQuery(@RequestParam(value = "q",required = false) String nameQuery, Model map)
+    public String searchNameQuery(@RequestParam(value = "q",required = false) String nameQuery,
+                                  Model map,
+                                  RedirectAttributes redirectAttributes)
             throws UnsupportedEncodingException {
         if (nameQuery == null || nameQuery.isEmpty()) {
             return "redirect:/entries/all";
@@ -61,6 +69,7 @@ public class SearchResultController {
 
         if (names.size() == 1 && names.get(0).get("name").equals(nameQuery)) {
             nameQuery = URLEncoder.encode(nameQuery, "UTF-8");
+            redirectAttributes.addFlashAttribute("name", names.get(0));
             return "redirect:/entries/"+nameQuery;
         }
 
