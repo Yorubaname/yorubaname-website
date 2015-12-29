@@ -63,6 +63,7 @@ FF Meta W07 | 400,700
 body {
 	font-family: 'FF Meta W07';
 	font-weight: 400;
+	font-size: 16px;
 	color:#444;
 	background-color: #f2f2f2;
 }
@@ -173,12 +174,6 @@ header .container img.logo {
 	-o-user-select: none;
 	user-select: none;
 }
-
-/*.well {
-	background-color: #F;
-	border: none 0px;
-	box-shadow: none;
-}*/
 
 .search-input { 
 	position: relative;

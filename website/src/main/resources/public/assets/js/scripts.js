@@ -254,7 +254,7 @@ $(document).ready(function () {
 
     var $ul = $("ul#side_popular");
 
-    var item = JSON.parse(localStorage.getItem("popular"));
+    var item = JSON.parse(localStorage.getItem("popular") || '[]');
     item.forEach(function(i) {
         $ul.append("<li><a href='/entries/"+i+"'>" + i + "</a></li>");
     });
