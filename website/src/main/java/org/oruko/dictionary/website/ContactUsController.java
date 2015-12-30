@@ -23,6 +23,7 @@ public class ContactUsController {
     @RequestMapping("/contact-us")
     public String contactUsIndexPage(Model map) {
         map.addAttribute("geoLocations", apiService.getGeoLocations());
+        map.addAttribute("nameCount", apiService.getIndexedNameCount());
         map.addAttribute("title", "Contact Us");
         return "contactus";
     }

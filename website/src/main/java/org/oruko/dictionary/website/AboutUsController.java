@@ -21,6 +21,7 @@ public class AboutUsController {
     @RequestMapping("/about-us")
     public String aboutUsIndexPage(Model map) {
         map.addAttribute("geoLocations", apiService.getGeoLocations());
+        map.addAttribute("nameCount", apiService.getIndexedNameCount());
         map.addAttribute("title", "About Us");
         return "aboutus";
     }
