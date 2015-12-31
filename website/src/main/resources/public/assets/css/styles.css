@@ -420,7 +420,15 @@ footer a + a {
 	}
 }
 
+@media (min-width: 480px) {
+	.navbar {
+		width:auto;
+		float:right;
+	}
+}
+
 @media (max-width: 480px) {
+
 	.search-input input {
 		width: 100%;
 	}
