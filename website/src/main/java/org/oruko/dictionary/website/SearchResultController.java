@@ -1,5 +1,6 @@
 package org.oruko.dictionary.website;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,12 +69,13 @@ public class SearchResultController {
         map.addAttribute("title", "Search results for query");
         List<Map<String, Object>> names = apiService.searchName(nameQuery);
 
-        if (names.size() == 1 && names.get(0).get("name").equals(nameQuery)) {
+        if (names.size() == 1 && isEqualWithoutAccent((String) names.get(0).get("name"), nameQuery)) {
             nameQuery = URLEncoder.encode(nameQuery, "UTF-8");
             redirectAttributes.addFlashAttribute("name", names.get(0));
             return "redirect:/entries/"+nameQuery;
         }
 
+        Collections.reverse(names);
         map.addAttribute("query", nameQuery);
         map.addAttribute("names", names);
 
@@ -91,4 +94,7 @@ public class SearchResultController {
         return "searchresults";
     }
 
+    private Boolean isEqualWithoutAccent(String firstName, String secondName) {
+        return StringUtils.stripAccents(firstName).equalsIgnoreCase(StringUtils.stripAccents(secondName));
+    }
 }

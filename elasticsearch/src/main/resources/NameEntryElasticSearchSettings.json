@@ -12,6 +12,11 @@
         "type": "custom",
         "tokenizer": "standard",
         "filter":[ "standard", "asciifolding", "lowercase", "stop", "edgeNGram" ]
+      },
+      "asciifolding_analyzer": {
+        "char_filter": ["icu_normalizer"],
+        "tokenizer": "standard",
+        "filter":  [ "lowercase", "asciifolding" ]
       }
     }
   },

@@ -12,8 +12,13 @@
           "type": "string",
           "store": "yes",
           "index": "analyzed",
-          "analyzer": "autocomplete_analyzer",
-          "boost": "10"
+          "analyzer": "autocomplete_analyzer"
+        },
+        "asciifolded": {
+          "type": "string",
+          "store": "yes",
+          "index": "analyzed",
+          "analyzer": "asciifolding_analyzer"
         }
       }
     },

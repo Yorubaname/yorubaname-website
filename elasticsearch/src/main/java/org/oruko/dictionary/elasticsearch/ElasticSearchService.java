@@ -107,12 +107,13 @@ public class ElasticSearchService {
     public Set<Map<String, Object>> search(String searchTerm) {
         /**
          * 1. First do a exact search. If found return result. If not go to 2.
-         * 2. Do a search based on partial match. Irrespective of outcome, proceed to 3
+         * 2. Do a search with ascii-folding. If. If found return result, if not go to 3
+         * 3. Do a search based on partial match. Irrespective of outcome, proceed to 4
          *    2a - Using nGram?
          *    2b - ?
-         * 3. Do a full text search against other variants. Irrespective of outcome, proceed to 4
-         * 4. Do a full text search against meaning. Irrespective of outcome, proceed to 5
-         * 5. Do a full text search against extendedMeaning
+         * 4. Do a full text search against other variants. Irrespective of outcome, proceed to 5
+         * 5. Do a full text search against meaning. Irrespective of outcome, proceed to 6
+         * 6. Do a full text search against extendedMeaning
          */
 
         final Set<Map<String, Object>> result = new LinkedHashSet<>();
@@ -129,6 +130,17 @@ public class ElasticSearchService {
             }
         }
 
+        //2. Do a search with ascii-folding
+        searchResponse = exactSearchByNameAsciiFolded(searchTerm);
+        if (searchResponse.getHits().getHits().length >= 1) {
+            Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
+                result.add(hit.getSource());
+            });
+
+            if (result.size() == 1) {
+                return result;
+            }
+        }
         /**
          * Does a full text search on
          * name,
@@ -145,6 +157,7 @@ public class ElasticSearchService {
 
         SearchResponse tempSearchAll = client.prepareSearch(esConfig.getIndexName())
                                              .setQuery(searchSpec)
+                                             .setSize(20)
                                              .execute()
                                              .actionGet();
 
@@ -302,9 +315,18 @@ public class ElasticSearchService {
                      .actionGet();
     }
 
+    private SearchResponse exactSearchByNameAsciiFolded(String nameQuery) {
+        return client.prepareSearch(esConfig.getIndexName())
+                     .setQuery(QueryBuilders.matchQuery("name.asciifolded", nameQuery.toLowerCase()))
+                     .setSize(20)
+                     .execute()
+                     .actionGet();
+    }
+
     private SearchResponse partialSearchByName(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
                      .setQuery(QueryBuilders.matchQuery("name.autocomplete", nameQuery.toLowerCase()))
+                     .setSize(20)
                      .execute()
                      .actionGet();
     }
