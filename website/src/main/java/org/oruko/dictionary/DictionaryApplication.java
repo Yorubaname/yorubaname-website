@@ -1,12 +1,13 @@
 package org.oruko.dictionary;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -84,10 +85,47 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return lci;
     }
 
+
+    @Bean
+    public net.sf.ehcache.CacheManager ecacheManager() {
+        CacheConfiguration allNames = new CacheConfiguration();
+        allNames.setName("allNames");
+        allNames.setMaxEntriesLocalHeap(0);
+        allNames.setEternal(false);
+        allNames.setTimeToIdleSeconds(86400);
+
+        CacheConfiguration querySearchResult = new CacheConfiguration();
+        querySearchResult.setName("querySearchResult");
+        querySearchResult.setMaxEntriesLocalHeap(0);
+        querySearchResult.setEternal(false);
+        querySearchResult.setTimeToIdleSeconds(86400);
+
+        CacheConfiguration names = new CacheConfiguration();
+        names.setName("names");
+        names.setMaxEntriesLocalHeap(0);
+        names.setEternal(false);
+        names.setTimeToIdleSeconds(86400);
+
+        CacheConfiguration nameCount = new CacheConfiguration();
+        nameCount.setName("nameCount");
+        nameCount.setMaxEntriesLocalHeap(0);
+        nameCount.setEternal(false);
+        nameCount.setTimeToIdleSeconds(86400);
+
+        net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
+        config.addCache(allNames);
+        config.addCache(querySearchResult);
+        config.addCache(names);
+        config.addCache(nameCount);
+
+        return net.sf.ehcache.CacheManager.newInstance(config);
+    }
+
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager();
+        return new EhCacheCacheManager(ecacheManager());
     }
+
 
     @Bean
     public JavaTimeModule javaTimeModule() {
