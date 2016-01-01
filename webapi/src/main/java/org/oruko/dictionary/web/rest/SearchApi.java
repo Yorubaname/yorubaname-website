@@ -74,8 +74,7 @@ public class SearchApi {
 
     @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
-                                           HttpServletRequest request) {
+    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm) {
 
         Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
         return name;
