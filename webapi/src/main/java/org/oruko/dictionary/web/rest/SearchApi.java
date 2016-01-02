@@ -72,14 +72,6 @@ public class SearchApi {
         this.recentIndexes = recentIndexes;
     }
 
-    @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm) {
-
-        Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
-        return name;
-    }
-
 
     /**
      * Endpoint for retrieving metadata information
@@ -93,6 +85,23 @@ public class SearchApi {
             response.put("count", elasticSearchService.getCount());
         }
         return response;
+    }
+
+    /**
+     * Doea a full text search for name
+     * @param searchTerm the name to search
+     * @return the set of names found. If only one name is found then {@link NameSearchedEvent} is published
+     */
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
+                                           HttpServletRequest request) {
+
+        Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
+        if (name != null && name.size() != 0) {
+            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+        }
+        return name;
     }
 
 
