@@ -14,9 +14,8 @@
         "filter":[ "standard", "asciifolding", "lowercase", "stop", "edgeNGram" ]
       },
       "asciifolding_analyzer": {
-        "char_filter": ["icu_normalizer"],
         "tokenizer": "standard",
-        "filter":  [ "lowercase", "asciifolding" ]
+        "filter":  [ "lowercase", "icu_normalizer", "icu_folding" ]
       }
     }
   },

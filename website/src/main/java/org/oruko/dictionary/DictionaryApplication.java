@@ -92,25 +92,25 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         allNames.setName("allNames");
         allNames.setMaxEntriesLocalHeap(0);
         allNames.setEternal(false);
-        allNames.setTimeToIdleSeconds(86400);
+        allNames.setTimeToIdleSeconds(1);
 
         CacheConfiguration querySearchResult = new CacheConfiguration();
         querySearchResult.setName("querySearchResult");
         querySearchResult.setMaxEntriesLocalHeap(0);
         querySearchResult.setEternal(false);
-        querySearchResult.setTimeToIdleSeconds(86400);
+        querySearchResult.setTimeToIdleSeconds(1);
 
         CacheConfiguration names = new CacheConfiguration();
         names.setName("names");
         names.setMaxEntriesLocalHeap(0);
         names.setEternal(false);
-        names.setTimeToIdleSeconds(86400);
+        names.setTimeToIdleSeconds(1);
 
         CacheConfiguration nameCount = new CacheConfiguration();
         nameCount.setName("nameCount");
         nameCount.setMaxEntriesLocalHeap(0);
         nameCount.setEternal(false);
-        nameCount.setTimeToIdleSeconds(86400);
+        nameCount.setTimeToIdleSeconds(1);
 
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
         config.addCache(allNames);
