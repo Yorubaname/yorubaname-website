@@ -141,6 +141,17 @@ public class ElasticSearchService {
                 return result;
             }
         }
+
+
+        searchResponse = prefixFilterSearch(searchTerm);
+        if (searchResponse.getHits().getHits().length >= 1) {
+            Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
+                result.add(hit.getSource());
+            });
+
+            return result;
+        }
+
         /**
          * Does a full text search on
          * name,
@@ -311,6 +322,14 @@ public class ElasticSearchService {
     private SearchResponse exactSearchByName(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
                      .setPostFilter(FilterBuilders.termFilter("name", nameQuery.toLowerCase()))
+                     .execute()
+                     .actionGet();
+    }
+
+    private SearchResponse prefixFilterSearch(String nameQuery) {
+        return client.prepareSearch(esConfig.getIndexName())
+                     .setPostFilter(FilterBuilders.prefixFilter("name", nameQuery.toLowerCase()))
+                     .setSize(20)
                      .execute()
                      .actionGet();
     }
