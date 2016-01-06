@@ -106,17 +106,17 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         names.setEternal(false);
         names.setTimeToIdleSeconds(1800);
 
-        CacheConfiguration nameCount = new CacheConfiguration();
-        nameCount.setName("nameCount");
-        nameCount.setMaxEntriesLocalHeap(0);
-        nameCount.setEternal(false);
-        nameCount.setTimeToIdleSeconds(1800);
+//        CacheConfiguration nameCount = new CacheConfiguration();
+//        nameCount.setName("nameCount");
+//        nameCount.setMaxEntriesLocalHeap(0);
+//        nameCount.setEternal(false);
+//        nameCount.setTimeToIdleSeconds(1800);
 
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
         config.addCache(allNames);
         config.addCache(querySearchResult);
         config.addCache(names);
-        config.addCache(nameCount);
+        //config.addCache(nameCount);
 
         return net.sf.ehcache.CacheManager.newInstance(config);
     }
