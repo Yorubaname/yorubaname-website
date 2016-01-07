@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,11 +110,23 @@ public class SearchApi {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
         if (!searchQuery.isPresent()) {
-            return new ArrayList<>();
+            return Collections.EMPTY_LIST;
         }
 
         String query = searchQuery.get();
         return elasticSearchService.autocomplete(query);
+    }
+
+
+    @RequestMapping(value = "/alphabet/{alphabet}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<Map<String, Object>> getByAlphabet(@PathVariable Optional<String> alphabet) {
+        if (!alphabet.isPresent()) {
+            return Collections.EMPTY_SET;
+        }
+
+
+        return elasticSearchService.listByAlphabet(alphabet.get());
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,

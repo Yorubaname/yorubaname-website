@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
+//TODO remove?
 public class NoEntryFoundController {
     private ApiService apiService;
 
@@ -22,6 +23,7 @@ public class NoEntryFoundController {
     public String noEntryFoundIndexPage(Model map) {
         map.addAttribute("geoLocations", apiService.getGeoLocations());
         map.addAttribute("title", "Entry Not Found");
+        map.addAttribute("alphabets", ControllerUtil.getYorubaAlphabets());
         return "entrynotfound";
     }
 }

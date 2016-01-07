@@ -1,0 +1,39 @@
+<!-- Header -->
+{{> header }}
+
+{{> minisearchform }}
+
+<!-- main-content -->
+<section id="content">
+
+    <div class="container">
+        {{> alphabets}}
+        <br/>
+        <div class="row">
+            <h3>{{message "lang.number-of-names"}}: {{count}}</h3>
+            <div class="alphabet-listing">
+                <ul>
+                {{#if names}}
+                    {{#each names}}
+                        <a  title="{{this.meaning}}" class="name intonation" href="/entries/{{this.name}}"><li>{{this.name}}</li></a>
+                    {{/each}}
+                {{/if}}
+                </ul>
+            </div>
+        </div>
+        <br/>
+        {{> alphabets}}
+    </div>
+
+</section>
+
+<!-- /main-content -->
+
+<!--aside>
+                <div class="col-md-4">
+                    {{> rsidebar }}
+                </div>
+            </aside-->
+
+<!-- footer -->
+{{> footer }}

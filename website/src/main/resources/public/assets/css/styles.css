@@ -10,6 +10,7 @@
 
 /* SECTION 1: Bootstrap Override */
 
+
 .form-control, .btn, input, textarea { border-radius:0; }
 
 .btn-link:hover {
@@ -92,6 +93,11 @@ footer {
 	font-family: Arial !important;
 }
 
+.name {
+	color: #CDA463;
+	font-weight: bold;
+	text-transform: capitalize;
+}
 
 /* SECTION 3: Layouts */
 
@@ -275,10 +281,6 @@ header .container img.logo {
 	right: 5px;
 	height: 34px;
 	width: 40px;
-	/*background-color: transparent;
-	border: none;
-	border-left: 1px solid #555;
-	color: #075265;*/
 	border-radius: 0px;
 }
 
@@ -315,9 +317,6 @@ header .container img.logo {
 }
 .llm ul {
 	list-style-type: none;
-	color:#CDA463;
-	font-weight: bold;
-	text-transform: capitalize;
 	margin: 0;
 }
 
@@ -377,6 +376,36 @@ footer {
 
 footer a + a {
 	margin-left: 10px;
+}
+
+ul.alphabets {
+	list-style: none;
+	text-align: center;
+	padding-left: 0px;
+	margin: 5px 0 5px 0;
+	display: inline-block;
+}
+
+ul.alphabets li {
+	float: left;
+	margin: 1px;
+	padding: 10px 15px;
+	border: #DDD;
+	background: #f9f9f9;
+	display: inline-block;
+	text-decoration: none;
+}
+
+ul.alphabets li:hover {
+	background-color: #fff;
+}
+
+.alphabet-listing ul {
+	list-style: none;
+	padding-left: 0px;
+	-webkit-column-width: 100px;
+	-moz-column-width: 100px;
+	column-width: 100px;
 }
 
 /* ----- Media queries ----- */

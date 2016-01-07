@@ -1,28 +1,31 @@
-package org.oruko.dictionary.website;
+package org.oruko.dictionary.website.staticpages;
 
+import org.oruko.dictionary.website.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 /**
- * Controller for about us page
+ * Controller for contact us page
  */
 
 @Controller
-public class AboutUsController {
+public class ContactUsController {
+
     private ApiService apiService;
 
     @Autowired
-    public AboutUsController(ApiService apiService) {
+    public ContactUsController(ApiService apiService) {
         this.apiService = apiService;
     }
 
-    @RequestMapping("/about-us")
-    public String aboutUsIndexPage(Model map) {
+    @RequestMapping("/contact-us")
+    public String contactUsIndexPage(Model map) {
         map.addAttribute("geoLocations", apiService.getGeoLocations());
         map.addAttribute("nameCount", apiService.getIndexedNameCount());
-        map.addAttribute("title", "About Us");
-        return "aboutus";
+        map.addAttribute("title", "Contact Us");
+        return "contactus";
     }
 }

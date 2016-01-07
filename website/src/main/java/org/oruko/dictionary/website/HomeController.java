@@ -30,7 +30,7 @@ public class HomeController {
         map.addAttribute("latestSearches", searchActivity.get("search"));
         map.addAttribute("latestAdditions", searchActivity.get("index"));
         map.addAttribute("mostPopular", searchActivity.get("popular"));
-
+        map.addAttribute("alphabets", ControllerUtil.getYorubaAlphabets());
         return "home";
     }
 }

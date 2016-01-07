@@ -29,6 +29,8 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -107,13 +109,14 @@ public class ElasticSearchService {
     public Set<Map<String, Object>> search(String searchTerm) {
         /**
          * 1. First do a exact search. If found return result. If not go to 2.
-         * 2. Do a search with ascii-folding. If. If found return result, if not go to 3
-         * 3. Do a search based on partial match. Irrespective of outcome, proceed to 4
-         *    2a - Using nGram?
-         *    2b - ?
-         * 4. Do a full text search against other variants. Irrespective of outcome, proceed to 5
-         * 5. Do a full text search against meaning. Irrespective of outcome, proceed to 6
-         * 6. Do a full text search against extendedMeaning
+         * 2. Do a search with ascii-folding. If found return result, if not go to 3
+         * 3. Do a prefix search. If found, return result, if not go to 4
+         * 4. Do a search based on partial match. Irrespective of outcome, proceed to 4
+         *    4a - Using nGram?
+         *    4b - ?
+         * 5. Do a full text search against other variants. Irrespective of outcome, proceed to 6
+         * 6. Do a full text search against meaning. Irrespective of outcome, proceed to 7
+         * 7. Do a full text search against extendedMeaning
          */
 
         final Set<Map<String, Object>> result = new LinkedHashSet<>();
@@ -143,7 +146,8 @@ public class ElasticSearchService {
         }
 
 
-        searchResponse = prefixFilterSearch(searchTerm);
+        //3. Do a prefix search
+        searchResponse = prefixFilterSearch(searchTerm, false);
         if (searchResponse.getHits().getHits().length >= 1) {
             Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
                 result.add(hit.getSource());
@@ -173,6 +177,22 @@ public class ElasticSearchService {
                                              .actionGet();
 
         Stream.of(tempSearchAll.getHits().getHits()).forEach(hit -> {
+            result.add(hit.getSource());
+        });
+
+        return result;
+    }
+
+
+    public Set<Map<String, Object>> listByAlphabet(String alphabetQuery) {
+        final Set<Map<String, Object>> result = new LinkedHashSet<>();
+
+        final SearchResponse searchResponse = prefixFilterSearch(alphabetQuery, true);
+        final SearchHit[] hits = searchResponse.getHits().getHits();
+        final List<SearchHit> searchHits = Arrays.asList(hits);
+
+        Collections.reverse(searchHits);
+        searchHits.forEach(hit -> {
             result.add(hit.getSource());
         });
 
@@ -326,10 +346,17 @@ public class ElasticSearchService {
                      .actionGet();
     }
 
-    private SearchResponse prefixFilterSearch(String nameQuery) {
+    private SearchResponse prefixFilterSearch(String nameQuery, boolean getAll) {
+        int resultSet = 20;
+
+        if (getAll) {
+            CountResponse countResponse = client.prepareCount(esConfig.getIndexName()).execute().actionGet();
+            resultSet = (int) countResponse.getCount();
+        }
+
         return client.prepareSearch(esConfig.getIndexName())
                      .setPostFilter(FilterBuilders.prefixFilter("name", nameQuery.toLowerCase()))
-                     .setSize(20)
+                     .setSize(resultSet)
                      .execute()
                      .actionGet();
     }

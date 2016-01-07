@@ -3,107 +3,132 @@
 
 <section id="searchform">
     <div class="jumbotron" id="home-banner">
-       <div class="container">
-       		<h1>{{message "lang.jumbotron1"}} <span>{{nameCount}}</span> {{message "lang.jumbotron2"}}</h1>
-       		
+        <div class="container">
+            <h1>{{message "lang.jumbotron1"}} <span>{{nameCount}}</span> {{message "lang.jumbotron2"}}</h1>
+
             {{> searchcomponent }}
-            
+
             <h3>{{message "lang.jumboh31"}}</h3>
             <a href="/submitname" class="btn btn-lg btn-link">{{message "lang.jumboh32"}}</a>
-       </div>
+        </div>
     </div>
 </section>
 <!-- /search -->
 
 <section>
     <div class="container">
-		
-    	<div class="llm row">
-        	<div class="col-sm-4" id="recent_searches">
+
+        <div class="llm row">
+            <div class="col-sm-4" id="recent_searches">
                 <ul>
                     <li><h5>{{message "lang.latest-search"}}</h5></li>
-                    <hr />
+                    <hr/>
                     {{#each latestSearches}}
-                        <li class="recent_entry"><a href="/entries/{{this}}">{{this}}</a></li>
+                        <li class="recent_entry"><a class="name" href="/entries/{{this}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
             </div>
             <div class="col-sm-4" id="recent_additions">
                 <ul>
                     <li><h5>{{message "lang.latest-add"}}</h5></li>
-                    <hr />
+                    <hr/>
                     {{#each latestAdditions}}
-                        <li class="recent_entry"><a href="/entries/{{this}}">{{this}}</a></li>
+                        <li class="recent_entry"><a class="name" href="/entries/{{this}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
             </div>
             <div class="col-sm-4" id="recent_popular">
-            	<ul>
+                <ul>
                     <li><h5>{{message "lang.most-popular"}}</h5></li>
-                    <hr />
+                    <hr/>
                     {{#each mostPopular}}
-                        <li class="recent_entry"><a href="/entries/{{this}}">{{this}}</a></li>
+                        <li class="recent_entry"><a class="name" href="/entries/{{this}}">{{this}}</a></li>
                     {{/each}}
                 </ul>
             </div>
         </div>
-        
+
+
+        <div class="text-center">
+            <h4>{{message "lang.name-listed-by-alphabets"}}:</h4>
+            {{> alphabets}}
+        </div>
+
     </div>
     <!-- /llm -->
 
     <div class="container">
-    	
-            <!--<div class="row">-->
-                <!---->
-                <!--<div class="col-sm-4">-->
-            		<!--<h4>{{message "lang.name-of-day"}}</h5>-->
-                    <!--<hr />-->
-                    <!--<h5 class="strong-text"><a href="/entries/Baratimileyi">Baratimileyi</a></h5>-->
-                    <!--<p>Baratimileyi is name i made up when i went to buy mango. I don't even know hoe the remote found itself in the pot, but i think if you call me tomorrow i could tell you who won. Nawaooo you get time to read this rubbish. </p>-->
-                    <!--<a href="/entries/Baratimileyi">Read more</a>-->
-            	<!--</div>-->
 
-                <!--<div class="col-sm-4">-->
-                    <!--<h4>{{message "lang.name-of-day"}}</h4>-->
-                    <!--<hr />-->
-                    <!--<h5 class="strong-text">Baratimileyi</h5>-->
-                    <!--<p>Baratimileyi is name i made up when i went to buy mango. I don't even know hoe the remote found itself in the pot, but i think if you call me tomorrow i could tell you who won. Nawaooo you get time to read this rubbish. </p>-->
+        <!--<div class="row">-->
+        <!---->
+        <!--<div class="col-sm-4">-->
+        <!--<h4>{{message "lang.name-of-day"}}</h5>-->
+        <!--<hr />-->
+        <!--<h5 class="strong-text"><a href="/entries/Baratimileyi">Baratimileyi</a></h5>-->
+        <!--<p>Baratimileyi is name i made up when i went to buy mango. I don't even know hoe the remote found itself in the pot, but i think if you call me tomorrow i could tell you who won. Nawaooo you get time to read this rubbish. </p>-->
+        <!--<a href="/entries/Baratimileyi">Read more</a>-->
+        <!--</div>-->
 
-                <!--</div>-->
+        <!--<div class="col-sm-4">-->
+        <!--<h4>{{message "lang.name-of-day"}}</h4>-->
+        <!--<hr />-->
+        <!--<h5 class="strong-text">Baratimileyi</h5>-->
+        <!--<p>Baratimileyi is name i made up when i went to buy mango. I don't even know hoe the remote found itself in the pot, but i think if you call me tomorrow i could tell you who won. Nawaooo you get time to read this rubbish. </p>-->
 
-                <!--<div class="col-sm-4">-->
-                    <!--<h4>{{message "lang.name-of-day"}}</h4>-->
-                    <!--<hr />-->
-                    <!--<h5 class="strong-text">Baratimileyi</h5>-->
-                    <!--<p>Baratimileyi is name i made up when i went to buy mango. I don't even know hoe the remote found itself in the pot, but i think if you call me tomorrow i could tell you who won. Nawaooo you get time to read this rubbish.</p>-->
-                <!--</div>-->
-                                      <!---->
-            <!--</div>-->
+        <!--</div>-->
 
-            <div class="row">
-                <div class="col-sm-12 text-center"><h3>Our key supporters</h3></div>
-                <div class="col-sm-2 col-sm-offset-2"><a href="http://capitalsqua.re/" target="_blank"><img class="img-responsive" src="/assets/img/supporters/capital_square.png"></a></div>
-                <div class="col-sm-2"><a href="http://www.goethe.de/ins/ng/en" target="_blank"><img class="img-responsive" src="/assets/img/supporters/goethe_institut.png"></a></div>
-                <div class="col-sm-2"><a href="http://www.alt-i.org/index.php" target="_blank"><img class="img-responsive" src="/assets/img/supporters/alti.png"></a></div>
-                <div class="col-sm-2"><a href="http://lgmediting.com/" target="_blank"><img class="img-responsive" src="/assets/img/supporters/lgmediting-logo.png"></a></div>
+        <!--<div class="col-sm-4">-->
+        <!--<h4>{{message "lang.name-of-day"}}</h4>-->
+        <!--<hr />-->
+        <!--<h5 class="strong-text">Baratimileyi</h5>-->
+        <!--<p>Baratimileyi is name i made up when i went to buy mango. I don't even know hoe the remote found itself in the pot, but i think if you call me tomorrow i could tell you who won. Nawaooo you get time to read this rubbish.</p>-->
+        <!--</div>-->
+        <!---->
+        <!--</div>-->
+
+        <div class="row">
+            <div class="col-sm-12 text-center"><h3>Our key supporters</h3></div>
+            <div class="col-sm-2 col-sm-offset-2"><a href="http://capitalsqua.re/" target="_blank"><img
+                    class="img-responsive" src="/assets/img/supporters/capital_square.png"></a></div>
+            <div class="col-sm-2"><a href="http://www.goethe.de/ins/ng/en" target="_blank"><img class="img-responsive"
+                                                                                                src="/assets/img/supporters/goethe_institut.png"></a>
             </div>
+            <div class="col-sm-2"><a href="http://www.alt-i.org/index.php" target="_blank"><img class="img-responsive"
+                                                                                                src="/assets/img/supporters/alti.png"></a>
+            </div>
+            <div class="col-sm-2"><a href="http://lgmediting.com/" target="_blank"><img class="img-responsive"
+                                                                                        src="/assets/img/supporters/lgmediting-logo.png"></a>
+            </div>
+        </div>
 
-            <div class="row" style="margin-top:40px">
-                <div class="col-sm-4 col-sm-offset-2">
-                    <div class="fb-page" data-href="https://www.facebook.com/YorubaNames" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false" data-show-posts="false"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/YorubaNames"><a href="https://www.facebook.com/YorubaNames">Yoruba Names Dictionary</a></blockquote></div></div>
-                </div>
-                <div class="col-sm-4">
-                    <form method="post" class="subscribe" action="//YorubaName.us10.list-manage.com/subscribe/post?u=447ae670439b332a80e50107c&amp;id=0cfdd9d988" target="_blank">
-                        <h4>YorubaName Newsletter</h4>
-                        <p>Get the latest entries and meanings of the most famous and not-so-famous Yoruba names.</p>
-                        <input type="hidden" name="b_447ae670439b332a80e50107c_0cfdd9d988" tabindex="-1" value="">
-                        <div class="form-group">
-                            <input type="email" name="EMAIL" placeholder="Enter your email here" class="form-control" required="required">
-                            <button class="btn btn-success"><i class="fa fa-send"></i></button>
-                        </div>
-                    </form>
+        <div class="row" style="margin-top:40px">
+            <div class="col-sm-4 col-sm-offset-2">
+                <div class="fb-page" data-href="https://www.facebook.com/YorubaNames" data-small-header="false"
+                     data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"
+                     data-show-posts="false">
+                    <div class="fb-xfbml-parse-ignore">
+                        <blockquote cite="https://www.facebook.com/YorubaNames"><a
+                                href="https://www.facebook.com/YorubaNames">Yoruba Names Dictionary</a></blockquote>
+                    </div>
                 </div>
             </div>
+            <div class="col-sm-4">
+                <form method="post" class="subscribe"
+                      action="//YorubaName.us10.list-manage.com/subscribe/post?u=447ae670439b332a80e50107c&amp;id=0cfdd9d988"
+                      target="_blank">
+                    <h4>YorubaName Newsletter</h4>
+
+                    <p>Get the latest entries and meanings of the most famous and not-so-famous Yoruba names.</p>
+                    <input type="hidden" name="b_447ae670439b332a80e50107c_0cfdd9d988" tabindex="-1" value="">
+
+                    <div class="form-group">
+                        <input type="email" name="EMAIL" placeholder="Enter your email here" class="form-control"
+                               required="required">
+                        <button class="btn btn-success"><i class="fa fa-send"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 </section>
@@ -113,8 +138,8 @@
     <div class="col-sm-4">
         {{> rsidebar }}
     </div>
-</aside--> 
-<!-- /sidebar -->  
+</aside-->
+<!-- /sidebar -->
 
 <!-- footer -->
 {{> footer }}

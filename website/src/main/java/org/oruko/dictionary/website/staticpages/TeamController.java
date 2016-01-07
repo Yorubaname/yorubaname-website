@@ -1,4 +1,4 @@
-package org.oruko.dictionary.website;
+package org.oruko.dictionary.website.staticpages;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

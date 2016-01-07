@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import java.util.Map;
  * Controller for the search result pages
  * Created by Dadepo Aderemi.
  */
+//TODO change 'name' to 'names' in model attribute
 @Controller
 public class SearchResultController {
 
@@ -28,6 +31,11 @@ public class SearchResultController {
     @Autowired
     public SearchResultController(ApiService apiService) {
         this.apiService = apiService;
+    }
+
+    @ModelAttribute("alphabets")
+    public List<String> addAlphabetsToModel(Model map) {
+        return ControllerUtil.getYorubaAlphabets();
     }
 
     @Value("${app.host}")
@@ -80,6 +88,26 @@ public class SearchResultController {
         map.addAttribute("names", names);
 
         return "searchresults";
+    }
+
+
+    @RequestMapping("/alphabets/{alphabet}")
+    public String alphabeticListing(@PathVariable String alphabet, Model map) {
+        if (alphabet.length() > 2) { //gb
+            //TODO ideally you should only list names by an alphabet
+        }
+
+        map.addAttribute("title", "Names listed by alphabet");
+        final ArrayList<Map<String, Object>> allNamesByAlphabet = new ArrayList<>(apiService.getAllNamesByAlphabet(alphabet));
+
+        if ("g".equals(alphabet)) {
+            allNamesByAlphabet.removeIf(name -> ((String) name.get("name")).toLowerCase().startsWith("gb"));
+        }
+
+        // TODO cant believe I can't do this from within handlebars. Revisit!
+        map.addAttribute("count", allNamesByAlphabet.size());
+        map.addAttribute("names", allNamesByAlphabet);
+        return "namesbyalphabet";
     }
 
     /**
