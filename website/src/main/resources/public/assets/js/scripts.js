@@ -233,7 +233,6 @@ $(document).ready(function () {
     $("#recent_popular li.recent_entry").each(function () {
         if ($(this).text() !== "") {
             popular.push($(this).text());
-            console.log($(this).text(), 123);
         }
     });
 
