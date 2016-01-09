@@ -32,7 +32,7 @@ $(document).ready(function () {
             data: JSON.stringify({feedback: $('textarea[name="feedback"]').val()}),
             type: 'json',
             success: function (resp) {
-                $('.response').html(alert_success("Feecback posted successfully. Thanks."))
+                $('.response').html(alert_success("Feedback posted successfully. Thanks."))
                 $('.response').fadeIn()
             },
             error: function (jqXHR) {
