@@ -99,7 +99,7 @@ public class SearchApi {
                                            HttpServletRequest request) {
 
         Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
-        if (name != null && name.size() != 0) {
+        if (name != null && name.size() == 1) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
         }
         return name;
@@ -135,7 +135,7 @@ public class SearchApi {
 
         Map<String, Object> name = elasticSearchService.getByName(searchTerm);
 
-        if (name != null && name.size() != 0) {
+        if (name != null && name.size() == 1) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
         }
         return name;

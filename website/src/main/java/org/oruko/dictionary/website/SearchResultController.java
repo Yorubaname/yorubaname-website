@@ -53,6 +53,7 @@ public class SearchResultController {
         if (!map.containsAttribute("name")) {
             final Map<String, Object> name = apiService.getName(nameEntry);
             if (name == null) {
+                // no single entry found for query, return to view where search result can be displayed
                 return "redirect:/entries?q=" + nameEntry;
             }
             map.addAttribute("name", name);
