@@ -126,9 +126,18 @@ public class NameEntryService {
     }
 
     /**
-     * Returns the feedback for a name
+     * Returns all feedback in the system
      *
-     * @param entry the {@link NameEntry} to get feedbacks for
+     * @return the list of feedback's as a list of {@link NameEntryFeedback}
+     */
+    public List<NameEntryFeedback> getAllFeedback() {
+        final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
+        return nameEntryFeedbackRepository.findAll(sort);
+    }
+
+    /**
+     * Returns all the feedback for a name
+     *
      * @return the feedback as a list of {@link NameEntryFeedback}
      */
     public List<NameEntryFeedback> getFeedback(NameEntry entry) {

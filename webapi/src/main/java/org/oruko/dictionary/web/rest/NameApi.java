@@ -111,6 +111,18 @@ public class NameApi {
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
     }
 
+
+    /**
+     * Endpoint for getting feedbacks within the system
+     *
+     * */
+    @RequestMapping(value = "/v1/names/feedbacks", method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<NameEntryFeedback>> getFeedbacks() {
+        return new ResponseEntity<>(entryService.getAllFeedback(), HttpStatus.OK);
+    }
+
+
     /**
      * Endpoint for adding a feedback for a name
      *
