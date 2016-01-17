@@ -153,9 +153,8 @@ $(document).ready(function () {
 
 <!-- Background image -->
 $(function () {
-    var images = ['0086.jpg'];
     $('#home-banner').css({
-        'background-image': 'url(assets/img/bg/IMG_' + images[Math.floor(Math.random() * images.length)] + ')'
+        'background-image': 'url(assets/img/bg/IMG_0089)'
     });
 });
 
