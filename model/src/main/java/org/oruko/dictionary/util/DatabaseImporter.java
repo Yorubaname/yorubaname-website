@@ -181,6 +181,7 @@ public class DatabaseImporter {
         geoLocationRepository.save(new GeoLocation("OWO", "SEY"));
         geoLocationRepository.save(new GeoLocation("IKARE", "SEY"));
         geoLocationRepository.save(new GeoLocation("SAGAMU", "SEY"));
-        geoLocationRepository.save(new GeoLocation("OTHERS", "OTHERS"));
+        geoLocationRepository.save(new GeoLocation("GENERAL/NOT LOCATION SPECIFIC", "GENERAL"));
+        geoLocationRepository.save(new GeoLocation("I DO NOT KNOW", "UNDEFINED"));
     }
 }
