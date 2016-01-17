@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -92,6 +94,10 @@ public abstract class AbstractNameEntry {
 
     @Column
     protected Boolean isIndexed = false;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    protected State state;
 
     @Column
     @JsonDeserialize(using= LocalDateTimeDeserializer.class)
@@ -269,5 +275,13 @@ public abstract class AbstractNameEntry {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 }

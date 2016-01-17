@@ -7,6 +7,7 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryFeedback;
+import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
@@ -95,6 +96,14 @@ public class NameApi {
     public ResponseEntity<Map<String, String>> addName(@Valid @RequestBody NameEntry entry,
                                                        BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
+            if (entry.getState() == null) {
+                entry.setState(State.NEW);
+            }
+
+            if (!State.NEW.equals(entry.getState())) {
+                // You can only add a name to the system with its state NEW
+                throw new GenericApiCallException("Invalid State: A new entry needs to have the NEW state");
+            }
             entry.setName(entry.getName().trim().toLowerCase());
             entryService.insertTakingCareOfDuplicates(entry);
             return new ResponseEntity<>(response("Name successfully added"), HttpStatus.CREATED);

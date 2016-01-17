@@ -60,10 +60,12 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
 
     /**
      * Updates properties using another instance of {@link org.oruko.dictionary.model.NameEntry}
+     * The state of the update name entry will be changed to modified
      */
     public void update(NameEntry nameEntry) {
         BeanUtils.copyProperties(nameEntry, this);
         // TODO revisit how to get this done on the entity level: how to get @Temporary working with LocalDateTime
+        this.setState(State.MODIFIED);
         this.setUpdatedAt(LocalDateTime.now());
     }
 

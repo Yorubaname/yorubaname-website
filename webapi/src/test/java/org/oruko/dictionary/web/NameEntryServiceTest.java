@@ -1,9 +1,9 @@
 package org.oruko.dictionary.web;
 
 import org.junit.*;
-import org.junit.runner.*;
+import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.runners.*;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.exception.RepositoryAccessError;

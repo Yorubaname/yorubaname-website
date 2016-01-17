@@ -2,6 +2,7 @@ package org.oruko.dictionary.util;
 
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.repository.Etymology;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
@@ -57,6 +58,7 @@ public class DatabaseImporter {
             lagbaja.setExtendedMeaning("This is extended dummy meaning for Lagbaja");
             lagbaja.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             lagbaja.setEtymology(etymology);
+            lagbaja.setState(State.NEW);
 
 
             NameEntry tamedo = new NameEntry("tamedo");
@@ -64,12 +66,14 @@ public class DatabaseImporter {
             tamedo.setExtendedMeaning("This is extended dummy meaning for tamedo");
             tamedo.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             tamedo.setEtymology(etymology);
+            tamedo.setState(State.NEW);
 
             NameEntry koko = new NameEntry("koko");
             koko.setMeaning("This is dummy meaning for koko");
             koko.setExtendedMeaning("This is extended dummy meaning for koko");
             koko.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             koko.setEtymology(etymology);
+            koko.setState(State.MODIFIED);
 
 
             NameEntry tola = new NameEntry("tola");
@@ -77,48 +81,57 @@ public class DatabaseImporter {
             tola.setExtendedMeaning("This is extended dummy meaning for tola");
             tola.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             tola.setEtymology(etymology);
+            tola.setState(State.MODIFIED);
+
 
             NameEntry dadepo = new NameEntry("dadepo");
             dadepo.setMeaning("This is dummy meaning for dadepo");
             dadepo.setExtendedMeaning("This is extended dummy meaning for dadepo");
             dadepo.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             dadepo.setEtymology(etymology);
+            dadepo.setState(State.MODIFIED);
 
             NameEntry bolanle = new NameEntry("Bọ́lánlé");
             bolanle.setMeaning("This is dummy meaning for Bọ́lánlé");
             bolanle.setExtendedMeaning("This is extended dummy meaning for Bọ́lánlé");
             bolanle.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             bolanle.setEtymology(etymology);
+            bolanle.setState(State.NEW);
 
             NameEntry ade0 = new NameEntry("Ade");
             ade0.setMeaning("This is dummy meaning for ade");
             ade0.setExtendedMeaning("This is extended dummy meaning for ade");
             ade0.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             ade0.setEtymology(etymology);
+            ade0.setState(State.NEW);
 
             NameEntry ade1 = new NameEntry("Adewale");
             ade1.setMeaning("This is dummy meaning for adewale");
             ade1.setExtendedMeaning("This is extended dummy meaning for adewale");
             ade1.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             ade1.setEtymology(etymology);
+            ade1.setState(State.NEW);
 
             NameEntry ade2 = new NameEntry("Adekunle");
             ade2.setMeaning("This is dummy meaning for Adekunle");
             ade2.setExtendedMeaning("This is extended dummy meaning for Adekunle");
             ade2.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             ade2.setEtymology(etymology);
+            ade2.setState(State.NEW);
 
             NameEntry ade3 = new NameEntry("Adetunji");
             ade3.setMeaning("This is dummy meaning for Adetunji");
             ade3.setExtendedMeaning("This is extended dummy meaning for Adetunji");
             ade3.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             ade3.setEtymology(etymology);
+            ade3.setState(State.NEW);
 
             NameEntry ade4 = new NameEntry("Adedotun");
             ade4.setMeaning("This is dummy meaning for Adedotun");
             ade4.setExtendedMeaning("This is extended dummy meaning for Adedotun");
             ade4.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             ade4.setEtymology(etymology);
+            ade4.setState(State.NEW);
 
             /**
              * Sample for search beahviour with variants and otherlanguages
@@ -130,6 +143,7 @@ public class DatabaseImporter {
             omowumi.setExtendedMeaning("This is extended dummy meaning for Omowumi");
             omowumi.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             omowumi.setEtymology(etymology);
+            omowumi.setState(State.NEW);
 
 
             NameEntry omolabi = new NameEntry("Omolabi");
@@ -137,6 +151,7 @@ public class DatabaseImporter {
             omolabi.setExtendedMeaning("This is extended dummy meaning for omolabi");
             omolabi.setGeoLocation(new GeoLocation("IBADAN", "NWY"));
             omolabi.setEtymology(etymology);
+            omolabi.setState(State.NEW);
 
             nameEntryRepository.save(lagbaja);
             nameEntryRepository.save(tamedo);

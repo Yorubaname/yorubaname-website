@@ -7,6 +7,7 @@ import org.oruko.dictionary.events.NameSearchedEvent;
 import org.oruko.dictionary.events.RecentIndexes;
 import org.oruko.dictionary.events.RecentSearches;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
@@ -197,6 +198,7 @@ public class SearchApi {
         String message = indexOperationStatus.getMessage();
         if (isIndexed) {
             nameEntry.setIndexed(true);
+            nameEntry.setState(State.PUBLISHED);
             entryService.saveName(nameEntry);
             response.put("message", message);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -231,6 +233,7 @@ public class SearchApi {
 
         if (isIndexed) {
             nameEntry.setIndexed(true);
+            nameEntry.setState(State.PUBLISHED);
             entryService.saveName(nameEntry);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
@@ -334,6 +337,7 @@ public class SearchApi {
             NameEntry nameEntry = entryService.loadName(name);
             if (nameEntry != null) {
                 nameEntry.setIndexed(false);
+                nameEntry.setState(State.NEW);
                 entryService.saveName(nameEntry);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);

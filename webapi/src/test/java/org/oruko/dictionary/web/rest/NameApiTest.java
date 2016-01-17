@@ -14,6 +14,7 @@ import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.ApiExceptionHandler;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
@@ -194,6 +196,46 @@ public class NameApiTest {
                .andExpect(status().isCreated());
 
         verify(entryService).insertTakingCareOfDuplicates(any(NameEntry.class));
+    }
+
+    @Test
+    public void test_add_name_via_post_request_make_sure_state_is_new() throws Exception {
+        testNameEntry.setState(State.NEW);
+        String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
+        mockMvc.perform(post("/v1/names")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())))
+               .andExpect(status().isCreated());
+
+        verify(entryService).insertTakingCareOfDuplicates(any(NameEntry.class));
+    }
+
+    @Test
+    public void test_add_name_via_post_request_when_state_is_null_it_will_be_new() throws Exception {
+        testNameEntry.setState(null);
+        ArgumentCaptor<NameEntry> argumentCaptor = ArgumentCaptor.forClass(NameEntry.class);
+        String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
+        mockMvc.perform(post("/v1/names")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())))
+               .andExpect(status().isCreated());
+
+        verify(entryService).insertTakingCareOfDuplicates(argumentCaptor.capture());
+        final NameEntry value = argumentCaptor.getValue();
+        assertThat(value.getState().toString(), is("NEW"));
+    }
+
+    @Test
+    public void test_add_name_via_post_request_when_state_is_not_null_expect_exception() throws Exception {
+        testNameEntry.setState(State.PUBLISHED);
+        String requestJson = new ObjectMapper().writeValueAsString(testNameEntry);
+        mockMvc.perform(post("/v1/names")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8"))
+                                .content(requestJson))
+               .andExpect(jsonPath("$.message", IsNot.not(nullValue())))
+               .andExpect(status().isBadRequest());
     }
 
     @Test
