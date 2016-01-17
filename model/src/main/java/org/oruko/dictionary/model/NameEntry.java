@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "name_entry")
 public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry> {
 
-    @Column(unique=true)
+    @Column(unique = true)
     @NotNull
     @NotEmpty
     private String name;
@@ -36,6 +36,7 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
 
     /**
      * Returns the identifier, in this case the database primary key
+     *
      * @return the identifier
      */
     public Long getId() {
@@ -44,6 +45,7 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
 
     /**
      * Get the name
+     *
      * @return returns the name
      */
     public String getName() {
@@ -52,6 +54,7 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
 
     /**
      * Set the name
+     *
      * @param name the name
      */
     public void setName(String name) {
@@ -65,7 +68,9 @@ public class NameEntry extends AbstractNameEntry implements Comparable<NameEntry
     public void update(NameEntry nameEntry) {
         BeanUtils.copyProperties(nameEntry, this);
         // TODO revisit how to get this done on the entity level: how to get @Temporary working with LocalDateTime
-        this.setState(State.MODIFIED);
+        if (State.PUBLISHED.equals(this.getState())) {
+            this.setState(State.MODIFIED);
+        }
         this.setUpdatedAt(LocalDateTime.now());
     }
 
