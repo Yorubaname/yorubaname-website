@@ -14,15 +14,15 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.yorubaname</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>model-module</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.yorubaname</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>event-module</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
+            <version>${hamcrest-all.version}</version>
         </dependency>
     </dependencies>
 
