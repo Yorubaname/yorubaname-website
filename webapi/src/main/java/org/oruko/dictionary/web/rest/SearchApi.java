@@ -148,7 +148,7 @@ public class SearchApi {
                                    HttpServletResponse response)
             throws IOException {
         if (activityType == null || activityType.isEmpty()) {
-            response.sendRedirect("/v1//search/activity/all");
+            response.sendRedirect("/v1/search/activity/all");
         }
 
         if ("search".equalsIgnoreCase(activityType)) {
