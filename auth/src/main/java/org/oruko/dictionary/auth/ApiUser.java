@@ -71,15 +71,4 @@ public class ApiUser {
         this.username = username;
     }
 
-    public enum ROLE {
-        ADMIN("ROLE_ADMIN"), DASHBOARD("ROLE_DASHBOARD"), LEXICOGRAPHER("ROLE_LEXICOGRAPHER"), BASIC("ROLE_BASIC");
-
-        private final String role;
-        private ROLE(String role) {
-            this.role = role;
-        }
-        public String getRole() {
-            return role;
-        }
-    }
 }

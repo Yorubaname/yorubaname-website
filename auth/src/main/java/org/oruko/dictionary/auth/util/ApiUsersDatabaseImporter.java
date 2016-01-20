@@ -2,6 +2,7 @@ package org.oruko.dictionary.auth.util;
 
 import org.oruko.dictionary.auth.ApiUser;
 import org.oruko.dictionary.auth.ApiUserRepository;
+import org.oruko.dictionary.auth.config.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * Utility class for populating API user with mock users
- * <p>
+ *
  * Created by Dadepo Aderemi.
  */
 @Component
@@ -30,37 +31,27 @@ public class ApiUsersDatabaseImporter {
             ApiUser admin = new ApiUser();
             admin.setEmail("admin@example.com");
             admin.setPassword("admin");
-            admin.setRoles(ApiUser.ROLE.ADMIN.getRole(),
-                           ApiUser.ROLE.DASHBOARD.getRole(),
-                           ApiUser.ROLE.BASIC.getRole());
+            admin.setRoles(Role.ADMIN.toString());
             userRepository.save(admin);
         }
-
+        
         /**
          * Only initialize the database only when in dev
          */
         if (host.equalsIgnoreCase("localhost")) {
 
-            // dashboard user
-            ApiUser dashboard = new ApiUser();
-            dashboard.setEmail("dashboard@example.com");
-            dashboard.setPassword("dashboard");
-            dashboard.setRoles(ApiUser.ROLE.DASHBOARD.getRole(),
-                               ApiUser.ROLE.BASIC.getRole());
-            userRepository.save(dashboard);
-
             // lexi user
             ApiUser lexicographer = new ApiUser();
-            lexicographer.setEmail("lexicographer@example.com");
-            lexicographer.setPassword("lexicographer");
-            lexicographer.setRoles(ApiUser.ROLE.LEXICOGRAPHER.getRole());
+            lexicographer.setEmail("prolex@example.com");
+            lexicographer.setPassword("prolex");
+            lexicographer.setRoles(Role.PRO_LEXICOGRAPHER.toString());
             userRepository.save(lexicographer);
 
             // normal user
             ApiUser basic = new ApiUser();
-            basic.setEmail("basic@example.com");
-            basic.setPassword("basic");
-            basic.setRoles(ApiUser.ROLE.BASIC.getRole());
+            basic.setEmail("basiclex@example.com");
+            basic.setPassword("basiclex");
+            basic.setRoles(Role.BASIC_LEXICOGRAPHER.toString());
             userRepository.save(basic);
         }
     }
