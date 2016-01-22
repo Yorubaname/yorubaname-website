@@ -154,7 +154,7 @@ $(document).ready(function () {
 <!-- Background image -->
 $(function () {
     $('#home-banner').css({
-        'background-image': 'url(assets/img/bg/IMG_0089.jpg)'
+        'background-image': 'url(/assets/img/bg/IMG_0089.jpg)'
     });
 });
 
