@@ -105,43 +105,13 @@ public class NameEntryService {
 
 
     /**
-     * Persist the feedback
-     *
-     * @param feedback the feedback as an instance of {@link NameEntryFeedback}
-     */
-    public void addFeedback(NameEntryFeedback feedback) {
-        nameEntryFeedbackRepository.save(feedback);
-    }
-
-    /**
-     * Deletes all feedback for a name
-     *
-     * @param name
-     */
-    public void deleteFeedback(String name) {
-        List<NameEntryFeedback> feedbacks = nameEntryFeedbackRepository.findByName(name);
-        feedbacks.stream().forEach(feedback -> {
-            nameEntryFeedbackRepository.delete(feedback);
-        });
-    }
-
-    /**
-     * Returns all feedback in the system
-     *
-     * @return the list of feedback's as a list of {@link NameEntryFeedback}
-     */
-    public List<NameEntryFeedback> getAllFeedback() {
-        final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
-        return nameEntryFeedbackRepository.findAll(sort);
-    }
-
-    /**
-     * Returns all the feedback for a name
+     * Returns all the feedback for a name, sorted by time submitted
      *
      * @return the feedback as a list of {@link NameEntryFeedback}
      */
     public List<NameEntryFeedback> getFeedback(NameEntry entry) {
-        return nameEntryFeedbackRepository.findByName(entry.getName());
+        final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
+        return nameEntryFeedbackRepository.findByName(entry.getName(), sort);
     }
 
     /**

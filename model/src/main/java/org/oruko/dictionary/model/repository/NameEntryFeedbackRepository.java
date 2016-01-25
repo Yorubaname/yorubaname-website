@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
  */
 @Transactional
 public interface NameEntryFeedbackRepository extends CrudRepository<NameEntryFeedback, Long> {
-    List<NameEntryFeedback> findByName(String name);
+    List<NameEntryFeedback> findByName(String name, Sort sort);
     List<NameEntryFeedback> findAll(Sort sort);
+
 }

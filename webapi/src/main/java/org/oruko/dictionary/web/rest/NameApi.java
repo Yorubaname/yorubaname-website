@@ -6,7 +6,6 @@ import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.model.NameEntryFeedback;
 import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
@@ -109,59 +108,6 @@ public class NameApi {
             return new ResponseEntity<>(response("Name successfully added"), HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
-    }
-
-
-    /**
-     * Endpoint for getting feedbacks within the system
-     *
-     * */
-    @RequestMapping(value = "/v1/names/feedbacks", method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<NameEntryFeedback>> getFeedbacks() {
-        return new ResponseEntity<>(entryService.getAllFeedback(), HttpStatus.OK);
-    }
-
-
-    /**
-     * Endpoint for adding a feedback for a name
-     *
-     * @param postFeedback a map with key of "feedback" for the feedback
-     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
-     */
-    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> addFeedback(@PathVariable("name") String name,
-                                                           @RequestBody Map<String, String> postFeedback) {
-        String feedback = postFeedback.get("feedback");
-
-        if (feedback.isEmpty()) {
-            throw new GenericApiCallException("Cannot give an empty feedback");
-        }
-
-        if (entryService.loadName(name) == null) {
-            throw new GenericApiCallException(name + " does not exist. Cannot add feedback");
-        }
-
-        entryService.addFeedback(new NameEntryFeedback(name, feedback));
-        return new ResponseEntity<>(response("Feedback added"), HttpStatus.CREATED);
-    }
-
-
-    /**
-     * Endpoint for deleting a feedback for a name
-     *
-     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
-     */
-    @RequestMapping(value = "/v1/{name}/feedback", method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> deleteFeedback(@PathVariable("name") String name) {
-
-        if (entryService.loadName(name) == null) {
-            throw new GenericApiCallException(name + " does not exist. Cannot delete feedback");
-        }
-        entryService.deleteFeedback(name);
-        return new ResponseEntity<>(response("Feedback messages deleted for "+ name), HttpStatus.OK);
     }
 
 

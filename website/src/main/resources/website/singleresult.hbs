@@ -97,9 +97,10 @@
 		    <div class="modal-header">
 		    	<h3>{{message "lang.improve-entry.help-us"}} "{{ name.name }}"</h3>
 		    </div>
-			<form name="name_feedback" class="modal-body" action="/v1/{{name.name}}/feedback" method="post">
+			<form name="name_feedback" class="modal-body" action="/v1/feedback" method="post">
 			    <div class="response"></div>
 				<div class="form-group">
+                    <input id="nameToFeedback" type="hidden" value="{{name.name}}"/>
             		<p class="lead">{{message "lang.improve-entry.sub-text"}}</p>
             		<textarea name="feedback" id="improveEntry" class="form-control" rows="5" required="true"></textarea>
         		</div>

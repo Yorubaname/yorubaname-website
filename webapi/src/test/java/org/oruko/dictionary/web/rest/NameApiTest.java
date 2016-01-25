@@ -17,31 +17,22 @@ import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.web.NameEntryService;
-import org.oruko.dictionary.web.exception.ApiExceptionHandler;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,13 +41,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test for {@link org.oruko.dictionary.web.rest.NameApi}
  */
 @RunWith(MockitoJUnitRunner.class)
-public class NameApiTest {
+public class NameApiTest extends AbstractApiTest {
 
     @InjectMocks
     NameApi nameApi;
-
-    @Mock
-    View mockView;
 
     @Mock
     private NameEntryService entryService;
@@ -380,85 +368,6 @@ public class NameApiTest {
     }
 
     @Test
-    public void test_add_feedback() throws Exception {
-        String testName = "lagbaja";
-
-        NameEntry nameEntry = mock(NameEntry.class);
-
-        when(entryService.loadName(testName)).thenReturn(nameEntry);
-
-        Map<String, String> feedbackMap = new HashMap<>();
-        String testFeedback = "feedback for testing";
-        feedbackMap.put("feedback", testFeedback);
-
-        String requestJson = new ObjectMapper().writeValueAsString(feedbackMap);
-
-        mockMvc.perform(post("/v1/{name}/feedback", testName)
-                                .content(requestJson)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isCreated());
-    }
-
-    @Test
-    public void test_add_feedback_name_not_in_system() throws Exception{
-        String testName = "lagbaja";
-
-        when(entryService.loadName(testName)).thenReturn(null); // test condition
-
-        Map<String, String> feedbackMap = new HashMap<>();
-        String testFeedback = "feedback for testing";
-        feedbackMap.put("feedback", testFeedback);
-
-        String requestJson = new ObjectMapper().writeValueAsString(feedbackMap);
-
-        mockMvc.perform(post("/v1/{name}/feedback", testName)
-                                .content(requestJson)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isBadRequest()).andExpect(jsonPath("$.error", is(true)));
-    }
-
-    @Test
-    public void test_add_feedback_but_feedback_is_empty() throws Exception{
-        String testName = "lagbaja";
-
-        NameEntry nameEntry = mock(NameEntry.class);
-        when(entryService.loadName(testName)).thenReturn(nameEntry);
-
-        Map<String, String> feedbackMap = new HashMap<>();
-        String testFeedback = ""; // test condition
-        feedbackMap.put("feedback", testFeedback);
-
-        String requestJson = new ObjectMapper().writeValueAsString(feedbackMap);
-
-        mockMvc.perform(post("/v1/{name}/feedback", testName)
-                                .content(requestJson)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isBadRequest()).andExpect(jsonPath("$.error", is(true)));
-    }
-
-    @Test
-    public void test_delete_feedback() throws Exception{
-        String testName = "lagbaja";
-        NameEntry nameEntry = mock(NameEntry.class);
-        when(entryService.loadName(testName)).thenReturn(nameEntry);
-
-        mockMvc.perform(delete("/v1/{name}/feedback", testName)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isOk());
-
-        verify(entryService).deleteFeedback(testName);
-    }
-
-    @Test
-    public void test_delete_feedback_but_name_not_found() throws Exception{
-        String testName = "lagbaja";
-        when(entryService.loadName(testName)).thenReturn(null); // test condition
-        mockMvc.perform(delete("/v1/{name}/feedback", testName)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isBadRequest()).andExpect(jsonPath("$.error", is(true)));
-    }
-
-    @Test
     public void test_get_names_with_feedback() throws Exception {
         when(entryService.loadName("test")).thenReturn(testNameEntry);
         mockMvc.perform(get("/v1/names/{name}?feedback=true", "test"))
@@ -478,22 +387,4 @@ public class NameApiTest {
                .andExpect(status().isOk());
         verify(entryService).loadAllSuggestedNames();
     }
-
-// ==================================================== Helpers ====================================================
-
-    private ExceptionHandlerExceptionResolver createExceptionResolver() {
-        ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
-            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
-                Method method = new ExceptionHandlerMethodResolver(ApiExceptionHandler.class).resolveMethod(exception);
-                if (method == null) {
-                    return null;
-                }
-                return new ServletInvocableHandlerMethod(new ApiExceptionHandler(), method);
-            }
-        };
-        exceptionResolver.afterPropertiesSet();
-        return exceptionResolver;
-    }
-
-
 }

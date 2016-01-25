@@ -7,15 +7,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameSearchedEvent;
-import org.oruko.dictionary.web.exception.ApiExceptionHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by Dadepo Aderemi.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class SearchApiTest {
+public class SearchApiTest extends AbstractApiTest {
 
     @InjectMocks
     SearchApi searchApi;
@@ -88,19 +82,4 @@ public class SearchApiTest {
         verify(eventPubService).publish(any(NameSearchedEvent.class));
     }
 
-    // ==================================================== Helpers ====================================================
-
-    private ExceptionHandlerExceptionResolver createExceptionResolver() {
-        ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
-            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
-                Method method = new ExceptionHandlerMethodResolver(ApiExceptionHandler.class).resolveMethod(exception);
-                if (method == null) {
-                    return null;
-                }
-                return new ServletInvocableHandlerMethod(new ApiExceptionHandler(), method);
-            }
-        };
-        exceptionResolver.afterPropertiesSet();
-        return exceptionResolver;
-    }
 }
