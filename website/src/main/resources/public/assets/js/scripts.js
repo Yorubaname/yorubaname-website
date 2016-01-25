@@ -34,6 +34,7 @@ $(document).ready(function () {
             success: function (resp) {
                 $('.response').html(alert_success("Feedback posted successfully. Thanks."))
                 $('.response').fadeIn()
+                $('.modal').trigger('close')
             },
             error: function (jqXHR) {
                 $('.response').html(alert_error(jqXHR.responseJSON || jqXHR.responseText))
