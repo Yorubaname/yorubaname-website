@@ -198,5 +198,8 @@ public class DatabaseImporter {
         geoLocationRepository.save(new GeoLocation("SAGAMU", "SEY"));
         geoLocationRepository.save(new GeoLocation("GENERAL/NOT LOCATION SPECIFIC", "GENERAL"));
         geoLocationRepository.save(new GeoLocation("I DO NOT KNOW", "UNDEFINED"));
+
+        geoLocationRepository.save(new GeoLocation("FOREIGN: ARABIC", "FOREIGN_ARABIC"));
+        geoLocationRepository.save(new GeoLocation("FOREIGN: GENERAL", "FOREIGN_GENERAL"));
     }
 }
