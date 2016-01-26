@@ -111,12 +111,6 @@ public class NameEntryServiceTest {
         verifyZeroInteractions(duplicateEntryRepository);
     }
 
-    @Test
-    public void testDeleteInEntry() throws Exception {
-        nameEntryService.deleteInEntry(nameEntry);
-        verify(nameEntryRepository).delete(nameEntry);
-        verifyNoMoreInteractions(nameEntryRepository);
-    }
 
     @Test
     public void testDeleteInDuplicateEntry() throws Exception {

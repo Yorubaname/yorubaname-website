@@ -290,28 +290,26 @@ public class NameEntryService {
     /**
      * Duplicates all the name entry plus the duplicates
      */
-    // TODO Method level security should be added here
     public void deleteAllAndDuplicates() {
         nameEntryRepository.deleteAll();
         duplicateEntryRepository.deleteAll();
     }
 
-    /**
-     * Deletes all {@link org.oruko.dictionary.model.NameEntry}
-     */
-    // TODO Method level security should be added here
-    public void deleteInEntry(NameEntry entry) {
-        nameEntryRepository.delete(entry);
-    }
 
-    // TODO Method level security should be added here
+    /**
+     * Duplicates a name entry plus its duplicates
+     * @param name the name to delete
+     */
     public void deleteNameEntryAndDuplicates(String name) {
         NameEntry nameEntry = nameEntryRepository.findByName(name);
         nameEntryRepository.delete(nameEntry);
         duplicateEntryRepository.delete(new DuplicateNameEntry(nameEntry));
     }
 
-    // TODO Method level security should be added here
+    /**
+     * Deletes multiple name entries and their duplicates
+     * @param names a list of names to delete their entries and their duplicates
+     */
     public void batchDeleteNameEntryAndDuplicates(List<String> names) {
         int i = 0;
         for (String name: names ) {
@@ -331,7 +329,6 @@ public class NameEntryService {
      *
      * @param duplicateNameEntry the duplicated entry to delete
      */
-    // TODO Method level security should be added here
     public void deleteInDuplicateEntry(DuplicateNameEntry duplicateNameEntry) {
         duplicateEntryRepository.delete(duplicateNameEntry);
     }
