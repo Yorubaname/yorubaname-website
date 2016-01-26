@@ -468,6 +468,9 @@ public class NameApi {
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< Map<String, String>> deleteName(@PathVariable String name) {
+        if (entryService.loadName(name) == null) {
+            throw new GenericApiCallException(name + " not found in the system so cannot be deleted");
+        }
         entryService.deleteNameEntryAndDuplicates(name);
         return new ResponseEntity<>(response(name + " Deleted"), HttpStatus.OK);
     }

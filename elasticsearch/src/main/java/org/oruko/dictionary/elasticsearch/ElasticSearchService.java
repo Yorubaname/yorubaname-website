@@ -2,6 +2,7 @@ package org.oruko.dictionary.elasticsearch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.Subscribe;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -17,6 +18,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameDeletedEvent;
 import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.slf4j.Logger;
@@ -299,14 +301,22 @@ public class ElasticSearchService {
                                             "Delete unsuccessful. You do not have an elasticsearch node running");
         }
 
-        DeleteResponse response = client
-                .prepareDelete(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
-                .execute()
-                .actionGet();
-
+        DeleteResponse response = deleteName(name);
         return new IndexOperationStatus(response.isFound(), name + " deleted from index");
     }
 
+
+    /**
+     * Handler for {@link NameDeletedEvent}
+     * The handler ensures the name deleted is also removed from the search index
+     *
+     * @param event the {@link NameDeletedEvent}
+     */
+    @Subscribe
+    public void handleNameDeletedEvent(NameDeletedEvent event) {
+        deleteName(event.getName());
+        logger.info("Deleted name: {} from search index after a NameDeletedEvent", event.getName());
+    }
 
     public IndexOperationStatus bulkDeleteFromIndex(List<String> entries) {
         if (entries.size() == 0) {
@@ -337,6 +347,15 @@ public class ElasticSearchService {
                 + String.join(",", entries));
     }
 
+
+    //=====================================Helpers=========================================================//
+
+    private DeleteResponse deleteName(String name) {
+        return client
+                .prepareDelete(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
+                .execute()
+                .actionGet();
+    }
 
     //TODO revisit. Omo returns Omowunmi and Owolabi. Ideal this should return just one result
     private SearchResponse exactSearchByName(String nameQuery) {

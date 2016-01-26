@@ -1,5 +1,7 @@
 package org.oruko.dictionary.web;
 
+import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameDeletedEvent;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryFeedback;
@@ -35,23 +37,30 @@ public class NameEntryService {
     private DuplicateNameEntryRepository duplicateEntryRepository;
     private SuggestedNameRepository suggestedNameRepository;
     private NameEntryFeedbackRepository nameEntryFeedbackRepository;
+    private EventPubService eventPubService;
 
     /**
+     *
      * Public constructor for {@link NameEntryService} depends on instances of
      * {@link NameEntryRepository} and {@link DuplicateNameEntryRepository}
      *
      * @param nameEntryRepository      Repository responsible for persisting {@link NameEntry}
-     * @param duplicateEntryRepository Repository responsoble for persisting {@link DuplicateNameEntry}
+     * @param duplicateEntryRepository Repository responsible for persisting {@link DuplicateNameEntry}
+     * @param suggestedNameRepository Repository responsible for persisting {@link SuggestedName}
+     * @param nameEntryFeedbackRepository  Repository responsible for persisting {@link NameEntryFeedback}
+     * @param eventPubService the {@link EventPubService}
      */
     @Autowired
     public NameEntryService(NameEntryRepository nameEntryRepository,
                             DuplicateNameEntryRepository duplicateEntryRepository,
                             SuggestedNameRepository suggestedNameRepository,
-                            NameEntryFeedbackRepository nameEntryFeedbackRepository) {
+                            NameEntryFeedbackRepository nameEntryFeedbackRepository,
+                            EventPubService eventPubService) {
         this.nameEntryRepository = nameEntryRepository;
         this.duplicateEntryRepository = duplicateEntryRepository;
         this.suggestedNameRepository = suggestedNameRepository;
         this.nameEntryFeedbackRepository = nameEntryFeedbackRepository;
+        this.eventPubService = eventPubService;
     }
 
     /**
@@ -304,6 +313,7 @@ public class NameEntryService {
         NameEntry nameEntry = nameEntryRepository.findByName(name);
         nameEntryRepository.delete(nameEntry);
         duplicateEntryRepository.delete(new DuplicateNameEntry(nameEntry));
+        eventPubService.publish(new NameDeletedEvent(name));
     }
 
     /**
