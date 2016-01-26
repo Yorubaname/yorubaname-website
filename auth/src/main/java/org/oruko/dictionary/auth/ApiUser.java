@@ -1,5 +1,6 @@
 package org.oruko.dictionary.auth;
 
+import java.util.stream.Stream;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,7 +61,11 @@ public class ApiUser {
     }
 
     public void setRoles(String... roles) {
-        this.roles = String.join(",", roles);
+        final String[] withRoleAppended = Stream.of(roles)
+                                                     .map(role -> "ROLE_" + role)
+                                                     .toArray(size -> new String[size]);
+
+        this.roles = String.join(",", withRoleAppended);
     }
 
     public String getUsername() {

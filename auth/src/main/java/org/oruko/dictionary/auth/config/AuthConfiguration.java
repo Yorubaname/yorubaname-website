@@ -1,6 +1,5 @@
 package org.oruko.dictionary.auth.config;
 
-import org.oruko.dictionary.auth.ApiUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -42,7 +41,6 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                                                                       Role.PRO_LEXICOGRAPHER.toString(),
                                                                       Role.BASIC_LEXICOGRAPHER.toString())
                 // names endpoint auth
-            .antMatchers(HttpMethod.DELETE, "/v1/names/delete").hasRole(Role.ADMIN.toString())
             .antMatchers(HttpMethod.PUT, "/v1/names/*").hasAnyRole(Role.ADMIN.toString(),
                                                                    Role.PRO_LEXICOGRAPHER.toString(),
                                                                    Role.BASIC_LEXICOGRAPHER.toString())
