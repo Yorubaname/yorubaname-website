@@ -16,7 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -68,8 +68,8 @@ public abstract class AbstractNameEntry {
     protected String morphology;
 
     @JoinColumn(name = "geo_location_id")
-    @ManyToOne
-    protected GeoLocation geoLocation;
+    @ManyToMany
+    protected List<GeoLocation> geoLocation;
 
     @Column(length = 1000)
     protected String famousPeople;
@@ -153,7 +153,7 @@ public abstract class AbstractNameEntry {
      * Get the geo location
      * @return the geo location
      */
-    public GeoLocation getGeoLocation() {
+    public List<GeoLocation> getGeoLocation() {
         return geoLocation;
     }
 
@@ -161,7 +161,7 @@ public abstract class AbstractNameEntry {
      * Sets the geo location
      * @param geoLocation the geo location
      */
-    public void setGeoLocation(GeoLocation geoLocation) {
+    public void setGeoLocation(List<GeoLocation> geoLocation) {
         this.geoLocation = geoLocation;
     }
 

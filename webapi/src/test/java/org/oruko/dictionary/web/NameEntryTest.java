@@ -4,6 +4,8 @@ import org.junit.*;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -13,14 +15,14 @@ public class NameEntryTest {
     public void testUpdate() throws Exception {
         GeoLocation geoLocation = mock(GeoLocation.class);
         NameEntry nameEntry = new NameEntry("Ajani");
-        nameEntry.setGeoLocation(geoLocation);
+        nameEntry.setGeoLocation(Arrays.asList(geoLocation));
         nameEntry.setMeaning("meaning");
         nameEntry.setMorphology("Morphology");
         nameEntry.setSubmittedBy("submittedBy");
         nameEntry.setTonalMark(new char[]{'A'});
 
         NameEntry newEntry = new NameEntry("Ajani");
-        newEntry.setGeoLocation(geoLocation);
+        newEntry.setGeoLocation(Arrays.asList(geoLocation));
         newEntry.setMeaning("meaning1");
         newEntry.setMorphology("morphology1");
         newEntry.setSubmittedBy("submittedBy1");

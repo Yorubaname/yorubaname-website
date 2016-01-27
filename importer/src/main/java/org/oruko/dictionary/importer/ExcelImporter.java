@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -259,8 +260,13 @@ public class ExcelImporter implements ImporterInterface {
 
     // ==================================================== Helpers ====================================================
 
-    private GeoLocation getGeoLocation(String location) {
-        return geoLocationRepository.findByPlace(location);
+    private ArrayList<GeoLocation> getGeoLocation(String locations) {
+        final String[] locationArrays = locations.split(",");
+        final ArrayList<GeoLocation> locationList = new ArrayList<>();
+        for (String aLocation:locationArrays) {
+            locationList.add(geoLocationRepository.findByPlace(aLocation));
+        }
+        return locationList;
     }
 
     private XSSFSheet getSheet(File file, int sheetIndex) throws IOException, InvalidFormatException {
