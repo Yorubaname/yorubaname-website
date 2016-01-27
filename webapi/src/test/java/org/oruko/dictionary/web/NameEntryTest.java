@@ -33,7 +33,7 @@ public class NameEntryTest {
         nameEntry.update(newEntry);
 
         assertEquals("Ajani", nameEntry.getName());
-        assertEquals(geoLocation, nameEntry.getGeoLocation());
+        assertEquals(Arrays.asList(geoLocation), nameEntry.getGeoLocation());
         assertEquals("morphology1", nameEntry.getMorphology());
         assertEquals("submittedBy1", nameEntry.getSubmittedBy());
         assertEquals(tonalMark, nameEntry.getTonalMark());

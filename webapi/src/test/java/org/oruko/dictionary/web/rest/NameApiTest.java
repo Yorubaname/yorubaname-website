@@ -331,6 +331,7 @@ public class NameApiTest extends AbstractApiTest {
 
     @Test
     public void test_deleting_a_name() throws Exception {
+        when(entryService.loadName("test")).thenReturn(testNameEntry);
         mockMvc.perform(delete("/v1/names/test")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
                .andExpect(status().isOk())
