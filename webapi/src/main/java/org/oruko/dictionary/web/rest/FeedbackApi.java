@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,6 +52,29 @@ public class FeedbackApi {
         return new ResponseEntity<>(feedbackRepository.findAll(sort), HttpStatus.OK);
     }
 
+    /**
+     * Endpoint for adding a feedback
+     *
+     * @param postFeedback a map with key of "feedback" for the feedback
+     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
+     */
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> addFeedback(@RequestBody Map<String, String> postFeedback) {
+        String feedback = postFeedback.get("feedback");
+        String name = postFeedback.get("name");
+
+        if (feedback.isEmpty()) {
+            throw new GenericApiCallException("Cannot give an empty feedback");
+        }
+
+        if (entryService.loadName(name) == null) {
+            throw new GenericApiCallException(name + " does not exist. Cannot add feedback");
+        }
+
+        feedbackRepository.save(new NameEntryFeedback(name, feedback));
+        return new ResponseEntity<>(response("Feedback added"), HttpStatus.CREATED);
+    }
 
     /**
      * Endpoint for getting all feedback within the system for a given name
@@ -99,41 +123,41 @@ public class FeedbackApi {
     }
 
     /**
+     *  Endpoint for retrieving a feedback by Id.
+     *
+     * @param feedbackId the feedback to delete
+     * @return the status of the delete operation
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.GET,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<NameEntryFeedback> getAFeedback(@PathVariable("id") String feedbackId) {
+        final NameEntryFeedback feedback = feedbackRepository.findOne(Long.valueOf(feedbackId));
+        if (feedback == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedback, HttpStatus.OK);
+    }
+
+    /**
      *  Endpoint for deleting a feedback by Id, for a name
      *
      * @param feedbackId the feedback to delete
      * @return the status of the delete operation
      */
-    @RequestMapping(params = "id", method = RequestMethod.DELETE,
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> deleteAFeedback(@RequestParam("id") String feedbackId) {
-        feedbackRepository.delete(Long.valueOf(feedbackId));
+    public ResponseEntity<Map<String, String>> deleteAFeedback(@PathVariable("id") String feedbackId) {
+        final Long id = Long.valueOf(feedbackId);
+        final NameEntryFeedback feedback = feedbackRepository.findOne(id);
+        if (feedback == null) {
+            return new ResponseEntity<>(response("No feedback found with supplied Id. None deleted"),
+                                        HttpStatus.BAD_REQUEST);
+        }
+
+        feedbackRepository.delete(id);
         return new ResponseEntity<>(response("Feedback message deleted"), HttpStatus.OK);
     }
 
-    /**
-     * Endpoint for adding a feedback
-     *
-     * @param postFeedback a map with key of "feedback" for the feedback
-     * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
-     */
-    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> addFeedback(@RequestBody Map<String, String> postFeedback) {
-        String feedback = postFeedback.get("feedback");
-        String name = postFeedback.get("name");
-
-        if (feedback.isEmpty()) {
-            throw new GenericApiCallException("Cannot give an empty feedback");
-        }
-
-        if (entryService.loadName(name) == null) {
-            throw new GenericApiCallException(name + " does not exist. Cannot add feedback");
-        }
-
-        feedbackRepository.save(new NameEntryFeedback(name, feedback));
-        return new ResponseEntity<>(response("Feedback added"), HttpStatus.CREATED);
-    }
 
     //=====================================Helpers=========================================================//
 

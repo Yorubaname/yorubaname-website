@@ -116,11 +116,23 @@ public class FeedbackApiTest extends AbstractApiTest {
 
     @Test
     public void testDeleteAFeedback() throws Exception {
-        mockMvc.perform(delete("/v1/feedbacks?id=1")
+        NameEntryFeedback feedback = mock(NameEntryFeedback.class);
+        when(feedbackRepository.findOne(1L)).thenReturn(feedback);
+        mockMvc.perform(delete("/v1/feedbacks/1")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
                .andExpect(status().isOk());
 
         verify(feedbackRepository).delete(1L);
+    }
+
+    @Test
+    public void testDeleteAFeedback_no_feedback_for_id() throws Exception {
+        when(feedbackRepository.findOne(1L)).thenReturn(null);
+        mockMvc.perform(delete("/v1/feedbacks/1")
+                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
+               .andExpect(status().isBadRequest());
+
+        verify(feedbackRepository, never()).delete(1L);
     }
 
     @Test
