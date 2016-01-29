@@ -31,16 +31,6 @@ public class EventPubService {
     private static final Logger logger = LoggerFactory.getLogger(EventPubService.class);
     private final AsyncEventBus eventBus;
 
-
-    @Autowired
-    private NameSearchedEventHandler nameSearchedEventHandler;
-
-    @Autowired
-    private NameIndexedEventHandler nameIndexedEventHandler;
-
-    @Autowired
-    private NameUploadedEventHandler nameUploadedEventHandler;
-
     @Autowired
     private ApplicationContext appContext;
 
@@ -81,12 +71,9 @@ public class EventPubService {
             }
         }
 
-//        for(Class aClass: classes) {
-//            logger.info("Registered {} as an event handler", aClass.getName());
-//            this.eventBus.register(appContext.getBean(aClass));
-//        }
-        this.eventBus.register(nameSearchedEventHandler);
-        this.eventBus.register(nameIndexedEventHandler);
-        this.eventBus.register(nameUploadedEventHandler);
+        for(Class aClass: classes) {
+            logger.info("Registered {} as an event handler", aClass.getName());
+            this.eventBus.register(appContext.getBean(aClass));
+        }
     }
 }
