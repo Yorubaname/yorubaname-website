@@ -1,7 +1,8 @@
-package org.oruko.dictionary.events;
+package org.oruko.dictionary.web.event;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
+import org.oruko.dictionary.events.NameIndexedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

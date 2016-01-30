@@ -1,5 +1,6 @@
-package org.oruko.dictionary.events;
+package org.oruko.dictionary.web.event;
 
+import org.oruko.dictionary.events.NameUploadedEvent;
 import org.springframework.stereotype.Component;
 
 /**

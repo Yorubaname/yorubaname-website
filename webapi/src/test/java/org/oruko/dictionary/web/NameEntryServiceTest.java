@@ -4,7 +4,6 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.exception.RepositoryAccessError;
@@ -25,9 +24,6 @@ public class NameEntryServiceTest {
 
     @Mock
     DuplicateNameEntryRepository duplicateEntryRepository;
-
-    @Mock
-    ElasticSearchService searchService;
 
     // System under test
     @InjectMocks
@@ -122,7 +118,6 @@ public class NameEntryServiceTest {
         nameEntryService.deleteNameEntryAndDuplicates("lagbaja");
         verify(nameEntryRepository).delete(testName);
         verify(duplicateEntryRepository).delete(isA(DuplicateNameEntry.class));
-        verify(searchService).deleteFromIndex("lagbaja");
     }
 
     @Test

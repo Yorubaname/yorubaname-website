@@ -1,4 +1,4 @@
-package org.oruko.dictionary.events;
+package org.oruko.dictionary.web.event;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,6 +36,14 @@ public class RecentIndexes {
         if (deque.size() > limit) {
             deque.removeLast();
         }
+    }
+
+    public boolean remove(String name) {
+        if (deque.contains(name)) {
+            deque.remove(name);
+            return true;
+        }
+        return false;
     }
 
     public String[] get() {

@@ -1,4 +1,4 @@
-package org.oruko.dictionary.events;
+package org.oruko.dictionary.web.event;
 
 import org.junit.*;
 

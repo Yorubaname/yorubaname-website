@@ -1,7 +1,8 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oruko.dictionary.events.NameUploadStatus;
+import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameDeletedEvent;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
@@ -11,6 +12,7 @@ import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.NameEntryService;
+import org.oruko.dictionary.web.event.NameUploadStatus;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +63,7 @@ public class NameApi {
     private NameEntryService entryService;
     private GeoLocationRepository geoLocationRepository;
     private NameUploadStatus nameUploadStatus;
+    private EventPubService eventPubService;
 
 
     /**
@@ -72,11 +75,13 @@ public class NameApi {
     @Autowired
     public NameApi(ImporterInterface importerInterface, NameEntryService entryService,
                    GeoLocationRepository geoLocationRepository,
-                   NameUploadStatus nameUploadStatus) {
+                   NameUploadStatus nameUploadStatus,
+                   EventPubService eventPubService) {
         this.importerInterface = importerInterface;
         this.entryService = entryService;
         this.geoLocationRepository = geoLocationRepository;
         this.nameUploadStatus = nameUploadStatus;
+        this.eventPubService = eventPubService;
     }
 
     @InitBinder
@@ -472,6 +477,7 @@ public class NameApi {
             throw new GenericApiCallException(name + " not found in the system so cannot be deleted");
         }
         entryService.deleteNameEntryAndDuplicates(name);
+        publishNamesDeletedEvent(Arrays.asList(name));
         return new ResponseEntity<>(response(name + " Deleted"), HttpStatus.OK);
     }
 
@@ -499,6 +505,7 @@ public class NameApi {
         }
 
         entryService.batchDeleteNameEntryAndDuplicates(foundNames);
+        publishNamesDeletedEvent(foundNames);
 
         String responseMessage = String.join(",",foundNames) + " deleted. ";
         if (foundNames.size() > 0) {
@@ -507,6 +514,11 @@ public class NameApi {
         return new ResponseEntity<>(response(responseMessage), HttpStatus.OK);
     }
 
+    private void publishNamesDeletedEvent(List<String> foundNames) {
+        for (String name: foundNames) {
+            eventPubService.publish(new NameDeletedEvent(name));
+        }
+    }
 
     //=====================================Helpers=========================================================//
 

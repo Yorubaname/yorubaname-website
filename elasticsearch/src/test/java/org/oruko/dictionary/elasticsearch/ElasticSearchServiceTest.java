@@ -5,14 +5,12 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.test.ElasticsearchIntegrationTest;
 import org.junit.*;
-import org.oruko.dictionary.events.EventPubService;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.test.ElasticsearchIntegrationTest.ClusterScope;
-import static org.mockito.Mockito.*;
 
 /**
  * Integration test for {@link ElasticSearchService}
@@ -22,7 +20,6 @@ import static org.mockito.Mockito.*;
 @ClusterScope(scope = ElasticsearchIntegrationTest.Scope.TEST)
 public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
     private String dictionary = "dictionary";
-    private EventPubService eventPubService;
     private ESConfig esConfig;
     ElasticSearchService elasticSearchService;
 
@@ -73,8 +70,7 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
 
         flushAndRefresh();
 
-        eventPubService = mock(EventPubService.class);
-        elasticSearchService = new ElasticSearchService(new TestNode(), eventPubService, esConfig);
+        elasticSearchService = new ElasticSearchService(new TestNode(), esConfig);
     }
 
     @Test

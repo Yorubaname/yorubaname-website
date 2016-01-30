@@ -3,12 +3,13 @@ package org.oruko.dictionary.web.rest;
 import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
 import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.events.NameSearchedEvent;
-import org.oruko.dictionary.events.RecentIndexes;
-import org.oruko.dictionary.events.RecentSearches;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.web.NameEntryService;
+import org.oruko.dictionary.web.event.RecentIndexes;
+import org.oruko.dictionary.web.event.RecentSearches;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,16 +49,15 @@ public class SearchApi {
 
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
-    private EventPubService eventPubService;
     private NameEntryService entryService;
     private ElasticSearchService elasticSearchService;
     private RecentSearches recentSearches;
     private RecentIndexes recentIndexes;
+    private EventPubService eventPubService;
 
     /**
      * Public constructor for {@link SearchApi}
      *
-     * @param eventPubService      instance of {@link EventPubService} for publishing events
      * @param entryService         service layer for interacting with name entries
      * @param elasticSearchService service layer for elastic search functions
      * @param recentSearches       object holding the recent searches in memory
@@ -101,11 +101,11 @@ public class SearchApi {
 
         Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
         if (name != null && name.size() == 1) {
-            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+            eventPubService.publish(new NameSearchedEvent(searchTerm,
+                                                          request.getRemoteAddr().toString()));
         }
         return name;
     }
-
 
     @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -197,6 +197,7 @@ public class SearchApi {
         boolean isIndexed = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
         if (isIndexed) {
+            publishNameIsIndexed(nameEntry);
             nameEntry.setIndexed(true);
             nameEntry.setState(State.PUBLISHED);
             entryService.saveName(nameEntry);
@@ -206,6 +207,9 @@ public class SearchApi {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    private void publishNameIsIndexed(NameEntry nameEntry) {
+        eventPubService.publish(new NameIndexedEvent(nameEntry.getName()));
+    }
 
     /**
      * Endpoint that takes a name, looks it up in the repository and index the entry found
@@ -232,6 +236,7 @@ public class SearchApi {
         response.put("message", indexOperationStatus.getMessage());
 
         if (isIndexed) {
+            publishNameIsIndexed(nameEntry);
             nameEntry.setIndexed(true);
             nameEntry.setState(State.PUBLISHED);
             entryService.saveName(nameEntry);
@@ -314,6 +319,9 @@ public class SearchApi {
 
         IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
         updateIsIndexFlag(nameEntries, true, indexOperationStatus);
+        for (NameEntry nameEntry : nameEntries) {
+            publishNameIsIndexed(nameEntry);
+        }
         return returnStatusMessage(notFound, indexOperationStatus);
     }
 

@@ -1,7 +1,5 @@
 package org.oruko.dictionary.web;
 
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
-import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryFeedback;
@@ -37,7 +35,6 @@ public class NameEntryService {
     private DuplicateNameEntryRepository duplicateEntryRepository;
     private SuggestedNameRepository suggestedNameRepository;
     private NameEntryFeedbackRepository nameEntryFeedbackRepository;
-    private ElasticSearchService searchService;
 
     /**
      *
@@ -48,20 +45,16 @@ public class NameEntryService {
      * @param duplicateEntryRepository Repository responsible for persisting {@link DuplicateNameEntry}
      * @param suggestedNameRepository Repository responsible for persisting {@link SuggestedName}
      * @param nameEntryFeedbackRepository  Repository responsible for persisting {@link NameEntryFeedback}
-     * // TODO depending on the search service is an uneasy coupling: revisit
-     * @param eventPubService the {@link ElasticSearchService}
      */
     @Autowired
     public NameEntryService(NameEntryRepository nameEntryRepository,
                             DuplicateNameEntryRepository duplicateEntryRepository,
                             SuggestedNameRepository suggestedNameRepository,
-                            NameEntryFeedbackRepository nameEntryFeedbackRepository,
-                            ElasticSearchService searchService) {
+                            NameEntryFeedbackRepository nameEntryFeedbackRepository) {
         this.nameEntryRepository = nameEntryRepository;
         this.duplicateEntryRepository = duplicateEntryRepository;
         this.suggestedNameRepository = suggestedNameRepository;
         this.nameEntryFeedbackRepository = nameEntryFeedbackRepository;
-        this.searchService = searchService;
     }
 
     /**
@@ -303,6 +296,7 @@ public class NameEntryService {
     public void deleteAllAndDuplicates() {
         nameEntryRepository.deleteAll();
         duplicateEntryRepository.deleteAll();
+        //TODO introduce an event that all names have been deleted
     }
 
 
@@ -314,7 +308,6 @@ public class NameEntryService {
         NameEntry nameEntry = nameEntryRepository.findByName(name);
         nameEntryRepository.delete(nameEntry);
         duplicateEntryRepository.delete(new DuplicateNameEntry(nameEntry));
-        searchService.deleteFromIndex(name);
     }
 
     /**

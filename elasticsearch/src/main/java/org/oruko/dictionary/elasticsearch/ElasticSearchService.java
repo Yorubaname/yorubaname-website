@@ -16,8 +16,6 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
-import org.oruko.dictionary.events.EventPubService;
-import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,16 +54,15 @@ public class ElasticSearchService {
     private ESConfig esConfig;
     private ResourceLoader resourceLoader;
     private ObjectMapper mapper = new ObjectMapper();
-    private EventPubService eventPubService;
 
     /**
      * Public constructor for {@link ElasticSearchService}
      *
-     * @param eventPubService for publishing events
+     * @param node the elastic search Node
+     * @param esConfig the elastic search config
      */
     @Autowired
-    public ElasticSearchService(Node node, EventPubService eventPubService, ESConfig esConfig) {
-        this.eventPubService = eventPubService;
+    public ElasticSearchService(Node node, ESConfig esConfig) {
         this.node = node;
         this.client = node.client();
         this.esConfig = esConfig;
@@ -239,8 +236,6 @@ public class ElasticSearchService {
                   .execute()
                   .actionGet();
 
-            eventPubService.publish(new NameIndexedEvent(name));
-
             return new IndexOperationStatus(true, name + " indexed successfully");
         } catch (JsonProcessingException e) {
             logger.info("Failed to parse NameEntry into Json", e);
@@ -270,7 +265,6 @@ public class ElasticSearchService {
                                                                   name.toLowerCase())
                                                     .setSource(entryAsJson);
                 bulkRequest.add(request);
-                eventPubService.publish(new NameIndexedEvent(name));
             } catch (JsonProcessingException e) {
                 logger.debug("Error while building bulk indexing operation", e);
             }

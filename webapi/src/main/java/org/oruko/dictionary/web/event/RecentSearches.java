@@ -1,4 +1,4 @@
-package org.oruko.dictionary.events;
+package org.oruko.dictionary.web.event;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -49,6 +49,16 @@ public class RecentSearches {
         if (deque.size() > recencyLimit) {
             deque.removeLast();
         }
+    }
+
+    public boolean remove(String name) {
+        if (deque.contains(name)) {
+            deque.remove();
+            searchFrequency.removeIf(element -> element.get(name) != null);
+            searchFrequency.remove(name);
+            return true;
+        }
+        return false;
     }
 
     /**
