@@ -54,6 +54,10 @@ public class SuggestedName {
         this.email = email;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
