@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
 
 /**
  * Class that represent the suggested name by user
@@ -30,8 +31,8 @@ public class SuggestedName {
 
     @Column(length = 2000)
     private String details;
-    @OneToOne
-    private  GeoLocation geoLocation;
+    @ManyToMany
+    private List<GeoLocation> geoLocation;
 
     @Column
     @Email
@@ -45,7 +46,7 @@ public class SuggestedName {
     @JsonCreator
     public SuggestedName(@JsonProperty("name") String name,
                          @JsonProperty("details") String details,
-                         @JsonProperty("geoLocation") GeoLocation geoLocation,
+                         @JsonProperty("geoLocation") List<GeoLocation> geoLocation,
                          @JsonProperty("email") String email) {
         this.name = name;
         this.details = details;
@@ -61,7 +62,7 @@ public class SuggestedName {
         return details;
     }
 
-    public GeoLocation getGeoLocation() {
+    public List<GeoLocation> getGeoLocation() {
         return geoLocation;
     }
 

@@ -48,7 +48,7 @@ $('form#suggest-form').on('submit', function(event) {
     };
 
     $.ajax({
-        url: '/v1/suggest',
+        url: '/v1/suggestions',
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify(suggestedName),

@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
@@ -65,7 +67,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName() throws Exception {
         SuggestedName suggestedName = new SuggestedName("test", "this is a test",
-                                                        new GeoLocation("ABEOKUTA", "NWY"),
+                                                        Arrays.asList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
@@ -80,7 +82,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName_invalid_email() throws Exception {
         SuggestedName suggestedName = new SuggestedName("test", "this is a test",
-                                                        new GeoLocation("ABEOKUTA", "NWY"),
+                                                        Arrays.asList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "testemail.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
@@ -94,7 +96,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName_invalid_name() throws Exception {
         SuggestedName suggestedName = new SuggestedName("", "this is a test",
-                                                        new GeoLocation("ABEOKUTA", "NWY"),
+                                                        Arrays.asList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")

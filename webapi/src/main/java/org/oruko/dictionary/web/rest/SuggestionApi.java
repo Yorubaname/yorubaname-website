@@ -34,6 +34,17 @@ public class SuggestionApi {
     private SuggestedNameRepository suggestedNameRepository;
 
     /**
+     * Constructor for {@link SuggestionApi}
+     * @param entryService the {@link NameEntryService}
+     * @param suggestedNameRepository the {@link SuggestedNameRepository}
+     */
+    @Autowired
+    public SuggestionApi(NameEntryService entryService,
+                         SuggestedNameRepository suggestedNameRepository) {
+        this.suggestedNameRepository = suggestedNameRepository;
+    }
+
+    /**
      * Endpoint for retrieving metadata information for suggested names
      *
      * @return a {@link ResponseEntity} with the response message
@@ -53,16 +64,6 @@ public class SuggestionApi {
         return new ResponseEntity<>(metaData, statusCode);
     }
 
-    /**
-     * Constructor for {@link SuggestionApi}
-     * @param entryService the {@link NameEntryService}
-     * @param suggestedNameRepository the {@link SuggestedNameRepository}
-     */
-    @Autowired
-    public SuggestionApi(NameEntryService entryService,
-                         SuggestedNameRepository suggestedNameRepository) {
-        this.suggestedNameRepository = suggestedNameRepository;
-    }
 
     /**
      * End point for receiving suggested names into the database. The names
