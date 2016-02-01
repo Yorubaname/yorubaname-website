@@ -38,12 +38,13 @@ $(document).ready(function () {
 $('form#suggest-form').on('submit', function(event) {
     event.preventDefault();
 
+    //TODO update the geolocation to support multiple selection
     var suggestedName = {
         name: $('form#suggest-form #miniKeyboard').val(),
         details: $('form#suggest-form #suggestedMeaning').val(),
-        geoLocation: {
+        geoLocation: [{
             place: $('form#suggest-form #suggestedGeoLocation').val()
-        },
+        }],
         email: $('form#suggest-form #suggestedEmail').val()
     };
 

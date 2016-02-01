@@ -17,12 +17,8 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Tests {@link SuggestionApi}
@@ -67,7 +63,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName() throws Exception {
         SuggestedName suggestedName = new SuggestedName("test", "this is a test",
-                                                        Arrays.asList(new GeoLocation("ABEOKUTA", "NWY")),
+                                                        Arrays.<GeoLocation>asList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
@@ -82,7 +78,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName_invalid_email() throws Exception {
         SuggestedName suggestedName = new SuggestedName("test", "this is a test",
-                                                        Arrays.asList(new GeoLocation("ABEOKUTA", "NWY")),
+                                                        Arrays.<GeoLocation>asList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "testemail.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
@@ -96,7 +92,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName_invalid_name() throws Exception {
         SuggestedName suggestedName = new SuggestedName("", "this is a test",
-                                                        Arrays.asList(new GeoLocation("ABEOKUTA", "NWY")),
+                                                        Arrays.<GeoLocation>asList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
