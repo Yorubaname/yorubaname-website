@@ -116,19 +116,19 @@ public class SuggestionApiTest extends AbstractApiTest {
 
     @Test
     public void testDeleteSuggestedName() throws Exception {
-        final String testName = "lagbaja";
+        final Long suggestedNameId = 1L;
         SuggestedName suggestedName = mock(SuggestedName.class);
-        when(suggestedNameRepository.findByName(testName)).thenReturn(suggestedName);
-        mockMvc.perform(delete("/v1/suggestions/{name}", testName))
+        when(suggestedNameRepository.findOne(suggestedNameId)).thenReturn(suggestedName);
+        mockMvc.perform(delete("/v1/suggestions/{name}", suggestedNameId))
                .andExpect(status().isNoContent());
         verify(suggestedNameRepository).delete(isA(SuggestedName.class));
     }
 
     @Test
     public void testDeleteSuggestedName_name_not_found() throws Exception {
-        final String testName = "lagbaja";
-        when(suggestedNameRepository.findByName(testName)).thenReturn(null);
-        mockMvc.perform(delete("/v1/suggestions/{name}", testName))
+        final Long suggestedNameId = 1L;
+        when(suggestedNameRepository.findOne(suggestedNameId)).thenReturn(null);
+        mockMvc.perform(delete("/v1/suggestions/{id}", suggestedNameId))
                .andExpect(status().isBadRequest());
         verify(suggestedNameRepository, never()).delete(isA(SuggestedName.class));
     }

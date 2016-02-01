@@ -94,18 +94,20 @@ public class SuggestionApi {
 
     /**
      * End point for deleting suggested name
-     * @param name suggested name to delete
+     * @param id id of the suggested name to delete
      * @return
      */
-    @RequestMapping(value = "/v1/suggestions/{name}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable String name) {
-        SuggestedName suggestedName = suggestedNameRepository.findByName(name);
+    @RequestMapping(value = "/v1/suggestions/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable Long id) {
+        SuggestedName suggestedName = suggestedNameRepository.findOne(id);
         if (suggestedName != null) {
             suggestedNameRepository.delete(suggestedName);
-            return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(response("Suggested name with " + id + " successfully deleted"),
+                                        HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(response(name + " not found as a suggested name"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response("Suggested name with " + id + " not found as a suggested name"),
+                                    HttpStatus.BAD_REQUEST);
     }
 
 
