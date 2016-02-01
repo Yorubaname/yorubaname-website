@@ -97,15 +97,6 @@ public class NameEntryService {
         }
     }
 
-    /**
-     * Persist the suggested name
-     *
-     * @param suggestedName
-     */
-    public void addSuggestedName(SuggestedName suggestedName) {
-        suggestedNameRepository.save(suggestedName);
-    }
-
 
     /**
      * Returns all the feedback for a name, sorted by time submitted
@@ -115,29 +106,6 @@ public class NameEntryService {
     public List<NameEntryFeedback> getFeedback(NameEntry entry) {
         final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
         return nameEntryFeedbackRepository.findByName(entry.getName(), sort);
-    }
-
-    /**
-     * Delete the suggested name
-     *
-     * @param name the name to delete
-     */
-    public boolean deleteSuggestedName(String name) {
-        SuggestedName suggestedName = suggestedNameRepository.findByName(name);
-        if (suggestedName != null) {
-            suggestedNameRepository.delete(suggestedName);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns all the suggested names
-     *
-     * @return List of {@link SuggestedName}
-     */
-    public List<SuggestedName> loadAllSuggestedNames() {
-        return suggestedNameRepository.findAll();
     }
 
     /**
@@ -259,15 +227,6 @@ public class NameEntryService {
      */
     public Long getNameCount() {
         return nameEntryRepository.count();
-    }
-
-    /**
-     * Returns the number of suggested names
-     *
-     * @return number of suggested names
-     */
-    public Long getSuggestedNameCount() {
-        return suggestedNameRepository.count();
     }
 
     /**

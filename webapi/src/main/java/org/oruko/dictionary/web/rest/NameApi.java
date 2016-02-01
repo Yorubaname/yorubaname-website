@@ -8,7 +8,6 @@ import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
-import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.GeoLocationRepository;
 import org.oruko.dictionary.web.GeoLocationTypeConverter;
 import org.oruko.dictionary.web.NameEntryService;
@@ -113,83 +112,6 @@ public class NameApi {
             return new ResponseEntity<>(response("Name successfully added"), HttpStatus.CREATED);
         }
         throw new GenericApiCallException(formatErrorMessage(bindingResult));
-    }
-
-
-    /**
-     * End point for receiving suggested names into the database. The names
-     * suggested won't be added to the main database or search index until
-     * approved by admin of the system.
-     * @param suggestedName the name suggested
-     * @param bindingResult the {@link BindingResult}
-     * @return {@link org.springframework.http.ResponseEntity} with message if successful or not
-     */
-    //TODO change to /v1/suggestion
-    @RequestMapping(value = "/v1/suggest", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> suggestName(@Valid @RequestBody SuggestedName suggestedName,
-                                                           BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new GenericApiCallException(formatErrorMessage(bindingResult), HttpStatus.BAD_REQUEST);
-        }
-        entryService.addSuggestedName(suggestedName);
-        return new ResponseEntity<>(response("Suggested Name successfully added"), HttpStatus.CREATED);
-    }
-
-    /**
-     * Returns all the suggested names
-     * @return a {@link ResponseEntity} with all suggested names
-     */
-    @RequestMapping(value = "/v1/suggest", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SuggestedName> getAllSuggestedNames() {
-        return entryService.loadAllSuggestedNames();
-    }
-
-    /**
-     * End point for deleting suggested name
-     * @param name suggested name to delete
-     * @return
-     */
-    @RequestMapping(value = "/v1/suggest/{name}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable String name) {
-        boolean deleted = entryService.deleteSuggestedName(name);
-        if (!deleted) {
-            return new ResponseEntity<>(response(name + " not found as a suggested name"), HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
-    }
-
-    /**
-     * End point for approving suggested name
-     * @param name suggested name to approve
-     * @return a {@link ResponseEntity} with the response message
-     */
-    @RequestMapping(value = "/v1/suggest/{name}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> approveSuggestedName(@PathVariable String name) {
-        boolean deleted = entryService.deleteSuggestedName(name);
-        if (!deleted) {
-            return new ResponseEntity<>(response(name + " not found as a suggested name"), HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(response(name + " successfully deleted"), HttpStatus.NO_CONTENT);
-    }
-
-    /**
-     * Endpoint for retrieving metadata information for suggested names
-     *
-     * @return a {@link ResponseEntity} with the response message
-     */
-    @RequestMapping(value = "/v1/suggest/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> getSuggestedMetaData(@RequestParam("count") Optional<Boolean> count) {
-        Map<String, String> metaData = new HashMap<>();
-        if (count.isPresent() && count.get() == true) {
-            metaData.put("count", entryService.getSuggestedNameCount().toString());
-        }
-
-        HttpStatus statusCode = HttpStatus.OK;
-        if (metaData.isEmpty()) {
-            statusCode = HttpStatus.NO_CONTENT;
-        }
-
-        return new ResponseEntity<>(metaData, statusCode);
     }
 
     /**

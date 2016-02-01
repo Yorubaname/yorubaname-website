@@ -21,11 +21,11 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 // suggest auth
-            .antMatchers(HttpMethod.POST, "/v1/suggest").permitAll()
-            .antMatchers(HttpMethod.GET, "/v1/suggest/*").hasAnyRole(Role.ADMIN.toString(),
+            .antMatchers(HttpMethod.POST, "/v1/suggestions").permitAll()
+            .antMatchers(HttpMethod.GET, "/v1/suggestions/*").hasAnyRole(Role.ADMIN.toString(),
                                                                         Role.PRO_LEXICOGRAPHER.toString(),
                                                                         Role.BASIC_LEXICOGRAPHER.toString())
-            .antMatchers(HttpMethod.DELETE, "/v1/suggest/*").hasAnyRole(Role.ADMIN.toString(),
+            .antMatchers(HttpMethod.DELETE, "/v1/suggestions/*").hasAnyRole(Role.ADMIN.toString(),
                                                                         Role.PRO_LEXICOGRAPHER.toString())
                 // feedback auth
             .antMatchers(HttpMethod.GET, "/v1/feedbacks").hasAnyRole(Role.ADMIN.toString(),

@@ -25,6 +25,7 @@ public class SuggestedName {
     private Long id;
 
     @Column
+    @NotEmpty
     private String name;
 
     @Column(length = 2000)

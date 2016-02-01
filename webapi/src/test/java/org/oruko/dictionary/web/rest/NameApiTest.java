@@ -14,10 +14,8 @@ import org.oruko.dictionary.events.NameDeletedEvent;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
-import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
-import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.web.NameEntryService;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -29,12 +27,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.isA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -349,33 +347,7 @@ public class NameApiTest extends AbstractApiTest {
         assertThat("test", is(nameDeletedEvent.getName()));
     }
 
-    @Test
-    public void test_suggest_name() throws Exception {
-        SuggestedName suggestedName = new SuggestedName("test","this is a test",
-                                                        new GeoLocation("ABEOKUTA", "NWY"),
-                                                        "test@email.com");
-        String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
-        mockMvc.perform(post("/v1/suggest")
-                                .content(requestJson)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isCreated());
 
-        verify(entryService).addSuggestedName(isA(SuggestedName.class));
-    }
-
-
-    @Test
-    public void test_suggest_name_invalid_email() throws Exception {
-        SuggestedName suggestedName = new SuggestedName("test","this is a test",
-                                                        new GeoLocation("ABEOKUTA", "NWY"),
-                                                        "@email.com");
-        String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
-        mockMvc.perform(post("/v1/suggest")
-                                .content(requestJson)
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isBadRequest());
-
-    }
 
     @Test
     public void test_get_names_with_feedback() throws Exception {
@@ -391,10 +363,4 @@ public class NameApiTest extends AbstractApiTest {
                .andExpect(status().isOk()).andExpect(jsonPath("$.feedback").doesNotExist());
     }
 
-    @Test
-    public void test_load_suggested_name() throws Exception {
-        mockMvc.perform(get("/v1/suggest"))
-               .andExpect(status().isOk());
-        verify(entryService).loadAllSuggestedNames();
-    }
 }
