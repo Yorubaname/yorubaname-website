@@ -36,7 +36,7 @@ public class AuthController {
 
 
     /**
-     * Endpoint for retrieving metadata information for suggested names
+     * Endpoint for retrieving metadata information for suggested users
      *
      * @return a {@link ResponseEntity} with the response message
      */

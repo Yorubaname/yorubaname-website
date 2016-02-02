@@ -147,6 +147,7 @@ public class NameApi {
                                   @RequestParam("count") Optional<Integer> countParam,
                                   @RequestParam("all") Optional<Boolean> all,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
+                                  @RequestParam("state") final Optional<String> state,
                                   @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
             throws JsonProcessingException {
 
@@ -181,9 +182,19 @@ public class NameApi {
             }
         };
 
+        // for filtering based on the state
+        Predicate<NameEntry> filterBasedOnState = (name) -> {
+            if (state.isPresent()) {
+                return name.getState().toString().trim().equalsIgnoreCase(state.get().toString().trim());
+            } else {
+                return true;
+            }
+        };
+
         return names.stream()
                     .filter(filterBasedOnIndex)
                     .filter(filterBasedOnSubmitBy)
+                    .filter(filterBasedOnState)
                     .collect(Collectors.toCollection(ArrayList::new));
 
     }

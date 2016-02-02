@@ -117,6 +117,19 @@ public class NameApiTest extends AbstractApiTest {
                .andExpect(status().isOk());
     }
 
+    @Test
+    public void test_get_all_names_filtered_by_state() throws Exception {
+        testNameEntry.setState(State.PUBLISHED);
+        NameEntry secondEntry = new NameEntry("secondEntry");
+        secondEntry.setState(State.NEW);
+        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, secondEntry));
+
+        mockMvc.perform(get("/v1/names?state=new"))
+               .andExpect(jsonPath("$", hasSize(1)))
+               .andExpect(jsonPath("$[0].name", is("secondEntry")))
+               .andExpect(status().isOk());
+    }
+
 
     @Test
     public void test_get_a_name() throws Exception {
