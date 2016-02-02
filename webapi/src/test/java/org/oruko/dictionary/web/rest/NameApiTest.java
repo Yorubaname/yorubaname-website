@@ -124,7 +124,7 @@ public class NameApiTest extends AbstractApiTest {
         secondEntry.setState(State.NEW);
         when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, secondEntry));
 
-        mockMvc.perform(get("/v1/names?state=new"))
+        mockMvc.perform(get("/v1/names?state=NEW"))
                .andExpect(jsonPath("$", hasSize(1)))
                .andExpect(jsonPath("$[0].name", is("secondEntry")))
                .andExpect(status().isOk());

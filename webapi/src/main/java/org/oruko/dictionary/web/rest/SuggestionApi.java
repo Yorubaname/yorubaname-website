@@ -110,6 +110,17 @@ public class SuggestionApi {
                                     HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * End point for deleting all suggested name
+     *
+     * @return
+     */
+    @RequestMapping(value = "/v1/suggestions", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, String>> deleteAllSuggestions() {
+        suggestedNameRepository.deleteAll();
+        return new ResponseEntity<>(response("All suggested names has been deleted"), HttpStatus.OK);
+    }
+
 
     //=====================================Helpers=========================================================//
 

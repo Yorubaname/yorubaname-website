@@ -128,4 +128,11 @@ public class SuggestionApiTest extends AbstractApiTest {
                .andExpect(status().isBadRequest());
         verify(suggestedNameRepository, never()).delete(isA(SuggestedName.class));
     }
+
+    @Test
+    public void testDeleteAllSuggested() throws Exception {
+        mockMvc.perform(delete("/v1/suggestions"))
+               .andExpect(status().isOk());
+        verify(suggestedNameRepository, times(1)).deleteAll();
+    }
 }
