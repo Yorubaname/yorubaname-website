@@ -292,17 +292,17 @@ header .container img.logo {
 .social-links {
   font-size: 20px;
   display: inline-block;
-  margin-top: 10px;
 }
 
 .social-links a {
     display: inline-block;
 	color:#cda463;
     text-align: center;
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
     margin-left: 0px;
+}
+
+.social-links a + a {
+	margin-left:15px;
 }
 
 .llm {
