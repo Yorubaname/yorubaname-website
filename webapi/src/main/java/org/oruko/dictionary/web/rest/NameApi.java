@@ -441,7 +441,7 @@ public class NameApi {
         publishNamesDeletedEvent(foundNames);
 
         String responseMessage = String.join(",",foundNames) + " deleted. ";
-        if (foundNames.size() > 0) {
+        if (notFoundNames.size() > 0) {
             responseMessage += String.join(",",notFoundNames) + " not deleted as they were not found in the database";
         }
         return new ResponseEntity<>(response(responseMessage), HttpStatus.OK);
