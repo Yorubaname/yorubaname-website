@@ -11,7 +11,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -20,7 +19,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
@@ -40,19 +38,12 @@ public class AuthController {
      *
      * @return a {@link ResponseEntity} with the response message
      */
-    @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> getSuggestedMetaData(@RequestParam("count") Optional<Boolean> count) {
+    @RequestMapping(value = "/meta", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> getAuthMetaData() {
         Map<String, Object> metaData = new HashMap<>();
-        if (count.isPresent() && count.get() == true) {
-            metaData.put("count", userRepository.count());
-        }
-
-        HttpStatus statusCode = HttpStatus.OK;
-        if (metaData.isEmpty()) {
-            statusCode = HttpStatus.NO_CONTENT;
-        }
-
-        return new ResponseEntity<>(metaData, statusCode);
+        metaData.put("totalUsers", userRepository.count());
+        return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
 
