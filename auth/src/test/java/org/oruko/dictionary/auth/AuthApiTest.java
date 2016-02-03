@@ -4,6 +4,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.oruko.dictionary.auth.rest.AuthApi;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -16,14 +17,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Tests {@link AuthController}
+ * Tests {@link AuthApi}
  * @author Dadepo Aderemi.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AuthControllerTest {
+public class AuthApiTest {
 
     @InjectMocks
-    AuthController authController;
+    AuthApi authApi;
 
     @Mock
     ApiUserRepository apiUserRepository;
@@ -32,7 +33,7 @@ public class AuthControllerTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(authApi).build();
     }
 
 

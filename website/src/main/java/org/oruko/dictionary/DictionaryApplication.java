@@ -1,6 +1,7 @@
 package org.oruko.dictionary;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.base.Predicates;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
@@ -58,7 +59,8 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("org.oruko.dictionary.web.rest"))
+                .apis(Predicates.or(RequestHandlerSelectors.basePackage("org.oruko.dictionary.web.rest"),
+                                    RequestHandlerSelectors.basePackage("org.oruko.dictionary.auth.rest")))
                 .build();
     }
 

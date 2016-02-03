@@ -1,5 +1,8 @@
-package org.oruko.dictionary.auth;
+package org.oruko.dictionary.auth.rest;
 
+import org.oruko.dictionary.auth.ApiUser;
+import org.oruko.dictionary.auth.ApiUserRepository;
+import org.oruko.dictionary.auth.CreateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +31,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/v1/auth")
-public class AuthController {
+public class AuthApi {
 
     private ApiUserRepository userRepository;
 
@@ -49,11 +52,11 @@ public class AuthController {
 
 
     /**
-     * Public constructor for {@link AuthController}
+     * Public constructor for {@link AuthApi}
      * @param userRepository repository for persisting {@link ApiUser}
      */
     @Autowired
-    public AuthController(ApiUserRepository userRepository) {
+    public AuthApi(ApiUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -63,7 +66,7 @@ public class AuthController {
      * @param principal the {@link java.security.Principal}
      * @return a map of principal properties
      */
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Map<String, Object> login(Principal principal) {
         Map<String, Object> userDetails = new HashMap<>();
         Collection<GrantedAuthority> authorities = ((UsernamePasswordAuthenticationToken) principal).getAuthorities();
