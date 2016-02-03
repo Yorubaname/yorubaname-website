@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.events.EventPubService;
-import org.oruko.dictionary.events.NameDeletedEvent;
 import org.oruko.dictionary.importer.ImportStatus;
 import org.oruko.dictionary.importer.ImporterInterface;
 import org.oruko.dictionary.model.DuplicateNameEntry;
@@ -152,23 +151,36 @@ public class NameApiTest extends AbstractApiTest {
 
     @Test
     public void test_get_name_count() throws Exception {
-        when(entryService.getNameCount()).thenReturn(Long.valueOf(2));
-        mockMvc.perform(get("/v1/names/meta/?count=true"))
-               .andExpect(jsonPath("$.count", is("2")))
+        // Entries with NEW state
+        NameEntry nameEntry_new_1 = mock(NameEntry.class);
+        when(nameEntry_new_1.getState()).thenReturn(State.NEW);
+        NameEntry nameEntry_new_2 = mock(NameEntry.class);
+        when(nameEntry_new_2.getState()).thenReturn(State.NEW);
+        NameEntry nameEntry_new_3 = mock(NameEntry.class);
+        when(nameEntry_new_3.getState()).thenReturn(State.NEW);
+        // Entries with modified state
+        NameEntry nameEntry_modified_1 = mock(NameEntry.class);
+        when(nameEntry_modified_1.getState()).thenReturn(State.MODIFIED);
+        NameEntry nameEntry_modified_2 = mock(NameEntry.class);
+        when(nameEntry_modified_2.getState()).thenReturn(State.MODIFIED);
+        // Entries with Published State
+        NameEntry nameEntry_published_2 = mock(NameEntry.class);
+        when(nameEntry_published_2.getState()).thenReturn(State.PUBLISHED);
+
+        when(entryService.loadAllNames()).thenReturn(Arrays.asList(nameEntry_new_1, nameEntry_new_2, nameEntry_new_3,
+                                                                   nameEntry_modified_1,nameEntry_modified_2,
+                                                                   nameEntry_published_2));
+
+
+        mockMvc.perform(get("/v1/names/meta"))
+               .andExpect(jsonPath("$.totalNames", is(6)))
+               .andExpect(jsonPath("$.totalNewNames", is(3)))
+               .andExpect(jsonPath("$.totalModifiedNames", is(2)))
+               .andExpect(jsonPath("$.totalPublishedNames", is(1)))
                .andExpect(status().isOk());
 
-        verify(entryService).getNameCount();
     }
 
-    @Test
-    public void test_name_count_count_not_specified() throws Exception {
-        when(entryService.getNameCount()).thenReturn(Long.valueOf(2));
-        mockMvc.perform(get("/v1/names/meta/?count=false"))
-               .andExpect(jsonPath("$.count").doesNotExist())
-               .andExpect(status().isNoContent());
-
-        verify(entryService, never()).getNameCount();
-    }
 
     @Test
     public void test_get_a_name_not_found_in_db() throws Exception {
@@ -344,22 +356,6 @@ public class NameApiTest extends AbstractApiTest {
 
         verify(entryService).deleteAllAndDuplicates();
     }
-
-    @Test @Ignore
-    public void test_deleting_a_name() throws Exception {
-        final ArgumentCaptor<NameDeletedEvent> argumentCaptor = ArgumentCaptor
-                .forClass(NameDeletedEvent.class);
-        when(entryService.loadName("test")).thenReturn(testNameEntry);
-        mockMvc.perform(delete("/v1/names/test")
-                                .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.message", IsNot.not(nullValue())));
-
-        verify(eventPubService, times(1)).publish(argumentCaptor.capture());
-        final NameDeletedEvent nameDeletedEvent = argumentCaptor.getValue();
-        assertThat("test", is(nameDeletedEvent.getName()));
-    }
-
 
 
     @Test

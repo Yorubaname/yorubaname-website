@@ -81,12 +81,10 @@ public class SearchApi {
      * @return a {@link ResponseEntity} with the response message
      */
     @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> getMetaData(@RequestParam("count") Optional<Boolean> count) {
-        Map<String, Object> response = new HashMap<>();
-        if (count.isPresent() && count.get() == true) {
-            response.put("count", elasticSearchService.getCount());
-        }
-        return response;
+    public ResponseEntity<Map<String, Object>> getMetaData() {
+        Map<String, Object> metaData = new HashMap<>();
+        metaData.put("totalPublishedNames", elasticSearchService.getCount());
+        return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
     /**

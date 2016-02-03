@@ -119,19 +119,29 @@ public class NameApi {
      *
      * @return a {@link ResponseEntity} with the response message
      */
-    @RequestMapping(value = "/v1/names/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> getMetaData(@RequestParam("count") Optional<Boolean> count) {
-        Map<String, String> metaData = new HashMap<>();
-        if (count.isPresent() && count.get() == true) {
-            metaData.put("count", entryService.getNameCount().toString());
-        }
+    @RequestMapping(value = "/v1/names/meta", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> getMetaData() {
 
-        HttpStatus statusCode = HttpStatus.OK;
-        if (metaData.isEmpty()) {
-            statusCode = HttpStatus.NO_CONTENT;
-        }
+        final List<NameEntry> nameEntries = entryService.loadAllNames();
+        long totalNames = ((Integer) nameEntries.size()).longValue();
 
-        return new ResponseEntity<>(metaData, statusCode);
+        final long totalModifiedNames = nameEntries.stream()
+                                                   .filter(nameEntry -> State.MODIFIED.equals(nameEntry.getState()))
+                                                   .count();
+        final long totalNewNames = nameEntries.stream()
+                                              .filter(nameEntry -> State.NEW.equals(nameEntry.getState()))
+                                              .count();
+        final long totalPublishedNames = nameEntries.stream()
+                                                    .filter(nameEntry -> State.PUBLISHED.equals(nameEntry.getState()))
+                                                    .count();
+        Map<String, Object> metaData = new HashMap<>();
+        metaData.put("totalNames", totalNames);
+        metaData.put("totalNewNames", totalNewNames);
+        metaData.put("totalModifiedNames", totalModifiedNames);
+        metaData.put("totalPublishedNames", totalPublishedNames);
+
+        return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
     /**

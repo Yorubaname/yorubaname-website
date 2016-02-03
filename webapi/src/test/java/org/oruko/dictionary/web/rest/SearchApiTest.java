@@ -10,8 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
@@ -37,6 +35,17 @@ public class SearchApiTest extends AbstractApiTest {
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(searchApi).setHandlerExceptionResolvers(createExceptionResolver()).build();
+    }
+
+
+    @Test
+    public void testMetadata() throws Exception {
+        when(searchService.getCount()).thenReturn(3L);
+        mockMvc.perform(get("/v1/search/meta"))
+               .andExpect(jsonPath("$.totalPublishedNames", is(3)))
+               .andExpect(status().isOk());
+
+        verify(searchService).getCount();
     }
 
     @Test
@@ -69,16 +78,5 @@ public class SearchApiTest extends AbstractApiTest {
                .andExpect(status().isOk());
     }
 
-    @Test @Ignore
-    public void testFindByName() throws Exception {
-        Map<String, Object> result = new HashMap<>();
-        result.put("test", "test");
-        when(searchService.getByName("query")).thenReturn(result);
-        mockMvc.perform(get("/v1/search/query"))
-               .andExpect(jsonPath("$.test", is("test")))
-               .andExpect(status().isOk());
-
-        //verify(eventPubService).publish(any(NameSearchedEvent.class));
-    }
 
 }

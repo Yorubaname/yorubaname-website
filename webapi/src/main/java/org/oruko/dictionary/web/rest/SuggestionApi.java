@@ -2,7 +2,6 @@ package org.oruko.dictionary.web.rest;
 
 import org.oruko.dictionary.model.SuggestedName;
 import org.oruko.dictionary.model.repository.SuggestedNameRepository;
-import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.exception.GenericApiCallException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,13 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.validation.Valid;
 
 /**
@@ -28,19 +25,18 @@ import javax.validation.Valid;
  *
  * @author Dadepo Aderemi.
  */
-@RestController("/v1/suggestions")
+@RestController
+@RequestMapping("/v1/suggestions")
 public class SuggestionApi {
 
     private SuggestedNameRepository suggestedNameRepository;
 
     /**
      * Constructor for {@link SuggestionApi}
-     * @param entryService the {@link NameEntryService}
      * @param suggestedNameRepository the {@link SuggestedNameRepository}
      */
     @Autowired
-    public SuggestionApi(NameEntryService entryService,
-                         SuggestedNameRepository suggestedNameRepository) {
+    public SuggestionApi(SuggestedNameRepository suggestedNameRepository) {
         this.suggestedNameRepository = suggestedNameRepository;
     }
 
@@ -49,19 +45,11 @@ public class SuggestionApi {
      *
      * @return a {@link ResponseEntity} with the response message
      */
-    @RequestMapping(value = "/v1/suggestions/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> getSuggestedMetaData(@RequestParam("count") Optional<Boolean> count) {
-        Map<String, String> metaData = new HashMap<>();
-        if (count.isPresent() && count.get() == true) {
-            metaData.put("count", String.valueOf(suggestedNameRepository.count()));
-        }
-
-        HttpStatus statusCode = HttpStatus.OK;
-        if (metaData.isEmpty()) {
-            statusCode = HttpStatus.NO_CONTENT;
-        }
-
-        return new ResponseEntity<>(metaData, statusCode);
+    @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> getSuggestedMetaData() {
+        Map<String, Object> metaData = new HashMap<>();
+        metaData.put("totalSuggestedNames", suggestedNameRepository.count());
+        return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
 
@@ -73,7 +61,7 @@ public class SuggestionApi {
      * @param bindingResult the {@link BindingResult}
      * @return {@link org.springframework.http.ResponseEntity} with message if successful or not
      */
-    @RequestMapping(value = "/v1/suggestions", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> suggestName(@Valid @RequestBody SuggestedName suggestedName,
                                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -87,7 +75,7 @@ public class SuggestionApi {
      * Returns all the suggested names
      * @return a {@link ResponseEntity} with all suggested names
      */
-    @RequestMapping(value = "/v1/suggestions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SuggestedName> getAllSuggestedNames() {
         return suggestedNameRepository.findAll();
     }
@@ -97,7 +85,7 @@ public class SuggestionApi {
      * @param id id of the suggested name to delete
      * @return
      */
-    @RequestMapping(value = "/v1/suggestions/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable Long id) {
         SuggestedName suggestedName = suggestedNameRepository.findOne(id);
         if (suggestedName != null) {
@@ -115,7 +103,7 @@ public class SuggestionApi {
      *
      * @return
      */
-    @RequestMapping(value = "/v1/suggestions", method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, String>> deleteAllSuggestions() {
         suggestedNameRepository.deleteAll();
         return new ResponseEntity<>(response("All suggested names has been deleted"), HttpStatus.OK);

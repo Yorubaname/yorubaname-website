@@ -41,21 +41,13 @@ public class SuggestionApiTest extends AbstractApiTest {
                 createExceptionResolver()).build();
     }
 
-    @Test
-    public void testGetSuggestedMetaData_empty() throws Exception {
-        mockMvc.perform(get("/v1/suggestions/meta"))
-               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$").isEmpty())
-               .andExpect(status().isNoContent());
-
-    }
 
     @Test
     public void testGetSuggestedMetaData_count() throws Exception {
         when(suggestedNameRepository.count()).thenReturn(2L);
-        mockMvc.perform(get("/v1/suggestions/meta?count=true"))
+        mockMvc.perform(get("/v1/suggestions/meta"))
                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$.count",is("2")))
+               .andExpect(jsonPath("$.totalSuggestedNames",is(2)))
                .andExpect(status().isOk());
 
     }
