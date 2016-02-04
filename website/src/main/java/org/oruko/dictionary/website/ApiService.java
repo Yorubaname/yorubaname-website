@@ -41,8 +41,8 @@ public class ApiService {
     }
 
     public Integer getIndexedNameCount() {
-        final Map<String, Integer> countMap = restTemplate.getForObject(APIPATH + "/search/meta?count=true", Map.class);
-        return countMap.get("count");
+        final Map<String, Integer> countMap = restTemplate.getForObject(APIPATH + "/search/meta", Map.class);
+        return countMap.get("totalPublishedNames");
     }
 
     public Map<String, String[]> getSearchActivity() {
