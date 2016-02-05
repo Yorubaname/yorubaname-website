@@ -194,7 +194,7 @@ public class NameApi {
 
         // for filtering based on the state
         Predicate<NameEntry> filterBasedOnState = (name) -> {
-            if (state.isPresent()) {
+            if (state.isPresent() && name.getState() != null) {
                 return name.getState().toString().trim().equalsIgnoreCase(state.get().toString().trim());
             } else {
                 return true;
