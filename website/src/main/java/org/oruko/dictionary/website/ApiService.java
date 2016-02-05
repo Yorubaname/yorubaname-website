@@ -21,7 +21,7 @@ public class ApiService {
     // TODO move to environment dependent configuration file
     public static String APIPATH = "http://127.0.0.1:8081/v1";
 
-    @Cacheable("allNames")
+    //@Cacheable("allNames")
     public List<Map<String, Object>> getAllNames() {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/names", Map[].class));
     }
