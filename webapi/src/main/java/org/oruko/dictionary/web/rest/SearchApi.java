@@ -319,6 +319,8 @@ public class SearchApi {
         updateIsIndexFlag(nameEntries, true, indexOperationStatus);
         for (NameEntry nameEntry : nameEntries) {
             publishNameIsIndexed(nameEntry);
+            nameEntry.setState(State.PUBLISHED);
+            entryService.saveName(nameEntry);
         }
         return returnStatusMessage(notFound, indexOperationStatus);
     }
