@@ -152,13 +152,6 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
-<!-- Background image -->
-$(function () {
-    $('#home-banner').css({
-        'background-image': 'url(/assets/img/bg/IMG_0089.jpg)'
-    });
-});
-
 <!-- Typeahead -->
 $(document).ready(function () {
 

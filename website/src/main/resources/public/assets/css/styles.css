@@ -173,6 +173,7 @@ header .container img.logo {
 
 #home-banner {
     background-size:cover;
+	background-image: url("/assets/img/bg/IMG_0089.jpg");
     width:100%;
     -webkit-user-select: none;
 	-khtml-user-select: none;
