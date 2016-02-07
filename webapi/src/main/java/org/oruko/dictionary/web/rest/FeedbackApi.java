@@ -45,8 +45,7 @@ public class FeedbackApi {
      *
      * @return returns a list of all feedback
      */
-    @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<NameEntryFeedback>> getFeedbacks() {
         final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
         return new ResponseEntity<>(feedbackRepository.findAll(sort), HttpStatus.OK);
@@ -58,8 +57,7 @@ public class FeedbackApi {
      * @param postFeedback a map with key of "feedback" for the feedback
      * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
      */
-    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> addFeedback(@RequestBody Map<String, String> postFeedback) {
         String feedback = postFeedback.get("feedback");
         String name = postFeedback.get("name");
@@ -94,8 +92,7 @@ public class FeedbackApi {
      *
      * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
      */
-    @RequestMapping(params = "name", method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(params = "name", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> deleteAllFeedbackForName(@RequestParam("name") String name) {
 
         if (entryService.loadName(name) == null) {
@@ -115,8 +112,7 @@ public class FeedbackApi {
      *
      * @return {@link org.springframework.http.ResponseEntity} with string containing outcome of action
      */
-    @RequestMapping(method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> deleteAllFeedBack() {
         feedbackRepository.deleteAll();
         return new ResponseEntity<>(response("All Feedback messages deleted"), HttpStatus.OK);
@@ -144,8 +140,7 @@ public class FeedbackApi {
      * @param feedbackId the feedback to delete
      * @return the status of the delete operation
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> deleteAFeedback(@PathVariable("id") String feedbackId) {
         final Long id = Long.valueOf(feedbackId);
         final NameEntryFeedback feedback = feedbackRepository.findOne(id);

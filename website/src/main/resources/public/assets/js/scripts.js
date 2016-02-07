@@ -29,7 +29,7 @@ $(document).ready(function () {
             url: e.currentTarget.action,
             method: e.currentTarget.method,
             contentType: 'application/json',
-            data: JSON.stringify({name:$('nameToFeedback').val(),feedback: $('textarea[name="feedback"]').val()}),
+            data: JSON.stringify({name:$('#nameToFeedback').val(),feedback: $('textarea[name="feedback"]').val()}),
             type: 'json',
             success: function (resp) {
                 $('.response').html(alert_success("Feedback posted successfully. Thanks."))

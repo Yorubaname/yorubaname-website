@@ -28,10 +28,10 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.DELETE, "/v1/suggestions/*").hasAnyRole(Role.ADMIN.toString(),
                                                                         Role.PRO_LEXICOGRAPHER.toString())
                 // feedback auth
+            .antMatchers(HttpMethod.POST, "/v1/feedbacks").permitAll()
             .antMatchers(HttpMethod.GET, "/v1/feedbacks").hasAnyRole(Role.ADMIN.toString(),
                                                                            Role.PRO_LEXICOGRAPHER.toString(),
                                                                            Role.BASIC_LEXICOGRAPHER.toString())
-            .antMatchers(HttpMethod.POST, "/v1/feedbacks").permitAll()
             .antMatchers(HttpMethod.DELETE, "/v1/feedbacks").hasAnyRole(Role.ADMIN.toString(),
                                                                          Role.PRO_LEXICOGRAPHER.toString())
                 // authentication auth
