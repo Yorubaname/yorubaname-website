@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -148,6 +149,15 @@ public class NameApiTest extends AbstractApiTest {
         verify(entryService).loadAllNames();
     }
 
+    @Test
+    public void test_get_all_names_by_id() throws Exception {
+        when(entryService.loadAllNames()).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
+        mockMvc.perform(get("/v1/names?byId=true&fromId=2&count=50"))
+               .andExpect(jsonPath("$").isArray())
+               .andExpect(status().isOk());
+
+        verify(entryService).loadNamesGreaterThanId(Optional.of(2L), Optional.of(50));
+    }
 
     @Test
     public void test_get_name_count() throws Exception {

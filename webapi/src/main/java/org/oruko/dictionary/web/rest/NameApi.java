@@ -156,6 +156,8 @@ public class NameApi {
     public List<NameEntry> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
                                   @RequestParam("count") Optional<Integer> countParam,
                                   @RequestParam("all") Optional<Boolean> all,
+                                  @RequestParam("byId") Optional<Boolean> byId,
+                                  @RequestParam("fromId") Optional<Long> fromId,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
                                   @RequestParam("state") final Optional<String> state,
                                   @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
@@ -166,6 +168,8 @@ public class NameApi {
 
         if (all.isPresent() && all.get() == true) {
             allNameEntries = entryService.loadAllNames();
+        } else if (byId.isPresent() && byId.get() == true) {
+            allNameEntries = entryService.loadNamesGreaterThanId(fromId, countParam);
         } else {
             allNameEntries = entryService.loadAllNames(pageParam, countParam);
         }
