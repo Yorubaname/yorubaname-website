@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+ // Add GeoLocation Tags Input 
+    $("select[multiple]").multipleSelect();
+
  $('#suggestedName').blur(function() {
      var name = ($(this).val());
 
@@ -42,9 +45,7 @@ $('form#suggest-form').on('submit', function(event) {
     var suggestedName = {
         name: $('form#suggest-form #miniKeyboard').val(),
         details: $('form#suggest-form #suggestedMeaning').val(),
-        geoLocation: [{
-            place: $('form#suggest-form #suggestedGeoLocation').val()
-        }],
+        geoLocation: $("form#suggest-form select[multiple]").val(),
         email: $('form#suggest-form #suggestedEmail').val()
     };
 

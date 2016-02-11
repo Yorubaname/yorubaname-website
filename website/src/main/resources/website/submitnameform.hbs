@@ -15,9 +15,9 @@
 
     <div class="form-group">
         <label class="optional">{{message "lang.submitname.enterlocation"}}:</label>
-        <select name="suggestedGeoLocation" id="suggestedGeoLocation" class="form-control">
+        <select name="suggestedGeoLocation" id="suggestedGeoLocation" multiple="multiple">
             {{#each geoLocations}}
-                <option>{{this.place}}</option>
+                <option value="{{this}}">{{this.place}}</option>
             {{/each}}
         </select>
     </div><br>
