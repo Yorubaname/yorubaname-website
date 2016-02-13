@@ -35,7 +35,7 @@
         <start-class>org.oruko.dictionary.DictionaryApplication</start-class>
         <main.basedir>${project.basedir}</main.basedir>
         <java.version>1.8</java.version>
-        <spring-boot.version>1.3.0.RELEASE</spring-boot.version>
+        <spring-boot.version>1.3.1.RELEASE</spring-boot.version>
         <spring-loaded.version>1.2.5.RELEASE</spring-loaded.version>
         <mysql-connector.version>5.1.34</mysql-connector.version>
         <jackson-core.version>2.6.1</jackson-core.version>
@@ -47,7 +47,7 @@
         <elasticsearch-analysis-icu.version>2.5.0</elasticsearch-analysis-icu.version>
         <commons-io.version>2.4</commons-io.version>
         <springfox-swagger>2.2.2</springfox-swagger>
-        <spring-handlebars.version>0.1.1</spring-handlebars.version>
+        <handlebars.spring.boot.version>0.2.11</handlebars.spring.boot.version>
         <json-path-assert.version>2.0.0</json-path-assert.version>
         <lucene.version>4.10.4</lucene.version>
         <jackson-datatype-jsr310.version>2.6.1</jackson-datatype-jsr310.version>
@@ -79,11 +79,13 @@
                 <artifactId>spring-boot-devtools</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>pl.allegro.tech.boot</groupId>
-                <artifactId>spring-boot-starter-handlebars</artifactId>
-                <version>${spring-handlebars.version}</version>
+                <artifactId>handlebars-spring-boot-starter</artifactId>
+                <version>${handlebars.spring.boot.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
@@ -188,12 +190,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.jknack</groupId>
-                <artifactId>handlebars-springmvc</artifactId>
-                <version>2.0.0</version>
             </dependency>
 
             <!-- Test dependencies -->

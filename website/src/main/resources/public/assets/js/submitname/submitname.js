@@ -41,13 +41,25 @@ $(document).ready(function () {
 $('form#suggest-form').on('submit', function(event) {
     event.preventDefault();
 
-    //TODO update the geolocation to support multiple selection
     var suggestedName = {
         name: $('form#suggest-form #miniKeyboard').val(),
         details: $('form#suggest-form #suggestedMeaning').val(),
-        geoLocation: $("form#suggest-form select[multiple]").val(),
+        geoLocation: getGeoLocations(),
         email: $('form#suggest-form #suggestedEmail').val()
     };
+
+    function getGeoLocations() {
+        var geoLocations = [];
+        var geoLocation = {}
+        var rawValue = $("form#suggest-form select[multiple]").val();
+        for (geoEntry in rawValue) {
+            var splitEntry = rawValue[geoEntry].split(".");
+            geoLocation.region = splitEntry[0];
+            geoLocation.place = splitEntry[1];
+            geoLocations.push(geoLocation);
+        }
+        return geoLocations;
+    }
 
     $.ajax({
         url: '/v1/suggestions',

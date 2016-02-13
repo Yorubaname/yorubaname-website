@@ -58,8 +58,12 @@
 					
 						<br><br>
 						<h4>{{message "lang.geolocation"}}</h4>
-						<p>{{message "lang.commonin"}} {{name.geoLocation.place}}</p>
-					
+						<p>{{message "lang.commonin"}}:
+                                {{#each name.geoLocation}}
+                                    <br/>{{this.place}}
+                                {{/each}}
+                        </p>
+
 					<!-- /geolocation -->
 
 					    <br><br>
