@@ -50,9 +50,9 @@ $('form#suggest-form').on('submit', function(event) {
 
     function getGeoLocations() {
         var geoLocations = [];
-        var geoLocation = {}
         var rawValue = $("form#suggest-form select[multiple]").val();
         for (geoEntry in rawValue) {
+            var geoLocation = {};
             var splitEntry = rawValue[geoEntry].split(".");
             geoLocation.region = splitEntry[0];
             geoLocation.place = splitEntry[1];
