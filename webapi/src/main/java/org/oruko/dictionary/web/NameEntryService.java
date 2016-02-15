@@ -212,20 +212,6 @@ public class NameEntryService {
     }
 
     /**
-     * Used to retrieve a list of {@link NameEntry} from the repository: specifying the id to start the retrieving
-     * from and the amount to return.
-     *
-     * @param fromId the id to start from
-     * @param countParam the count of the result
-     * @return a list of {@link NameEntry}
-     */
-    public List<NameEntry> loadNamesGreaterThanId(Optional<Long> fromId, Optional<Integer> countParam) {
-        final Long id = fromId.isPresent() ? fromId.get() : 1L;
-        final Integer count = countParam.isPresent() ? countParam.get() : COUNT_SIZE;
-        return nameEntryRepository.findByIdGreaterThanEqual(id, new PageRequest(0,count));
-    }
-
-    /**
      * Used to retrieve all {@link org.oruko.dictionary.model.NameEntry} from the repository.
      *
      * @return a list of all {@link org.oruko.dictionary.model.NameEntry}
