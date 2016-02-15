@@ -3,12 +3,11 @@ package org.oruko.dictionary.web;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryFeedback;
-import org.oruko.dictionary.model.SuggestedName;
+import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryFeedbackRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
-import org.oruko.dictionary.model.repository.SuggestedNameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +33,6 @@ public class NameEntryService {
 
     private NameEntryRepository nameEntryRepository;
     private DuplicateNameEntryRepository duplicateEntryRepository;
-    private SuggestedNameRepository suggestedNameRepository;
     private NameEntryFeedbackRepository nameEntryFeedbackRepository;
 
     /**
@@ -43,17 +42,14 @@ public class NameEntryService {
      *
      * @param nameEntryRepository      Repository responsible for persisting {@link NameEntry}
      * @param duplicateEntryRepository Repository responsible for persisting {@link DuplicateNameEntry}
-     * @param suggestedNameRepository Repository responsible for persisting {@link SuggestedName}
      * @param nameEntryFeedbackRepository  Repository responsible for persisting {@link NameEntryFeedback}
      */
     @Autowired
     public NameEntryService(NameEntryRepository nameEntryRepository,
                             DuplicateNameEntryRepository duplicateEntryRepository,
-                            SuggestedNameRepository suggestedNameRepository,
                             NameEntryFeedbackRepository nameEntryFeedbackRepository) {
         this.nameEntryRepository = nameEntryRepository;
         this.duplicateEntryRepository = duplicateEntryRepository;
-        this.suggestedNameRepository = suggestedNameRepository;
         this.nameEntryFeedbackRepository = nameEntryFeedbackRepository;
     }
 
@@ -212,6 +208,38 @@ public class NameEntryService {
     }
 
     /**
+     * Used to retrieve {@link NameEntry} of given state from the repository.
+     * @param state the {@link State} of the entry
+     * @return list of {@link NameEntry}. If state is not present, it returns an empty list
+     */
+    public List<NameEntry> loadAllByState(Optional<State> state) {
+        if (!state.isPresent()) {
+            return Collections.emptyList();
+        }
+        return nameEntryRepository.findByState(state.get());
+    }
+
+    /**
+     * Used to retrieve paginated result of {@link NameEntry} of given state from the repository
+     * @param state state the {@link State} of the entry
+     * @param pageParam specifies page number
+     * @param countParam  specifies the count of result
+     * @return a list of {@link org.oruko.dictionary.model.NameEntry}
+     */
+    public List<NameEntry> loadByState(Optional<State> state, Optional<Integer> pageParam, Optional<Integer> countParam) {
+
+        if (!state.isPresent()) {
+            return this.loadAllNames(pageParam, countParam);
+        }
+
+        final Integer page = pageParam.isPresent() ? pageParam.get() - 1 : 1;
+        final Integer count = countParam.isPresent() ? countParam.get() : COUNT_SIZE;
+
+        return nameEntryRepository.findByState(state.get(), new PageRequest(page,count));
+
+    }
+
+    /**
      * Used to retrieve all {@link org.oruko.dictionary.model.NameEntry} from the repository.
      *
      * @return a list of all {@link org.oruko.dictionary.model.NameEntry}
@@ -316,5 +344,6 @@ public class NameEntryService {
             return false;
         });
     }
+
 
 }

@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -83,8 +84,8 @@ public class NameApiTest extends AbstractApiTest {
     public void test_get_all_names_via_get() throws Exception {
         testNameEntry.setName("firstname");
         anotherTestNameEntry.setName("secondname");
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
-             mockMvc.perform(get("/v1/names"))
+        when(entryService.loadAllNames()).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
+             mockMvc.perform(get("/v1/names?all=true"))
                     .andExpect(jsonPath("$", hasSize(2)))
                     .andExpect(jsonPath("$[0].name", is("firstname")))
                     .andExpect(jsonPath("$[1].name", is("secondname")))
@@ -95,9 +96,9 @@ public class NameApiTest extends AbstractApiTest {
     public void test_get_all_names_filtered_by_is_indexed() throws Exception {
         testNameEntry.setIndexed(true);
         anotherTestNameEntry.setIndexed(false);
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
+        when(entryService.loadAllNames()).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
 
-        mockMvc.perform(get("/v1/names?indexed=true"))
+        mockMvc.perform(get("/v1/names?all=true&indexed=true"))
                .andExpect(jsonPath("$", hasSize(1)))
                .andExpect(jsonPath("$[0].name", is("test-entry")))
                .andExpect(status().isOk());
@@ -108,7 +109,7 @@ public class NameApiTest extends AbstractApiTest {
         testNameEntry.setSubmittedBy("test");
         NameEntry secondEntry = new NameEntry("secondEntry");
         secondEntry.setSubmittedBy("Not Available");
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, secondEntry));
+        when(entryService.loadByState(eq(Optional.empty()), any(), any())).thenReturn(Arrays.asList(testNameEntry, secondEntry));
 
         mockMvc.perform(get("/v1/names?submittedBy=test"))
                .andExpect(jsonPath("$", hasSize(1)))
@@ -121,12 +122,14 @@ public class NameApiTest extends AbstractApiTest {
         testNameEntry.setState(State.PUBLISHED);
         NameEntry secondEntry = new NameEntry("secondEntry");
         secondEntry.setState(State.NEW);
-        when(entryService.loadAllNames(any(), any())).thenReturn(Arrays.asList(testNameEntry, secondEntry));
+        when(entryService.loadByState(eq(Optional.of(State.NEW)), any(), any())).thenReturn(Arrays.asList(secondEntry));
 
         mockMvc.perform(get("/v1/names?state=NEW"))
                .andExpect(jsonPath("$", hasSize(1)))
                .andExpect(jsonPath("$[0].name", is("secondEntry")))
                .andExpect(status().isOk());
+
+        verify(entryService).loadByState(eq(Optional.of(State.NEW)),any(), any());
     }
 
 

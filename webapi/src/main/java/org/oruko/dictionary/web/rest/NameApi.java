@@ -153,21 +153,25 @@ public class NameApi {
      * @throws JsonProcessingException JSON processing exception
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<NameEntry> getAllNames(@RequestParam("page") Optional<Integer> pageParam,
-                                  @RequestParam("count") Optional<Integer> countParam,
-                                  @RequestParam("all") Optional<Boolean> all,
+    public List<NameEntry> getAllNames(@RequestParam("page") final Optional<Integer> pageParam,
+                                  @RequestParam("count") final Optional<Integer> countParam,
+                                  @RequestParam("all") final Optional<Boolean> all,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
-                                  @RequestParam("state") final Optional<String> state,
+                                  @RequestParam("state") final Optional<State> state,
                                   @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
             throws JsonProcessingException {
 
         List<NameEntry> names = new ArrayList<>();
-        Iterable<NameEntry> allNameEntries;
+        List<NameEntry> allNameEntries;
 
         if (all.isPresent() && all.get() == true) {
-            allNameEntries = entryService.loadAllNames();
+            if (state.isPresent()) {
+                allNameEntries = entryService.loadAllByState(state);
+            } else {
+                allNameEntries = entryService.loadAllNames();
+            }
         } else {
-            allNameEntries = entryService.loadAllNames(pageParam, countParam);
+            allNameEntries = entryService.loadByState(state, pageParam, countParam);
         }
 
         allNameEntries.forEach(nameEntry -> {
@@ -192,19 +196,9 @@ public class NameApi {
             }
         };
 
-        // for filtering based on the state
-        Predicate<NameEntry> filterBasedOnState = (name) -> {
-            if (state.isPresent() && name.getState() != null) {
-                return name.getState().toString().trim().equalsIgnoreCase(state.get().toString().trim());
-            } else {
-                return true;
-            }
-        };
-
         return names.stream()
                     .filter(filterBasedOnIndex)
                     .filter(filterBasedOnSubmitBy)
-                    .filter(filterBasedOnState)
                     .collect(Collectors.toCollection(ArrayList::new));
 
     }
