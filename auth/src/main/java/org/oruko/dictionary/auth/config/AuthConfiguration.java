@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * Context configuration
@@ -72,6 +73,6 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth,
                                 UserDetailsService userDetailsService) throws Exception {
 
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 }

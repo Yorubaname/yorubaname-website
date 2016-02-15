@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -112,7 +113,7 @@ public class AuthApi {
 
         ApiUser apiUser = new ApiUser();
         apiUser.setEmail(email);
-        apiUser.setPassword(password);
+        apiUser.setPassword(new BCryptPasswordEncoder().encode(password));
         apiUser.setUsername(username);
         apiUser.setRoles(roles.toArray(new String[roles.size()]));
         ApiUser savedUser = userRepository.save(apiUser);
