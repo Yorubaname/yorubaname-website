@@ -3,6 +3,7 @@ package org.oruko.dictionary.auth.rest;
 import org.oruko.dictionary.auth.ApiUser;
 import org.oruko.dictionary.auth.ApiUserRepository;
 import org.oruko.dictionary.auth.CreateUserRequest;
+import org.oruko.dictionary.auth.UpdateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -126,6 +128,45 @@ public class AuthApi {
     }
 
     /**
+     * Deletes a user
+     * @param userId the id of user to delete
+     * @return
+     */
+    @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long userId) {
+        if (userRepository.findOne(userId) != null) {
+            userRepository.delete(userId);
+            return new ResponseEntity<>(response("Name with Id: "+userId+" deleted"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response("Delete failed: No user with Id: "+ userId), HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
+     * Used to update {@link ApiUser}
+     * @param userId the user id to update
+     * @param updateUserRequest
+     * @return
+     */
+    @RequestMapping(value = "/users/{userId}",
+            method = RequestMethod.PATCH,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long userId,
+                                                          @Valid @RequestBody UpdateUserRequest updateUserRequest) {
+        final ApiUser userToUpdate = userRepository.findOne(userId);
+        if (userToUpdate != null) {
+            final List<String> fieldsUpdated = updateUser(updateUserRequest, userToUpdate);
+            userRepository.save(userToUpdate);
+            return new ResponseEntity<>(response("User with Id: "+ userId +" has fields: " +
+                                                         String.join(",",fieldsUpdated + " updated")),
+                                        HttpStatus.OK);
+        }
+        return new ResponseEntity<>(response("Update failed: No user with Id: "+ userId + " the details found"),
+                                    HttpStatus.BAD_REQUEST);
+    }
+
+
+    /**
      * End point listing all users
      * @return list of all {@link org.oruko.dictionary.auth.ApiUser}
      */
@@ -136,6 +177,27 @@ public class AuthApi {
         List<ApiUser> all = userRepository.findAll();
         all.forEach(user -> user.setPassword("xxx"));
         return all;
+    }
+
+
+    private List<String> updateUser(UpdateUserRequest updateUserRequest, ApiUser userToUpdate) {
+
+        List<String> fieldsUpdated = new ArrayList<>();
+        if (updateUserRequest.getUsername() != null) {
+            userToUpdate.setUsername(updateUserRequest.getUsername());
+            fieldsUpdated.add("Username");
+        }
+        if (updateUserRequest.getRoles() != null) {
+            final ArrayList<String> roles = updateUserRequest.getRoles();
+            userToUpdate.setRoles(roles.toArray(new String[roles.size()]));
+            fieldsUpdated.add("Roles");
+        }
+        if (updateUserRequest.getPassword() != null) {
+            userToUpdate.setPassword(new BCryptPasswordEncoder().encode(updateUserRequest.getPassword()));
+            fieldsUpdated.add("Password");
+        }
+
+        return fieldsUpdated;
     }
 
 
