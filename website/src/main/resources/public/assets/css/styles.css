@@ -51,6 +51,10 @@ a,a:hover,a:active,a:visited, a:visited:hover {
   text-decoration: none;
 }
 
+a#link {
+	color:#A08A5C;
+	font-weight: bold;
+}
 
 /*  SECTION 2: Typography */
 
