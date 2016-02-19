@@ -32,6 +32,7 @@ import javax.validation.Valid;
  * Controller for Authentication related endpoints
  * Created by Dadepo Aderemi.
  */
+//TODO auth endpoint was an after thought. It shows. Refactor
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthApi {
@@ -79,6 +80,8 @@ public class AuthApi {
 
         userDetails.put("roles", roles);
         userDetails.put("username", principal.getName());
+        // TODO refactor -> getting email via getName is wrong!
+        userDetails.put("id", userRepository.findByEmail(principal.getName()).getId());
         return userDetails;
     }
 
@@ -133,7 +136,7 @@ public class AuthApi {
      * @return
      */
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long userId, Principal principal) {
         if (userRepository.findOne(userId) != null) {
             userRepository.delete(userId);
             return new ResponseEntity<>(response("Name with Id: "+userId+" deleted"), HttpStatus.OK);
@@ -179,6 +182,15 @@ public class AuthApi {
         return all;
     }
 
+    @RequestMapping(value = "/users/{userId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiUser> getUser(@PathVariable Long userId) {
+        final ApiUser apiUser = userRepository.findOne(userId);
+        apiUser.setPassword("");
+        return new ResponseEntity<>(apiUser, HttpStatus.OK);
+    }
+
 
     private List<String> updateUser(UpdateUserRequest updateUserRequest, ApiUser userToUpdate) {
 
@@ -192,7 +204,7 @@ public class AuthApi {
             userToUpdate.setRoles(roles.toArray(new String[roles.size()]));
             fieldsUpdated.add("Roles");
         }
-        if (updateUserRequest.getPassword() != null) {
+        if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
             userToUpdate.setPassword(new BCryptPasswordEncoder().encode(updateUserRequest.getPassword()));
             fieldsUpdated.add("Password");
         }
