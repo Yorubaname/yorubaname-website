@@ -38,7 +38,7 @@ public class SearchResultController {
         return ControllerUtil.getYorubaAlphabets();
     }
 
-    @Value("${app.host}")
+    @Value("${app.host}:${server.port}")
     private String host;
     /**
      * Displays the result for a single entry

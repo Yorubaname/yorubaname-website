@@ -18,7 +18,7 @@ $(document).ready(function () {
 
     $("#tts-button").on("click", function () {
         var host = $("#host").html();
-        var audio = new Audio("http://" + host + ":8081/v1/tts/" + $("#name-entry").html());
+        var audio = new Audio("http://" + host + "/v1/tts/" + $("#name-entry").html());
         audio.play();
     });
 

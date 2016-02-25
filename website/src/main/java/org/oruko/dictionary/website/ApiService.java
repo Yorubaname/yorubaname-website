@@ -1,5 +1,6 @@
 package org.oruko.dictionary.website;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,8 +19,12 @@ public class ApiService {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
-    // TODO move to environment dependent configuration file
-    public static String APIPATH = "http://127.0.0.1:8081/v1";
+    public static String APIPATH;
+
+    @Value("http://${app.host}:${server.port}/v1")
+    public void setAPIPATH(String apipath) {
+        ApiService.APIPATH = apipath;
+    }
 
     //@Cacheable("allNames")
     public List<Map<String, Object>> getAllNames() {
