@@ -54,6 +54,17 @@ If you use an IDE like Intellij, you can run the application by running the `pub
 
 The application would start up and can be accessed on port 8081.
 
+### Running the Website Application In in-memory mode
+It is also possible to run the application with the datastore being in-memory. 
+
+The advantage is that, in that case, there won't be a need to install Mysql and the application can function without any external dependencies. 
+
+The disadvantage is that whatever you add to the dictionary won't be durably persisted and would be lost on restart.
+ 
+To start the application in in-memory mode, specify `inmemory` as the active profile when starting the application. For example:
+
+`mvn spring-boot:run -Dspring.profiles.active=inmemory`
+
 ### Configuring ElasticSearch Properties
 
 The ElasticSearch module does not require the installation of ElasticSearch as it will run with an embedded ElasticSearch instance: 
