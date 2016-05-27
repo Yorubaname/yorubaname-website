@@ -65,6 +65,8 @@ To start the application in in-memory mode, specify `inmemory` as the active pro
 
 `mvn spring-boot:run -Dspring.profiles.active=inmemory`
 
+Remember this command needs to be run from the website module, that is `{parent_directory}/website` directory.
+
 ### Configuring ElasticSearch Properties
 
 The ElasticSearch module does not require the installation of ElasticSearch as it will run with an embedded ElasticSearch instance: 
@@ -83,6 +85,10 @@ es.data.path=
 The embedded ElasticSearch module will by default create a "data" directory in the root directory where the application 
 runs from and use this as the location to store data. This directory location can be configured to somewhere else 
 by supplying the preferred directory through the `es.data.path` in the application.properties
+
+### Exploring the REST API
+
+The documentation for the API endpoints can be accessed by running the application and navigating to `http://localhost:8081/swagger-ui.html`
 
 ### Running the Yorubaname Dashboard app
 
