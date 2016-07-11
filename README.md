@@ -44,9 +44,10 @@ Now with the general overview out of the way, let us look at getting the applica
 ### Running the Website Application
 
 First create a MySQL database, with the following details:
-Dictionary Name: dictionary
-Username: dictionary
-Password: dictionary
+
+* Dictionary Name: dictionary
+* Username: dictionary
+* Password: dictionary
 
 You have a couple of ways to run the core application.
 
@@ -80,12 +81,12 @@ the only thing required is for the appropriate configurations be provided. which
 Different aspect of the embedded ElasticSearch be configured via application properties. The available configuration keys
 and their defaults are
 
-es.clustername=yoruba_name_dictionary
-es.indexname=dictionary
-es.documenttype=nameentry
-es.hostname=localhost
-es.portnumber=9300
-es.data.path=
+* es.clustername=yoruba_name_dictionary
+* es.indexname=dictionary
+* es.documenttype=nameentry
+* es.hostname=localhost
+* es.portnumber=9300
+* es.data.path=
 
 The embedded ElasticSearch module will by default create a "data" directory in the root directory where the application 
 runs from and use this as the location to store data. This directory location can be configured to somewhere else 
