@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>init-module</artifactId>
+    <artifactId>bootstrap-module</artifactId>
     <description>Module that handles various bootstrapping operations </description>
 
     <dependencies>
