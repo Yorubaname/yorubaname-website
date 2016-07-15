@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 /**
  * Handler for search functionality
@@ -98,7 +98,9 @@ public class SearchApi {
                                            HttpServletRequest request) {
 
         Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
-        if (name != null && name.size() == 1) {
+        if (name != null
+                && name.size() == 1
+                && name.stream().allMatch(result -> result.get("name").equals(searchTerm))) {
             eventPubService.publish(new NameSearchedEvent(searchTerm,
                                                           request.getRemoteAddr().toString()));
         }
@@ -134,7 +136,7 @@ public class SearchApi {
 
         Map<String, Object> name = elasticSearchService.getByName(searchTerm);
 
-        if (name != null && name.size() == 1) {
+        if (name != null) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
         }
         return name;
