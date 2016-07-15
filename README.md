@@ -43,31 +43,62 @@ Now with the general overview out of the way, let us look at getting the applica
 
 ### Running the Website Application
 
+There are two ways in which the application can be ran for development:
+
+* With a MySQL datastore
+* With In-memory Database
+
+Running the application with a MySQL database requires MySQL to be installed and running on the machine the 
+application would be running on. The necessary database also needs to have been created. 
+ 
+Running the application with an in-memory database does not require the installation and running of a database.
+
+The next two sections describe how to start the application in the two outlined ways.
+
+### Running the Website Application With a MySQL datastore
+
+Feel free to skip this section and go to *Running the Website Application In in-memory mode* below if you do not 
+intend to install/use MySQL.
+
 First create a MySQL database, with the following details:
 
 * Dictionary Name: dictionary
 * Username: dictionary
 * Password: dictionary
 
-You have a couple of ways to run the core application.
+Once the MySQL database has been created, you then have a couple of ways to start the core application.
 
 #### Via an IDE
+
 If you use an IDE like Intellij, you can run the application by running the `public static void main` in DictionaryApplication class
 
 #### Via Spring Boot Run Plugin
+
 1. cd into the projects parent directory and run `mvn clean install`. This would download all the projects dependencies, build the project and install it locally into the maven repository
 2. cd into the website module ({parent_directory}/website) and run `mvn spring-boot:run`
 
 The application would start up and can be accessed on port 8081.
 
-### Running the Website Application In in-memory mode
-It is also possible to run the application with the datastore being in-memory. 
+Remember this command needs to be run from the website module, that is `{parent_directory}/website` directory.
 
-The advantage is that, in that case, there won't be a need to install Mysql and the application can function without any external dependencies. 
+### Running the Website Application In in-memory mode
+
+It is also possible to run the application with the datastore being in-memory, in that case, there won't be a need to 
+install MySQL and the application can function without any external dependencies. 
 
 The disadvantage is that whatever you add to the dictionary won't be durably persisted and would be lost on restart.
+
+#### Via an IDE
+
+You can also start the application via an IDE when running with an in-memory database. If you use an IDE like 
+Intellij, you can run the application by creating a `Run` configuration that runs the `public static void main` in 
+`DictionaryApplication` class; you just need to make sure in the VM options, you pass `-Dspring.profiles
+.active=inmemory` as the value
  
-To start the application in in-memory mode, specify `inmemory` as the active profile when starting the application. For example:
+#### Via Spring Boot Run Plugin
+ 
+To start the application in in-memory mode via the Spring boot run plugin, specify `inmemory` as the active profile 
+when starting the application. For example:
 
 `mvn spring-boot:run -Dspring.profiles.active=inmemory`
 
