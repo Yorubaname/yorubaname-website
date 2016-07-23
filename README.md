@@ -60,13 +60,43 @@ The next two sections describe how to start the application in the two outlined 
 Feel free to skip this section and go to *Running the Website Application In in-memory mode* below if you do not 
 intend to install/use MySQL.
 
+Note, since the Yoruba Language makes extensive use of diacritics, your MySQL install needs to be configured to 
+use UTF-8 in other to be able to handle the contents of the dictionary. If this is not done, the application won't 
+start, because the bootstrap process inserts names which uses diacritics into the database, and if the encoding is 
+not rightm the insertiong would fail. In such a case you would see an error similar in form to:
+
+```
+Caused by: java.sql.SQLException: Incorrect string value: '\xE1\xBB\x8D\xCD\x81l...' for column 'extended_meaning' at row 1
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:996)
+````
+
+Basically you would want to find your my.conf file and add the following piece of configuration:
+
+```
+[mysqld]
+character-set-server=utf8
+collation-server=utf8_general_c
+```
+
+You can consult the [Configuring the Character Set and Collation for Applications](https://dev.mysql
+.com/doc/refman/en/charset-applications.html) section from the MySQL documentation for more details.
+
+
 First create a MySQL database, with the following details:
 
 * Dictionary Name: dictionary
 * Username: dictionary
 * Password: dictionary
 
-Once the MySQL database has been created, you then have a couple of ways to start the core application.
+In case you went ahead to install MySQL and created your database, without setting the character set as mentioned 
+above, you can still alter your database to make use of the correct character set. To do that, run the following MySQL command:
+
+```
+ALTER DATABASE 'dictionary' DEFAULT CHARACTER SET = 'utf8' COLLATE 'utf8_unicode_ci';
+```
+
+Once the MySQL database has been created, and the encoding is set up all fine, you then have a couple of ways to start 
+the core application.
 
 #### Via an IDE
 
