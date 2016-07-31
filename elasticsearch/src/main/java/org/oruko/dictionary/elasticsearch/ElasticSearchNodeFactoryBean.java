@@ -5,6 +5,8 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import javax.annotation.PreDestroy;
  */
 @Component
 public class ElasticSearchNodeFactoryBean implements FactoryBean<Node> {
+
+    private Logger logger = LoggerFactory.getLogger(ElasticSearchNodeFactoryBean.class);
 
     private ESConfig esConfig;
     private Node node;
@@ -57,6 +61,10 @@ public class ElasticSearchNodeFactoryBean implements FactoryBean<Node> {
                                .settings(settings)
                                .clusterName(esConfig.getClusterName())
                                .data(true).local(false).node();
+
+        logger.info("Created Embedded ElasticSearch node with cluster name {} and data location at {}",
+                esConfig.getClusterName(), esConfig.getDataPath());
+
         return node;
     }
 
