@@ -1,11 +1,11 @@
 package org.oruko.dictionary.auth;
 
-import java.util.stream.Stream;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.stream.Stream;
 
 /**
  * Representing the API user
@@ -28,6 +28,7 @@ public class ApiUser {
     public ApiUser(ApiUser user) {
         id = user.getId();
         email = user.getEmail();
+        username = user.getUsername();
         password = user.getPassword();
         roles = user.getRoles();
     }

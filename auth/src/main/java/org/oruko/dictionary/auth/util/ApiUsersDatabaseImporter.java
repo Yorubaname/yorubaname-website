@@ -30,6 +30,7 @@ public class ApiUsersDatabaseImporter {
         if (userRepository.count() == 0) {
             // demo admin
             ApiUser admin = new ApiUser();
+            admin.setUsername("admin");
             admin.setEmail("admin@example.com");
             admin.setPassword(new BCryptPasswordEncoder().encode("admin"));
             admin.setRoles(Role.ADMIN.toString());
@@ -43,6 +44,7 @@ public class ApiUsersDatabaseImporter {
 
             // lexi user
             ApiUser lexicographer = new ApiUser();
+            lexicographer.setUsername("lexicographer");
             lexicographer.setEmail("prolex@example.com");
             lexicographer.setPassword(new BCryptPasswordEncoder().encode("prolex"));
             lexicographer.setRoles(Role.PRO_LEXICOGRAPHER.toString());
@@ -50,6 +52,7 @@ public class ApiUsersDatabaseImporter {
 
             // normal user
             ApiUser basic = new ApiUser();
+            basic.setUsername("basic");
             basic.setEmail("basiclex@example.com");
             basic.setPassword(new BCryptPasswordEncoder().encode("basiclex"));
             basic.setRoles(Role.BASIC_LEXICOGRAPHER.toString());
