@@ -98,7 +98,7 @@ public class SearchResultController {
             //TODO ideally you should only list names by an alphabet
         }
 
-        map.addAttribute("title", "Names listed by alphabet");
+        map.addAttribute("title", "Names listed alphabetically");
         final ArrayList<Map<String, Object>> allNamesByAlphabet = new ArrayList<>(apiService.getAllNamesByAlphabet(alphabet));
 
         if ("g".equals(alphabet)) {
