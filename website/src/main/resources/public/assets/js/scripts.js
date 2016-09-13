@@ -132,7 +132,7 @@ $(function(){
         }, 1000)
       },
       error: function (jqXHR) {
-        $('.response').html(alert_error(jqXHR.responseJSON || jqXHR.responseText)).fadeIn()
+        $('.response').html(alert_error(jqXHR.responseJSON.message || jqXHR.responseText)).fadeIn()
       }
     })
   })
@@ -307,11 +307,9 @@ $(function(){
       }).done(function () {
         $('form#suggest-form').trigger("reset")
       }).success(function () {
-        $('.response').html(alert_success("Name was submitted successfully. Thank you."))
-        $('.response').fadeIn()
+        $('.response').html(alert_success("Name was submitted successfully. Thank you.")).fadeIn()
       }).fail(function (jqXHR) {
-        $('.response').html(alert_error(jqXHR.responseJSON || jqXHR.responseText))
-        $('.response').fadeIn()
+        $('.response').html(alert_error(jqXHR.responseJSON.message || jqXHR.responseText)).fadeIn()
       })
 
     })
