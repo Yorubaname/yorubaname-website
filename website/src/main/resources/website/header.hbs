@@ -2,17 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-    <link href="/assets/img/favicon.png" rel="shortcut icon">
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/jquery-ui.min.css" rel="stylesheet">
-    <link href="/assets/css/keyboard.css" rel="stylesheet">
-    <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/assets/css/overwrite.css" rel="stylesheet">
-    <link href="/assets/css/multiple-select.css" rel="stylesheet">
-    <link href="http://fast.fonts.net/cssapi/6dc70f84-e724-4068-9f7a-797b1bf01ddb.css" rel="stylesheet">
-    <link href="/assets/css/styles.css" rel="stylesheet">
-
-    <title>{{ title }}</title>
+    <meta name="description" content="{{#if name.name}}{{name.name}} - {{name.meaning}}{{else}}YorubaNames{{/if}}">
 
     <meta property="og:title" content="{{#if name.name}}{{name.name}}{{else}}YorubaNames{{/if}}">
     <meta property="og:url" content="{{#if name.name}}http://{{host}}/entries/{{name.name}}{{else}}http://www.yorubaname.com{{/if}}">
@@ -27,6 +17,18 @@
     <meta name="twitter:site" content="@Yorubanames">
     <meta name="twitter:creator" content="@Yorubanames">
     <meta name="twitter:image" content="/assets/img/yd-logo-brown-black-beta.png">
+
+    <link href="/assets/img/favicon.png" rel="shortcut icon">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="/assets/css/keyboard.css" rel="stylesheet">
+    <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/css/overwrite.css" rel="stylesheet">
+    <link href="/assets/css/multiple-select.css" rel="stylesheet">
+    <link href="http://fast.fonts.net/cssapi/6dc70f84-e724-4068-9f7a-797b1bf01ddb.css" rel="stylesheet">
+    <link href="/assets/css/styles.css" rel="stylesheet">
+
+    <title>{{ title }}</title>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
