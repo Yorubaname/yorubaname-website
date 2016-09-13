@@ -33,6 +33,9 @@ $(function(){
   /* On large devices only */
   if ($(window).width() > 769) {
 
+
+    /**
+
     <!-- initialize keyboard & miniKeyboard (required) -->
     $('#keyboard,#miniKeyboard').keyboard({
       openOn: null,
@@ -64,6 +67,7 @@ $(function(){
       $('.ui-keyboard-overlay').remove() // remove overlay because clicking on it will close the keyboard... we set "openOn" to null to prevent closing.
     })
 
+   **/
 
 
     $('.navbar .dropdown').hover(function () {
