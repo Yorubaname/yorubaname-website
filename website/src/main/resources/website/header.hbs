@@ -2,16 +2,17 @@
 <html>
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-    <title>{{ title }} - YorubaName</title>
     <link href="/assets/img/favicon.png" rel="shortcut icon">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/styles.css" rel="stylesheet">
     <link href="/assets/css/jquery-ui.min.css" rel="stylesheet">
     <link href="/assets/css/keyboard.css" rel="stylesheet">
-    <link href="/assets/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="/assets/css/overwrite.css" rel="stylesheet">
     <link href="/assets/css/multiple-select.css" rel="stylesheet">
-    <script type="text/javascript" src="http://fast.fonts.net/jsapi/6dc70f84-e724-4068-9f7a-797b1bf01ddb.js"></script>
+    <link href="http://fast.fonts.net/cssapi/6dc70f84-e724-4068-9f7a-797b1bf01ddb.css" rel="stylesheet">
+    <link href="/assets/css/styles.css" rel="stylesheet">
+
+    <title>{{ title }}</title>
 
     <meta property="og:title" content="{{#if name.name}}{{name.name}}{{else}}YorubaNames{{/if}}">
     <meta property="og:url" content="{{#if name.name}}http://{{host}}/entries/{{name.name}}{{else}}http://www.yorubaname.com{{/if}}">
@@ -33,8 +34,6 @@
     <![endif]-->
 
     {{> scriptIncludes }}
-
-    <title>{{ title }}</title>
 
 </head>
 
