@@ -16,8 +16,6 @@ public class Etymology {
     private String part;
     private String meaning;
 
-//    public Etymology() {
-//    }
 
     public String getPart() {
         return part;

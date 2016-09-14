@@ -246,45 +246,6 @@ public class SearchApi {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-//      Commenting this endpoint out for now as there seems to be no real need for it "except it being a nice to have"
-//      the endpoint that takes a list of names should suffice
-//      /**
-//     * Endpoint that takes an array of {@link NameEntry},
-//     * look them up in the repository and index the entries found
-//     * It allows for batch indexing of names
-//     *
-//     * @param entries the array of {@link NameEntry}
-//     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
-//     */
-//    @RequestMapping(value = "/indexes/batch", method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Map<String, Object>> batchIndexEntries(@Valid NameEntry[] entries) {
-//        Map<String, Object> response = new HashMap<>();
-//        List<NameEntry> nameEntries = new ArrayList<>();
-//        List<String> notFound = new ArrayList<>();
-//
-//        Stream.of(entries).forEach(entry -> {
-//            String name = entry.getName();
-//            NameEntry nameEntry = entryService.loadName(name);
-//            if (nameEntry != null) {
-//                nameEntries.add(nameEntry);
-//            } else {
-//                notFound.add(name);
-//            }
-//        });
-//
-//        if (nameEntries.size() == 0) {
-//            // none of the names requested to be indexed in the database
-//            response.put("message", "none of the names was found in the repository so not indexed");
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
-//        updateIsIndexFlag(nameEntries, indexOperationStatus);
-//        return returnStatusMessage(notFound, indexOperationStatus);
-//
-//    }
 
     /**
      * Endpoint that takes an array of names, look them up in the repository and index the entries found

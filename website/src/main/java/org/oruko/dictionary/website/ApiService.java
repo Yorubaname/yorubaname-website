@@ -26,7 +26,7 @@ public class ApiService {
         ApiService.APIPATH = apipath;
     }
 
-    //@Cacheable("allNames")
+
     public List<Map<String, Object>> getAllNames() {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/names", Map[].class));
     }
