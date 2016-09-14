@@ -33,43 +33,6 @@ $(function(){
   /* On large devices only */
   if ($(window).width() > 769) {
 
-
-    /**
-
-    <!-- initialize keyboard & miniKeyboard (required) -->
-    $('#keyboard,#miniKeyboard').keyboard({
-      openOn: null,
-      stayOpen: false,
-      layout: 'custom',
-      customLayout: {
-        'normal': [
-          'á à é ẹ́ è ẹ̀ í ì',
-          'ó ò ọ́  ọ̀ ṣ ú ù',
-        ],
-        'shift': [
-          'Ň W Ĕ R T Ž Ú Å S D Í Ò',
-          'Ý J Ŵ P Ț X Ç V Õ',
-        ]
-      },
-      repeatRate: 0
-    })
-
-    //--------------------------------------------------------------------------------//
-    $('#keyboardp,#miniKeyboardp').click(function () {
-      var kb = $('#keyboard,#miniKeyboard').getkeyboard();
-      // close the keyboard if the keyboard is visible and the button is clicked a second time
-      kb.isOpen ? kb.close() : kb.reveal()
-    })
-
-    // since IE adds an overlay behind the input to prevent clicking in other inputs (the keyboard may not automatically open on focus... silly IE bug)
-    // We can remove the overlay (transparent) if desired using this code:
-    $('#keyboard,#miniKeyboard').bind('visible', function (e, keyboard, el) {
-      $('.ui-keyboard-overlay').remove() // remove overlay because clicking on it will close the keyboard... we set "openOn" to null to prevent closing.
-    })
-
-   **/
-
-
     $('.navbar .dropdown').hover(function () {
       $(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown()
     }, function () {
