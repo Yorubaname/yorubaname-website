@@ -2,19 +2,19 @@
 
 ## Yorubaname Website Application
 
-The Yorubaname website application powers the backend services for www.yorubaname.com. It includes various modules that implements
+The Yorubaname website application powers the backend services for www.yorubaname.com. It includes various modules that implement
 the various needed functionality. The code for the front facing website found at www.yorubaname.com is also included in it.
 
 ## Getting Started With Running and Development
 
-This should be your 5 minutes guide to getting the application running on your local machine and contributing code.
+This should be your 5 minute guide to getting the application running on your local machine and contributing code.
 
 ### Requirement
 
 You need to have the following installed:
 
 1. JDK 1.6+
-2. MySQL (you do not need to install MySQL if running with in in-memory mode. Continue reading to learn how to start the application with in memory database)
+2. MySQL (you do not need to install MySQL if running in in-memory mode. Continue reading to learn how to start the application with in memory database)
 3. Maven
 
 Consult this [link](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html#CJAGAACB) for more information on how to install the JDK. 
@@ -25,13 +25,12 @@ Consult this [link](https://maven.apache.org/install.html) for more information 
 
 First a quick overview of how things stack up should be of help.
 
-The Yorubaname Website application is the backend portion of the yorubaname dictionary application, and it is built around individual modules that perform one functionality and that
-functionality only. For example we have `tts-module` for tts, `elastic-search` module for the search etc.
+The Yorubaname Website application is the backend portion of the yorubaname dictionary application, and it is built around individual modules that perform one functionality and that functionality only. For example we have `tts-module` for tts, `elastic-search` module for the search etc.
 
-The `webapi-module` is built using these other modules and it's own functionality is to expose the services the dictionary
+The `webapi-module` is built using these other modules and its own functionality is to expose the services the dictionary
 application offers over a REST API.
 
-The `website module` is the front facing part of the dictionary. It is also built using the API's exposed by the `webapi-module` 
+The `website module` is the front facing part of the dictionary. It is also built using the APIs exposed by the `webapi-module` 
 
 The idea behind this set up is to be able to deploy the `webapi-module` and build services on its API the way the
 yorubaname dashboard app (whose source can be found here https://github.com/Yorubaname/yorubaname-dashboard) does.
@@ -43,7 +42,7 @@ Now with the general overview out of the way, let us look at getting the applica
 
 ### Running the Website Application
 
-There are two ways in which the application can be ran for development:
+There are two ways in which the application can be run for development:
 
 * With a MySQL datastore
 * With In-memory Database
@@ -62,8 +61,8 @@ intend to install/use MySQL.
 
 Note, since the Yoruba Language makes extensive use of diacritics, your MySQL install needs to be configured to 
 use UTF-8 in other to be able to handle the contents of the dictionary. If this is not done, the application won't 
-start, because the bootstrap process inserts names which uses diacritics into the database, and if the encoding is 
-not rightm the insertiong would fail. In such a case you would see an error similar in form to:
+start, because the bootstrap process inserts names which use diacritics into the database, and if the encoding is 
+not right the insertiong would fail. In such a case you would see an error similar to:
 
 ```
 Caused by: java.sql.SQLException: Incorrect string value: '\xE1\xBB\x8D\xCD\x81l...' for column 'extended_meaning' at row 1
@@ -104,7 +103,7 @@ If you use an IDE like Intellij, you can run the application by running the `pub
 
 #### Via Spring Boot Run Plugin
 
-1. cd into the projects parent directory and run `mvn clean install`. This would download all the projects dependencies, build the project and install it locally into the maven repository
+1. cd into the projects parent directory and run `mvn clean install`. This would download all the project's dependencies, build the project and install it locally into the maven repository
 2. cd into the website module ({parent_directory}/website) and run `mvn spring-boot:run`
 
 The application would start up and can be accessed on port 8081.
@@ -113,7 +112,7 @@ Remember this command needs to be run from the website module, that is `{parent_
 
 ### Running the Website Application In in-memory mode
 
-It is also possible to run the application with the datastore being in-memory, in that case, there won't be a need to 
+It is also possible to run the application with the datastore being in-memory. In that case, there won't be a need to 
 install MySQL and the application can function without any external dependencies. 
 
 The disadvantage is that whatever you add to the dictionary won't be durably persisted and would be lost on restart.
@@ -137,7 +136,7 @@ Remember this command needs to be run from the website module, that is `{parent_
 ### Configuring ElasticSearch Properties
 
 The ElasticSearch module does not require the installation of ElasticSearch as it will run with an embedded ElasticSearch instance: 
-the only thing required is for the appropriate configurations be provided. which can be done in the application properties
+the only thing required is for the appropriate configurations to be provided which can be done in the application properties.
 
 Different aspect of the embedded ElasticSearch be configured via application properties. The available configuration keys
 and their defaults are
