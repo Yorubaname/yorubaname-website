@@ -38,8 +38,9 @@ public class SearchResultController {
         return ControllerUtil.getYorubaAlphabets();
     }
 
-    @Value("${app.host}:${server.port}")
+    @Value("${app.host}")
     private String host;
+
     /**
      * Displays the result for a single entry
      * @param nameEntry the {@link org.oruko.dictionary.model.NameEntry}
