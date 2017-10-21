@@ -1,7 +1,7 @@
 <ul class="alphabets">
     {{#if alphabets}}
         {{#each alphabets}}
-        <a href="/alphabets/{{this}}"><li>{{this}}</li></a>
+        <a href="/alphabets/{{normalize this}}"><li>{{normalize this}}</li></a>
         {{/each}}
     {{/if}}
 </ul>

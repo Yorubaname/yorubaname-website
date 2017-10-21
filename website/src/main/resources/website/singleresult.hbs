@@ -9,7 +9,7 @@
 		<div class="row search-result">
 				<div class="col-sm-7 entry">
 
-				   <h2 class="intonation" id="name-entry">{{ name.name }}</h2>
+				   <h2 class="intonation" id="name-entry">{{normalize name.name }}</h2>
 					
 					<p><strong>{{message "lang.pronounciation"}}</strong>
                         <button class="btn btn-default btn-sm" id="tts-button">
@@ -32,7 +32,7 @@
 					</div>
 					
 						<br><br>
-						<h4>{{message "lang.meaningof"}} {{ name.name }}</h4>
+						<h4>{{message "lang.meaningof"}} {{normalize name.name }}</h4>
 						<p class="intonation">{{ name.meaning }}</p>
 
 						<br><br>
