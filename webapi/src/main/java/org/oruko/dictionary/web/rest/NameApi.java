@@ -168,9 +168,7 @@ public class NameApi {
             allNameEntries = entryService.loadByState(state, pageParam, countParam);
         }
 
-        allNameEntries.forEach(nameEntry -> {
-            names.add(nameEntry);
-        });
+        names.addAll(allNameEntries);
 
         // for filtering based on whether entry has been indexed
         Predicate<NameEntry> filterBasedOnIndex = (name) -> {
