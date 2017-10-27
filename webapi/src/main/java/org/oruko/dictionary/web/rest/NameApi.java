@@ -184,7 +184,7 @@ public class NameApi {
         // for filtering based on value of submitBy
         Predicate<NameEntry> filterBasedOnSubmitBy = (name) -> {
             if (submittedBy.isPresent()) {
-                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().toString().trim());
+                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().trim());
             } else {
                 return true;
             }
