@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public class FeedbackApiTest extends AbstractApiTest {
         NameEntryFeedback feedback = mock(NameEntryFeedback.class);
         when(entryService.loadName(testName)).thenReturn(nameEntry);
         final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
-        when(feedbackRepository.findByName(testName,sort)).thenReturn(Arrays.<NameEntryFeedback>asList(feedback));
+        when(feedbackRepository.findByName(testName,sort)).thenReturn(Collections.<NameEntryFeedback>singletonList(feedback));
         final ArgumentCaptor<Sort> sortCaptor = ArgumentCaptor.forClass(Sort.class);
         mockMvc.perform(delete("/v1/feedbacks?name="+ testName)
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))

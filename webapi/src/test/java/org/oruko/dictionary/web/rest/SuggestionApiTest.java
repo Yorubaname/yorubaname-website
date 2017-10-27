@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.isA;
@@ -55,7 +56,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName() throws Exception {
         SuggestedName suggestedName = new SuggestedName("test", "this is a test",
-                                                        Arrays.<GeoLocation>asList(new GeoLocation("ABEOKUTA", "NWY")),
+                                                        Collections.<GeoLocation>singletonList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
@@ -70,7 +71,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName_invalid_email() throws Exception {
         SuggestedName suggestedName = new SuggestedName("test", "this is a test",
-                                                        Arrays.<GeoLocation>asList(new GeoLocation("ABEOKUTA", "NWY")),
+                                                        Collections.<GeoLocation>singletonList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "testemail.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")
@@ -84,7 +85,7 @@ public class SuggestionApiTest extends AbstractApiTest {
     @Test
     public void testSuggestName_invalid_name() throws Exception {
         SuggestedName suggestedName = new SuggestedName("", "this is a test",
-                                                        Arrays.<GeoLocation>asList(new GeoLocation("ABEOKUTA", "NWY")),
+                                                        Collections.<GeoLocation>singletonList(new GeoLocation("ABEOKUTA", "NWY")),
                                                         "test@email.com");
         String requestJson = new ObjectMapper().writeValueAsString(suggestedName);
         mockMvc.perform(post("/v1/suggestions")

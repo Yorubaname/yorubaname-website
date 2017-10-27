@@ -34,13 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -414,7 +408,7 @@ public class NameApi {
             throw new GenericApiCallException(name + " not found in the system so cannot be deleted");
         }
         entryService.deleteNameEntryAndDuplicates(name);
-        publishNamesDeletedEvent(Arrays.asList(name));
+        publishNamesDeletedEvent(Collections.singletonList(name));
         return new ResponseEntity<>(response(name + " Deleted"), HttpStatus.OK);
     }
 

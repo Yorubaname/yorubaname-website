@@ -11,6 +11,7 @@ import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -56,7 +57,7 @@ public class NameEntryServiceTest {
         NameEntry nameEntryMock = mock(NameEntry.class);
         when(nameEntryMock.getVariants()).thenReturn(null);
         when(nameEntry.getName()).thenReturn(testName);
-        when(nameEntryRepository.findAll()).thenReturn(Arrays.asList(nameEntryMock));
+        when(nameEntryRepository.findAll()).thenReturn(Collections.singletonList(nameEntryMock));
         when(nameEntryRepository.findByName(testName)).thenReturn(nameEntry);
         nameEntryService.insertTakingCareOfDuplicates(nameEntry);
 
@@ -72,7 +73,7 @@ public class NameEntryServiceTest {
         NameEntry nameEntryMock = mock(NameEntry.class);
         when(nameEntryMock.getVariants()).thenReturn("Ajani");
         when(nameEntry.getName()).thenReturn(testName);
-        when(nameEntryRepository.findAll()).thenReturn(Arrays.asList(nameEntryMock));
+        when(nameEntryRepository.findAll()).thenReturn(Collections.singletonList(nameEntryMock));
         when(nameEntryRepository.findByName(testName)).thenReturn(nameEntry);
         nameEntryService.insertTakingCareOfDuplicates(nameEntry);
 
