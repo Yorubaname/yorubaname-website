@@ -456,7 +456,7 @@ public class NameApi {
     private String formatErrorMessage(BindingResult bindingResult) {
         StringBuilder builder = new StringBuilder();
         for (FieldError error : bindingResult.getFieldErrors()) {
-            builder.append(error.getField() + " " + error.getDefaultMessage() + " ");
+            builder.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" ");
         }
         return builder.toString();
     }
