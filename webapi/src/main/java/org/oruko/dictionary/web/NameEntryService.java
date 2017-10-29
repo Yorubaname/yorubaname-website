@@ -8,6 +8,7 @@ import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryFeedbackRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
+import org.oruko.dictionary.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The service for managing name entries
@@ -25,7 +28,7 @@ import java.util.Optional;
  * @author Dadepo Aderemi.
  */
 @Service
-public class NameEntryService {
+public class NameEntryService implements SearchService {
 
     private Integer BATCH_SIZE = 50;
     private Integer PAGE = 0;
@@ -345,5 +348,23 @@ public class NameEntryService {
         });
     }
 
+    @Override
+    public Map<String, Object> getByName(String nameQuery) {
+        return null;
+    }
 
+    @Override
+    public Set<Map<String, Object>> search(String searchTerm) {
+        return null;
+    }
+
+    @Override
+    public Set<Map<String, Object>> listByAlphabet(String alphabetQuery) {
+        return null;
+    }
+
+    @Override
+    public List<String> autocomplete(String query) {
+        return null;
+    }
 }

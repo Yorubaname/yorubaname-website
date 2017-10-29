@@ -1,12 +1,12 @@
 package org.oruko.dictionary.web.rest;
 
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.events.NameSearchedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
+import org.oruko.dictionary.service.SearchService;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.event.RecentIndexes;
 import org.oruko.dictionary.web.event.RecentSearches;
@@ -49,8 +49,8 @@ public class SearchApi {
 
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
-    private NameEntryService entryService;
-    private ElasticSearchService elasticSearchService;
+    private NameEntryService nameEntryService;
+    private SearchService elasticSearchService;
     private RecentSearches recentSearches;
     private RecentIndexes recentIndexes;
     private EventPubService eventPubService;
@@ -58,17 +58,17 @@ public class SearchApi {
     /**
      * Public constructor for {@link SearchApi}
      *
-     * @param entryService         service layer for interacting with name entries
+     * @param nameEntryService         service layer for interacting with name entries
      * @param elasticSearchService service layer for elastic search functions
      * @param recentSearches       object holding the recent searches in memory
      * @param recentIndexes        object holding the recent index names in memory
      */
     @Autowired
-    public SearchApi(EventPubService eventPubService, NameEntryService entryService,
-                     ElasticSearchService elasticSearchService, RecentSearches recentSearches,
+    public SearchApi(EventPubService eventPubService, NameEntryService nameEntryService,
+                     SearchService elasticSearchService, RecentSearches recentSearches,
                      RecentIndexes recentIndexes) {
         this.eventPubService = eventPubService;
-        this.entryService = entryService;
+        this.nameEntryService = nameEntryService;
         this.elasticSearchService = elasticSearchService;
         this.recentSearches = recentSearches;
         this.recentIndexes = recentIndexes;
@@ -83,7 +83,7 @@ public class SearchApi {
     @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> getMetaData() {
         Map<String, Object> metaData = new HashMap<>();
-        metaData.put("totalPublishedNames", elasticSearchService.getCount());
+        metaData.put("totalPublishedNames", nameEntryService.getSearchableNames());
         return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
@@ -187,24 +187,18 @@ public class SearchApi {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> indexEntry(@Valid NameEntry entry) {
         Map<String, Object> response = new HashMap<>();
-        NameEntry nameEntry = entryService.loadName(entry.getName());
+        NameEntry nameEntry = nameEntryService.loadName(entry.getName());
         if (nameEntry == null) {
             response.put("message", "Cannot index entry. Name " + entry.getName() + " not in the database");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(entry);
-        boolean isIndexed = indexOperationStatus.getStatus();
-        String message = indexOperationStatus.getMessage();
-        if (isIndexed) {
-            publishNameIsIndexed(nameEntry);
-            nameEntry.setIndexed(true);
-            nameEntry.setState(State.PUBLISHED);
-            entryService.saveName(nameEntry);
-            response.put("message", message);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        nameEntry.setIndexed(true);
+        nameEntry.setState(State.PUBLISHED);
+        nameEntryService.saveName(nameEntry);
+        publishNameIsIndexed(nameEntry);
+        response.put("message", "Name is now searchable");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     private void publishNameIsIndexed(NameEntry nameEntry) {
@@ -222,28 +216,20 @@ public class SearchApi {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> indexEntryByName(@PathVariable String name) {
         Map<String, Object> response = new HashMap<>();
-        NameEntry nameEntry = entryService.loadName(name);
+        NameEntry nameEntry = nameEntryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
-            response.put("message",
-                         new StringBuilder(name).append(" not found in the repository so not indexed").toString());
+            response.put("message", new StringBuilder(name).append(" not found in the repository so not indexed").toString());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(nameEntry);
-        boolean isIndexed = indexOperationStatus.getStatus();
+        publishNameIsIndexed(nameEntry);
+        nameEntry.setIndexed(true);
+        nameEntry.setState(State.PUBLISHED);
+        nameEntryService.saveName(nameEntry);
+        response.put("message", name + " has been published");
 
-        response.put("message", indexOperationStatus.getMessage());
-
-        if (isIndexed) {
-            publishNameIsIndexed(nameEntry);
-            nameEntry.setIndexed(true);
-            nameEntry.setState(State.PUBLISHED);
-            entryService.saveName(nameEntry);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
@@ -264,7 +250,7 @@ public class SearchApi {
         List<String> notFound = new ArrayList<>();
 
         Arrays.stream(names).forEach(name -> {
-            NameEntry entry = entryService.loadName(name);
+            NameEntry entry = nameEntryService.loadName(name);
             if (entry == null) {
                 notFound.add(name);
             } else {
@@ -280,10 +266,11 @@ public class SearchApi {
 
         IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
         updateIsIndexFlag(nameEntries, true, indexOperationStatus);
+
         for (NameEntry nameEntry : nameEntries) {
             publishNameIsIndexed(nameEntry);
             nameEntry.setState(State.PUBLISHED);
-            entryService.saveName(nameEntry);
+            nameEntryService.saveName(nameEntry);
         }
         return returnStatusMessage(notFound, indexOperationStatus);
     }
@@ -305,11 +292,11 @@ public class SearchApi {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         if (deleted) {
-            NameEntry nameEntry = entryService.loadName(name);
+            NameEntry nameEntry = nameEntryService.loadName(name);
             if (nameEntry != null) {
                 nameEntry.setIndexed(false);
                 nameEntry.setState(State.NEW);
-                entryService.saveName(nameEntry);
+                nameEntryService.saveName(nameEntry);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -333,7 +320,7 @@ public class SearchApi {
         List<String> notFound = new ArrayList<>();
 
         Arrays.stream(names).forEach(name -> {
-            NameEntry entry = entryService.loadName(name);
+            NameEntry entry = nameEntryService.loadName(name);
             if (entry == null) {
                 notFound.add(name);
             } else {
@@ -360,7 +347,7 @@ public class SearchApi {
                 return entry;
             }).collect(Collectors.toList());
 
-            entryService.saveNames(updatedNames);
+            nameEntryService.saveNames(updatedNames);
         }
     }
 

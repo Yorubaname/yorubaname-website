@@ -5,6 +5,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.test.ElasticsearchIntegrationTest;
 import org.junit.*;
+import org.oruko.dictionary.service.SearchService;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,7 +22,7 @@ import static org.elasticsearch.test.ElasticsearchIntegrationTest.ClusterScope;
 public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
     private String dictionary = "dictionary";
     private ESConfig esConfig;
-    ElasticSearchService elasticSearchService;
+    SearchService searchService;
 
     private class TestNode implements org.elasticsearch.node.Node {
 
@@ -70,7 +71,7 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
 
         flushAndRefresh();
 
-        elasticSearchService = new ElasticSearchService(new TestNode(), esConfig);
+        searchService = new ElasticSearchService(new TestNode(), esConfig);
     }
 
     @Test
@@ -82,7 +83,7 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
 
         flushAndRefresh();
 
-        Map<String, Object> result = elasticSearchService.getByName("jamo");
+        Map<String, Object> result = searchService.getByName("jamo");
         assertEquals("jamo", result.get("name"));
     }
 

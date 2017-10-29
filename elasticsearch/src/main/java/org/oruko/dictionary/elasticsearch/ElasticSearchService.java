@@ -17,6 +17,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.service.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.PostConstruct;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 
@@ -45,7 +46,7 @@ import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
  * @author Dadepo Aderemi.
  */
 @Service
-public class ElasticSearchService {
+public class ElasticSearchService implements SearchService {
 
     private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
 
@@ -86,6 +87,7 @@ public class ElasticSearchService {
      * @param nameQuery the name
      * @return the nameEntry as a Map or null if name not found
      */
+    @Override
     public Map<String, Object> getByName(String nameQuery) {
         SearchResponse searchResponse = exactSearchByName(nameQuery);
 
@@ -103,6 +105,7 @@ public class ElasticSearchService {
      * @param searchTerm the search term
      * @return the list of entries found
      */
+    @Override
     public Set<Map<String, Object>> search(String searchTerm) {
         /**
          * 1. First do a exact search. If found return result. If not go to 2.
@@ -181,6 +184,7 @@ public class ElasticSearchService {
     }
 
 
+    @Override
     public Set<Map<String, Object>> listByAlphabet(String alphabetQuery) {
         final Set<Map<String, Object>> result = new LinkedHashSet<>();
 
@@ -202,6 +206,7 @@ public class ElasticSearchService {
      * @param query the query
      * @return the list of partial matches
      */
+    @Override
     public List<String> autocomplete(String query) {
         final List<String> result = new ArrayList();
 
