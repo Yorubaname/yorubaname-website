@@ -101,8 +101,7 @@ public class SearchApi {
         if (name != null
                 && name.size() == 1
                 && name.stream().allMatch(result -> result.get("name").equals(searchTerm))) {
-            eventPubService.publish(new NameSearchedEvent(searchTerm,
-                                                          request.getRemoteAddr().toString()));
+            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr()));
         }
         return name;
     }
@@ -137,7 +136,7 @@ public class SearchApi {
         Map<String, Object> name = elasticSearchService.getByName(searchTerm);
 
         if (name != null) {
-            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr().toString()));
+            eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr()));
         }
         return name;
     }
@@ -225,8 +224,7 @@ public class SearchApi {
         NameEntry nameEntry = entryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
-            response.put("message",
-                         new StringBuilder(name).append(" not found in the repository so not indexed").toString());
+            response.put("message", name + " not found in the repository so not indexed");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -174,9 +175,7 @@ public class NameApi {
             allNameEntries = entryService.loadByState(state, pageParam, countParam);
         }
 
-        allNameEntries.forEach(nameEntry -> {
-            names.add(nameEntry);
-        });
+        names.addAll(allNameEntries);
 
         // for filtering based on whether entry has been indexed
         Predicate<NameEntry> filterBasedOnIndex = (name) -> {
@@ -190,7 +189,7 @@ public class NameApi {
         // for filtering based on value of submitBy
         Predicate<NameEntry> filterBasedOnSubmitBy = (name) -> {
             if (submittedBy.isPresent()) {
-                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().toString().trim());
+                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().trim());
             } else {
                 return true;
             }
@@ -370,10 +369,11 @@ public class NameApi {
             entryService.bulkUpdateNames(foundNames);
 
             List<String> notFound = notFoundNames.stream()
-                                                 .map(notFoundName -> notFoundName.getName())
+                                                 .map(NameEntry::getName)
                                                  .collect(Collectors.toList());
+
             List<String> found = foundNames.stream()
-                                             .map(foundName -> foundName.getName())
+                                             .map(NameEntry::getName)
                                              .collect(Collectors.toList());
 
             String responseMessage = String.join(",", found) + " updated. ";
@@ -414,7 +414,7 @@ public class NameApi {
             throw new GenericApiCallException(name + " not found in the system so cannot be deleted");
         }
         entryService.deleteNameEntryAndDuplicates(name);
-        publishNamesDeletedEvent(Arrays.asList(name));
+        publishNamesDeletedEvent(Collections.singletonList(name));
         return new ResponseEntity<>(response(name + " Deleted"), HttpStatus.OK);
     }
 
@@ -462,7 +462,7 @@ public class NameApi {
     private String formatErrorMessage(BindingResult bindingResult) {
         StringBuilder builder = new StringBuilder();
         for (FieldError error : bindingResult.getFieldErrors()) {
-            builder.append(error.getField() + " " + error.getDefaultMessage() + " ");
+            builder.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" ");
         }
         return builder.toString();
     }
