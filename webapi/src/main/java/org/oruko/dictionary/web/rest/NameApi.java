@@ -369,10 +369,11 @@ public class NameApi {
             entryService.bulkUpdateNames(foundNames);
 
             List<String> notFound = notFoundNames.stream()
-                                                 .map(notFoundName -> notFoundName.getName())
+                                                 .map(NameEntry::getName)
                                                  .collect(Collectors.toList());
+
             List<String> found = foundNames.stream()
-                                             .map(foundName -> foundName.getName())
+                                             .map(NameEntry::getName)
                                              .collect(Collectors.toList());
 
             String responseMessage = String.join(",", found) + " updated. ";

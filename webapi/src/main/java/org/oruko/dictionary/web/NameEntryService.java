@@ -200,9 +200,7 @@ public class NameEntryService {
                 new PageRequest(pageNumber == 0 ? 0 : pageNumber - 1, count, Sort.Direction.ASC, "id");
 
         Page<NameEntry> pages = nameEntryRepository.findAll(request);
-        pages.forEach(page -> {
-            nameEntries.add(page);
-        });
+        pages.forEach(nameEntries::add);
 
         return nameEntries;
     }
