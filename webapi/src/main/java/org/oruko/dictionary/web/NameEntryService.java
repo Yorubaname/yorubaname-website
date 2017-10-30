@@ -211,10 +211,7 @@ public class NameEntryService {
      * @return list of {@link NameEntry}. If state is not present, it returns an empty list
      */
     public List<NameEntry> loadAllByState(Optional<State> state) {
-        if (!state.isPresent()) {
-            return Collections.emptyList();
-        }
-        return nameEntryRepository.findByState(state.get());
+        return state.map(s -> nameEntryRepository.findByState(s)).orElseGet(Collections::emptyList);
     }
 
     /**
@@ -230,8 +227,8 @@ public class NameEntryService {
             return this.loadAllNames(pageParam, countParam);
         }
 
-        final Integer page = pageParam.isPresent() ? pageParam.get() - 1 : 1;
-        final Integer count = countParam.isPresent() ? countParam.get() : COUNT_SIZE;
+        final Integer page = pageParam.map(integer -> integer - 1).orElse(1);
+        final Integer count = countParam.orElse(COUNT_SIZE);
 
         return nameEntryRepository.findByState(state.get(), new PageRequest(page,count));
 

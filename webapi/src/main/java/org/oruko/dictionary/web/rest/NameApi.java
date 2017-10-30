@@ -178,22 +178,10 @@ public class NameApi {
         names.addAll(allNameEntries);
 
         // for filtering based on whether entry has been indexed
-        Predicate<NameEntry> filterBasedOnIndex = (name) -> {
-            if (indexed.isPresent()) {
-                return name.getIndexed().equals(indexed.get());
-            } else {
-                return true;
-            }
-        };
+        Predicate<NameEntry> filterBasedOnIndex = name -> indexed.map(aBoolean -> name.getIndexed().equals(aBoolean)).orElse(true);
 
         // for filtering based on value of submitBy
-        Predicate<NameEntry> filterBasedOnSubmitBy = (name) -> {
-            if (submittedBy.isPresent()) {
-                return name.getSubmittedBy().trim().equalsIgnoreCase(submittedBy.get().trim());
-            } else {
-                return true;
-            }
-        };
+        Predicate<NameEntry> filterBasedOnSubmitBy = name -> submittedBy.map(s -> name.getSubmittedBy().trim().equalsIgnoreCase(s.trim())).orElse(true);
 
         return names.stream()
                     .filter(filterBasedOnIndex)
