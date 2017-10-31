@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -122,7 +123,7 @@ public class NameApiTest extends AbstractApiTest {
         testNameEntry.setState(State.PUBLISHED);
         NameEntry secondEntry = new NameEntry("secondEntry");
         secondEntry.setState(State.NEW);
-        when(entryService.loadByState(eq(Optional.of(State.NEW)), any(), any())).thenReturn(Arrays.asList(secondEntry));
+        when(entryService.loadByState(eq(Optional.of(State.NEW)), any(), any())).thenReturn(Collections.singletonList(secondEntry));
 
         mockMvc.perform(get("/v1/names?state=NEW"))
                .andExpect(jsonPath("$", hasSize(1)))
@@ -197,7 +198,7 @@ public class NameApiTest extends AbstractApiTest {
     public void test_get_all_a_name_that_has_duplicates() throws Exception {
         DuplicateNameEntry duplicateNameEntry = new DuplicateNameEntry(testNameEntry);
         when(entryService.loadName("test")).thenReturn(testNameEntry);
-        when(entryService.loadNameDuplicates("test")).thenReturn(Arrays.asList(duplicateNameEntry));
+        when(entryService.loadNameDuplicates("test")).thenReturn(Collections.singletonList(duplicateNameEntry));
         mockMvc.perform(get("/v1/names/test?duplicates=true"))
                .andExpect(jsonPath("$.duplicates", hasSize(1)))
                .andExpect(jsonPath("$.mainEntry.name", is("test-entry")))
