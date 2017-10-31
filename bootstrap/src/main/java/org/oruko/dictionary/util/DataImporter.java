@@ -1,6 +1,5 @@
 package org.oruko.dictionary.util;
 
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
@@ -31,9 +30,6 @@ public class DataImporter {
     private GeoLocationRepository geoLocationRepository;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
-
-    @Autowired
     private NameEntryRepository nameEntryRepository;
 
 
@@ -49,7 +45,6 @@ public class DataImporter {
          */
         if (host.equalsIgnoreCase("localhost")) {
             List<NameEntry> nameEntries = initializeDb();
-            initializeElastic(nameEntries);
         }
     }
 
@@ -184,10 +179,6 @@ public class DataImporter {
 
         return Arrays.asList(lagbaja, tamedo, koko, tola, dadepo, bolanle,
                 ade0, ade1, ade2, ade3, ade4, omowumi, omolabi);
-    }
-
-    private void initializeElastic(List<NameEntry> nameEntries) {
-        elasticSearchService.bulkIndexName(nameEntries);
     }
 
     private void initGeoLocation() {

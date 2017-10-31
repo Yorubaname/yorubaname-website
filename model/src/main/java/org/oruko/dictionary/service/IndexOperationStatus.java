@@ -1,4 +1,4 @@
-package org.oruko.dictionary.elasticsearch;
+package org.oruko.dictionary.service;
 
 /**
  * For communicating the status of operation on the index

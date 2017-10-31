@@ -1,14 +1,9 @@
 package org.oruko.dictionary.elasticsearch;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.count.CountResponse;
-import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -17,6 +12,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.service.IndexOperationStatus;
 import org.oruko.dictionary.service.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +31,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
@@ -46,9 +41,9 @@ import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
  * @author Dadepo Aderemi.
  */
 @Service
-public class ElasticSearchService implements SearchService {
+public class ElasticSearchServicex implements SearchService {
 
-    private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
+    private Logger logger = LoggerFactory.getLogger(ElasticSearchServicex.class);
 
     private Node node;
     private Client client;
@@ -57,13 +52,13 @@ public class ElasticSearchService implements SearchService {
     private ObjectMapper mapper = new ObjectMapper();
 
     /**
-     * Public constructor for {@link ElasticSearchService}
+     * Public constructor for {@link ElasticSearchServicex}
      *
      * @param node the elastic search Node
      * @param esConfig the elastic search config
      */
     @Autowired
-    public ElasticSearchService(Node node, ESConfig esConfig) {
+    public ElasticSearchServicex(Node node, ESConfig esConfig) {
         this.node = node;
         this.client = node.client();
         this.esConfig = esConfig;
@@ -74,11 +69,7 @@ public class ElasticSearchService implements SearchService {
         this.resourceLoader = loader;
     }
 
-    ElasticSearchService() {
-    }
-
-    public boolean isElasticSearchNodeAvailable() {
-        return !node.isClosed();
+    ElasticSearchServicex() {
     }
 
     /**
@@ -88,15 +79,16 @@ public class ElasticSearchService implements SearchService {
      * @return the nameEntry as a Map or null if name not found
      */
     @Override
-    public Map<String, Object> getByName(String nameQuery) {
-        SearchResponse searchResponse = exactSearchByName(nameQuery);
-
-        SearchHit[] hits = searchResponse.getHits().getHits();
-        if (hits.length == 1) {
-            return hits[0].getSource();
-        } else {
-            return null;
-        }
+    public Map<String, NameEntry> getByName(String nameQuery) {
+        return null;
+//        SearchResponse searchResponse = exactSearchByName(nameQuery);
+//
+//        SearchHit[] hits = searchResponse.getHits().getHits();
+//        if (hits.length == 1) {
+//            return hits[0].getSource();
+//        } else {
+//            return null;
+//        }
     }
 
     /**
@@ -219,6 +211,11 @@ public class ElasticSearchService implements SearchService {
         return result;
     }
 
+    @Override
+    public Integer getSearchableNames() {
+        return null;
+    }
+
 
     /**
      * Add a {@link org.oruko.dictionary.model.NameEntry} into ElasticSearch index
@@ -227,61 +224,61 @@ public class ElasticSearchService implements SearchService {
      * @return returns true | false depending on if the indexing operation was successful.
      */
     public IndexOperationStatus indexName(NameEntry entry) {
-
-        if (!isElasticSearchNodeAvailable()) {
-            return new IndexOperationStatus(false,
-                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
-        }
-
-        try {
-            String entryAsJson = mapper.writeValueAsString(entry);
-            String name = entry.getName();
-            client.prepareIndex(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
-                  .setSource(entryAsJson)
-                  .execute()
-                  .actionGet();
-
-            return new IndexOperationStatus(true, name + " indexed successfully");
-        } catch (JsonProcessingException e) {
-            logger.info("Failed to parse NameEntry into Json", e);
-            return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
-        }
+        return null;
+//        if (!isElasticSearchNodeAvailable()) {
+//            return new IndexOperationStatus(false,
+//                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
+//        }
+//
+//        try {
+//            String entryAsJson = mapper.writeValueAsString(entry);
+//            String name = entry.getName();
+//            client.prepareIndex(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
+//                  .setSource(entryAsJson)
+//                  .execute()
+//                  .actionGet();
+//
+//            return new IndexOperationStatus(true, name + " indexed successfully");
+//        } catch (JsonProcessingException e) {
+//            logger.info("Failed to parse NameEntry into Json", e);
+//            return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
+//        }
     }
 
 
     public IndexOperationStatus bulkIndexName(List<NameEntry> entries) {
-
-        if (entries.size() == 0) {
-            return new IndexOperationStatus(false, "Cannot index an empty list");
-        }
-
-        if (!isElasticSearchNodeAvailable()) {
-            return new IndexOperationStatus(false,
-                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
-        }
-
-        BulkRequestBuilder bulkRequest = client.prepareBulk();
-        entries.forEach(entry -> {
-            try {
-                String entryAsJson = mapper.writeValueAsString(entry);
-                String name = entry.getName();
-                IndexRequestBuilder request = client.prepareIndex(esConfig.getIndexName(),
-                                                                  esConfig.getDocumentType(),
-                                                                  name.toLowerCase())
-                                                    .setSource(entryAsJson);
-                bulkRequest.add(request);
-            } catch (JsonProcessingException e) {
-                logger.debug("Error while building bulk indexing operation", e);
-            }
-        });
-
-        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-        if (bulkResponse.hasFailures()) {
-            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
-        }
-
-        return new IndexOperationStatus(true, "Bulk indexing successfully. Indexed the following names "
-                + String.join(",", entries.stream().map(entry -> entry.getName()).collect(Collectors.toList())));
+        return null;
+//        if (entries.size() == 0) {
+//            return new IndexOperationStatus(false, "Cannot index an empty list");
+//        }
+//
+//        if (!isElasticSearchNodeAvailable()) {
+//            return new IndexOperationStatus(false,
+//                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
+//        }
+//
+//        BulkRequestBuilder bulkRequest = client.prepareBulk();
+//        entries.forEach(entry -> {
+//            try {
+//                String entryAsJson = mapper.writeValueAsString(entry);
+//                String name = entry.getName();
+//                IndexRequestBuilder request = client.prepareIndex(esConfig.getIndexName(),
+//                                                                  esConfig.getDocumentType(),
+//                                                                  name.toLowerCase())
+//                                                    .setSource(entryAsJson);
+//                bulkRequest.add(request);
+//            } catch (JsonProcessingException e) {
+//                logger.debug("Error while building bulk indexing operation", e);
+//            }
+//        });
+//
+//        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+//        if (bulkResponse.hasFailures()) {
+//            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
+//        }
+//
+//        return new IndexOperationStatus(true, "Bulk indexing successfully. Indexed the following names "
+//                + String.join(",", entries.stream().map(entry -> entry.getName()).collect(Collectors.toList())));
     }
 
     /**
@@ -291,44 +288,45 @@ public class ElasticSearchService implements SearchService {
      * @return true | false depending on if deleting operation was successful
      */
     public IndexOperationStatus deleteFromIndex(String name) {
-
-        if (!isElasticSearchNodeAvailable()) {
-
-            return new IndexOperationStatus(false,
-                                            "Delete unsuccessful. You do not have an elasticsearch node running");
-        }
-
-        DeleteResponse response = deleteName(name);
-        return new IndexOperationStatus(response.isFound(), name + " deleted from index");
+        return null;
+//        if (!isElasticSearchNodeAvailable()) {
+//
+//            return new IndexOperationStatus(false,
+//                                            "Delete unsuccessful. You do not have an elasticsearch node running");
+//        }
+//
+//        DeleteResponse response = deleteName(name);
+//        return new IndexOperationStatus(response.isFound(), name + " deleted from index");
     }
 
     public IndexOperationStatus bulkDeleteFromIndex(List<String> entries) {
-        if (entries.size() == 0) {
-            return new IndexOperationStatus(false, "Cannot index an empty list");
-        }
-
-        if (!isElasticSearchNodeAvailable()) {
-            return new IndexOperationStatus(false,
-                                            "Delete unsuccessful. You do not have an elasticsearch node running");
-        }
-
-        BulkRequestBuilder bulkRequest = client.prepareBulk();
-
-        entries.forEach(entry -> {
-            DeleteRequestBuilder request = client.prepareDelete(esConfig.getIndexName(),
-                                                                esConfig.getDocumentType(),
-                                                                entry.toLowerCase());
-            bulkRequest.add(request);
-        });
-
-        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-        if (bulkResponse.hasFailures()) {
-            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
-        }
-
-        return new IndexOperationStatus(true, "Bulk deleting successfully. "
-                + "Removed the following names from search index "
-                + String.join(",", entries));
+        return null;
+//        if (entries.size() == 0) {
+//            return new IndexOperationStatus(false, "Cannot index an empty list");
+//        }
+//
+//        if (!isElasticSearchNodeAvailable()) {
+//            return new IndexOperationStatus(false,
+//                                            "Delete unsuccessful. You do not have an elasticsearch node running");
+//        }
+//
+//        BulkRequestBuilder bulkRequest = client.prepareBulk();
+//
+//        entries.forEach(entry -> {
+//            DeleteRequestBuilder request = client.prepareDelete(esConfig.getIndexName(),
+//                                                                esConfig.getDocumentType(),
+//                                                                entry.toLowerCase());
+//            bulkRequest.add(request);
+//        });
+//
+//        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+//        if (bulkResponse.hasFailures()) {
+//            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
+//        }
+//
+//        return new IndexOperationStatus(true, "Bulk deleting successfully. "
+//                + "Removed the following names from search index "
+//                + String.join(",", entries));
     }
 
 

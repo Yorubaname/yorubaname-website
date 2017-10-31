@@ -4,8 +4,8 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.events.EventPubService;
+import org.oruko.dictionary.service.SearchService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -27,7 +27,7 @@ public class SearchApiTest extends AbstractApiTest {
     MockMvc mockMvc;
 
     @Mock
-    ElasticSearchService searchService;
+    SearchService searchService;
 
     @Mock
     EventPubService eventPubService;
@@ -40,12 +40,12 @@ public class SearchApiTest extends AbstractApiTest {
 
     @Test
     public void testMetadata() throws Exception {
-        when(searchService.getCount()).thenReturn(3L);
+        when(searchService.getSearchableNames()).thenReturn(3);
         mockMvc.perform(get("/v1/search/meta"))
                .andExpect(jsonPath("$.totalPublishedNames", is(3)))
                .andExpect(status().isOk());
 
-        verify(searchService).getCount();
+        verify(searchService).getSearchableNames();
     }
 
     @Test
