@@ -211,7 +211,8 @@ public class SearchApi {
         NameEntry nameEntry = nameEntryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
-            response.put("message", new StringBuilder(name).append(" not found in the repository so not indexed").toString());
+            response.put("message",
+                         name+" not found in the repository so not indexed");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
