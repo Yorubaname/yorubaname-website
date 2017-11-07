@@ -11,9 +11,9 @@ public interface SearchService {
      * For getting an entry from the search index by name
      *
      * @param nameQuery the name
-     * @return the nameEntry as a Map or null if name not found
+     * @return the nameEntry or null if name not found
      */
-    Map<String, NameEntry> getByName(String nameQuery);
+    NameEntry getByName(String nameQuery);
 
     /**
      * For searching the name entries for a name
@@ -32,7 +32,7 @@ public interface SearchService {
      *
      * @return the list of names that starts with the given alphabet
      */
-    Set<Map<String, Object>> listByAlphabet(String alphabetQuery);
+    Set<NameEntry> listByAlphabet(String alphabetQuery);
 
     /**
      * For getting the list of partial matches for autocomplete

@@ -8,8 +8,6 @@ import org.oruko.dictionary.model.exception.RepositoryAccessError;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryFeedbackRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
-import org.oruko.dictionary.service.IndexOperationStatus;
-import org.oruko.dictionary.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,12 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * The service for managing name entries
@@ -31,7 +25,7 @@ import java.util.Set;
  * @author Dadepo Aderemi.
  */
 @Service
-public class NameEntryService implements SearchService {
+public class NameEntryService {
 
     private Integer BATCH_SIZE = 50;
     private Integer PAGE = 0;
@@ -349,68 +343,5 @@ public class NameEntryService implements SearchService {
             }
             return false;
         });
-    }
-
-    @Override
-    public Map<String, NameEntry> getByName(String nameQuery) {
-        // TODO Confirm that the accents are respected
-        NameEntry foundName = nameEntryRepository.findByName(nameQuery);
-        if (Objects.isNull(foundName)) {
-            return null;
-        }
-        return new HashMap<String, NameEntry>() {{
-            put(nameQuery, foundName);
-        }};
-    }
-
-    @Override
-    public Set<Map<String, Object>> search(String searchTerm) {
-        /**
-         * The following approach should be taken:
-         *
-         * 1. First do a exact search. If found return result. If not go to 2.
-         * 2. Do a search with ascii-folding. If found return result, if not go to 3
-         * 3. Do a prefix search. If found, return result, if not go to 4
-         * 4. Do a search based on partial match. Irrespective of outcome, proceed to 4
-         *    4a - Using nGram?
-         *    4b - ?
-         * 5. Do a full text search against other variants. Irrespective of outcome, proceed to 6
-         * 6. Do a full text search against meaning. Irrespective of outcome, proceed to 7
-         * 7. Do a full text search against extendedMeaning
-         */
-        return null;
-    }
-
-    @Override
-    public Set<Map<String, Object>> listByAlphabet(String alphabetQuery) {
-        // TODO fetch by alphabet. Respect the accents
-        return null;
-    }
-
-    @Override
-    public List<String> autocomplete(String query) {
-        // TODO implement, disregarding the accents
-        return null;
-    }
-
-    @Override
-    public Integer getSearchableNames() {
-        // TODO implement
-        return null;
-    }
-
-    @Override
-    public IndexOperationStatus bulkIndexName(List<NameEntry> entries) {
-        return null;
-    }
-
-    public IndexOperationStatus deleteFromIndex(String name) {
-        // TODO implement
-        return null;
-    }
-
-    @Override
-    public IndexOperationStatus bulkDeleteFromIndex(List<String> name) {
-        return null;
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NameDeletedEventHandler {
 
-    @Qualifier("nameEntryService")
+    @Qualifier("jpaSearchService")
     @Autowired
     SearchService nameSearchService;
     @Autowired

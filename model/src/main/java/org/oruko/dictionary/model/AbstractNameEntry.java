@@ -6,8 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.oruko.dictionary.model.repository.Etymology;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.EnumType;
@@ -18,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 1. Name
@@ -257,6 +257,7 @@ public abstract class AbstractNameEntry {
         return isIndexed;
     }
 
+    // REMOVE AND USE PUBLISHED STATE
     public void setIndexed(Boolean published) {
         this.isIndexed = published;
     }

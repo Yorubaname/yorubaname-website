@@ -6,6 +6,7 @@ import org.oruko.dictionary.events.NameSearchedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.service.IndexOperationStatus;
+import org.oruko.dictionary.service.JpaSearchService;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.event.RecentIndexes;
 import org.oruko.dictionary.web.event.RecentSearches;
@@ -49,6 +50,7 @@ public class SearchApi {
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
     private NameEntryService nameEntryService;
+    private JpaSearchService searchService;
     private RecentSearches recentSearches;
     private RecentIndexes recentIndexes;
     private EventPubService eventPubService;
@@ -61,10 +63,14 @@ public class SearchApi {
      * @param recentIndexes        object holding the recent index names in memory
      */
     @Autowired
-    public SearchApi(EventPubService eventPubService, NameEntryService nameEntryService,
-                     RecentSearches recentSearches, RecentIndexes recentIndexes) {
+    public SearchApi(EventPubService eventPubService,
+                     NameEntryService nameEntryService,
+                     JpaSearchService searchService,
+                     RecentSearches recentSearches,
+                     RecentIndexes recentIndexes) {
         this.eventPubService = eventPubService;
         this.nameEntryService = nameEntryService;
+        this.searchService = searchService;
         this.recentSearches = recentSearches;
         this.recentIndexes = recentIndexes;
     }
@@ -78,7 +84,7 @@ public class SearchApi {
     @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> getMetaData() {
         Map<String, Object> metaData = new HashMap<>();
-        metaData.put("totalPublishedNames", nameEntryService.getSearchableNames());
+        metaData.put("totalPublishedNames", searchService.getSearchableNames());
         return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
@@ -92,7 +98,7 @@ public class SearchApi {
     public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
                                            HttpServletRequest request) {
 
-        Set<Map<String, Object>> name = nameEntryService.search(searchTerm);
+        Set<Map<String, Object>> name = searchService.search(searchTerm);
         if (name != null
                 && name.size() == 1
                 && name.stream().allMatch(result -> result.get("name").equals(searchTerm))) {
@@ -109,24 +115,24 @@ public class SearchApi {
         }
 
         String query = searchQuery.get();
-        return nameEntryService.autocomplete(query);
+        return searchService.autocomplete(query);
     }
 
 
     @RequestMapping(value = "/alphabet/{alphabet}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Map<String, Object>> getByAlphabet(@PathVariable Optional<String> alphabet) {
+    public Set<NameEntry> getByAlphabet(@PathVariable Optional<String> alphabet) {
         if (!alphabet.isPresent()) {
             return Collections.emptySet();
         }
-        return nameEntryService.listByAlphabet(alphabet.get());
+        return searchService.listByAlphabet(alphabet.get());
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, NameEntry> findByName(@PathVariable String searchTerm, HttpServletRequest request) {
+    public NameEntry findByName(@PathVariable String searchTerm, HttpServletRequest request) {
 
-        Map<String, NameEntry> name = nameEntryService.getByName(searchTerm);
+        NameEntry name = searchService.getByName(searchTerm);
 
         if (name != null) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr()));
@@ -257,7 +263,7 @@ public class SearchApi {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = nameEntryService.bulkIndexName(nameEntries);
+        IndexOperationStatus indexOperationStatus = searchService.bulkIndexName(nameEntries);
         updateIsIndexFlag(nameEntries, true, indexOperationStatus);
 
         for (NameEntry nameEntry : nameEntries) {
@@ -281,7 +287,7 @@ public class SearchApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> deleteFromIndex(@PathVariable String name) {
-        IndexOperationStatus indexOperationStatus = nameEntryService.deleteFromIndex(name);
+        IndexOperationStatus indexOperationStatus = searchService.deleteFromIndex(name);
         boolean deleted = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
         Map<String, Object> response = new HashMap<>();
@@ -329,7 +335,7 @@ public class SearchApi {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = nameEntryService.bulkDeleteFromIndex(found);
+        IndexOperationStatus indexOperationStatus = searchService.bulkDeleteFromIndex(found);
         updateIsIndexFlag(nameEntries, false, indexOperationStatus);
         return returnStatusMessage(notFound, indexOperationStatus);
     }

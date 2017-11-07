@@ -79,7 +79,7 @@ public class ElasticSearchServicex implements SearchService {
      * @return the nameEntry as a Map or null if name not found
      */
     @Override
-    public Map<String, NameEntry> getByName(String nameQuery) {
+    public NameEntry getByName(String nameQuery) {
         return null;
 //        SearchResponse searchResponse = exactSearchByName(nameQuery);
 //
@@ -177,7 +177,7 @@ public class ElasticSearchServicex implements SearchService {
 
 
     @Override
-    public Set<Map<String, Object>> listByAlphabet(String alphabetQuery) {
+    public Set<NameEntry> listByAlphabet(String alphabetQuery) {
         final Set<Map<String, Object>> result = new LinkedHashSet<>();
 
         final SearchResponse searchResponse = prefixFilterSearch(alphabetQuery, true);
@@ -189,7 +189,7 @@ public class ElasticSearchServicex implements SearchService {
             result.add(hit.getSource());
         });
 
-        return result;
+        return null;
     }
 
     /**

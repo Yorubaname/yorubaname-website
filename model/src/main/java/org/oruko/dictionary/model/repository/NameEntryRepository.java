@@ -5,8 +5,9 @@ import org.oruko.dictionary.model.State;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by dadepo on 2/4/15.
@@ -36,4 +37,8 @@ public interface NameEntryRepository extends JpaRepository<NameEntry, Long> {
      * @return list of {@link NameEntry}
      */
     List<NameEntry> findByState(State state);
+
+    // Search related repository access
+    Set<NameEntry> findByNameStartingWithAndState(String alphabet, State state);
+    NameEntry findByNameAndState(String alphabet, State state);
 }

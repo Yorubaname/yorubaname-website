@@ -1,20 +1,24 @@
 package org.oruko.dictionary.web.rest;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.service.SearchService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Collections;
-
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by Dadepo Aderemi.
@@ -72,7 +76,7 @@ public class SearchApiTest extends AbstractApiTest {
 
     @Test
     public void testFindByName_NameNotFound() throws Exception {
-        when(searchService.getByName("query")).thenReturn(Collections.emptyMap());
+        when(searchService.getByName("query")).thenReturn(null);
         mockMvc.perform(get("/v1/search/query"))
                .andExpect(jsonPath("$").isEmpty())
                .andExpect(status().isOk());

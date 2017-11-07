@@ -106,7 +106,17 @@ public class DataImporter {
         bolanle.setExtendedMeaning("This is extended dummy meaning for Bọ́lánlé");
         bolanle.setGeoLocation(Arrays.asList(new GeoLocation("IBADAN", "NWY")));
         bolanle.setEtymology(etymology);
-        bolanle.setState(State.NEW);
+        bolanle.setIndexed(true);
+        bolanle.setState(State.PUBLISHED);
+
+
+        NameEntry bimpe = new NameEntry("Bimpe");
+        bimpe.setMeaning("This is dummy meaning for Bimpe");
+        bimpe.setExtendedMeaning("This is extended dummy meaning for Bimpe");
+        bimpe.setGeoLocation(Arrays.asList(new GeoLocation("IBADAN", "NWY")));
+        bimpe.setEtymology(etymology);
+        bolanle.setIndexed(true);
+        bimpe.setState(State.PUBLISHED);
 
         NameEntry ade0 = new NameEntry("Ade");
         ade0.setMeaning("This is dummy meaning for ade");
@@ -169,6 +179,7 @@ public class DataImporter {
         nameEntryRepository.save(tola);
         nameEntryRepository.save(dadepo);
         nameEntryRepository.save(bolanle);
+        nameEntryRepository.save(bimpe);
         nameEntryRepository.save(ade0);
         nameEntryRepository.save(ade1);
         nameEntryRepository.save(ade2);

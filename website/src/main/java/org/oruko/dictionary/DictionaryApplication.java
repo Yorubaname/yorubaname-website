@@ -77,6 +77,7 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
     public LocaleResolver localeResolver() {
         CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
         cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+        cookieLocaleResolver.setCookieName("lang");
         return cookieLocaleResolver;
     }
 
@@ -123,7 +124,6 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return net.sf.ehcache.CacheManager.newInstance(config);
     }
 
-    @Bean
     public CacheManager cacheManager() {
         return new EhCacheCacheManager(ecacheManager());
     }
