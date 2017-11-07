@@ -123,7 +123,7 @@ public class NameEntryServiceTest {
 
     @Test
     public void testDeleteInDuplicateEntry() throws Exception {
-        DuplicateNameEntry duplicateNameEntry = mock(DuplicateNameEntry.class);;;;
+        DuplicateNameEntry duplicateNameEntry = mock(DuplicateNameEntry.class);
         nameEntryService.deleteInDuplicateEntry(duplicateNameEntry);
         verify(duplicateEntryRepository).delete(duplicateNameEntry);
     }

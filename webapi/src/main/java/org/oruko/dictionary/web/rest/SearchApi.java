@@ -110,7 +110,7 @@ public class SearchApi {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
         if (!searchQuery.isPresent()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         String query = searchQuery.get();
@@ -121,12 +121,8 @@ public class SearchApi {
     @RequestMapping(value = "/alphabet/{alphabet}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Set<Map<String, Object>> getByAlphabet(@PathVariable Optional<String> alphabet) {
-        if (!alphabet.isPresent()) {
-            return Collections.EMPTY_SET;
-        }
+        return alphabet.map(s -> elasticSearchService.listByAlphabet(s)).orElseGet(Collections::emptySet);
 
-
-        return elasticSearchService.listByAlphabet(alphabet.get());
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,

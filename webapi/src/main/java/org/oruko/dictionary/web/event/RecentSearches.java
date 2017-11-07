@@ -81,9 +81,7 @@ public class RecentSearches {
         List<Map<String, Integer>> frequency = getNameWithSearchFrequency();
         List<String> mostPopular = new ArrayList<>();
 
-        frequency.stream().forEach(name -> {
-            mostPopular.add((String) name.keySet().toArray()[0]);
-        });
+        frequency.stream().forEach(name -> mostPopular.add((String) name.keySet().toArray()[0]));
 
         if (mostPopular.size() > popularListLimit) {
             return mostPopular.subList(0, popularListLimit).toArray(new String[popularListLimit]);

@@ -100,9 +100,7 @@ public class FeedbackApi {
         }
         final Sort sort = new Sort(Sort.Direction.DESC, "submittedAt");
         List<NameEntryFeedback> feedbacks = feedbackRepository.findByName(name, sort);
-        feedbacks.stream().forEach(feedback -> {
-            feedbackRepository.delete(feedback);
-        });
+        feedbacks.stream().forEach(feedback -> feedbackRepository.delete(feedback));
 
         return new ResponseEntity<>(response("All Feedback messages deleted for "+ name), HttpStatus.OK);
     }
