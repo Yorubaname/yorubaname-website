@@ -7,7 +7,9 @@
             <h1>{{message "lang.jumbotron1"}} <span>{{nameCount}}</span> {{message "lang.jumbotron2"}}</h1>
 
             {{> searchcomponent }}
-            <p>"A phenomenal concept that will keep the Yorùbá culture alive. I strongly support the endeavor." <br> &mdash; Ọọ̀ni Adéyẹyè Ẹniìtàn Ògúnwùsì <em>(Ọ̀jájá II. Ọọ̀ni of Ifẹ̀ Kingdom)</em></p>
+            <p>{{message "lang.oni-message"}} <br> &mdash; Ọọ̀ni Adéyẹyè Ẹniìtàn Ògúnwùsì <em>(Ọ̀jájá II
+                .Ọọ̀ni of Ifẹ̀ Kingdom)
+            </em></p>
 
             <h3>{{message "lang.jumboh31"}}</h3>
             <a href="/submitname" class="btn btn-lg btn-link" style="margin-bottom:15px">{{message "lang.jumboh32"}}</a>
@@ -60,21 +62,17 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-sm-12 text-center"><h3>Our key supporters</h3></div>
-            <div class="col-sm-2 col-sm-offset-1"><a href="http://www.oraturelab.com" target="_blank">
-                <img class="img-responsive" src="/assets/img/supporters/orature_lab.png"></a>
+            <div class="col-sm-12 text-center"><h3>{{message "lang.key-supporters"}}</h3></div>
+            <div class="col-sm-2 col-sm-offset-2"><a href="http://capitalsqua.re/" target="_blank"><img
+                    class="img-responsive" src="/assets/img/supporters/capital_square.png"></a></div>
+            <div class="col-sm-2"><a href="http://www.goethe.de/ins/ng/en" target="_blank"><img class="img-responsive"
+                                                                                                src="/assets/img/supporters/goethe_institut.png"></a>
             </div>
-            <div class="col-sm-2"><a href="http://capitalsqua.re/" target="_blank">
-                <img class="img-responsive" src="/assets/img/supporters/capital_square.png"></a>
+            <div class="col-sm-2"><a href="http://www.alt-i.org/index.php" target="_blank"><img class="img-responsive"
+                                                                                                src="/assets/img/supporters/alti.png"></a>
             </div>
-            <div class="col-sm-2"><a href="http://www.goethe.de/ins/ng/en" target="_blank">
-                <img class="img-responsive" src="/assets/img/supporters/goethe_institut.png"></a>
-            </div>
-            <div class="col-sm-2"><a href="http://www.alt-i.org/index.php" target="_blank">
-                <img class="img-responsive" src="/assets/img/supporters/alti.png"></a>
-            </div>
-            <div class="col-sm-2"><a href="http://lgmediting.com/" target="_blank">
-                <img class="img-responsive" src="/assets/img/supporters/lgmediting-logo.png"></a>
+            <div class="col-sm-2"><a href="http://lgmediting.com/" target="_blank"><img class="img-responsive"
+                                                                                        src="/assets/img/supporters/lgmediting-logo.png"></a>
             </div>
         </div>
 
@@ -84,8 +82,7 @@
                      data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"
                      data-show-posts="false">
                     <div class="fb-xfbml-parse-ignore">
-                        <blockquote cite="https://www.facebook.com/YorubaNames"><a
-                                href="https://www.facebook.com/YorubaNames">Yoruba Names Dictionary</a></blockquote>
+                        <blockquote cite="https://www.facebook.com/YorubaNames"><a href="https://www.facebook.com/YorubaNames">{{message "lang.yoruba-name-dictionary"}}</a></blockquote>
                     </div>
                 </div>
             </div>
@@ -93,12 +90,11 @@
                 <form method="post" class="subscribe"
                       action="//YorubaName.us10.list-manage.com/subscribe/post?u=447ae670439b332a80e50107c&amp;id=0cfdd9d988"
                       target="_blank">
-                    <h4>YorubaName Newsletter</h4>
-                    <p>Follow us behind the scenes for exclusive news, freebies, links, lexicographer tools, and other important updates about this dictionary.</p>
+                    <h4>{{message "lang.yoruba-name-newsletter"}}</h4>
+                    <p>{{message "lang.follow-update"}}</p>
                     <input type="hidden" name="b_447ae670439b332a80e50107c_0cfdd9d988" tabindex="-1" value="">
                     <div class="form-group">
-                        <input type="email" name="EMAIL" placeholder="Enter your email here" class="form-control"
-                               required="required">
+                        <input type="email" name="EMAIL" placeholder="{{message "lang.enter-your-email"}}" class="form-control" required="required">
                         <button class="btn btn-success"><i class="fa fa-send"></i></button>
                     </div>
                 </form>

@@ -261,3 +261,8 @@ a.btn,.btn:focus {
   background-color: #f9f9f9;
 }
 
+
+#lang-group.nav>li>a {
+    padding: 7px 12px !important;
+    font-weight: normal;
+}

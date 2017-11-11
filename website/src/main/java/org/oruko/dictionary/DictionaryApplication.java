@@ -10,6 +10,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -34,6 +35,8 @@ import java.util.Locale;
 @EnableSwagger2
 //@EnableWebSecurity //switches off auto configuration for spring security
 public class DictionaryApplication extends WebMvcConfigurerAdapter {
+
+    private final String LANG = "lang";
 
     /**
      * Main method used to kick start and run the application
@@ -77,15 +80,23 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
     public LocaleResolver localeResolver() {
         CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
         cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
-        cookieLocaleResolver.setCookieName("lang");
+        cookieLocaleResolver.setCookieName(LANG);
         return cookieLocaleResolver;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang");
+        lci.setParamName(LANG);
         return lci;
+    }
+
+    @Bean
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
+        source.setDefaultEncoding("UTF-8");
+        source.setBasename("classpath:/messages");
+        return source;
     }
 
 
