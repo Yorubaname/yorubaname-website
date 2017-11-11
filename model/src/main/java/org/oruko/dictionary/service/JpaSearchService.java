@@ -55,8 +55,7 @@ public class JpaSearchService implements SearchService {
 
     @Override
     public Integer getSearchableNames() {
-        // TODO implement
-        return null;
+        return nameEntryRepository.countByState(State.PUBLISHED);
     }
 
     @Override

@@ -41,4 +41,5 @@ public interface NameEntryRepository extends JpaRepository<NameEntry, Long> {
     // Search related repository access
     Set<NameEntry> findByNameStartingWithAndState(String alphabet, State state);
     NameEntry findByNameAndState(String alphabet, State state);
+    Integer countByState(State state);
 }
