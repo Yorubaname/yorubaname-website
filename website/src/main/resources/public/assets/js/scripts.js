@@ -17,6 +17,26 @@
 
 $(function(){
 
+
+  <!-- add style to language selector  -->
+  $("ul#lang-group>li.active").removeClass("active");
+  var selectedLang;
+  if (document.cookie.indexOf("lang=") === -1) {
+    selectedLang = 'en';
+  } else {
+    for (i = 0; i < document.cookie.split(";").length; i++) {
+      var str = document.cookie.split(";")[i];
+      if (str.trim().startsWith("lang=")) {
+        var langEntry = str.split("=");
+        selectedLang = langEntry[1];
+        console.log(selectedLang);
+        break;
+      }
+    }
+  }
+
+  $('li#'+selectedLang).addClass("active");
+
   <!-- Enable all the tooltip -->
   $('[data-toggle="tooltip"]').tooltip();
 

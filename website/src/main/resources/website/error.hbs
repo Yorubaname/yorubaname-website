@@ -1,12 +1,11 @@
 {{> header }}
 
 <section class="container">
-   <div class="row">
-      <div class="col-sm-8 col-sm-offset-2 text-center">
-         <h2>Oops. Sure you got the right link?</h2>
-         <h4 class="text-muted">It seems like we can't find the resource you're looking for, or it's been moved.</h4>
-         <p>Why not click here to go back to the <a href="/" style="color:#0e5264; text-decoration:underline">home page</a> to discover more Yoruba names?</p>
-      </div>
-   	 
-   </div>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 text-center">
+            <h2>{{message "lang.error-page-not-found"}}</h2>
+            <h4 class="text-muted">{{message "lang.error-message1"}}</h4>
+            <p>{{message "lang.error-message2"}}</p>
+        </div>
+    </div>
 </section>
