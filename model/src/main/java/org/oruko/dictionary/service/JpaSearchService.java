@@ -63,9 +63,14 @@ public class JpaSearchService implements SearchService {
         return null;
     }
 
-    public IndexOperationStatus deleteFromIndex(String name) {
-        // TODO implement
-        return null;
+    public IndexOperationStatus removeFromIndex(String name) {
+        NameEntry foundName = nameEntryRepository.findByNameAndState(name, State.PUBLISHED);
+        if (foundName == null) {
+            return new IndexOperationStatus(false, "Published Name not found");
+        }
+        foundName.setState(State.UNPUBLISHED);
+        nameEntryRepository.save(foundName);
+        return new IndexOperationStatus(true, name + " removed from index");
     }
 
     @Override

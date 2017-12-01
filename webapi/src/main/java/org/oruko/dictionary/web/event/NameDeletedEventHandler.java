@@ -28,7 +28,7 @@ public class NameDeletedEventHandler {
     public void listen(NameDeletedEvent event) {
         // Handle when a name is deleted
         try {
-            nameSearchService.deleteFromIndex(event.getName());
+            nameSearchService.removeFromIndex(event.getName());
             recentIndexes.remove(event.getName());
             recentSearches.remove(event.getName());
         } catch (Exception e) {

@@ -100,7 +100,7 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
     }
 
 
-    @Bean
+//    @Bean
     public net.sf.ehcache.CacheManager ecacheManager() {
         CacheConfiguration allNames = new CacheConfiguration();
         allNames.setName("allNames");

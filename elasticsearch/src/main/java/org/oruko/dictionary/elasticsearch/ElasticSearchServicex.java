@@ -287,7 +287,7 @@ public class ElasticSearchServicex implements SearchService {
      * @param name the name to delete from the index
      * @return true | false depending on if deleting operation was successful
      */
-    public IndexOperationStatus deleteFromIndex(String name) {
+    public IndexOperationStatus removeFromIndex(String name) {
         return null;
 //        if (!isElasticSearchNodeAvailable()) {
 //

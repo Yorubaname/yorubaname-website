@@ -287,7 +287,7 @@ public class SearchApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> deleteFromIndex(@PathVariable String name) {
-        IndexOperationStatus indexOperationStatus = searchService.deleteFromIndex(name);
+        IndexOperationStatus indexOperationStatus = searchService.removeFromIndex(name);
         boolean deleted = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
         Map<String, Object> response = new HashMap<>();

@@ -42,4 +42,5 @@ public interface NameEntryRepository extends JpaRepository<NameEntry, Long> {
     Set<NameEntry> findByNameStartingWithAndState(String alphabet, State state);
     NameEntry findByNameAndState(String alphabet, State state);
     Integer countByState(State state);
+    Boolean deleteByNameAndState(String name, State state);
 }

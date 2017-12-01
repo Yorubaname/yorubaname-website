@@ -16,6 +16,10 @@ public enum State {
      */
     PUBLISHED,
     /**
+     * A name that was initially published but has been removed from the index
+     */
+    UNPUBLISHED,
+    /**
      * A name that has been published (indexed into the search engine) was modified, thus needs to be re-indexed
      */
     MODIFIED

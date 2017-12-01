@@ -45,6 +45,6 @@ public interface SearchService {
     Integer getSearchableNames();
 
     IndexOperationStatus bulkIndexName(List<NameEntry> entries);
-    IndexOperationStatus deleteFromIndex(String name);
+    IndexOperationStatus removeFromIndex(String name);
     IndexOperationStatus bulkDeleteFromIndex(List<String> name);
 }
