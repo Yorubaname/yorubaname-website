@@ -30,7 +30,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -220,8 +219,8 @@ public class ElasticSearchService implements SearchService {
      * @return the list of partial matches
      */
     @Override
-    public List<String> autocomplete(String query) {
-        final List<String> result = new ArrayList();
+    public Set<String> autocomplete(String query) {
+        final Set<String> result = new LinkedHashSet<>();
 
         SearchResponse tempSearchAll = partialSearchByName(query);
 

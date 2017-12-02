@@ -39,7 +39,7 @@ public interface SearchService {
      * @param query the query
      * @return the list of partial matches
      */
-    List<String> autocomplete(String query);
+    Set<String> autocomplete(String query);
 
     Integer getSearchableNames();
 

@@ -93,9 +93,6 @@ public abstract class AbstractNameEntry {
     protected List<Etymology> etymology;
 
     @Column
-    protected Boolean isIndexed = false;
-
-    @Column
     @Enumerated(EnumType.STRING)
     protected State state;
 
@@ -251,15 +248,6 @@ public abstract class AbstractNameEntry {
 
     public void setTags(String tags) {
         this.tags = tags;
-    }
-
-    public Boolean getIndexed() {
-        return isIndexed;
-    }
-
-    // REMOVE AND USE PUBLISHED STATE
-    public void setIndexed(Boolean published) {
-        this.isIndexed = published;
     }
 
     public LocalDateTime getUpdatedAt() {

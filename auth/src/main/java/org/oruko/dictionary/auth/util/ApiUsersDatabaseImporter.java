@@ -40,7 +40,7 @@ public class ApiUsersDatabaseImporter {
         /**
          * Only initialize the database only when in dev
          */
-        if (!host.equalsIgnoreCase("localhost")) {
+        if (host.equalsIgnoreCase("localhost")) {
 
             // lexi user
             ApiUser lexicographer = new ApiUser();

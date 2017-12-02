@@ -67,9 +67,20 @@ public class JpaSearchService implements SearchService {
     }
 
     @Override
-    public List<String> autocomplete(String query) {
-        Set<NameEntry> names = nameEntryRepository.findByNameStartingWithAndState(query, State.PUBLISHED);
-        return names.stream().map(NameEntry::getName).collect(Collectors.toList());
+    public Set<String> autocomplete(String query) {
+        Set<NameEntry> names = new LinkedHashSet<>();
+        Set<String> nameToReturn = new LinkedHashSet<>();
+        // TODO calling the db in a for loop might not be a terribly good idea. Revist
+        for (int i=2; i<query.length() + 1; i++) {
+            String searchTerm = query.substring(0, i);
+            names.addAll(nameEntryRepository.findByNameStartingWithAndState(searchTerm, State.PUBLISHED));
+        }
+        Set<NameEntry> otherParts = nameEntryRepository.findNameEntryByNameContainingAndState(query, State.PUBLISHED);
+        names.addAll(otherParts);
+        names.forEach(name -> {
+            nameToReturn.add(name.getName());
+        });
+        return nameToReturn;
     }
 
     @Override

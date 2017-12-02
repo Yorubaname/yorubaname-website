@@ -43,7 +43,7 @@ public class DataImporter {
          * Only initialize the database only when in dev
          * //TODO move this to profiles
          */
-        if (!host.equalsIgnoreCase("localhost")) {
+        if (host.equalsIgnoreCase("localhost")) {
             List<NameEntry> nameEntries = initializeDb();
         }
     }
@@ -106,7 +106,6 @@ public class DataImporter {
         bolanle.setExtendedMeaning("This is extended dummy meaning for Bọ́lánlé");
         bolanle.setGeoLocation(Arrays.asList(new GeoLocation("IBADAN", "NWY")));
         bolanle.setEtymology(etymology);
-        bolanle.setIndexed(true);
         bolanle.setState(State.PUBLISHED);
 
 
@@ -115,7 +114,6 @@ public class DataImporter {
         bimpe.setExtendedMeaning("This is extended dummy meaning for Bimpe");
         bimpe.setGeoLocation(Arrays.asList(new GeoLocation("IBADAN", "NWY")));
         bimpe.setEtymology(etymology);
-        bolanle.setIndexed(true);
         bimpe.setState(State.PUBLISHED);
 
         NameEntry ade0 = new NameEntry("Ade");

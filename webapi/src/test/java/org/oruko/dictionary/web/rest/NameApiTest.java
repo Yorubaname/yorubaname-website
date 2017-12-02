@@ -94,18 +94,6 @@ public class NameApiTest extends AbstractApiTest {
     }
 
     @Test
-    public void test_get_all_names_filtered_by_is_indexed() throws Exception {
-        testNameEntry.setIndexed(true);
-        anotherTestNameEntry.setIndexed(false);
-        when(entryService.loadAllNames()).thenReturn(Arrays.asList(testNameEntry, anotherTestNameEntry));
-
-        mockMvc.perform(get("/v1/names?all=true&indexed=true"))
-               .andExpect(jsonPath("$", hasSize(1)))
-               .andExpect(jsonPath("$[0].name", is("test-entry")))
-               .andExpect(status().isOk());
-    }
-
-    @Test
     public void test_get_all_names_filtered_by_is_submitted_by() throws Exception {
         testNameEntry.setSubmittedBy("test");
         NameEntry secondEntry = new NameEntry("secondEntry");

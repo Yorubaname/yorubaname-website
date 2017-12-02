@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Handler for search functionality
@@ -109,9 +108,9 @@ public class SearchApi {
 
     @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
-        if (!searchQuery.isPresent() || searchQuery.get().length() <= 2) {
-            return Collections.emptyList();
+    public Set<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
+        if (!searchQuery.isPresent() || searchQuery.get().length() < 2) {
+            return Collections.emptySet();
         }
 
         String query = searchQuery.get();
@@ -191,7 +190,6 @@ public class SearchApi {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        nameEntry.setIndexed(true);
         nameEntry.setState(State.PUBLISHED);
         nameEntryService.saveName(nameEntry);
         publishNameIsIndexed(nameEntry);
@@ -223,7 +221,6 @@ public class SearchApi {
         }
 
         publishNameIsIndexed(nameEntry);
-        nameEntry.setIndexed(true);
         nameEntry.setState(State.PUBLISHED);
         nameEntryService.saveName(nameEntry);
         response.put("message", name + " has been published");
@@ -264,7 +261,11 @@ public class SearchApi {
         }
 
         IndexOperationStatus indexOperationStatus = searchService.bulkIndexName(nameEntries);
-        updateIsIndexFlag(nameEntries, true, indexOperationStatus);
+        response.put("message", indexOperationStatus.getMessage());
+
+        if (!indexOperationStatus.getStatus()) {
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         for (NameEntry nameEntry : nameEntries) {
             publishNameIsIndexed(nameEntry);
@@ -272,8 +273,7 @@ public class SearchApi {
             nameEntryService.saveName(nameEntry);
         }
 
-        // TODO re-implement to return the message
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
@@ -295,7 +295,6 @@ public class SearchApi {
         if (deleted) {
             NameEntry nameEntry = nameEntryService.loadName(name);
             if (nameEntry != null) {
-                nameEntry.setIndexed(false);
                 nameEntry.setState(State.NEW);
                 nameEntryService.saveName(nameEntry);
             }
@@ -336,21 +335,9 @@ public class SearchApi {
         }
 
         IndexOperationStatus indexOperationStatus = searchService.bulkRemoveFromIndex(nameEntries);
-        updateIsIndexFlag(nameEntries, false, indexOperationStatus);
         return returnStatusMessage(notFound, indexOperationStatus);
     }
 
-    private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag,
-                                   IndexOperationStatus indexOperationStatus) {
-        if (indexOperationStatus.getStatus()) {
-            List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
-                entry.setIndexed(flag);
-                return entry;
-            }).collect(Collectors.toList());
-
-            nameEntryService.saveNames(updatedNames);
-        }
-    }
 
     private ResponseEntity<Map<String, Object>> returnStatusMessage(List<String> notFound,
                                                                     IndexOperationStatus indexOperationStatus) {
