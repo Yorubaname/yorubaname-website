@@ -17,6 +17,8 @@
         <module>elasticsearch</module>
         <module>website</module>
         <module>event</module>
+        <module>searchapi</module>
+        <module>jpasearch</module>
     </modules>
     <packaging>pom</packaging>
 

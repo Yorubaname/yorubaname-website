@@ -5,8 +5,8 @@ import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.events.NameSearchedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
-import org.oruko.dictionary.service.IndexOperationStatus;
-import org.oruko.dictionary.service.JpaSearchService;
+import org.oruko.dictionary.search.api.IndexOperationStatus;
+import org.oruko.dictionary.search.api.SearchService;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.event.RecentIndexes;
 import org.oruko.dictionary.web.event.RecentSearches;
@@ -50,7 +50,7 @@ public class SearchApi {
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
     private NameEntryService nameEntryService;
-    private JpaSearchService searchService;
+    private SearchService searchService;
     private RecentSearches recentSearches;
     private RecentIndexes recentIndexes;
     private EventPubService eventPubService;
@@ -65,7 +65,7 @@ public class SearchApi {
     @Autowired
     public SearchApi(EventPubService eventPubService,
                      NameEntryService nameEntryService,
-                     JpaSearchService searchService,
+                     SearchService searchService,
                      RecentSearches recentSearches,
                      RecentIndexes recentIndexes) {
         this.eventPubService = eventPubService;
@@ -178,7 +178,7 @@ public class SearchApi {
      * Endpoint to index a NameEntry sent in as JSON string.
      *
      * @param entry the {@link NameEntry} representation of the JSON String.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     * @return a {@link ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -207,7 +207,7 @@ public class SearchApi {
      * Endpoint that takes a name, looks it up in the repository and index the entry found
      *
      * @param name the name
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
+     * @return a {@link ResponseEntity} representing the status of the operation
      */
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -238,7 +238,7 @@ public class SearchApi {
      * It allows for batch indexing of names
      *
      * @param names the array of names
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
+     * @return a {@link ResponseEntity} representing the status of the operation
      */
     @RequestMapping(value = "/indexes/batch", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -281,7 +281,7 @@ public class SearchApi {
      * Endpoint used to remove a name from the index.
      *
      * @param name the name to remove from the index.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     * @return a {@link ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -309,7 +309,7 @@ public class SearchApi {
      * Endpoint used to remove a list of names from the index.
      *
      * @param names the names to remove from the index.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     * @return a {@link ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes/batch", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,

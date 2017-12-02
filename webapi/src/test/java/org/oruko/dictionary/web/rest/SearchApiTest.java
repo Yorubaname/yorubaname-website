@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.events.EventPubService;
-import org.oruko.dictionary.service.SearchService;
+import org.oruko.dictionary.search.api.SearchService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -76,11 +76,10 @@ public class SearchApiTest extends AbstractApiTest {
 
     @Test
     public void testFindByName_NameNotFound() throws Exception {
-        when(searchService.getByName("query")).thenReturn(null);
-        mockMvc.perform(get("/v1/search/query"))
-               .andExpect(jsonPath("$").isEmpty())
-               .andExpect(status().isOk());
+        when(searchService.getByName("searchTerm")).thenReturn(null);
+        mockMvc.perform(get("/v1/search/searchTerm"))
+                .andExpect(content().string(""))
+                .andExpect(status().isOk());
     }
-
 
 }

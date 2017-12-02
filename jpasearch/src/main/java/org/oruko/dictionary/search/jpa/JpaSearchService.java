@@ -1,8 +1,10 @@
-package org.oruko.dictionary.service;
+package org.oruko.dictionary.search.jpa;
 
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
+import org.oruko.dictionary.search.api.IndexOperationStatus;
+import org.oruko.dictionary.search.api.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

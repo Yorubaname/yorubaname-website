@@ -1,4 +1,4 @@
-package org.oruko.dictionary.service;
+package org.oruko.dictionary.search.api;
 
 import org.oruko.dictionary.model.NameEntry;
 

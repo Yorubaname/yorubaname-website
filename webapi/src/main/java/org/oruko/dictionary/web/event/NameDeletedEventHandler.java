@@ -3,7 +3,7 @@ package org.oruko.dictionary.web.event;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import org.oruko.dictionary.events.NameDeletedEvent;
-import org.oruko.dictionary.service.SearchService;
+import org.oruko.dictionary.search.api.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NameDeletedEventHandler {
 
+    // TODO should not be hardwiring a bean here
     @Qualifier("jpaSearchService")
     @Autowired
     SearchService nameSearchService;

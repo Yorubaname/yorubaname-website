@@ -9,20 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bootstrap-module</artifactId>
-    <description>Module that handles various bootstrapping operations </description>
+    <artifactId>jpa-search</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>model-module</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>search-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+    <!-- internal dependencies -->
+    <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>search-api</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+
     </dependencies>
 </project>

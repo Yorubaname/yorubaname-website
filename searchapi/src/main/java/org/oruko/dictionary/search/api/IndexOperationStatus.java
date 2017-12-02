@@ -1,4 +1,4 @@
-package org.oruko.dictionary.service;
+package org.oruko.dictionary.search.api;
 
 /**
  * For communicating the status of operation on the index

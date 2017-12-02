@@ -1,9 +1,14 @@
 package org.oruko.dictionary.elasticsearch;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.count.CountResponse;
+import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -12,8 +17,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.oruko.dictionary.model.NameEntry;
-import org.oruko.dictionary.service.IndexOperationStatus;
-import org.oruko.dictionary.service.SearchService;
+import org.oruko.dictionary.search.api.IndexOperationStatus;
+import org.oruko.dictionary.search.api.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -31,6 +37,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
@@ -41,9 +48,9 @@ import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
  * @author Dadepo Aderemi.
  */
 @Service
-public class ElasticSearchServicex implements SearchService {
+public class ElasticSearchService implements SearchService {
 
-    private Logger logger = LoggerFactory.getLogger(ElasticSearchServicex.class);
+    private Logger logger = LoggerFactory.getLogger(ElasticSearchService.class);
 
     private Node node;
     private Client client;
@@ -52,13 +59,13 @@ public class ElasticSearchServicex implements SearchService {
     private ObjectMapper mapper = new ObjectMapper();
 
     /**
-     * Public constructor for {@link ElasticSearchServicex}
+     * Public constructor for {@link ElasticSearchService}
      *
      * @param node the elastic search Node
      * @param esConfig the elastic search config
      */
     @Autowired
-    public ElasticSearchServicex(Node node, ESConfig esConfig) {
+    public ElasticSearchService(Node node, ESConfig esConfig) {
         this.node = node;
         this.client = node.client();
         this.esConfig = esConfig;
@@ -69,7 +76,11 @@ public class ElasticSearchServicex implements SearchService {
         this.resourceLoader = loader;
     }
 
-    ElasticSearchServicex() {
+    ElasticSearchService() {
+    }
+
+    public boolean isElasticSearchNodeAvailable() {
+        return !node.isClosed();
     }
 
     /**
@@ -80,15 +91,25 @@ public class ElasticSearchServicex implements SearchService {
      */
     @Override
     public NameEntry getByName(String nameQuery) {
-        return null;
-//        SearchResponse searchResponse = exactSearchByName(nameQuery);
-//
-//        SearchHit[] hits = searchResponse.getHits().getHits();
-//        if (hits.length == 1) {
-//            return hits[0].getSource();
-//        } else {
-//            return null;
-//        }
+        SearchResponse searchResponse = exactSearchByName(nameQuery);
+
+        SearchHit[] hits = searchResponse.getHits().getHits();
+        if (hits.length == 1) {
+            return sourceToNameEntry(hits[0].getSource());
+        } else {
+            return null;
+        }
+    }
+
+    private NameEntry sourceToNameEntry(Map<String, Object> source) {
+        String valueAsString = null;
+        try {
+            valueAsString = mapper.writeValueAsString(source);
+            return mapper.readValue(valueAsString, NameEntry.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -111,17 +132,17 @@ public class ElasticSearchServicex implements SearchService {
          * 7. Do a full text search against extendedMeaning
          */
 
-        final Set<Map<String, Object>> result = new LinkedHashSet<>();
+        final Set<NameEntry> result = new LinkedHashSet<>();
 
         // 1. exact search
         SearchResponse searchResponse = exactSearchByName(searchTerm);
         if (searchResponse.getHits().getHits().length >= 1) {
             Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
-                result.add(hit.getSource());
+                result.add(sourceToNameEntry(hit.getSource()));
             });
 
             if (result.size() == 1) {
-                return null;
+                return result;
             }
         }
 
@@ -129,11 +150,11 @@ public class ElasticSearchServicex implements SearchService {
         searchResponse = exactSearchByNameAsciiFolded(searchTerm);
         if (searchResponse.getHits().getHits().length >= 1) {
             Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
-                result.add(hit.getSource());
+                result.add(sourceToNameEntry(hit.getSource()));
             });
 
             if (result.size() == 1) {
-                return null;
+                return result;
             }
         }
 
@@ -142,10 +163,10 @@ public class ElasticSearchServicex implements SearchService {
         searchResponse = prefixFilterSearch(searchTerm, false);
         if (searchResponse.getHits().getHits().length >= 1) {
             Stream.of(searchResponse.getHits().getHits()).forEach(hit -> {
-                result.add(hit.getSource());
+                result.add(sourceToNameEntry(hit.getSource()));
             });
 
-            return null;
+            return result;
         }
 
         /**
@@ -157,28 +178,28 @@ public class ElasticSearchServicex implements SearchService {
          * TODO Should revisit
          */
         MultiMatchQueryBuilder searchSpec = QueryBuilders.multiMatchQuery(searchTerm,
-                                                                          "name.autocomplete",
-                                                                          "meaning",
-                                                                          "extendedMeaning",
-                                                                          "variants");
+                "name.autocomplete",
+                "meaning",
+                "extendedMeaning",
+                "variants");
 
         SearchResponse tempSearchAll = client.prepareSearch(esConfig.getIndexName())
-                                             .setQuery(searchSpec)
-                                             .setSize(20)
-                                             .execute()
-                                             .actionGet();
+                .setQuery(searchSpec)
+                .setSize(20)
+                .execute()
+                .actionGet();
 
         Stream.of(tempSearchAll.getHits().getHits()).forEach(hit -> {
-            result.add(hit.getSource());
+            result.add(sourceToNameEntry(hit.getSource()));
         });
 
-        return null;
+        return result;
     }
 
 
     @Override
     public Set<NameEntry> listByAlphabet(String alphabetQuery) {
-        final Set<Map<String, Object>> result = new LinkedHashSet<>();
+        final Set<NameEntry> result = new LinkedHashSet<>();
 
         final SearchResponse searchResponse = prefixFilterSearch(alphabetQuery, true);
         final SearchHit[] hits = searchResponse.getHits().getHits();
@@ -186,10 +207,10 @@ public class ElasticSearchServicex implements SearchService {
 
         Collections.reverse(searchHits);
         searchHits.forEach(hit -> {
-            result.add(hit.getSource());
+            result.add(sourceToNameEntry(hit.getSource()));
         });
 
-        return null;
+        return result;
     }
 
     /**
@@ -213,9 +234,16 @@ public class ElasticSearchServicex implements SearchService {
 
     @Override
     public Integer getSearchableNames() {
-        return null;
+        try {
+            CountResponse response = client.prepareCount(esConfig.getIndexName())
+                    .setQuery(matchAllQuery())
+                    .execute()
+                    .actionGet();
+            return Math.toIntExact(response.getCount());
+        } catch (Exception e) {
+            return 0;
+        }
     }
-
 
     /**
      * Add a {@link org.oruko.dictionary.model.NameEntry} into ElasticSearch index
@@ -224,61 +252,62 @@ public class ElasticSearchServicex implements SearchService {
      * @return returns true | false depending on if the indexing operation was successful.
      */
     public IndexOperationStatus indexName(NameEntry entry) {
-        return null;
-//        if (!isElasticSearchNodeAvailable()) {
-//            return new IndexOperationStatus(false,
-//                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
-//        }
-//
-//        try {
-//            String entryAsJson = mapper.writeValueAsString(entry);
-//            String name = entry.getName();
-//            client.prepareIndex(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
-//                  .setSource(entryAsJson)
-//                  .execute()
-//                  .actionGet();
-//
-//            return new IndexOperationStatus(true, name + " indexed successfully");
-//        } catch (JsonProcessingException e) {
-//            logger.info("Failed to parse NameEntry into Json", e);
-//            return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
-//        }
+
+        if (!isElasticSearchNodeAvailable()) {
+            return new IndexOperationStatus(false,
+                    "Index attempt unsuccessful. You do not have an elasticsearch node running");
+        }
+
+        try {
+            String entryAsJson = mapper.writeValueAsString(entry);
+            String name = entry.getName();
+            client.prepareIndex(esConfig.getIndexName(), esConfig.getDocumentType(), name.toLowerCase())
+                    .setSource(entryAsJson)
+                    .execute()
+                    .actionGet();
+
+            return new IndexOperationStatus(true, name + " indexed successfully");
+        } catch (JsonProcessingException e) {
+            logger.info("Failed to parse NameEntry into Json", e);
+            return new IndexOperationStatus(true, "Failed to parse NameEntry into Json");
+        }
     }
 
 
+    @Override
     public IndexOperationStatus bulkIndexName(List<NameEntry> entries) {
-        return null;
-//        if (entries.size() == 0) {
-//            return new IndexOperationStatus(false, "Cannot index an empty list");
-//        }
-//
-//        if (!isElasticSearchNodeAvailable()) {
-//            return new IndexOperationStatus(false,
-//                                            "Index attempt unsuccessful. You do not have an elasticsearch node running");
-//        }
-//
-//        BulkRequestBuilder bulkRequest = client.prepareBulk();
-//        entries.forEach(entry -> {
-//            try {
-//                String entryAsJson = mapper.writeValueAsString(entry);
-//                String name = entry.getName();
-//                IndexRequestBuilder request = client.prepareIndex(esConfig.getIndexName(),
-//                                                                  esConfig.getDocumentType(),
-//                                                                  name.toLowerCase())
-//                                                    .setSource(entryAsJson);
-//                bulkRequest.add(request);
-//            } catch (JsonProcessingException e) {
-//                logger.debug("Error while building bulk indexing operation", e);
-//            }
-//        });
-//
-//        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-//        if (bulkResponse.hasFailures()) {
-//            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
-//        }
-//
-//        return new IndexOperationStatus(true, "Bulk indexing successfully. Indexed the following names "
-//                + String.join(",", entries.stream().map(entry -> entry.getName()).collect(Collectors.toList())));
+
+        if (entries.size() == 0) {
+            return new IndexOperationStatus(false, "Cannot index an empty list");
+        }
+
+        if (!isElasticSearchNodeAvailable()) {
+            return new IndexOperationStatus(false,
+                    "Index attempt unsuccessful. You do not have an elasticsearch node running");
+        }
+
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        entries.forEach(entry -> {
+            try {
+                String entryAsJson = mapper.writeValueAsString(entry);
+                String name = entry.getName();
+                IndexRequestBuilder request = client.prepareIndex(esConfig.getIndexName(),
+                        esConfig.getDocumentType(),
+                        name.toLowerCase())
+                        .setSource(entryAsJson);
+                bulkRequest.add(request);
+            } catch (JsonProcessingException e) {
+                logger.debug("Error while building bulk indexing operation", e);
+            }
+        });
+
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if (bulkResponse.hasFailures()) {
+            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
+        }
+
+        return new IndexOperationStatus(true, "Bulk indexing successfully. Indexed the following names "
+                + String.join(",", entries.stream().map(entry -> entry.getName()).collect(Collectors.toList())));
     }
 
     /**
@@ -288,50 +317,44 @@ public class ElasticSearchServicex implements SearchService {
      * @return true | false depending on if deleting operation was successful
      */
     public IndexOperationStatus removeFromIndex(String name) {
-        return null;
-//        if (!isElasticSearchNodeAvailable()) {
-//
-//            return new IndexOperationStatus(false,
-//                                            "Delete unsuccessful. You do not have an elasticsearch node running");
-//        }
-//
-//        DeleteResponse response = deleteName(name);
-//        return new IndexOperationStatus(response.isFound(), name + " deleted from index");
+
+        if (!isElasticSearchNodeAvailable()) {
+
+            return new IndexOperationStatus(false,
+                    "Delete unsuccessful. You do not have an elasticsearch node running");
+        }
+
+        DeleteResponse response = deleteName(name);
+        return new IndexOperationStatus(response.isFound(), name + " deleted from index");
     }
 
     public IndexOperationStatus bulkRemoveByNameFromIndex(List<String> entries) {
-        return null;
-//        if (entries.size() == 0) {
-//            return new IndexOperationStatus(false, "Cannot index an empty list");
-//        }
-//
-//        if (!isElasticSearchNodeAvailable()) {
-//            return new IndexOperationStatus(false,
-//                                            "Delete unsuccessful. You do not have an elasticsearch node running");
-//        }
-//
-//        BulkRequestBuilder bulkRequest = client.prepareBulk();
-//
-//        entries.forEach(entry -> {
-//            DeleteRequestBuilder request = client.prepareDelete(esConfig.getIndexName(),
-//                                                                esConfig.getDocumentType(),
-//                                                                entry.toLowerCase());
-//            bulkRequest.add(request);
-//        });
-//
-//        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-//        if (bulkResponse.hasFailures()) {
-//            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
-//        }
-//
-//        return new IndexOperationStatus(true, "Bulk deleting successfully. "
-//                + "Removed the following names from search index "
-//                + String.join(",", entries));
-    }
+        if (entries.size() == 0) {
+            return new IndexOperationStatus(false, "Cannot index an empty list");
+        }
 
-    @Override
-    public IndexOperationStatus bulkRemoveFromIndex(List<NameEntry> nameEntries) {
-        return null;
+        if (!isElasticSearchNodeAvailable()) {
+            return new IndexOperationStatus(false,
+                    "Delete unsuccessful. You do not have an elasticsearch node running");
+        }
+
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+
+        entries.forEach(entry -> {
+            DeleteRequestBuilder request = client.prepareDelete(esConfig.getIndexName(),
+                    esConfig.getDocumentType(),
+                    entry.toLowerCase());
+            bulkRequest.add(request);
+        });
+
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if (bulkResponse.hasFailures()) {
+            return new IndexOperationStatus(false, bulkResponse.buildFailureMessage());
+        }
+
+        return new IndexOperationStatus(true, "Bulk deleting successfully. "
+                + "Removed the following names from search index "
+                + String.join(",", entries));
     }
 
 
@@ -347,9 +370,9 @@ public class ElasticSearchServicex implements SearchService {
     //TODO revisit. Omo returns Omowunmi and Owolabi. Ideal this should return just one result
     private SearchResponse exactSearchByName(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
-                     .setPostFilter(FilterBuilders.termFilter("name", nameQuery.toLowerCase()))
-                     .execute()
-                     .actionGet();
+                .setPostFilter(FilterBuilders.termFilter("name", nameQuery.toLowerCase()))
+                .execute()
+                .actionGet();
     }
 
     private SearchResponse prefixFilterSearch(String nameQuery, boolean getAll) {
@@ -361,26 +384,26 @@ public class ElasticSearchServicex implements SearchService {
         }
 
         return client.prepareSearch(esConfig.getIndexName())
-                     .setPostFilter(FilterBuilders.prefixFilter("name", nameQuery.toLowerCase()))
-                     .setSize(resultSet)
-                     .execute()
-                     .actionGet();
+                .setPostFilter(FilterBuilders.prefixFilter("name", nameQuery.toLowerCase()))
+                .setSize(resultSet)
+                .execute()
+                .actionGet();
     }
 
     private SearchResponse exactSearchByNameAsciiFolded(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
-                     .setQuery(QueryBuilders.matchQuery("name.asciifolded", nameQuery.toLowerCase()))
-                     .setSize(20)
-                     .execute()
-                     .actionGet();
+                .setQuery(QueryBuilders.matchQuery("name.asciifolded", nameQuery.toLowerCase()))
+                .setSize(20)
+                .execute()
+                .actionGet();
     }
 
     private SearchResponse partialSearchByName(String nameQuery) {
         return client.prepareSearch(esConfig.getIndexName())
-                     .setQuery(QueryBuilders.matchQuery("name.autocomplete", nameQuery.toLowerCase()))
-                     .setSize(20)
-                     .execute()
-                     .actionGet();
+                .setQuery(QueryBuilders.matchQuery("name.autocomplete", nameQuery.toLowerCase()))
+                .setSize(20)
+                .execute()
+                .actionGet();
     }
 
     // On start up, creates an index for the application if one does not
@@ -402,38 +425,32 @@ public class ElasticSearchServicex implements SearchService {
 
         try {
             boolean exists = this.client.admin().indices()
-                                        .prepareExists(esConfig.getIndexName())
-                                        .execute()
-                                        .actionGet()
-                                        .isExists();
+                    .prepareExists(esConfig.getIndexName())
+                    .execute()
+                    .actionGet()
+                    .isExists();
 
             if (!exists) {
 
                 CreateIndexResponse createIndexResponse = this.client.admin().indices()
-                                                                     .prepareCreate(esConfig.getIndexName())
-                                                                     .setSettings(indexSettings)
-                                                                     .addMapping(esConfig.getDocumentType(),
-                                                                                 mapping).execute()
-                                                                     .actionGet();
+                        .prepareCreate(esConfig.getIndexName())
+                        .setSettings(indexSettings)
+                        .addMapping(esConfig.getDocumentType(),
+                                mapping).execute()
+                        .actionGet();
 
                 logger.info("Created {} and added {} to type {} status was {} at startup",
-                            esConfig.getIndexName(), mapping, esConfig.getDocumentType(),
-                            createIndexResponse.isAcknowledged());
+                        esConfig.getIndexName(), mapping, esConfig.getDocumentType(),
+                        createIndexResponse.isAcknowledged());
             }
         } catch (Exception e) {
             logger.error("ElasticSearch not running", e);
         }
     }
 
-    public long getCount() {
-        try {
-            CountResponse response = client.prepareCount(esConfig.getIndexName())
-                                           .setQuery(matchAllQuery())
-                                           .execute()
-                                           .actionGet();
-            return response.getCount();
-        } catch (Exception e) {
-            return 0;
-        }
+
+    @Override
+    public IndexOperationStatus bulkRemoveFromIndex(List<NameEntry> nameEntries) {
+        throw new NotImplementedException();
     }
 }
