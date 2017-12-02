@@ -3,7 +3,6 @@ package org.oruko.dictionary.service;
 import org.oruko.dictionary.model.NameEntry;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface SearchService {
@@ -23,7 +22,7 @@ public interface SearchService {
      * @param searchTerm the search term
      * @return the list of entries found
      */
-    Set<Map<String, Object>> search(String searchTerm);
+    Set<NameEntry> search(String searchTerm);
 
     /**
      * Return all the names which starts with the given alphabet
@@ -46,5 +45,6 @@ public interface SearchService {
 
     IndexOperationStatus bulkIndexName(List<NameEntry> entries);
     IndexOperationStatus removeFromIndex(String name);
-    IndexOperationStatus bulkDeleteFromIndex(List<String> name);
+    IndexOperationStatus bulkRemoveByNameFromIndex(List<String> name);
+    IndexOperationStatus bulkRemoveFromIndex(List<NameEntry> nameEntries);
 }

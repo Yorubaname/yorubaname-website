@@ -86,7 +86,6 @@ public class SearchResultController {
             return "redirect:/entries/"+nameQuery;
         }
 
-        Collections.reverse(names);
         map.addAttribute("query", nameQuery);
         map.addAttribute("names", names);
 

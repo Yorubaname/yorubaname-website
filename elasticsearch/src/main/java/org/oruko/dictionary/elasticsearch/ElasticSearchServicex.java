@@ -98,7 +98,7 @@ public class ElasticSearchServicex implements SearchService {
      * @return the list of entries found
      */
     @Override
-    public Set<Map<String, Object>> search(String searchTerm) {
+    public Set<NameEntry> search(String searchTerm) {
         /**
          * 1. First do a exact search. If found return result. If not go to 2.
          * 2. Do a search with ascii-folding. If found return result, if not go to 3
@@ -121,7 +121,7 @@ public class ElasticSearchServicex implements SearchService {
             });
 
             if (result.size() == 1) {
-                return result;
+                return null;
             }
         }
 
@@ -133,7 +133,7 @@ public class ElasticSearchServicex implements SearchService {
             });
 
             if (result.size() == 1) {
-                return result;
+                return null;
             }
         }
 
@@ -145,7 +145,7 @@ public class ElasticSearchServicex implements SearchService {
                 result.add(hit.getSource());
             });
 
-            return result;
+            return null;
         }
 
         /**
@@ -172,7 +172,7 @@ public class ElasticSearchServicex implements SearchService {
             result.add(hit.getSource());
         });
 
-        return result;
+        return null;
     }
 
 
@@ -299,7 +299,7 @@ public class ElasticSearchServicex implements SearchService {
 //        return new IndexOperationStatus(response.isFound(), name + " deleted from index");
     }
 
-    public IndexOperationStatus bulkDeleteFromIndex(List<String> entries) {
+    public IndexOperationStatus bulkRemoveByNameFromIndex(List<String> entries) {
         return null;
 //        if (entries.size() == 0) {
 //            return new IndexOperationStatus(false, "Cannot index an empty list");
@@ -327,6 +327,11 @@ public class ElasticSearchServicex implements SearchService {
 //        return new IndexOperationStatus(true, "Bulk deleting successfully. "
 //                + "Removed the following names from search index "
 //                + String.join(",", entries));
+    }
+
+    @Override
+    public IndexOperationStatus bulkRemoveFromIndex(List<NameEntry> nameEntries) {
+        return null;
     }
 
 

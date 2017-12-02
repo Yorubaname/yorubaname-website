@@ -95,22 +95,22 @@ public class SearchApi {
      */
     @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
-                                           HttpServletRequest request) {
+    public Set<NameEntry> search(@RequestParam(value = "q", required = true) String searchTerm,
+                                 HttpServletRequest request) {
 
-        Set<Map<String, Object>> name = searchService.search(searchTerm);
-        if (name != null
-                && name.size() == 1
-                && name.stream().allMatch(result -> result.get("name").equals(searchTerm))) {
+        Set<NameEntry> foundNames = searchService.search(searchTerm);
+        if (foundNames != null
+                && foundNames.size() == 1
+                && foundNames.stream().allMatch(result -> result.getName().equals(searchTerm))) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr()));
         }
-        return name;
+        return foundNames;
     }
 
     @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
-        if (!searchQuery.isPresent()) {
+        if (!searchQuery.isPresent() || searchQuery.get().length() <= 2) {
             return Collections.emptyList();
         }
 
@@ -335,7 +335,7 @@ public class SearchApi {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = searchService.bulkDeleteFromIndex(found);
+        IndexOperationStatus indexOperationStatus = searchService.bulkRemoveFromIndex(nameEntries);
         updateIsIndexFlag(nameEntries, false, indexOperationStatus);
         return returnStatusMessage(notFound, indexOperationStatus);
     }

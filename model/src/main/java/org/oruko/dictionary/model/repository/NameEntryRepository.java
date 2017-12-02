@@ -37,10 +37,14 @@ public interface NameEntryRepository extends JpaRepository<NameEntry, Long> {
      * @return list of {@link NameEntry}
      */
     List<NameEntry> findByState(State state);
-
-    // Search related repository access
     Set<NameEntry> findByNameStartingWithAndState(String alphabet, State state);
-    NameEntry findByNameAndState(String alphabet, State state);
+    List<NameEntry> findNameEntryByNameContainingAndState(String name, State state);
+    List<NameEntry> findNameEntryByVariantsContainingAndState(String name, State state);
+    List<NameEntry> findNameEntryByMeaningContainingAndState(String name, State state);
+    List<NameEntry> findNameEntryByExtendedMeaningContainingAndState(String name, State state);
+    NameEntry findByNameAndState(String name, State state);
+
+
     Integer countByState(State state);
     Boolean deleteByNameAndState(String name, State state);
 }

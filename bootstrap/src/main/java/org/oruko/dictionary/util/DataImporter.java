@@ -43,7 +43,7 @@ public class DataImporter {
          * Only initialize the database only when in dev
          * //TODO move this to profiles
          */
-        if (host.equalsIgnoreCase("localhost")) {
+        if (!host.equalsIgnoreCase("localhost")) {
             List<NameEntry> nameEntries = initializeDb();
         }
     }
