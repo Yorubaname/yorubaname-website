@@ -2,6 +2,7 @@ package org.oruko.dictionary.website;
 
 import org.oruko.dictionary.model.NameEntry;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,12 +32,12 @@ public class ApiService {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/names", Map[].class));
     }
 
-    //@Cacheable("querySearchResult")
+    @Cacheable("querySearchResult")
     public NameEntry getName(String nameQuery) {
         return restTemplate.getForObject(APIPATH + "/search/" + nameQuery, NameEntry.class);
     }
 
-    //@Cacheable("names")
+    @Cacheable("names")
     public List<Map<String, Object>> searchName(String nameQuery) {
         return Arrays.asList(restTemplate.getForObject(APIPATH + "/search/?q=" + nameQuery, Map[].class));
     }
