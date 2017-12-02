@@ -33,7 +33,6 @@ import java.util.Locale;
 @SpringBootApplication
 @EnableCaching
 @EnableSwagger2
-//@EnableWebSecurity //switches off auto configuration for spring security
 public class DictionaryApplication extends WebMvcConfigurerAdapter {
 
     private final String LANG = "lang";
@@ -99,8 +98,7 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return source;
     }
 
-
-//    @Bean
+    @Bean
     public net.sf.ehcache.CacheManager ecacheManager() {
         CacheConfiguration allNames = new CacheConfiguration();
         allNames.setName("allNames");
@@ -120,17 +118,10 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         names.setEternal(false);
         names.setTimeToIdleSeconds(1800);
 
-//        CacheConfiguration nameCount = new CacheConfiguration();
-//        nameCount.setName("nameCount");
-//        nameCount.setMaxEntriesLocalHeap(0);
-//        nameCount.setEternal(false);
-//        nameCount.setTimeToIdleSeconds(1800);
-
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
         config.addCache(allNames);
         config.addCache(querySearchResult);
         config.addCache(names);
-        //config.addCache(nameCount);
 
         return net.sf.ehcache.CacheManager.newInstance(config);
     }
