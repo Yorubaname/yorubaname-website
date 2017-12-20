@@ -339,6 +339,4 @@ public class NameEntryService {
             return false;
         });
     }
-
-
 }

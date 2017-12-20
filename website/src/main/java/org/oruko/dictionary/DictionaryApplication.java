@@ -98,7 +98,6 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return source;
     }
 
-
     @Bean
     public net.sf.ehcache.CacheManager ecacheManager() {
         CacheConfiguration allNames = new CacheConfiguration();
@@ -127,7 +126,6 @@ public class DictionaryApplication extends WebMvcConfigurerAdapter {
         return net.sf.ehcache.CacheManager.newInstance(config);
     }
 
-    @Bean
     public CacheManager cacheManager() {
         return new EhCacheCacheManager(ecacheManager());
     }

@@ -32,22 +32,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.validation.Valid;
 
 /**
  * End point for inserting and retrieving NameDto Entries
@@ -151,21 +151,17 @@ public class NameApi {
      *                  result set from. 0 if none is given
      * @param countParam a {@link Integer} the number of names to return. 50 is none is given
      * @return the list of {@link org.oruko.dictionary.model.NameEntry}
-     * @throws JsonProcessingException JSON processing exception
      */
     @RequestMapping(value = "/v1/names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NameEntry> getAllNames(@RequestParam("page") final Optional<Integer> pageParam,
                                   @RequestParam("count") final Optional<Integer> countParam,
                                   @RequestParam("all") final Optional<Boolean> all,
                                   @RequestParam("submittedBy") final Optional<String> submittedBy,
-                                  @RequestParam("state") final Optional<State> state,
-                                  @RequestParam(value = "indexed", required = false) final Optional<Boolean> indexed)
-            throws JsonProcessingException {
+                                  @RequestParam("state") final Optional<State> state) {
 
-        List<NameEntry> names = new ArrayList<>();
         List<NameEntry> allNameEntries;
 
-        if (all.isPresent() && all.get() == true) {
+        if (all.isPresent() && all.get()) {
             if (state.isPresent()) {
                 allNameEntries = entryService.loadAllByState(state);
             } else {
@@ -175,16 +171,14 @@ public class NameApi {
             allNameEntries = entryService.loadByState(state, pageParam, countParam);
         }
 
-        names.addAll(allNameEntries);
-
-        // for filtering based on whether entry has been indexed
-        Predicate<NameEntry> filterBasedOnIndex = name -> indexed.map(aBoolean -> name.getIndexed().equals(aBoolean)).orElse(true);
+        List<NameEntry> names = new ArrayList<>(allNameEntries);
 
         // for filtering based on value of submitBy
-        Predicate<NameEntry> filterBasedOnSubmitBy = name -> submittedBy.map(s -> name.getSubmittedBy().trim().equalsIgnoreCase(s.trim())).orElse(true);
+        Predicate<NameEntry> filterBasedOnSubmitBy = (name) -> submittedBy
+                .map(s -> name.getSubmittedBy().trim().equalsIgnoreCase(s.trim()))
+                .orElse(true);
 
         return names.stream()
-                    .filter(filterBasedOnIndex)
                     .filter(filterBasedOnSubmitBy)
                     .collect(Collectors.toCollection(ArrayList::new));
 

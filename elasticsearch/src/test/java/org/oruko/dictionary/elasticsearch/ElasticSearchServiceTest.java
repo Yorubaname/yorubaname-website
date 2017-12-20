@@ -4,16 +4,18 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.test.ElasticsearchIntegrationTest;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.oruko.dictionary.model.NameEntry;
+import org.oruko.dictionary.search.api.SearchService;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.test.ElasticsearchIntegrationTest.ClusterScope;
 
 /**
- * Integration test for {@link ElasticSearchService}
+
  *
  * Created by Dadepo Aderemi.
  */
@@ -21,7 +23,7 @@ import static org.elasticsearch.test.ElasticsearchIntegrationTest.ClusterScope;
 public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
     private String dictionary = "dictionary";
     private ESConfig esConfig;
-    ElasticSearchService elasticSearchService;
+    SearchService searchService;
 
     private class TestNode implements org.elasticsearch.node.Node {
 
@@ -70,7 +72,7 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
 
         flushAndRefresh();
 
-        elasticSearchService = new ElasticSearchService(new TestNode(), esConfig);
+        searchService = new ElasticSearchService(new TestNode(), esConfig);
     }
 
     @Test
@@ -82,8 +84,8 @@ public class ElasticSearchServiceTest extends ElasticsearchIntegrationTest {
 
         flushAndRefresh();
 
-        Map<String, Object> result = elasticSearchService.getByName("jamo");
-        assertEquals("jamo", result.get("name"));
+        NameEntry jamo = searchService.getByName("jamo");
+        assertEquals("jamo", jamo.getName());
     }
 
 }

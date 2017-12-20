@@ -1,12 +1,12 @@
 package org.oruko.dictionary.web.rest;
 
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
-import org.oruko.dictionary.elasticsearch.IndexOperationStatus;
 import org.oruko.dictionary.events.EventPubService;
 import org.oruko.dictionary.events.NameIndexedEvent;
 import org.oruko.dictionary.events.NameSearchedEvent;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
+import org.oruko.dictionary.search.api.IndexOperationStatus;
+import org.oruko.dictionary.search.api.SearchService;
 import org.oruko.dictionary.web.NameEntryService;
 import org.oruko.dictionary.web.event.RecentIndexes;
 import org.oruko.dictionary.web.event.RecentSearches;
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Handler for search functionality
@@ -49,8 +48,8 @@ public class SearchApi {
 
     private Logger logger = LoggerFactory.getLogger(SearchApi.class);
 
-    private NameEntryService entryService;
-    private ElasticSearchService elasticSearchService;
+    private NameEntryService nameEntryService;
+    private SearchService searchService;
     private RecentSearches recentSearches;
     private RecentIndexes recentIndexes;
     private EventPubService eventPubService;
@@ -58,18 +57,19 @@ public class SearchApi {
     /**
      * Public constructor for {@link SearchApi}
      *
-     * @param entryService         service layer for interacting with name entries
-     * @param elasticSearchService service layer for elastic search functions
+     * @param nameEntryService         service layer for interacting with name entries
      * @param recentSearches       object holding the recent searches in memory
      * @param recentIndexes        object holding the recent index names in memory
      */
     @Autowired
-    public SearchApi(EventPubService eventPubService, NameEntryService entryService,
-                     ElasticSearchService elasticSearchService, RecentSearches recentSearches,
+    public SearchApi(EventPubService eventPubService,
+                     NameEntryService nameEntryService,
+                     SearchService searchService,
+                     RecentSearches recentSearches,
                      RecentIndexes recentIndexes) {
         this.eventPubService = eventPubService;
-        this.entryService = entryService;
-        this.elasticSearchService = elasticSearchService;
+        this.nameEntryService = nameEntryService;
+        this.searchService = searchService;
         this.recentSearches = recentSearches;
         this.recentIndexes = recentIndexes;
     }
@@ -83,7 +83,7 @@ public class SearchApi {
     @RequestMapping(value = "/meta", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> getMetaData() {
         Map<String, Object> metaData = new HashMap<>();
-        metaData.put("totalPublishedNames", elasticSearchService.getCount());
+        metaData.put("totalPublishedNames", searchService.getSearchableNames());
         return new ResponseEntity<>(metaData, HttpStatus.OK);
     }
 
@@ -94,42 +94,44 @@ public class SearchApi {
      */
     @RequestMapping(value = {"/", ""}, method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Map<String, Object>> search(@RequestParam(value = "q", required = true) String searchTerm,
-                                           HttpServletRequest request) {
+    public Set<NameEntry> search(@RequestParam(value = "q", required = true) String searchTerm,
+                                 HttpServletRequest request) {
 
-        Set<Map<String, Object>> name = elasticSearchService.search(searchTerm);
-        if (name != null
-                && name.size() == 1
-                && name.stream().allMatch(result -> result.get("name").equals(searchTerm))) {
+        Set<NameEntry> foundNames = searchService.search(searchTerm);
+        if (foundNames != null
+                && foundNames.size() == 1
+                && foundNames.stream().allMatch(result -> result.getName().equals(searchTerm))) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr()));
         }
-        return name;
+        return foundNames;
     }
 
     @RequestMapping(value = "/autocomplete", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
-        if (!searchQuery.isPresent()) {
-            return Collections.emptyList();
+    public Set<String> getAutocomplete(@RequestParam(value = "q") Optional<String> searchQuery) {
+        if (!searchQuery.isPresent() || searchQuery.get().length() < 2) {
+            return Collections.emptySet();
         }
 
         String query = searchQuery.get();
-        return elasticSearchService.autocomplete(query);
+        return searchService.autocomplete(query);
     }
 
 
     @RequestMapping(value = "/alphabet/{alphabet}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Set<Map<String, Object>> getByAlphabet(@PathVariable Optional<String> alphabet) {
-        return alphabet.map(s -> elasticSearchService.listByAlphabet(s)).orElseGet(Collections::emptySet);
-
+    public Set<NameEntry> getByAlphabet(@PathVariable Optional<String> alphabet) {
+        if (!alphabet.isPresent()) {
+            return Collections.emptySet();
+        }
+        return searchService.listByAlphabet(alphabet.get());
     }
 
     @RequestMapping(value = "/{searchTerm}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> findByName(@PathVariable String searchTerm, HttpServletRequest request) {
+    public NameEntry findByName(@PathVariable String searchTerm, HttpServletRequest request) {
 
-        Map<String, Object> name = elasticSearchService.getByName(searchTerm);
+        NameEntry name = searchService.getByName(searchTerm);
 
         if (name != null) {
             eventPubService.publish(new NameSearchedEvent(searchTerm, request.getRemoteAddr()));
@@ -175,31 +177,24 @@ public class SearchApi {
      * Endpoint to index a NameEntry sent in as JSON string.
      *
      * @param entry the {@link NameEntry} representation of the JSON String.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     * @return a {@link ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> indexEntry(@Valid NameEntry entry) {
         Map<String, Object> response = new HashMap<>();
-        NameEntry nameEntry = entryService.loadName(entry.getName());
+        NameEntry nameEntry = nameEntryService.loadName(entry.getName());
         if (nameEntry == null) {
             response.put("message", "Cannot index entry. Name " + entry.getName() + " not in the database");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(entry);
-        boolean isIndexed = indexOperationStatus.getStatus();
-        String message = indexOperationStatus.getMessage();
-        if (isIndexed) {
-            publishNameIsIndexed(nameEntry);
-            nameEntry.setIndexed(true);
-            nameEntry.setState(State.PUBLISHED);
-            entryService.saveName(nameEntry);
-            response.put("message", message);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        nameEntry.setState(State.PUBLISHED);
+        nameEntryService.saveName(nameEntry);
+        publishNameIsIndexed(nameEntry);
+        response.put("message", "Name is now searchable");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     private void publishNameIsIndexed(NameEntry nameEntry) {
@@ -210,34 +205,27 @@ public class SearchApi {
      * Endpoint that takes a name, looks it up in the repository and index the entry found
      *
      * @param name the name
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
+     * @return a {@link ResponseEntity} representing the status of the operation
      */
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> indexEntryByName(@PathVariable String name) {
         Map<String, Object> response = new HashMap<>();
-        NameEntry nameEntry = entryService.loadName(name);
+        NameEntry nameEntry = nameEntryService.loadName(name);
         if (nameEntry == null) {
             // name requested to be indexed not in the database
-            response.put("message", name + " not found in the repository so not indexed");
+            response.put("message",
+                         name+" not found in the repository so not indexed");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = elasticSearchService.indexName(nameEntry);
-        boolean isIndexed = indexOperationStatus.getStatus();
+        publishNameIsIndexed(nameEntry);
+        nameEntry.setState(State.PUBLISHED);
+        nameEntryService.saveName(nameEntry);
+        response.put("message", name + " has been published");
 
-        response.put("message", indexOperationStatus.getMessage());
-
-        if (isIndexed) {
-            publishNameIsIndexed(nameEntry);
-            nameEntry.setIndexed(true);
-            nameEntry.setState(State.PUBLISHED);
-            entryService.saveName(nameEntry);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
@@ -247,7 +235,7 @@ public class SearchApi {
      * It allows for batch indexing of names
      *
      * @param names the array of names
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation
+     * @return a {@link ResponseEntity} representing the status of the operation
      */
     @RequestMapping(value = "/indexes/batch", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -258,7 +246,7 @@ public class SearchApi {
         List<String> notFound = new ArrayList<>();
 
         Arrays.stream(names).forEach(name -> {
-            NameEntry entry = entryService.loadName(name);
+            NameEntry entry = nameEntryService.loadName(name);
             if (entry == null) {
                 notFound.add(name);
             } else {
@@ -272,14 +260,20 @@ public class SearchApi {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkIndexName(nameEntries);
-        updateIsIndexFlag(nameEntries, true, indexOperationStatus);
+        IndexOperationStatus indexOperationStatus = searchService.bulkIndexName(nameEntries);
+        response.put("message", indexOperationStatus.getMessage());
+
+        if (!indexOperationStatus.getStatus()) {
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         for (NameEntry nameEntry : nameEntries) {
             publishNameIsIndexed(nameEntry);
             nameEntry.setState(State.PUBLISHED);
-            entryService.saveName(nameEntry);
+            nameEntryService.saveName(nameEntry);
         }
-        return returnStatusMessage(notFound, indexOperationStatus);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
@@ -287,23 +281,22 @@ public class SearchApi {
      * Endpoint used to remove a name from the index.
      *
      * @param name the name to remove from the index.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     * @return a {@link ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes/{name}", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> deleteFromIndex(@PathVariable String name) {
-        IndexOperationStatus indexOperationStatus = elasticSearchService.deleteFromIndex(name);
+        IndexOperationStatus indexOperationStatus = searchService.removeFromIndex(name);
         boolean deleted = indexOperationStatus.getStatus();
         String message = indexOperationStatus.getMessage();
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
         if (deleted) {
-            NameEntry nameEntry = entryService.loadName(name);
+            NameEntry nameEntry = nameEntryService.loadName(name);
             if (nameEntry != null) {
-                nameEntry.setIndexed(false);
                 nameEntry.setState(State.NEW);
-                entryService.saveName(nameEntry);
+                nameEntryService.saveName(nameEntry);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -315,7 +308,7 @@ public class SearchApi {
      * Endpoint used to remove a list of names from the index.
      *
      * @param names the names to remove from the index.
-     * @return a {@link org.springframework.http.ResponseEntity} representing the status of the operation.
+     * @return a {@link ResponseEntity} representing the status of the operation.
      */
     @RequestMapping(value = "/indexes/batch", method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -327,7 +320,7 @@ public class SearchApi {
         List<String> notFound = new ArrayList<>();
 
         Arrays.stream(names).forEach(name -> {
-            NameEntry entry = entryService.loadName(name);
+            NameEntry entry = nameEntryService.loadName(name);
             if (entry == null) {
                 notFound.add(name);
             } else {
@@ -341,22 +334,10 @@ public class SearchApi {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        IndexOperationStatus indexOperationStatus = elasticSearchService.bulkDeleteFromIndex(found);
-        updateIsIndexFlag(nameEntries, false, indexOperationStatus);
+        IndexOperationStatus indexOperationStatus = searchService.bulkRemoveFromIndex(nameEntries);
         return returnStatusMessage(notFound, indexOperationStatus);
     }
 
-    private void updateIsIndexFlag(List<NameEntry> nameEntries, boolean flag,
-                                   IndexOperationStatus indexOperationStatus) {
-        if (indexOperationStatus.getStatus()) {
-            List<NameEntry> updatedNames = nameEntries.stream().map(entry -> {
-                entry.setIndexed(flag);
-                return entry;
-            }).collect(Collectors.toList());
-
-            entryService.saveNames(updatedNames);
-        }
-    }
 
     private ResponseEntity<Map<String, Object>> returnStatusMessage(List<String> notFound,
                                                                     IndexOperationStatus indexOperationStatus) {

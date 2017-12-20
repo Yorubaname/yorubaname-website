@@ -12,6 +12,11 @@
     <artifactId>elasticsearch-module</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>search-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>org.apache.lucene</groupId>

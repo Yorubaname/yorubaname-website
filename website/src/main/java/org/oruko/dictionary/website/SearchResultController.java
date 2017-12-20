@@ -1,6 +1,7 @@
 package org.oruko.dictionary.website;
 
 import org.apache.commons.lang3.StringUtils;
+import org.oruko.dictionary.model.NameEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -52,7 +53,7 @@ public class SearchResultController {
         map.addAttribute("title", "Name Entry");
         map.addAttribute("host", host);
         if (!map.containsAttribute("name")) {
-            final Map<String, Object> name = apiService.getName(nameEntry);
+            final NameEntry name = apiService.getName(nameEntry);
             if (name == null) {
                 // no single entry found for query, return to view where search result can be displayed
                 return "redirect:/entries?q=" + nameEntry;
@@ -85,7 +86,6 @@ public class SearchResultController {
             return "redirect:/entries/"+nameQuery;
         }
 
-        Collections.reverse(names);
         map.addAttribute("query", nameQuery);
         map.addAttribute("names", names);
 

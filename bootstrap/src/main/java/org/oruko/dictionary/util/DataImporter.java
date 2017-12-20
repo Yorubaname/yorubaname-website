@@ -1,6 +1,5 @@
 package org.oruko.dictionary.util;
 
-import org.oruko.dictionary.elasticsearch.ElasticSearchService;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.State;
@@ -31,9 +30,6 @@ public class DataImporter {
     private GeoLocationRepository geoLocationRepository;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
-
-    @Autowired
     private NameEntryRepository nameEntryRepository;
 
 
@@ -49,7 +45,6 @@ public class DataImporter {
          */
         if (host.equalsIgnoreCase("localhost")) {
             List<NameEntry> nameEntries = initializeDb();
-            initializeElastic(nameEntries);
         }
     }
 
@@ -111,7 +106,15 @@ public class DataImporter {
         bolanle.setExtendedMeaning("This is extended dummy meaning for Bọ́lánlé");
         bolanle.setGeoLocation(Arrays.asList(new GeoLocation("IBADAN", "NWY")));
         bolanle.setEtymology(etymology);
-        bolanle.setState(State.NEW);
+        bolanle.setState(State.PUBLISHED);
+
+
+        NameEntry bimpe = new NameEntry("Bimpe");
+        bimpe.setMeaning("This is dummy meaning for Bimpe");
+        bimpe.setExtendedMeaning("This is extended dummy meaning for Bimpe");
+        bimpe.setGeoLocation(Arrays.asList(new GeoLocation("IBADAN", "NWY")));
+        bimpe.setEtymology(etymology);
+        bimpe.setState(State.PUBLISHED);
 
         NameEntry ade0 = new NameEntry("Ade");
         ade0.setMeaning("This is dummy meaning for ade");
@@ -174,6 +177,7 @@ public class DataImporter {
         nameEntryRepository.save(tola);
         nameEntryRepository.save(dadepo);
         nameEntryRepository.save(bolanle);
+        nameEntryRepository.save(bimpe);
         nameEntryRepository.save(ade0);
         nameEntryRepository.save(ade1);
         nameEntryRepository.save(ade2);
@@ -184,10 +188,6 @@ public class DataImporter {
 
         return Arrays.asList(lagbaja, tamedo, koko, tola, dadepo, bolanle,
                 ade0, ade1, ade2, ade3, ade4, omowumi, omolabi);
-    }
-
-    private void initializeElastic(List<NameEntry> nameEntries) {
-        elasticSearchService.bulkIndexName(nameEntries);
     }
 
     private void initGeoLocation() {

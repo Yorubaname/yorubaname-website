@@ -133,6 +133,36 @@ when starting the application. For example:
 
 Remember this command needs to be run from the website module, that is `{parent_directory}/website` directory.
 
+### Search functionality
+
+The search API is defined in the `searchapi` module. We currently have two implementations for the search api:
+1. ElasticSearch - Implemented in the `elasticsearch-module` module
+2. JPA based search - Implemented in the `jpa-search-module` module
+
+The `jpa-search-module` module is used in the `website` module which represents the website running at www.yorubaname.com 
+
+If you want to use `elasticsearch` module then remove the following section in the pom.xml for `website` module:
+
+```
+    <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jpa-search-module</artifactId>
+            <version>${project.version}</version>
+    </dependency>
+```
+
+with
+
+```
+    <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>elasticsearch-module</artifactId>
+            <version>${project.version}</version>
+    </dependency>
+```
+
+The `elasticsearch-module` needs to be configured. This is explained in the next session.
+
 ### Configuring ElasticSearch Properties
 
 The ElasticSearch module does not require the installation of ElasticSearch as it will run with an embedded ElasticSearch instance: 

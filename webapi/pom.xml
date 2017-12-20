@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>elasticsearch-module</artifactId>
+            <artifactId>search-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
