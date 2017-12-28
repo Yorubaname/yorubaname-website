@@ -25,7 +25,7 @@ Consult this [link](https://maven.apache.org/install.html) for more information 
 
 First a quick overview of how things stack up should be of help.
 
-The Yorubaname Website application is the backend portion of the yorubaname dictionary application, and it is built around individual modules that perform one functionality and that functionality only. For example we have `tts-module` for tts, `elastic-search` module for the search etc.
+The Yorubaname Website application is the backend portion of the yorubaname dictionary application, and it is built around individual modules that perform one functionality and that functionality only. For example we have `elastic-search` module for the search etc.
 
 The `webapi-module` is built using these other modules and its own functionality is to expose the services the dictionary
 application offers over a REST API.

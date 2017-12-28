@@ -9,7 +9,6 @@
 
     <modules>
         <module>model</module>
-        <module>tts</module>
         <module>webapi</module>
         <module>importer</module>
         <module>bootstrap</module>
