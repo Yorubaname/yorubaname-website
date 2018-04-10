@@ -336,10 +336,15 @@ header .container img.logo {
 	background: #F9F9F9;
 	margin-right: 10px;
 	margin-left: 20px;
+	margin-bottom: 40px;
 	padding: 5px;
 	-webkit-box-shadow: 13px 14px 15px -16px rgba(0,0,0,0.15);
 	-moz-box-shadow: 13px 14px 15px -16px rgba(0,0,0,0.15);
 	box-shadow: 13px 14px 15px -16px rgba(0,0,0,0.15);
+}
+
+ul#side_popular {
+	list-style-type: none;
 }
 
 .side-bar li {
