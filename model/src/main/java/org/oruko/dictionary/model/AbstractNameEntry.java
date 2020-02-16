@@ -106,6 +106,9 @@ public abstract class AbstractNameEntry {
     @JsonSerialize(using= LocalDateTimeSerializer.class)
     protected LocalDateTime updatedAt;
 
+    @ElementCollection
+    protected List<EmbeddedVideo> videos;
+
     public String getSubmittedBy() {
         return submittedBy;
     }
@@ -272,5 +275,13 @@ public abstract class AbstractNameEntry {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public List<EmbeddedVideo> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<EmbeddedVideo> videos) {
+        this.videos = videos;
     }
 }
