@@ -5,126 +5,159 @@
 
 <!-- main-content -->
 <section id="content">
-	<div class="container">
-		<div class="row search-result">
-				<div class="col-sm-7 entry">
+    <div class="container">
+        <div class="row search-result">
+            <div class="col-sm-7 entry">
 
-				   <h2 class="intonation" id="name-entry">{{name.name }}</h2>
-					
-					<p><strong>{{message "lang.pronunciation"}}</strong>
-                        <button class="btn btn-default btn-sm" id="tts-button">
-							<i class="fa fa-volume-up" data-placement="top" title="{{message "lang.play-sound"}}"></i>
-						</button>
-						<!--<span> class="pull-right text-muted"><strong>{{message "lang.submitby"}}</strong> {{ name.submittedBy }}</span>-->
-					</p>
+                <h2 class="intonation" id="name-entry">{{name.name }}</h2>
 
-					<div class="share">
+                <p><strong>{{message "lang.pronunciation"}}</strong>
+                    <button class="btn btn-default btn-sm" id="tts-button">
+                        <i class="fa fa-volume-up" data-placement="top" title="{{message "lang.play-sound"}}"></i>
+                    </button>
+                    <!--<span> class="pull-right text-muted"><strong>{{message
+                            "lang.submitby"}}</strong> {{ name.submittedBy }}</span>-->
+                </p>
 
-					<a class="btn btn-sm btn-success" href="#/improve-entry" data-toggle="modal" data-target="#improveEntryModal" style="margin-right:20px">
-						{{message "lang.improve-entry"}}  <i class="fa fa-pencil"></i>
-					</a>
+                <div class="share">
 
-					<span class="text-muted">{{message "lang.share"}} <i class="fa fa-share-alt"></i></span>
+                    <a class="btn btn-sm btn-success" href="#/improve-entry" data-toggle="modal"
+                       data-target="#improveEntryModal" style="margin-right:20px">
+                        {{message "lang.improve-entry"}}  <i class="fa fa-pencil"></i>
+                    </a>
 
-					<a target="_blank" class="btn btn-social btn-sm btn-fb btn-primary" href="http://www.facebook.com/sharer.php?u=http%3A%2F%2F{{host}}/entries/{{name.name}}"><i class="fa fa-facebook"></i> </a>
-					<a target="_blank" class="btn btn-social btn-sm btn-tw btn-info" href="https://twitter.com/intent/tweet?url=http%3A%2F%2F{{host}}/entries/{{name.name}}&amp;text=Did you know {{name.name}} means {{name.meaning}}?&amp;hashtags=YorubaNames&amp;via=YorubaNames"><i class="fa fa-twitter"></i> </a>
+                    <span class="text-muted">{{message "lang.share"}} <i class="fa fa-share-alt"></i></span>
 
-					</div>
-					
-						<br><br>
-						<h4>{{message "lang.meaningof"}} {{name.name }}</h4>
-						<p class="intonation">{{ name.meaning }}</p>
+                    <a target="_blank" class="btn btn-social btn-sm btn-fb btn-primary"
+                       href="http://www.facebook.com/sharer.php?u=http%3A%2F%2F{{host}}/entries/{{name.name}}"><i
+                            class="fa fa-facebook"></i> </a>
+                    <a target="_blank" class="btn btn-social btn-sm btn-tw btn-info"
+                       href="https://twitter.com/intent/tweet?url=http%3A%2F%2F{{host}}/entries/{{name.name}}&amp;text=Did you know {{name.name}} means {{name.meaning}}?&amp;hashtags=YorubaNames&amp;via=YorubaNames"><i
+                            class="fa fa-twitter"></i> </a>
 
-						<br><br>
-						<h4>{{message "lang.extendedmeaningof"}}</h4>
-						<p>{{name.extendedMeaning }}</p>
-					
-					<!-- /meaning of name -->
-					    <br><br>
-						<h4 class="intonation">{{message "lang.morphology"}}</h4>
-						<p>{{name.morphology}}</p>
-					
-					<!-- /morphology -->
+                </div>
 
-					    <br><br>
-						<h4>{{message "lang.etymology"}}</h4>
-			            {{#each name.etymology}}
-			               <strong>{{this.part}}</strong><span> - {{this.meaning}}</span><br>
-						{{/each}}
-			            
-					
-					<!-- /etymology -->
+                <br><br>
+                <h4>{{message "lang.meaningof"}} {{name.name }}</h4>
+                <p class="intonation">{{ name.meaning }}</p>
 
-					
-						<br><br>
-						<h4>{{message "lang.geolocation"}}</h4>
-						<p>{{message "lang.commonin"}}:
-                                {{#each name.geoLocation}}
-                                    <br/>{{this.place}}
-                                {{/each}}
-                        </p>
+                {{#if name.extendedMeaning}}
+                    <br><br>
+                    <h4>{{message "lang.extendedmeaningof"}}</h4>
+                    <p>{{name.extendedMeaning}}</p>
+                {{/if}}
 
-					<!-- /geolocation -->
+                <!-- /meaning of name -->
+                {{#if name.videos}}
+                    <br><br>
+                    <h4>{{message "lang.videos"}}</h4>
+                    {{#each name.videos}}
+                        <div class="iframe-container" id="video{{@index}}">
+                            <iframe src="{{this.url}}"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                    title="{{this.caption}}"></iframe>
+                        </div>
+                    {{/each}}
+                {{/if}}
 
-					    <br><br>
-						<h4>{{message "lang.famous-persons"}}</h4>
-						<p>{{name.famousPeople}}</p>
-					
-					<!-- /famousPeople -->
+                <!-- /embedded videos -->
+                {{#if name.morphology}}
+                    <br><br>
+                    <h4 class="intonation">{{message "lang.morphology"}}</h4>
+                    <p>{{name.morphology}}</p>
+                {{/if}}
 
-					    <br><br>
-						<h4>{{message "lang.media-links"}}</h4>
-						<p>{{name.media}}</p>
-					
-					<!-- /media -->
+                <!-- /morphology -->
+                {{#if name.etymology}}
+                    <br><br>
+                    <h4>{{message "lang.etymology"}}</h4>
+                    {{#each name.etymology}}
+                        <strong>{{this.part}}</strong><span> - {{this.meaning}}</span><br>
+                    {{/each}}
+                {{/if}}
 
-					
-						<br><br>
-						<h4>{{message "lang.variants"}}</h4>
-						<p class="intonation">{{name.variants}}</p>
-					
-					<!-- /variants -->
+                <!-- /etymology -->
 
-					    <br><br>
-						<h4>{{message "lang.see-also"}}</h4>
+                {{#if name.geoLocation}}
+                    <br><br>
+                    <h4>{{message "lang.geolocation"}}</h4>
+                    <p>{{message "lang.commonin"}}:
+                        {{#each name.geoLocation}}
+                            <br/>{{this.place}}
+                        {{/each}}
+                    </p>
+                {{/if}}
 
-					<!-- /see also -->
+                <!-- /geolocation -->
 
-				</div>
+                {{#if name.famousPeople}}
+                    <br><br>
+                    <h4>{{message "lang.famous-persons"}}</h4>
+                    <p>{{name.famousPeople}}</p>
+                {{/if}}
 
-			<!-- sidebar -->
-			<aside>
-				<div class="col-md-4">
-					{{> rsidebar }}
-				</div>
-			</aside>
-			<!-- /sidebar -->
-			{{> alphabets}}
-		</div>
+                <!-- /famousPeople -->
 
-	</div>
+                {{#if name.media}}
+                    <br><br>
+                    <h4>{{message "lang.media-links"}}</h4>
+                    <p>{{name.media}}</p>
+                {{/if}}
+
+                <!-- /media -->
+
+                {{#if name.variants}}
+                    <br><br>
+                    <h4>{{message "lang.variants"}}</h4>
+                    <p class="intonation">{{name.variants}}</p>
+                {{/if}}
+
+                <!-- /variants -->
+
+                {{#if false}}
+                    <br><br>
+                    <h4>{{message "lang.see-also"}}</h4>
+                {{/if}}
+
+                <!-- /see also -->
+
+            </div>
+
+            <!-- sidebar -->
+            <aside>
+                <div class="col-sm-5 col-md-4">
+                    {{> rsidebar }}
+                </div>
+            </aside>
+            <!-- /sidebar -->
+            {{> alphabets}}
+        </div>
+
+    </div>
 </section>
 <!-- /main-content -->
 
 <!--Improve Entry Modal -->
 <div class="modal fade" id="improveEntryModal" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-		    <div class="modal-header">
-		    	<h3>{{message "lang.improve-entry.help-us"}} "{{ name.name }}"</h3>
-		    </div>
-			<form name="name_feedback" class="modal-body" action="/v1/feedbacks" method="post">
-			    <div class="response"></div>
-				<div class="form-group">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>{{message "lang.improve-entry.help-us"}} "{{ name.name }}"</h3>
+            </div>
+            <form name="name_feedback" class="modal-body" action="/v1/feedbacks" method="post">
+                <div class="response"></div>
+                <div class="form-group">
                     <input id="nameToFeedback" type="hidden" value="{{name.name}}"/>
-            		<p class="lead">{{message "lang.improve-entry.sub-text"}}</p>
-            		<textarea name="feedback" id="improveEntry" class="form-control" rows="5" required="true"></textarea>
-        		</div>
-        		<button type="submit" id="submitEntry" class="btn btn-success btn-lg">Submit Feedback</button>
-        		&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" data-dismiss="modal">Cancel</a>
-			</form>
-		</div>
-	</div>
+                    <p class="lead">{{message "lang.improve-entry.sub-text"}}</p>
+                    <textarea name="feedback" id="improveEntry" class="form-control" rows="5"
+                              required="true"></textarea>
+                </div>
+                <button type="submit" id="submitEntry" class="btn btn-success btn-lg">Submit Feedback</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" data-dismiss="modal">Cancel</a>
+            </form>
+        </div>
+    </div>
 </div>
 <!--/Improve Entry Modal -->
 
