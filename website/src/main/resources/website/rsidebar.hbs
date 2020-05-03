@@ -1,9 +1,14 @@
 <div class="side-bar">
-    <ul id="side_popular">
-        <li><h5>{{message "lang.most-popular-names"}}</h5></li>
-        <hr />
-        {{#each mostPopular}}
-            <li class="intonation"><a href="/entries/{{this}}">{{this}}</a></li>
-        {{/each}}
-    </ul>
+<h4>{{message "lang.most-popular-names"}}</h4>
+<hr />
+<ul id="side_popular">
+{{#each mostPopular}}
+<li class="intonation"><a href="/entries/{{this}}">{{this}}</a></li>
+{{/each}}
+</ul>
+</div>
+<div class="side-bar">
+<h4>Do you have a comment or a story about this name? Share below:</h4>
+<hr />
+<div width="200" class="fb-comments" data-href="http://{{host}}/entries/{{name.name}}" data-numposts="5"></div>
 </div>
