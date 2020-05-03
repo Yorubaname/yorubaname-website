@@ -99,12 +99,14 @@ the core application.
 
 #### Via an IDE
 
-If you use an IDE like Intellij, you can run the application by running the `public static void main` in DictionaryApplication class
+If you use an IDE like Intellij, you can run the application by running the `public static void main` 
+in DictionaryApplication class; you just need to make sure in the VM options, you pass 
+`-Dspring.profiles.active=development` as the value
 
 #### Via Spring Boot Run Plugin
 
 1. cd into the projects parent directory and run `mvn clean install`. This would download all the project's dependencies, build the project and install it locally into the maven repository
-2. cd into the website module ({parent_directory}/website) and run `mvn spring-boot:run`
+2. cd into the website module ({parent_directory}/website) and run `mvn spring-boot:run -Dspring.profiles.active=development`
 
 The application would start up and can be accessed on port 8081.
 
