@@ -99,7 +99,7 @@ the core application.
 
 #### Via an IDE
 
-If you use an IDE like Intellij, you can run the application by running the `public static void main` in DictionaryApplication class
+If you use an IDE like Intellij or Eclipse you can run the application by running the `public static void main` in DictionaryApplication class
 
 #### Via Spring Boot Run Plugin
 
