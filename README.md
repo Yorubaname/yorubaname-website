@@ -30,7 +30,7 @@ The Yorubaname Website application is the backend portion of the yorubaname dict
 The `webapi-module` is built using these other modules and its own functionality is to expose the services the dictionary
 application offers over a REST API.
 
-The `website module` is the front facing part of the dictionary. It is also built using the APIs exposed by the `webapi-module` 
+The `website module` is the front facing part of the amazing dictionary. It is also built using the APIs exposed by the `webapi-module` 
 
 The idea behind this set up is to be able to deploy the `webapi-module` and build services on its API the way the
 yorubaname dashboard app (whose source can be found here https://github.com/Yorubaname/yorubaname-dashboard) does.
@@ -38,7 +38,7 @@ yorubaname dashboard app (whose source can be found here https://github.com/Yoru
 A mobile tier would also take advantage of this setup or to have the `webapi-module` as a coupled
 dependency to another software component (The way the `website` component depends on `webapi-module`.)
 
-Now with the general overview out of the way, let us look at getting the application running on your local machine.
+Now with the general overview out of the way, let us look at getting the application running on your local machine swiftly.
 
 ### Running the Website Application
 
