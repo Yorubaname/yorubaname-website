@@ -16,6 +16,7 @@ You need to have the following installed:
 1. JDK 1.6+
 2. MySQL (you do not need to install MySQL if running in in-memory mode. Continue reading to learn how to start the application with in memory database)
 3. Maven
+4. VS Code
 
 Consult this [link](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html#CJAGAACB) for more information on how to install the JDK. 
 
