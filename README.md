@@ -45,7 +45,7 @@ Now with the general overview out of the way, let us look at getting the applica
 There are two ways in which the application can be run for development:
 
 * With a MySQL datastore
-* With In-memory Database
+* With In-Memory Database
 
 Running the application with a MySQL database requires MySQL to be installed and running on the machine the 
 application would be running on. The necessary database also needs to have been created. 
@@ -54,7 +54,7 @@ Running the application with an in-memory database does not require the installa
 
 The next two sections describe how to start the application in the two outlined ways.
 
-### Running the Website Application With a MySQL datastore
+### Running the Website Application With a MySQL Datastore
 
 Feel free to skip this section and go to *Running the Website Application In in-memory mode* below if you do not 
 intend to install/use MySQL.
@@ -74,7 +74,7 @@ Basically you would want to find your my.conf file and add the following piece o
 ```
 [mysqld]
 character-set-server=utf8
-collation-server=utf8_general_c
+Collation-server=utf8_general_c
 ```
 
 You can consult the [Configuring the Character Set and Collation for Applications](https://dev.mysql
@@ -180,7 +180,7 @@ and their defaults are
 
 The embedded ElasticSearch module will by default create a "data" directory in the root directory where the application 
 runs from and use this as the location to store data. This directory location can be configured to somewhere else 
-by supplying the preferred directory through the `es.data.path` in the application.properties
+by supplying the preferred directory through the `es.data.path` in the application properties.
 
 ### Exploring the REST API
 
