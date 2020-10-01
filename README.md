@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Yorubaname/yorubaname-website.svg?branch=master)](https://travis-ci.org/Yorubaname/yorubaname-website)
 
-## Yorubaname Website Application
+## Your_name Website Application
 
 The Yorubaname website application powers the backend services for www.yorubaname.com. It includes various modules that implement
 the various needed functionality. The code for the front facing website found at www.yorubaname.com is also included in it.
