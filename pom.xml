@@ -52,7 +52,7 @@
         <handlebars.spring.boot.version>0.2.11</handlebars.spring.boot.version>
         <json-path-assert.version>2.0.0</json-path-assert.version>
         <lucene.version>4.10.4</lucene.version>
-        <jackson-datatype-jsr310.version>2.6.1</jackson-datatype-jsr310.version>
+        <jackson-datatype-jsr310.version>2.9.8</jackson-datatype-jsr310.version>
         <jackson-databind.version>2.6.1</jackson-databind.version>
         <jackson-annotations.version>2.6.1</jackson-annotations.version>
         <ehcache.version>2.10.1</ehcache.version>
