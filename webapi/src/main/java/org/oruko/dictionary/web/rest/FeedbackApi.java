@@ -125,7 +125,7 @@ public class FeedbackApi {
     @RequestMapping(value = "{id}", method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NameEntryFeedback> getAFeedback(@PathVariable("id") String feedbackId) {
-        final NameEntryFeedback feedback = feedbackRepository.findOne(Long.valueOf(feedbackId));
+        final NameEntryFeedback feedback = feedbackRepository.findById(Long.valueOf(feedbackId)).orElse(null );
         if (feedback == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -141,13 +141,13 @@ public class FeedbackApi {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> deleteAFeedback(@PathVariable("id") String feedbackId) {
         final Long id = Long.valueOf(feedbackId);
-        final NameEntryFeedback feedback = feedbackRepository.findOne(id);
+        final NameEntryFeedback feedback = feedbackRepository.findById(id).orElse(null);
         if (feedback == null) {
             return new ResponseEntity<>(response("No feedback found with supplied Id. None deleted"),
                                         HttpStatus.BAD_REQUEST);
         }
 
-        feedbackRepository.delete(id);
+        feedbackRepository.deleteById(id);
         return new ResponseEntity<>(response("Feedback message deleted"), HttpStatus.OK);
     }
 

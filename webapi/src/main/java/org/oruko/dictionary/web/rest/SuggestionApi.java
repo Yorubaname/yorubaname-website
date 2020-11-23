@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.validation.Valid;
 
 /**
  * Endpoint for interaction with suggested names
@@ -87,7 +87,7 @@ public class SuggestionApi {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, String>> deleteSuggestedName(@PathVariable Long id) {
-        SuggestedName suggestedName = suggestedNameRepository.findOne(id);
+        SuggestedName suggestedName = suggestedNameRepository.findById(id).orElse(null);
         if (suggestedName != null) {
             suggestedNameRepository.delete(suggestedName);
             return new ResponseEntity<>(response("Suggested name with " + id + " successfully deleted"),

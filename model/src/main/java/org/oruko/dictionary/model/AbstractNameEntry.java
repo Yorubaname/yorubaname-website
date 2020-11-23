@@ -52,19 +52,19 @@ public abstract class AbstractNameEntry {
     @Column
     protected String ipaNotation;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "BLOB",length = 1000)
     protected String variants;
 
     @Column
     protected String syllables;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "BLOB",length = 50000)
     protected String meaning;
 
-    @Column(length = 50000)
+    @Column(columnDefinition = "BLOB",length = 50000)
     protected String extendedMeaning;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "BLOB",length = 1000)
     protected String morphology;
 
     @JoinColumn(name = "geo_location_id")

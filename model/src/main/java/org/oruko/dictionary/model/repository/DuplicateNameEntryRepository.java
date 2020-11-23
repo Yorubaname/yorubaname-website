@@ -3,8 +3,8 @@ package org.oruko.dictionary.model.repository;
 import org.oruko.dictionary.model.DuplicateNameEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created by dadepo on 2/4/15.

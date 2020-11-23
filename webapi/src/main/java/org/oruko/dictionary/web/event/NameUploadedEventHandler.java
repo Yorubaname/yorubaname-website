@@ -3,6 +3,8 @@ package org.oruko.dictionary.web.event;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import org.oruko.dictionary.events.NameUploadedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class NameUploadedEventHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NameUploadedEventHandler.class);
 
     private NameUploadStatus uploadStatus;
 
@@ -27,7 +31,7 @@ public class NameUploadedEventHandler {
         try {
             uploadStatus.setStatus(event);
         } catch (Exception e) {
-            //TODO log this
+            LOG.error("Error occurred while setting name upload status.", e);
         }
     }
 }

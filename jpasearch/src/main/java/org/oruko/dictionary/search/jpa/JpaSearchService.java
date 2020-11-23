@@ -77,9 +77,7 @@ public class JpaSearchService implements SearchService {
         }
         Set<NameEntry> otherParts = nameEntryRepository.findNameEntryByNameContainingAndState(query, State.PUBLISHED);
         names.addAll(otherParts);
-        names.forEach(name -> {
-            nameToReturn.add(name.getName());
-        });
+        names.forEach(name -> nameToReturn.add(name.getName()));
         return nameToReturn;
     }
 
@@ -93,7 +91,7 @@ public class JpaSearchService implements SearchService {
         if (entries.size() == 0) {
             return new IndexOperationStatus(false, "Cannot index an empty list");
         }
-        nameEntryRepository.save(entries);
+        nameEntryRepository.saveAll(entries);
         return new IndexOperationStatus(true, "Bulk indexing successfully. Indexed the following names "
                 + String.join(",", entries.stream().map(NameEntry::getName).collect(Collectors.toList())));
     }
@@ -122,7 +120,7 @@ public class JpaSearchService implements SearchService {
             return name;
         }).collect(Collectors.toList());
 
-        nameEntryRepository.save(namesUnpublished);
+        nameEntryRepository.saveAll(namesUnpublished);
         return new IndexOperationStatus(true, "Successfully. "
                 + "Removed the following names from search index "
                 + String.join(",", names));
@@ -134,7 +132,7 @@ public class JpaSearchService implements SearchService {
                 .peek(name -> name.setState(State.UNPUBLISHED))
                 .collect(Collectors.toList());
 
-        nameEntryRepository.save(namesUnpublished);
+        nameEntryRepository.saveAll(namesUnpublished);
         return new IndexOperationStatus(true, "Successfully. "
                 + "Removed the following names from search index "
                 + String.join(",", nameEntries.stream().map(NameEntry::getName).collect(Collectors.toList())));

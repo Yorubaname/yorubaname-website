@@ -121,8 +121,7 @@ The disadvantage is that whatever you add to the dictionary won't be durably per
 
 You can also start the application via an IDE when running with an in-memory database. If you use an IDE like 
 Intellij, you can run the application by creating a `Run` configuration that runs the `public static void main` in 
-`DictionaryApplication` class; you just need to make sure in the VM options, you pass `-Dspring.profiles
-.active=inmemory` as the value
+`DictionaryApplication` class; you just need to make sure in the VM options, you pass `-Dspring.profiles.active=inmemory` as the value
  
 #### Via Spring Boot Run Plugin
  

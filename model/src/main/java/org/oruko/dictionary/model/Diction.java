@@ -2,9 +2,6 @@ package org.oruko.dictionary.model;
 
 import sun.misc.IOUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Represents the text to speech rendition of {@link org.oruko.dictionary.model.NameEntry}

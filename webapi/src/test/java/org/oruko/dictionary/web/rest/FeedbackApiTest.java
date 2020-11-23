@@ -1,9 +1,12 @@
 package org.oruko.dictionary.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.NameEntryFeedback;
@@ -14,15 +17,22 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -118,22 +128,21 @@ public class FeedbackApiTest extends AbstractApiTest {
     @Test
     public void testDeleteAFeedback() throws Exception {
         NameEntryFeedback feedback = mock(NameEntryFeedback.class);
-        when(feedbackRepository.findOne(1L)).thenReturn(feedback);
+        when(feedbackRepository.findById(1L)).thenReturn(Optional.of(feedback));
         mockMvc.perform(delete("/v1/feedbacks/1")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
                .andExpect(status().isOk());
 
-        verify(feedbackRepository).delete(1L);
+        verify(feedbackRepository).deleteById(1L);
     }
 
     @Test
     public void testDeleteAFeedback_no_feedback_for_id() throws Exception {
-        when(feedbackRepository.findOne(1L)).thenReturn(null);
         mockMvc.perform(delete("/v1/feedbacks/1")
                                 .contentType(MediaType.parseMediaType("application/json; charset=UTF-8")))
                .andExpect(status().isBadRequest());
 
-        verify(feedbackRepository, never()).delete(1L);
+        verify(feedbackRepository, never()).deleteById(1L);
     }
 
     @Test
@@ -178,9 +187,6 @@ public class FeedbackApiTest extends AbstractApiTest {
 
     @Test
     public void test_add_feedback_but_feedback_is_empty() throws Exception {
-
-        NameEntry nameEntry = mock(NameEntry.class);
-        when(entryService.loadName(testName)).thenReturn(nameEntry);
 
         Map<String, String> feedbackMap = new HashMap<>();
         String testFeedback = ""; // test condition

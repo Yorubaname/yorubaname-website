@@ -3,10 +3,14 @@ package org.oruko.dictionary.importer;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.hamcrest.text.IsEqualIgnoringCase;
-import org.junit.*;
-import org.junit.runner.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.oruko.dictionary.model.NameEntry;
 import org.oruko.dictionary.model.repository.DuplicateNameEntryRepository;
 import org.oruko.dictionary.model.repository.NameEntryRepository;
@@ -15,9 +19,13 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.File;
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExcelImporterTest {
@@ -45,7 +53,8 @@ public class ExcelImporterTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testDoImport() throws Exception {
         File file = new ClassPathResource("testdata/right_column_order.xlsx").getFile();
         when(validator.isColumnNameInOrder(any(XSSFSheet.class))).thenReturn(true);

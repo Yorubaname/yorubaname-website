@@ -1,17 +1,15 @@
-package org.oruko.dictionary.web;
+package oruko.dictionary.model;
 
-import org.junit.*;
+import org.junit.Test;
 import org.oruko.dictionary.model.GeoLocation;
 import org.oruko.dictionary.model.NameEntry;
 
-import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 public class NameEntryTest {
-
     @Test
     public void testUpdate() throws Exception {
         GeoLocation geoLocation = mock(GeoLocation.class);
