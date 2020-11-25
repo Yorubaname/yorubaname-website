@@ -48,7 +48,7 @@
         <es.version>1.5.0</es.version>
         <elasticsearch-analysis-icu.version>2.5.0</elasticsearch-analysis-icu.version>
         <commons-io.version>2.8.0</commons-io.version>
-        <springfox-swagger>2.2.2</springfox-swagger>
+        <springfox-swagger>3.0.0</springfox-swagger>
         <handlebars.spring.boot.version>0.2.11</handlebars.spring.boot.version>
         <json-path-assert.version>2.0.0</json-path-assert.version>
         <lucene.version>4.10.4</lucene.version>
