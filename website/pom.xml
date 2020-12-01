@@ -66,7 +66,7 @@
         <dependency>
             <groupId>pl.allegro.tech.boot</groupId>
             <artifactId>handlebars-spring-boot-starter</artifactId>
-            <version>0.2.11</version>
+            <version>0.3.2</version>
         </dependency>
 
         <dependency>
