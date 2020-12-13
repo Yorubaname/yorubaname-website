@@ -35,28 +35,28 @@ public class ApiUsersDatabaseImporter {
             admin.setPassword(new BCryptPasswordEncoder().encode("admin"));
             admin.setRoles(Role.ADMIN.toString());
             userRepository.save(admin);
-        }
-        
-        /**
-         * Only initialize the database only when in dev
-         */
-        if (host.equalsIgnoreCase("localhost")) {
 
-            // lexi user
-            ApiUser lexicographer = new ApiUser();
-            lexicographer.setUsername("lexicographer");
-            lexicographer.setEmail("prolex@example.com");
-            lexicographer.setPassword(new BCryptPasswordEncoder().encode("prolex"));
-            lexicographer.setRoles(Role.PRO_LEXICOGRAPHER.toString());
-            userRepository.save(lexicographer);
+            /**
+             * Only initialize the database only when in dev
+             */
+            if (host.equalsIgnoreCase("localhost")) {
 
-            // normal user
-            ApiUser basic = new ApiUser();
-            basic.setUsername("basic");
-            basic.setEmail("basiclex@example.com");
-            basic.setPassword(new BCryptPasswordEncoder().encode("basiclex"));
-            basic.setRoles(Role.BASIC_LEXICOGRAPHER.toString());
-            userRepository.save(basic);
+                // lexi user
+                ApiUser lexicographer = new ApiUser();
+                lexicographer.setUsername("lexicographer");
+                lexicographer.setEmail("prolex@example.com");
+                lexicographer.setPassword(new BCryptPasswordEncoder().encode("prolex"));
+                lexicographer.setRoles(Role.PRO_LEXICOGRAPHER.toString());
+                userRepository.save(lexicographer);
+
+                // normal user
+                ApiUser basic = new ApiUser();
+                basic.setUsername("basic");
+                basic.setEmail("basiclex@example.com");
+                basic.setPassword(new BCryptPasswordEncoder().encode("basiclex"));
+                basic.setRoles(Role.BASIC_LEXICOGRAPHER.toString());
+                userRepository.save(basic);
+            }
         }
     }
 }
