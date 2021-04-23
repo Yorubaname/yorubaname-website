@@ -42,7 +42,7 @@
         <mysql-connector.version>5.1.34</mysql-connector.version>
         <jackson-core.version>2.6.1</jackson-core.version>
         <logback-classic.version>1.1.2</logback-classic.version>
-        <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
+        <hibernate-validator.version>5.3.6.Final</hibernate-validator.version>
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
         <guava.version>18.0</guava.version>
         <es.version>1.5.0</es.version>
