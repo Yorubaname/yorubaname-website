@@ -54,9 +54,9 @@
                     {{#each name.videos}}
                         <div class="iframe-container" id="video{{@index}}">
                             <iframe src="{{this.url}}"
-                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen
-                                    title="{{this.caption}}"></iframe>
+                                    title="{{this.caption}}" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen></iframe>
                         </div>
                     {{/each}}
                 {{/if}}
