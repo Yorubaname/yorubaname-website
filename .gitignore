@@ -1,13 +1,30 @@
-#Intellij
+# IntelliJ
 .idea/
 *.iml
 *.iws
-*.pid
+
+# Eclipse
+.factorypath
+.settings/
+.project
+.classpath
 
 # Maven
 log/
 target/
-*.sublime*
+release.properties
+pom.xml.releaseBackup
+pom.xml.tagNameBackup
+pom.xml.nextSnapshot
+pom.xml.versionsBackup
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other
+*.pid
+*.sublime-*
 */data/*
 website/*.log
 *.log*
