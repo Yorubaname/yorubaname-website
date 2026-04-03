@@ -1,9 +1,10 @@
-[![Build Status](https://travis-ci.org/Yorubaname/yorubaname-website.svg?branch=master)](https://travis-ci.org/Yorubaname/yorubaname-website)
+# [LEGACY] Yorubaname Website Application
 
-## Yorubaname Website Application
+> [!WARNING]
+> This repository is now considered **LEGACY**. Development has moved to the [modern .NET Core implementation](https://github.com/Yorubaname/YorubaNameDictionary).
+> Please use this version for maintenance of legacy data only. All new Features and Search services are now powered by the modern API.
 
-The Yorubaname website application powers the backend services for www.yorubaname.com. It includes various modules that implement
-the various needed functionality. The code for the front facing website found at www.yorubaname.com is also included in it.
+The Yorubaname website application powers the legacy backend services for www.yorubaname.com. it includes various modules that implement the various needed functionality.
 
 ## Getting Started With Running and Development
 
